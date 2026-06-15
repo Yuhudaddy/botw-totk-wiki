@@ -1,0 +1,152 @@
+/* ============================================================
+   曠野・王國攻略 Wiki — Claude (Anthropic) 設計語言
+   羊皮紙底色 + 赤陶強調色，環形邊框取代厚重陰影。
+   色票之後可在本檔微調。
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700&display=swap');
+
+/* ---------------- 淺色（羊皮紙） ---------------- */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        #f5f4ed; /* 頁首 / 分頁列底色＝羊皮紙 */
+  --md-primary-fg-color--light: #faf9f6;
+  --md-primary-fg-color--dark:  #e8dcc8;
+  --md-primary-bg-color:        #3a3a3a; /* 頁首文字＝暖調深灰 */
+  --md-primary-bg-color--light: #6b6b6b;
+
+  --md-accent-fg-color:         #b85436; /* hover / 互動 */
+
+  --md-default-bg-color:        #faf9f6; /* 內文背景，偏暖 */
+  --md-default-fg-color:        #3a3a3a;
+  --md-default-fg-color--light: #6b6b6b;
+  --md-default-fg-color--lighter: #a0a0a0;
+
+  --md-typeset-color:           #3a3a3a;
+  --md-typeset-a-color:         #c96442; /* 連結＝赤陶 */
+
+  --md-code-bg-color:           #f1efe6;
+  --md-footer-bg-color:         #efece2;
+  --md-footer-bg-color--dark:   #e8dcc8;
+  --md-footer-fg-color:         #3a3a3a;
+  --md-footer-fg-color--light:  #6b6b6b;
+
+  --warm-border: #d4cfc0;
+  --warm-card:   #fffef9;
+}
+
+/* ---------------- 深色（暖調 slate） ---------------- */
+[data-md-color-scheme="slate"] {
+  --md-hue: 30;
+  --md-primary-fg-color:        #211f1b;
+  --md-primary-fg-color--light: #2a2722;
+  --md-primary-fg-color--dark:  #1a1815;
+  --md-primary-bg-color:        #ece9e1;
+
+  --md-accent-fg-color:         #e08a63;
+
+  --md-default-bg-color:        #1b1916;
+  --md-default-fg-color:        #e6e3da;
+  --md-typeset-color:           #e6e3da;
+  --md-typeset-a-color:         #e08a63;
+
+  --md-code-bg-color:           #26231e;
+  --md-footer-bg-color:         #161410;
+
+  --warm-border: #33302a;
+  --warm-card:   #211f1b;
+}
+
+/* ---------------- 襯線標題（編輯感、權威感） ---------------- */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-header__title,
+.md-nav__title {
+  font-family: "Noto Serif TC", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.md-typeset h1 { color: var(--md-default-fg-color); }
+
+/* ---------------- 頁首：羊皮紙＋環形邊框 ---------------- */
+.md-header {
+  border-bottom: 1px solid var(--warm-border);
+}
+.md-tabs {
+  border-bottom: 1px solid var(--warm-border);
+}
+
+/* ---------------- 卡片：環形邊框、暖底、hover 上浮 ---------------- */
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid > .card {
+  border: 1px solid var(--warm-border);
+  border-radius: 8px;
+  background: var(--warm-card);
+  padding: 0.9rem 1rem 1rem;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: #c96442;
+  box-shadow: 0 0 0 1px #c96442;
+  transform: translateY(-2px);
+}
+.md-typeset .grid.cards img {
+  border-radius: 6px;
+  width: 100%;
+  display: block;
+  margin: 0 0 .6rem;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--warm-border);
+}
+
+/* ---------------- 主要按鈕（赤陶） ---------------- */
+.md-typeset .md-button--primary {
+  background-color: #c96442;
+  border-color: #c96442;
+  color: #fffef9;
+}
+.md-typeset .md-button--primary:hover {
+  background-color: #b85436;
+  border-color: #b85436;
+}
+
+/* ---------------- 首頁 Hero ---------------- */
+.hero {
+  text-align: center;
+  padding: 2.6rem 1rem 1rem;
+  border-bottom: 1px solid var(--warm-border);
+  margin-bottom: 1.6rem;
+}
+.hero h1.hero-title {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin: .2rem 0 .4rem;
+}
+.hero .tagline {
+  color: var(--md-default-fg-color--light);
+  font-size: 1.05rem;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+.hero .hero-actions { margin-top: 1.2rem; }
+
+/* ---------------- 影片卡片標題、輔助文字 ---------------- */
+.md-typeset .grid.cards .vtitle {
+  font-weight: 600;
+  display: block;
+  margin-bottom: .2rem;
+  line-height: 1.4;
+}
+.md-typeset .grid.cards .vmeta {
+  color: var(--md-default-fg-color--light);
+  font-size: .8rem;
+}
+
+/* ---------------- 標籤 pill ---------------- */
+.md-typeset .md-tag {
+  background: rgba(201, 100, 66, .10);
+}
+[data-md-color-scheme="slate"] .md-typeset .md-tag {
+  background: rgba(224, 138, 99, .14);
+}
