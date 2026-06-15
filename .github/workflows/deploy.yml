@@ -1,0 +1,37 @@
+name: 部署攻略 Wiki
+
+on:
+  push:
+    branches:
+      - main
+  # 允許在 Actions 頁面手動觸發
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得原始碼
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 設定 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 快取相依套件
+        uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ hashFiles('requirements.txt') }}
+          path: ~/.cache/pip
+
+      - name: 安裝相依套件
+        run: pip install -r requirements.txt
+
+      - name: 建置並部署到 gh-pages
+        run: mkdocs gh-deploy --force --clean --verbose

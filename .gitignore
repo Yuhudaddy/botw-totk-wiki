@@ -1,0 +1,19 @@
+# MkDocs 建置輸出
+site/
+
+# Python 虛擬環境
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# 系統檔
+.DS_Store
+Thumbs.db
+
+# 編輯器
+.vscode/
+.idea/
+
+# Claude Code 本機工作階段
+.claude/
