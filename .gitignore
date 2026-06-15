@@ -1,6 +1,14 @@
 # MkDocs 建置輸出
 site/
 
+# Astro / Node
+node_modules/
+dist/
+.astro/
+*.log
+.env
+.env.production
+
 # Python 虛擬環境
 .venv/
 venv/

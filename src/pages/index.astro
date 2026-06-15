@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import VideoCard from "../components/VideoCard.astro";
+import { href } from "../lib/url";
+import { featured, latest, quickNav, SITE } from "../data/site";
+---
+
+<BaseLayout active="home">
+  {/* ===== HERO ===== */}
+  <section class="border-b border-border-soft">
+    <div
+      class="r-hero mx-auto grid max-w-[1180px] grid-cols-[1.05fr_0.95fr] items-center gap-16 px-8 py-[76px]"
+    >
+      <div>
+        <div
+          class="mb-[26px] border-b border-border-strong pb-[18px] text-[11px] font-bold uppercase tracking-[2px] text-accent"
+        >
+          技巧索引 · The Hyrule Glitch Index
+        </div>
+        <h1
+          class="r-h1 mb-5 font-serif text-[52px] font-medium leading-[1.12] tracking-[-0.01em] text-ink"
+        >
+          把每個 Glitch<br />整理成一頁攻略
+        </h1>
+        <p class="mb-[30px] max-w-[46ch] text-lg leading-[1.65] text-text">
+          薩爾達傳說 曠野之息 與 王國之淚 的技巧與 Glitch — 虛化、儲存、左納烏裝置、跨檔繼承、速通錯傳，依分類與版本交叉檢索。全部出自我的 YouTube 頻道 <span
+            class="text-ink">@zb_yuhudaddy</span
+          >。
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a
+            href={href("/totk")}
+            class="inline-flex items-center rounded-[10px] bg-brand px-[22px] py-3 text-[15px] font-medium text-ivory no-underline shadow-[0_0_0_1px_var(--brand)]"
+          >
+            瀏覽王國之淚 →
+          </a>
+          <a
+            href={href("/botw")}
+            class="inline-flex items-center rounded-[10px] bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline shadow-[0_0_0_1px_var(--border-strong)]"
+          >
+            瀏覽曠野之息
+          </a>
+        </div>
+      </div>
+
+      {/* 最新整理卡 */}
+      <div
+        class="rounded-[18px] border border-border-soft bg-surface px-6 py-1.5 shadow-[0_4px_24px_var(--shadow)]"
+      >
+        <div class="flex items-center justify-between py-[18px_0_12px] pt-[18px] pb-3">
+          <span class="text-[13px] font-semibold tracking-[0.05em] text-muted">最新整理 · LATEST</span>
+          <a href={href("/videos")} class="text-[13px] text-accent no-underline">全部 →</a>
+        </div>
+        {
+          latest.map((l) => (
+            <a
+              href={href(l.path)}
+              class="flex items-center justify-between gap-4 border-t border-border-soft py-[15px] no-underline"
+            >
+              <div>
+                <div class="font-serif text-[17px] font-medium leading-[1.3] text-ink">
+                  {l.title}
+                </div>
+                <div class="mt-[3px] text-[13px] text-muted">{l.sub}</div>
+              </div>
+              <span class="whitespace-nowrap rounded-md bg-mono-bg px-[9px] py-[3px] font-mono text-xs text-mono-text">
+                {l.ver}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ===== 精選技巧 ===== */}
+  <section class="mx-auto max-w-[1180px] px-8 py-[72px]">
+    <div class="mb-[30px] flex items-end justify-between gap-5">
+      <div>
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">精選技巧 · Featured</div>
+        <h2 class="mt-3 font-serif text-[34px] font-medium text-ink">最受歡迎的幾招</h2>
+      </div>
+      <a
+        href={href("/videos")}
+        class="inline-flex items-center whitespace-nowrap rounded-[10px] bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline shadow-[0_0_0_1px_var(--border-strong)]"
+      >
+        看全部影片 →
+      </a>
+    </div>
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
+      {featured.map((f) => <VideoCard vid={f.id} title={f.title} meta={f.meta} />)}
+    </div>
+  </section>
+
+  {/* ===== 快速導覽 ===== */}
+  <section class="border-y border-border-soft bg-surface">
+    <div class="mx-auto max-w-[1180px] px-8 py-16">
+      <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">快速導覽 · Explore</div>
+      <h2 class="mb-7 mt-3 font-serif text-[34px] font-medium text-ink">從哪裡開始都可以</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[18px]">
+        {
+          quickNav.map((q) => (
+            <a
+              href={href(q.path)}
+              class="flex h-full flex-col gap-2.5 rounded-2xl border border-border-soft bg-bg px-6 py-[26px] no-underline"
+            >
+              <span class="font-serif text-[15px] font-medium text-accent">{q.no}</span>
+              <div class="font-serif text-[21px] font-medium text-ink">{q.title}</div>
+              <p class="text-sm leading-[1.6] text-text">{q.desc}</p>
+              <span class="mt-auto text-sm text-accent">前往 →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ===== 關於本站 ===== */}
+  <section class="mx-auto max-w-[1180px] px-8 pb-[76px] pt-[60px]">
+    <div
+      class="max-w-[780px] rounded-2xl border border-border-strong bg-surface px-[30px] py-7"
+    >
+      <div class="mb-2.5 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">
+        關於本站 · NOTE
+      </div>
+      <p class="text-base leading-[1.7] text-text">
+        本站為個人攻略筆記，內容會持續補充。技巧多與特定遊戲版本相關，請務必確認每篇頁面標註的「適用版本」。歡迎到 <a
+          href={SITE.youtube}
+          target="_blank"
+          rel="noopener"
+          class="text-accent no-underline">YouTube 頻道</a
+        > 訂閱與留言交流。
+      </p>
+    </div>
+  </section>
+
+  <style>
+    @media (max-width: 900px) {
+      .r-hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding-top: 54px;
+        padding-bottom: 54px;
+      }
+      .r-h1 {
+        font-size: 40px;
+      }
+    }
+    @media (max-width: 600px) {
+      .r-h1 {
+        font-size: 31px;
+      }
+    }
+  </style>
+</BaseLayout>

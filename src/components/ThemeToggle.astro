@@ -1,0 +1,73 @@
+---
+// 主題切換鈕：與 BaseLayout 的 inline script 共用 localStorage key "wiki-theme"。
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="切換深淺主題"
+  class="flex h-9 w-9 items-center justify-center rounded-[9px] bg-sand text-ink-2 shadow-[0_0_0_1px_var(--ring)] cursor-pointer"
+>
+  {/* 月亮（淺色時顯示，點擊切到深色） */}
+  <svg
+    id="icon-moon"
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  {/* 太陽（深色時顯示，點擊切回淺色） */}
+  <svg
+    id="icon-sun"
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="hidden"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <line x1="12" y1="1" x2="12" y2="4"></line>
+    <line x1="12" y1="20" x2="12" y2="23"></line>
+    <line x1="4.2" y1="4.2" x2="5.6" y2="5.6"></line>
+    <line x1="18.4" y1="18.4" x2="19.8" y2="19.8"></line>
+    <line x1="1" y1="12" x2="4" y2="12"></line>
+    <line x1="20" y1="12" x2="23" y2="12"></line>
+    <line x1="4.2" y1="19.8" x2="5.6" y2="18.4"></line>
+    <line x1="18.4" y1="5.6" x2="19.8" y2="4.2"></line>
+  </svg>
+</button>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById("theme-toggle");
+    var moon = document.getElementById("icon-moon");
+    var sun = document.getElementById("icon-sun");
+    function sync() {
+      var dark = document.documentElement.getAttribute("data-theme") === "dark";
+      if (moon) moon.classList.toggle("hidden", dark);
+      if (sun) sun.classList.toggle("hidden", !dark);
+    }
+    sync();
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var cur = document.documentElement.getAttribute("data-theme");
+        var next = cur === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try {
+          localStorage.setItem("wiki-theme", next);
+        } catch (e) {}
+        sync();
+      });
+    }
+  })();
+</script>

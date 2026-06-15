@@ -179,21 +179,10 @@
   border-color: var(--md-accent-fg-color);
 }
 
-.md-button--primary:hover {
-  background-color: var(--md-accent-fg-color--hover);
-  border-color: var(--md-accent-fg-color--hover);
-  box-shadow: 0 0 0 3px rgba(201, 100, 66, 0.1);
-}
-
 .md-button {
   background-color: var(--warm-card-light);
   color: var(--md-primary-bg-color);
   border-color: var(--warm-border);
-}
-
-.md-button:hover {
-  border-color: var(--md-accent-fg-color);
-  color: var(--md-accent-fg-color);
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -205,13 +194,6 @@
   border-radius: 8px;
   background: var(--warm-card-bg);
   padding: 0.9rem 1rem 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.md-typeset .grid.cards > ul > li:hover {
-  border-color: var(--md-accent-fg-color);
-  box-shadow: 0 0 0 1px var(--md-accent-fg-color);
-  transform: translateY(-2px);
 }
 
 .md-typeset .grid.cards img {
@@ -278,9 +260,6 @@
   transition: border-color 0.2s ease;
 }
 
-.md-typeset a:hover {
-  border-bottom-color: var(--md-accent-fg-color);
-}
 
 /* ─────────────────────────────────────────────────────────
    提示框（note / warning 等）

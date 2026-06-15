@@ -1,0 +1,21 @@
+{
+  "name": "botw-totk-wiki",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "astro": "^6.4.7",
+    "tailwindcss": "^4.1.0"
+  },
+  "overrides": {
+    "vite": "^7"
+  }
+}

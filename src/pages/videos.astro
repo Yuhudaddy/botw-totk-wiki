@@ -1,0 +1,191 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import VideoCard from "../components/VideoCard.astro";
+import { totkVideos, botwVideos, allVideos } from "../data/videos";
+import { filterChips } from "../data/site";
+---
+
+<BaseLayout title="影片總覽" active="videos">
+  <section class="mx-auto max-w-[1180px] px-8 pb-[84px] pt-12">
+    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">影片總覽 · Video Wall</div>
+    <h1 class="mb-2.5 mt-3.5 font-serif text-[42px] font-medium text-ink">所有攻略影片</h1>
+    <p class="mb-7 text-base text-text">
+      點縮圖直接前往 YouTube 觀看 · 目前共 <span id="video-count" class="font-medium text-ink"
+        >{allVideos.length}</span
+      > 部
+    </p>
+
+    {/* 搜尋 */}
+    <div class="relative mb-[18px] max-w-[520px]">
+      <span class="pointer-events-none absolute left-[15px] top-1/2 -translate-y-1/2 text-muted">
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </span>
+      <input
+        id="video-search"
+        type="search"
+        placeholder="搜尋技巧名稱，例如「虛化」「餘料儲存」…"
+        class="w-full rounded-xl border border-border-strong bg-surface py-[13px] pl-11 pr-4 text-[15px] text-ink outline-none"
+      />
+    </div>
+
+    {/* 篩選籌碼 */}
+    <div id="filter-chips" class="mb-9 flex flex-wrap gap-2.5">
+      <button
+        type="button"
+        data-tag=""
+        class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm"
+      >
+        全部
+      </button>
+      {
+        filterChips.map((c) => (
+          <button
+            type="button"
+            data-tag={c}
+            class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm"
+          >
+            {c}
+          </button>
+        ))
+      }
+    </div>
+
+    {/* TotK 區 */}
+    <div data-section="totk">
+      <div class="mb-[18px] flex items-center gap-3.5">
+        <span class="font-serif text-2xl font-medium text-ink">王國之淚 TotK</span>
+        <span class="h-px flex-1 bg-border-strong"></span>
+      </div>
+      <div class="mb-[52px] grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[18px]">
+        {
+          totkVideos.map((v) => (
+            <div class="video-item" data-title={v.title} data-game="王國之淚" data-cat={v.cat}>
+              <VideoCard vid={v.id} title={v.title} meta={v.meta} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {/* BotW 區 */}
+    <div data-section="botw">
+      <div class="mb-[18px] flex items-center gap-3.5">
+        <span class="font-serif text-2xl font-medium text-ink">曠野之息 BotW</span>
+        <span class="h-px flex-1 bg-border-strong"></span>
+      </div>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[18px]">
+        {
+          botwVideos.map((v) => (
+            <div class="video-item" data-title={v.title} data-game="曠野之息" data-cat={v.cat}>
+              <VideoCard vid={v.id} title={v.title} meta={v.meta} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {/* 空狀態 */}
+    <div id="empty-state" class="hidden py-[60px] text-center text-muted">
+      <p class="mb-2 font-serif text-[22px] text-ink">這裡還空空的～</p>
+      <p class="text-[15px]">換個關鍵字或標籤試試吧。</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .chip {
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--text);
+  }
+  .chip[data-active="true"] {
+    background: var(--brand);
+    color: #faf9f5;
+    border-color: var(--brand);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const search = document.getElementById("video-search");
+    const chipBox = document.getElementById("filter-chips");
+    const chips = Array.from(document.querySelectorAll(".chip"));
+    const items = Array.from(document.querySelectorAll(".video-item"));
+    const sections = Array.from(document.querySelectorAll("[data-section]"));
+    const empty = document.getElementById("empty-state");
+    const countEl = document.getElementById("video-count");
+
+    let activeTag = "";
+    let query = "";
+
+    function setActiveChip(tag) {
+      chips.forEach((c) => {
+        c.setAttribute("data-active", c.getAttribute("data-tag") === tag ? "true" : "false");
+      });
+    }
+
+    function apply() {
+      let shown = 0;
+      items.forEach((it) => {
+        const title = (it.getAttribute("data-title") || "").toLowerCase();
+        const game = it.getAttribute("data-game") || "";
+        const cat = it.getAttribute("data-cat") || "";
+        const matchTag = !activeTag || game === activeTag || cat === activeTag;
+        const matchQ = !query || title.includes(query);
+        const ok = matchTag && matchQ;
+        it.style.display = ok ? "" : "none";
+        if (ok) shown++;
+      });
+      // 隱藏整個沒有結果的區塊標題
+      sections.forEach((sec) => {
+        const visible = sec.querySelectorAll('.video-item:not([style*="display: none"])').length;
+        sec.style.display = visible ? "" : "none";
+      });
+      if (empty) empty.classList.toggle("hidden", shown > 0);
+      if (countEl) countEl.textContent = String(shown);
+    }
+
+    // 初始化：讀 URL 的 ?tag= 與 ?search=
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const t = params.get("tag");
+      const s = params.get("search");
+      if (t) activeTag = t;
+      if (s) {
+        query = s.toLowerCase();
+        if (search) search.value = s;
+      }
+    } catch (e) {}
+
+    setActiveChip(activeTag);
+    apply();
+
+    if (search) {
+      search.addEventListener("input", function (e) {
+        query = (e.target.value || "").toLowerCase().trim();
+        apply();
+      });
+    }
+    if (chipBox) {
+      chipBox.addEventListener("click", function (e) {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        activeTag = btn.getAttribute("data-tag") || "";
+        setActiveChip(activeTag);
+        apply();
+      });
+    }
+  })();
+</script>

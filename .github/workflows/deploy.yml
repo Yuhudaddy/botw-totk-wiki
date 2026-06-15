@@ -1,37 +1,39 @@
-name: 部署攻略 Wiki
+name: 部署攻略 Wiki（Astro）
 
 on:
   push:
     branches:
       - main
-  # 允許在 Actions 頁面手動觸發
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時間只跑一個部署，不取消進行中的
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: 取得原始碼
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: 設定 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: 建置 Astro 站台
+        uses: withastro/action@v3
+        # 預設讀 package.json 的 build 腳本，輸出 ./dist，並自動上傳為 Pages artifact
 
-      - name: 快取相依套件
-        uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ hashFiles('requirements.txt') }}
-          path: ~/.cache/pip
-
-      - name: 安裝相依套件
-        run: pip install -r requirements.txt
-
-      - name: 建置並部署到 gh-pages
-        run: mkdocs gh-deploy --force --clean --verbose
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

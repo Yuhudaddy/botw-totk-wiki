@@ -1,0 +1,99 @@
+---
+import { href, ytWatch } from "../lib/url";
+
+interface RelatedItem {
+  videoId: string;
+  title: string;
+  series?: string;
+}
+interface Props {
+  versions: string[];
+  difficulty: string;
+  category: string;
+  series?: string;
+  videoId: string;
+  tags: string[];
+  related: RelatedItem[];
+}
+const { versions, difficulty, category, series, videoId, tags, related } = Astro.props;
+const versionLabel = versions.length ? versions.join("、") : "—";
+---
+
+<aside class="r-aside sticky top-[88px] flex flex-col gap-4">
+  {/* 版本表 */}
+  <div class="overflow-hidden rounded-2xl border border-border-soft bg-surface">
+    <div class="flex justify-between border-b border-border-soft px-[18px] py-[13px]">
+      <span class="text-[13px] text-muted">適用版本</span>
+      <span class="font-mono text-[13px] text-ink">{versionLabel}</span>
+    </div>
+    <div class="flex justify-between border-b border-border-soft px-[18px] py-[13px]">
+      <span class="text-[13px] text-muted">難度</span>
+      <span class="text-[13px] font-semibold text-accent">{difficulty}</span>
+    </div>
+    <div class="flex justify-between border-b border-border-soft px-[18px] py-[13px]">
+      <span class="text-[13px] text-muted">分類</span>
+      <span class="text-[13px] text-ink">{category}</span>
+    </div>
+    <div class="flex justify-between px-[18px] py-[13px]">
+      <span class="text-[13px] text-muted">系列</span>
+      <span class="text-[13px] text-ink">{series ?? "—"}</span>
+    </div>
+  </div>
+
+  {/* YouTube 按鈕 */}
+  <a
+    href={ytWatch(videoId)}
+    target="_blank"
+    rel="noopener"
+    class="flex items-center justify-center gap-2 rounded-[11px] bg-brand py-[13px] text-[15px] font-medium text-ivory no-underline shadow-[0_0_0_1px_var(--brand)]"
+  >
+    <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+      <polygon points="6,4 20,12 6,20"></polygon>
+    </svg>
+    在 YouTube 觀看
+  </a>
+
+  {/* 相關技巧 */}
+  {
+    related.length > 0 && (
+      <div class="rounded-2xl border border-border-soft bg-surface px-5 py-[18px]">
+        <div class="mb-3 text-[13px] font-semibold tracking-[0.04em] text-muted">相關技巧 · RELATED</div>
+        {related.map((r) => (
+          <a
+            href={ytWatch(r.videoId)}
+            target="_blank"
+            rel="noopener"
+            class="block border-t border-border-soft py-2.5 no-underline"
+          >
+            <div class="font-serif text-base font-medium text-ink">{r.title}</div>
+            {r.series && <div class="mt-0.5 text-xs text-muted">{r.series}</div>}
+          </a>
+        ))}
+      </div>
+    )
+  }
+
+  {/* 標籤 */}
+  {
+    tags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {tags.map((t) => (
+          <a
+            href={href(`/videos?tag=${encodeURIComponent(t)}`)}
+            class="rounded-full bg-sand px-3 py-[5px] text-[13px] text-text no-underline"
+          >
+            {t}
+          </a>
+        ))}
+      </div>
+    )
+  }
+
+  <style>
+    @media (max-width: 900px) {
+      .r-aside {
+        position: static;
+      }
+    }
+  </style>
+</aside>

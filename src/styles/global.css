@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+/* ============================================================
+   曠野・王國攻略 Wiki — 全域樣式
+   羊皮紙 × 赤陶；雙主題以 [data-theme] 在執行階段切換。
+   ============================================================ */
+
+/* ── 執行階段主題變數（淺色 / 深色） ───────────────────────── */
+:root,
+[data-theme="light"] {
+  --bg: #f5f4ed;
+  --surface: #faf9f5;
+  --surface-2: #ffffff;
+  --sand: #e8e6dc;
+  --border: #f0eee6;
+  --border-strong: #e8e6dc;
+  --ink: #141413;
+  --ink-2: #3d3d3a;
+  --text: #5e5d59;
+  --muted: #87867f;
+  --brand: #c96442;
+  --accent: #c96442;
+  --mono-bg: #f0eee6;
+  --mono-text: #5e5d59;
+  --ring: #d1cfc5;
+  --shadow: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] {
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --surface-2: #30302e;
+  --sand: #30302e;
+  --border: #2a2926;
+  --border-strong: #30302e;
+  --ink: #faf9f5;
+  --ink-2: #ece9e0;
+  --text: #b0aea5;
+  --muted: #8a8980;
+  --brand: #c96442;
+  --accent: #d97757;
+  --mono-bg: #30302e;
+  --mono-text: #b0aea5;
+  --ring: #4d4c48;
+  --shadow: rgba(0, 0, 0, 0.35);
+}
+
+/* ── 把執行階段變數對映成 Tailwind token ──────────────────────
+   讓 bg-surface / text-ink / border-border / font-serif 等
+   utility class 直接吃 [data-theme] 切換後的值。 */
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-sand: var(--sand);
+  --color-border-soft: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-accent: var(--accent);
+  --color-mono-bg: var(--mono-bg);
+  --color-mono-text: var(--mono-text);
+  --color-ivory: #faf9f5;
+
+  --font-serif: "Spectral", "Noto Serif TC", Georgia, "Times New Roman", serif;
+  --font-sans: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+
+  --radius-card: 16px;
+}
+
+/* ── 基礎 ─────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--brand);
+  color: #faf9f5;
+}
+
+input::placeholder {
+  color: var(--muted);
+}
+
+/* 避免主題切換時的首屏閃爍由 BaseLayout 的 inline script 處理 */

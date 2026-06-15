@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { tagGroups } from "../data/site";
+---
+
+<BaseLayout title="標籤索引" active="tags">
+  <section class="mx-auto max-w-[1180px] px-8 pb-[84px] pt-12">
+    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">標籤索引 · Tags</div>
+    <h1 class="mb-2.5 mt-3.5 font-serif text-[42px] font-medium text-ink">依標籤瀏覽</h1>
+    <p class="mb-7 max-w-[54ch] text-base leading-[1.6] text-text">
+      依類型、難度、版本交叉檢索每篇攻略。點任一標籤，即可看到相關影片。
+    </p>
+
+    {/* 直接搜尋（送往影片總覽頁） */}
+    <form method="get" action={href("/videos")} class="relative mb-3 max-w-[560px]">
+      <span class="pointer-events-none absolute left-[15px] top-1/2 -translate-y-1/2 text-muted">
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </span>
+      <input
+        type="search"
+        name="search"
+        placeholder="直接搜尋技巧名稱…"
+        class="w-full rounded-xl border border-border-strong bg-surface py-3.5 pl-11 pr-4 text-base text-ink outline-none"
+      />
+    </form>
+
+    {
+      tagGroups.map((g) => (
+        <div class="mt-[34px]">
+          <div class="mb-3.5 text-[13px] font-semibold tracking-[0.05em] text-muted">{g.label}</div>
+          <div class="flex flex-wrap gap-2.5">
+            {g.tags.map((t) => (
+              <a
+                href={href(`/videos?tag=${encodeURIComponent(t)}`)}
+                class="rounded-full border border-border-strong bg-surface px-[18px] py-2.5 text-[15px] text-ink no-underline"
+              >
+                {t}
+              </a>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </section>
+</BaseLayout>

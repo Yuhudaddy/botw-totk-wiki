@@ -1,0 +1,38 @@
+---
+import { ytThumb, ytWatch } from "../lib/url";
+
+interface Props {
+  vid: string;
+  title: string;
+  meta: string;
+}
+const { vid, title, meta } = Astro.props;
+---
+
+<a
+  href={ytWatch(vid)}
+  target="_blank"
+  rel="noopener"
+  class="group block overflow-hidden rounded-2xl border border-border-soft bg-surface no-underline"
+>
+  <div class="relative leading-[0]">
+    <img
+      src={ytThumb(vid)}
+      alt={title}
+      loading="lazy"
+      class="aspect-video w-full bg-sand object-cover"
+    />
+    <span
+      class="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/75 px-2 py-1 text-xs text-white"
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" width="9" height="9">
+        <polygon points="6,4 20,12 6,20"></polygon>
+      </svg>
+      YouTube
+    </span>
+  </div>
+  <div class="p-4">
+    <div class="font-serif text-[17px] font-medium leading-snug text-ink">{title}</div>
+    <div class="mt-1 text-xs text-muted">{meta}</div>
+  </div>
+</a>

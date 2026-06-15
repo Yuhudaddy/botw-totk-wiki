@@ -1,0 +1,25 @@
+---
+interface Props {
+  size?: number;
+  box?: number;
+  radius?: number;
+}
+const { size = 15, box = 28, radius = 8 } = Astro.props;
+---
+
+<span
+  class="flex items-center justify-center bg-brand text-ivory"
+  style={`width:${box}px;height:${box}px;border-radius:${radius}px;`}
+>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    style={`width:${size}px;height:${size}px;`}
+  >
+    <path d="M3 19 L9 7 L13 13 L16 8 L21 19 Z"></path>
+  </svg>
+</span>

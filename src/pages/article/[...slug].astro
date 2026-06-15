@@ -1,0 +1,209 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleAside from "../../components/ArticleAside.astro";
+import { href, ytThumb, ytWatch } from "../../lib/url";
+import { gameCategories } from "../../data/categories";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("glitches");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+const gameInfo = gameCategories[d.game];
+const tags = d.tags ?? [gameInfo.game, d.category, d.difficulty];
+const eyebrow = [gameInfo.game, d.series, d.category].filter(Boolean).join(" · ");
+---
+
+<BaseLayout title={d.title} description={d.subtitle} active={d.game}>
+  <section class="mx-auto max-w-[1180px] px-8 pb-[84px] pt-[46px]">
+    {/* 麵包屑 */}
+    <div class="mb-[30px] flex items-center gap-2.5 text-[13px] text-muted">
+      <a href={href("/")} class="text-muted no-underline">首頁</a>
+      <span>/</span>
+      <a href={href(`/${d.game}`)} class="text-muted no-underline">{gameInfo.game}</a>
+      <span>/</span>
+      <span class="text-ink">{d.category}</span>
+    </div>
+
+    <div
+      class="r-article grid grid-cols-[minmax(0,1fr)_336px] items-start gap-14"
+    >
+      <article>
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{eyebrow}</div>
+        <h1 class="mb-[18px] mt-3.5 font-serif text-[42px] font-medium leading-[1.15] text-ink">
+          {d.title}
+        </h1>
+        {
+          d.subtitle && (
+            <p class="mb-[30px] font-serif text-xl leading-[1.55] text-ink-2">{d.subtitle}</p>
+          )
+        }
+
+        {/* 影片縮圖 */}
+        <a
+          href={ytWatch(d.videoId)}
+          target="_blank"
+          rel="noopener"
+          class="relative mb-10 block overflow-hidden rounded-[18px] border border-border-soft leading-[0] shadow-[0_6px_28px_var(--shadow)]"
+        >
+          <img
+            src={ytThumb(d.videoId)}
+            alt={d.title}
+            class="aspect-video w-full bg-sand object-cover"
+          />
+          <span
+            class="absolute left-1/2 top-1/2 flex h-[66px] w-[66px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[rgba(201,100,66,0.94)] shadow-[0_6px_20px_rgba(0,0,0,0.3)]"
+          >
+            <svg viewBox="0 0 24 24" fill="#faf9f5" width="25" height="25" style="margin-left:4px;">
+              <polygon points="6,4 20,12 6,20"></polygon>
+            </svg>
+          </span>
+        </a>
+
+        {/* 內文（Markdown 渲染） */}
+        <div class="prose-article">
+          <Content />
+        </div>
+
+        <div class="mt-9 border-t border-border-strong pt-5 text-sm text-muted">
+          📺 影片來源：<a
+            href="https://www.youtube.com/@zb_yuhudaddy"
+            target="_blank"
+            rel="noopener"
+            class="text-accent no-underline">YouTube — @zb_yuhudaddy</a
+          >
+        </div>
+      </article>
+
+      <ArticleAside
+        versions={d.versions}
+        difficulty={d.difficulty}
+        category={d.category}
+        series={d.series}
+        videoId={d.videoId}
+        tags={tags}
+        related={d.related}
+      />
+    </div>
+  </section>
+
+  <style>
+    @media (max-width: 900px) {
+      .r-article {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+    }
+
+    /* ── 內文排版：重現原型的襯線標題、編號圓圈步驟、程式碼 pill ── */
+    .prose-article :global(h2) {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 26px;
+      color: var(--ink);
+      margin: 36px 0 14px;
+    }
+    .prose-article :global(h2:first-child) {
+      margin-top: 0;
+    }
+    .prose-article :global(h3) {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 20px;
+      color: var(--ink);
+      margin: 24px 0 10px;
+    }
+    .prose-article :global(p) {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text);
+      margin: 0 0 18px;
+    }
+    .prose-article :global(ul) {
+      margin: 0 0 28px;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .prose-article :global(ul li) {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .prose-article :global(ul li::marker) {
+      color: var(--accent);
+    }
+    /* 編號步驟：圓圈計數器 */
+    .prose-article :global(ol) {
+      list-style: none;
+      counter-reset: step;
+      margin: 0 0 28px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .prose-article :global(ol li) {
+      counter-increment: step;
+      position: relative;
+      padding-left: 46px;
+      min-height: 30px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .prose-article :global(ol li::before) {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #faf9f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .prose-article :global(ol li strong) {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .prose-article :global(blockquote) {
+      margin: 0 0 24px;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+    }
+    .prose-article :global(blockquote p) {
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .prose-article :global(code) {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      background: var(--mono-bg);
+      color: var(--mono-text);
+      padding: 1px 7px;
+      border-radius: 5px;
+    }
+    .prose-article :global(a) {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  </style>
+</BaseLayout>

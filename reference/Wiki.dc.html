@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#f5f4ed;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-family:'Noto Sans TC',system-ui,sans-serif;}
+  ::selection{background:#c96442;color:#faf9f5;}
+  p{margin:0;}
+  input::placeholder{color:var(--muted);}
+  :root,[data-theme="light"]{--bg:#f5f4ed;--surface:#faf9f5;--surface-2:#ffffff;--sand:#e8e6dc;--border:#f0eee6;--border-strong:#e8e6dc;--ink:#141413;--ink-2:#3d3d3a;--text:#5e5d59;--muted:#87867f;--brand:#c96442;--accent:#c96442;--mono-bg:#f0eee6;--mono-text:#5e5d59;--ring:#d1cfc5;--shadow:rgba(0,0,0,0.05);}
+  [data-theme="dark"]{--bg:#141413;--surface:#1d1c1a;--surface-2:#30302e;--sand:#30302e;--border:#2a2926;--border-strong:#30302e;--ink:#faf9f5;--ink-2:#ece9e0;--text:#b0aea5;--muted:#8a8980;--brand:#c96442;--accent:#d97757;--mono-bg:#30302e;--mono-text:#b0aea5;--ring:#4d4c48;--shadow:rgba(0,0,0,0.35);}
+  @media (max-width:900px){
+    .r-hero{grid-template-columns:1fr !important;gap:40px !important;padding-top:54px !important;padding-bottom:54px !important;}
+    .r-article{grid-template-columns:1fr !important;gap:36px !important;}
+    .r-aside{position:static !important;}
+    .r-h1{font-size:40px !important;}
+  }
+  @media (max-width:600px){
+    .r-navbar{height:auto !important;flex-wrap:wrap !important;padding-top:11px !important;padding-bottom:11px !important;gap:6px 14px !important;padding-left:18px !important;padding-right:18px !important;}
+    .r-navsearch{display:none !important;}
+    .r-h1{font-size:31px !important;}
+  }
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail" data-bg-color="#f5f4ed">
+  <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#f5f4ed"/>
+    <text x="200" y="85" font-family="serif" font-size="48" font-weight="500" text-anchor="middle" fill="#141413" letter-spacing="-1">曠野・王國</text>
+    <text x="200" y="130" font-family="sans-serif" font-size="32" text-anchor="middle" fill="#5e5d59">攻略 Wiki</text>
+    <rect x="60" y="160" width="280" height="100" rx="12" fill="#faf9f5" stroke="#f0eee6" stroke-width="1"/>
+    <circle cx="200" cy="195" r="20" fill="#c96442"/>
+    <text x="235" y="200" font-size="14" fill="#5e5d59">技巧索引</text>
+    <text x="235" y="218" font-size="12" fill="#87867f">淺/深主題切換</text>
+    <rect x="80" y="240" width="90" height="30" rx="8" fill="#c96442"/>
+    <text x="125" y="258" font-size="12" font-weight="500" fill="#faf9f5" text-anchor="middle">開始瀏覽</text>
+  </svg>
+</template>
+
+<div data-theme="{{ theme }}" style="min-height:100vh;background:var(--bg);color:var(--text);transition:background-color .3s ease,color .3s ease;">
+
+  <!-- ===== NAV ===== -->
+  <header style="position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);">
+    <div class="r-navbar" style="max-width:1180px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;gap:26px;">
+      <a onClick="{{ goHome }}" style="display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;">
+        <span style="width:28px;height:28px;border-radius:8px;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#faf9f5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;"><path d="M3 19 L9 7 L13 13 L16 8 L21 19 Z"></path></svg></span>
+        <span style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:18px;color:var(--ink);">曠野・王國攻略</span>
+      </a>
+      <nav style="display:flex;gap:4px;margin-left:6px;">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+          <a onClick="{{ n.onClick }}" style="{{ n.style }}">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+        <button onClick="{{ goTags }}" class="r-navsearch" style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;padding:8px 14px;color:var(--muted);font-size:14px;font-family:inherit;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>搜尋技巧…</button>
+        <button onClick="{{ toggleTheme }}" aria-label="切換主題" style="width:36px;height:36px;border-radius:9px;background:var(--sand);border:none;box-shadow:0 0 0 1px var(--ring);display:flex;align-items:center;justify-content:center;color:var(--ink-2);cursor:pointer;">{{ themeIconEl }}</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- =================== HOME =================== -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <section style="border-bottom:1px solid var(--border);">
+        <div class="r-hero" style="max-width:1180px;margin:0 auto;padding:76px 32px;display:grid;grid-template-columns:1.05fr 0.95fr;gap:64px;align-items:center;">
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--border-strong);padding-bottom:18px;margin-bottom:26px;">技巧索引 · The Hyrule Glitch Index</div>
+            <h1 class="r-h1" style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:52px;line-height:1.12;letter-spacing:-0.01em;color:var(--ink);margin:0 0 20px;">把每個 Glitch<br>整理成一頁攻略</h1>
+            <p style="font-size:18px;line-height:1.65;color:var(--text);margin-bottom:30px;max-width:46ch;">薩爾達傳說 曠野之息 與 王國之淚 的技巧與 Glitch — 虛化、儲存、左納烏裝置、跨檔繼承、速通錯傳,依分類與版本交叉檢索。全部出自我的 YouTube 頻道 <span style="color:var(--ink);">@zb_yuhudaddy</span>。</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <a onClick="{{ goTotk }}" style="display:inline-flex;align-items:center;background:var(--brand);color:#faf9f5;font-size:15px;font-weight:500;padding:12px 22px;border-radius:10px;box-shadow:0 0 0 1px var(--brand);text-decoration:none;cursor:pointer;">瀏覽王國之淚 →</a>
+              <a onClick="{{ goBotw }}" style="display:inline-flex;align-items:center;background:var(--surface-2);color:var(--ink);font-size:15px;font-weight:500;padding:12px 22px;border-radius:10px;box-shadow:0 0 0 1px var(--border-strong);text-decoration:none;cursor:pointer;">瀏覽曠野之息</a>
+            </div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:6px 24px;box-shadow:0 4px 24px var(--shadow);">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 0 12px;">
+              <span style="font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.05em;">最新整理 · LATEST</span>
+              <a onClick="{{ goVideos }}" style="font-size:13px;color:var(--accent);cursor:pointer;text-decoration:none;">全部 →</a>
+            </div>
+            <sc-for list="{{ latest }}" as="l" hint-placeholder-count="4">
+              <div onClick="{{ l.onClick }}" style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 0;border-top:1px solid var(--border);cursor:pointer;">
+                <div>
+                  <div style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:17px;color:var(--ink);line-height:1.3;">{{ l.title }}</div>
+                  <div style="font-size:13px;color:var(--muted);margin-top:3px;">{{ l.sub }}</div>
+                </div>
+                <span style="font-family:'DM Mono',monospace;font-size:12px;background:var(--mono-bg);color:var(--mono-text);padding:3px 9px;border-radius:6px;white-space:nowrap;">{{ l.ver }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <section style="max-width:1180px;margin:0 auto;padding:72px 32px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:30px;gap:20px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);">精選技巧 · Featured</div>
+            <h2 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:34px;color:var(--ink);margin:12px 0 0;">最受歡迎的幾招</h2>
+          </div>
+          <a onClick="{{ goVideos }}" style="display:inline-flex;align-items:center;background:var(--surface-2);color:var(--ink);font-size:15px;font-weight:500;padding:10px 18px;border-radius:10px;box-shadow:0 0 0 1px var(--border-strong);text-decoration:none;cursor:pointer;white-space:nowrap;">看全部影片 →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;">
+          <sc-for list="{{ featured }}" as="f" hint-placeholder-count="6">
+            <dc-import name="VideoCard" style="width:100%;" vid="{{ f.id }}" title="{{ f.title }}" meta="{{ f.meta }}" hint-size="100%,236px"></dc-import>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+        <div style="max-width:1180px;margin:0 auto;padding:64px 32px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);">快速導覽 · Explore</div>
+          <h2 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:34px;color:var(--ink);margin:12px 0 28px;">從哪裡開始都可以</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
+            <sc-for list="{{ quickNav }}" as="q" hint-placeholder-count="4">
+              <div onClick="{{ q.onClick }}" style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:26px 24px;cursor:pointer;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box;">
+                <span style="font-family:'Spectral',serif;font-size:15px;color:var(--accent);font-weight:500;">{{ q.no }}</span>
+                <div style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:21px;color:var(--ink);">{{ q.title }}</div>
+                <p style="font-size:14px;line-height:1.6;color:var(--text);">{{ q.desc }}</p>
+                <span style="font-size:14px;color:var(--accent);margin-top:auto;">前往 →</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <section style="max-width:1180px;margin:0 auto;padding:60px 32px 76px;">
+        <div style="background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;padding:28px 30px;max-width:780px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">關於本站 · NOTE</div>
+          <p style="font-size:16px;line-height:1.7;color:var(--text);">本站為個人攻略筆記,內容會持續補充。技巧多與特定遊戲版本相關,請務必確認每篇頁面標註的「適用版本」。歡迎到 YouTube 頻道訂閱與留言交流。</p>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- =================== CATEGORY =================== -->
+    <sc-if value="{{ isCategory }}">
+      <section style="border-bottom:1px solid var(--border);">
+        <div style="max-width:1180px;margin:0 auto;padding:54px 32px 48px;">
+          <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted);margin-bottom:22px;">
+            <span onClick="{{ goHome }}" style="cursor:pointer;">首頁</span><span>/</span><span style="color:var(--ink);">{{ cat.game }}</span>
+          </div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);">{{ cat.en }} · 技巧分類</div>
+          <h1 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:46px;line-height:1.14;color:var(--ink);margin:14px 0 18px;">{{ cat.game }}</h1>
+          <p style="font-size:18px;line-height:1.65;color:var(--text);max-width:62ch;">{{ cat.desc }}</p>
+        </div>
+      </section>
+      <section style="max-width:1180px;margin:0 auto;padding:36px 32px 12px;">
+        <div style="background:var(--surface);border:1px solid var(--border-strong);border-radius:14px;padding:18px 22px;display:flex;gap:13px;align-items:flex-start;">
+          <span style="color:var(--accent);flex:none;margin-top:1px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 3 L22 20 L2 20 Z"></path><line x1="12" y1="10" x2="12" y2="14"></line><circle cx="12" cy="17.4" r="0.6" fill="currentColor"></circle></svg></span>
+          <div><div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;">版本提醒 · NOTE</div><p style="font-size:14px;line-height:1.6;color:var(--text);">{{ cat.tip }}</p></div>
+        </div>
+      </section>
+      <section style="max-width:1180px;margin:0 auto;padding:30px 32px 80px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;">
+          <sc-for list="{{ catCats }}" as="c" hint-placeholder-count="6">
+            <div onClick="{{ c.onClick }}" style="{{ c.cardStyle }}">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-family:'Spectral',serif;font-size:15px;color:var(--accent);font-weight:500;">{{ c.no }}</span>
+                <span style="{{ c.badgeStyle }}">{{ c.badge }}</span>
+              </div>
+              <div style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:20px;color:var(--ink);line-height:1.3;">{{ c.title }}</div>
+              <p style="font-size:14px;line-height:1.6;color:var(--text);">{{ c.desc }}</p>
+              <div style="font-size:13px;color:var(--muted);margin-top:auto;padding-top:8px;">{{ c.meta }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- =================== ARTICLE =================== -->
+    <sc-if value="{{ isArticle }}">
+      <section style="max-width:1180px;margin:0 auto;padding:46px 32px 84px;">
+        <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted);margin-bottom:30px;">
+          <span onClick="{{ goHome }}" style="cursor:pointer;">首頁</span><span>/</span><span onClick="{{ goTotk }}" style="cursor:pointer;">王國之淚</span><span>/</span><span style="color:var(--ink);">虛化類</span>
+        </div>
+        <div class="r-article" style="display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:56px;align-items:start;">
+          <article>
+            <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);">王國之淚 · 番外21 · 虛化類</div>
+            <h1 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:42px;line-height:1.15;color:var(--ink);margin:14px 0 18px;">虛化裝備 Void Dip &amp; DI</h1>
+            <p style="font-family:'Spectral','Noto Serif TC',serif;font-size:20px;line-height:1.55;color:var(--ink-2);margin-bottom:30px;">無限耐久＆複製＆無限彈簧火箭盾!虛空次元歸來的「虛化裝備」原理解說與常用步驟示範。</p>
+            <a href="https://youtu.be/MWBVJsLTA0c" target="_blank" rel="noopener" style="display:block;position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);box-shadow:0 6px 28px var(--shadow);margin-bottom:40px;line-height:0;">
+              <img src="https://img.youtube.com/vi/MWBVJsLTA0c/maxresdefault.jpg" alt="虛化裝備 Void Dip & DI" style="width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:var(--sand);">
+              <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;background:rgba(201,100,66,0.94);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,0.3);"><svg viewBox="0 0 24 24" fill="#faf9f5" style="width:25px;height:25px;margin-left:4px;"><polygon points="6,4 20,12 6,20"></polygon></svg></span>
+            </a>
+
+            <h2 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:26px;color:var(--ink);margin:0 0 12px;">這是什麼</h2>
+            <p style="font-size:17px;line-height:1.75;color:var(--text);margin-bottom:32px;">「虛化 (Void Dip / DI)」是讓裝備進入「虛空狀態」的技巧。透過特定操作讓裝備暫時脫離一般耐久與數量規則,可達成無限耐久、複製等效果,是王國之淚進階玩法的核心之一。</p>
+
+            <h2 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:26px;color:var(--ink);margin:0 0 14px;">前置準備</h2>
+            <ul style="margin:0 0 32px;padding-left:20px;display:flex;flex-direction:column;gap:9px;font-size:17px;line-height:1.6;color:var(--text);">
+              <li>對應版本：王國之淚 <span style="font-family:'DM Mono',monospace;font-size:14px;background:var(--mono-bg);color:var(--mono-text);padding:1px 7px;border-radius:5px;">1.2.1～</span></li>
+              <li>要操作的裝備 / 盾,以及一處可進入虛空的地形</li>
+              <li>建議先備份存檔,避免操作失誤影響進度</li>
+            </ul>
+
+            <div style="background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;padding:14px 18px;display:flex;gap:11px;align-items:flex-start;margin-bottom:24px;">
+              <span style="color:var(--accent);flex:none;margin-top:1px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M12 3 L22 20 L2 20 Z"></path><line x1="12" y1="10" x2="12" y2="14"></line><circle cx="12" cy="17.4" r="0.6" fill="currentColor"></circle></svg></span>
+              <p style="font-size:14px;line-height:1.6;color:var(--text);">下方步驟為<strong style="color:var(--ink);font-weight:500;">示意流程</strong>,實際操作的時機與細節請以影片為準。</p>
+            </div>
+
+            <h2 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:26px;color:var(--ink);margin:0 0 18px;">常用步驟</h2>
+            <ol style="list-style:none;margin:0 0 32px;padding:0;display:flex;flex-direction:column;gap:18px;">
+              <li style="display:flex;gap:15px;"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#faf9f5;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">1</span><div><div style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:18px;color:var(--ink);">確認版本與道具</div><div style="font-size:15px;color:var(--text);line-height:1.6;margin-top:2px;">備妥要虛化的裝備與盾,確認在適用版本上。</div></div></li>
+              <li style="display:flex;gap:15px;"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#faf9f5;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">2</span><div><div style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:18px;color:var(--ink);">進入虛空次元</div><div style="font-size:15px;color:var(--text);line-height:1.6;margin-top:2px;">利用特定地形讓角色落入虛空,於正確時機操作。</div></div></li>
+              <li style="display:flex;gap:15px;"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#faf9f5;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">3</span><div><div style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:18px;color:var(--ink);">觸發虛化 (DI)</div><div style="font-size:15px;color:var(--text);line-height:1.6;margin-top:2px;">在載入 / 過場瞬間切換裝備狀態,使其進入虛化。</div></div></li>
+              <li style="display:flex;gap:15px;"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#faf9f5;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">4</span><div><div style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:18px;color:var(--ink);">確認效果</div><div style="font-size:15px;color:var(--text);line-height:1.6;margin-top:2px;">取得無限耐久 / 複製 / 無限彈簧火箭盾等結果。</div></div></li>
+            </ol>
+
+            <h2 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:26px;color:var(--ink);margin:0 0 14px;">應用</h2>
+            <ul style="margin:0 0 32px;padding-left:20px;display:flex;flex-direction:column;gap:9px;font-size:17px;line-height:1.6;color:var(--text);"><li>無限耐久 — 武器、盾不再損耗</li><li>裝備複製 — 快速取得多份稀有裝備</li><li>無限彈簧火箭盾 — 進階移動與位移應用</li></ul>
+
+            <h2 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:26px;color:var(--ink);margin:0 0 14px;">注意事項</h2>
+            <ul style="margin:0 0 36px;padding-left:20px;display:flex;flex-direction:column;gap:9px;font-size:17px;line-height:1.6;color:var(--text);"><li>版本差異大,不同版本步驟可能不同</li><li>操作失誤可能影響存檔,務必先備份</li><li>會員向延伸 (如 Enemy DI IPR) 另有專門影片</li></ul>
+
+            <div style="border-top:1px solid var(--border-strong);padding-top:20px;font-size:14px;color:var(--muted);">📺 影片來源：<a href="https://www.youtube.com/@zb_yuhudaddy" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;">YouTube — @zb_yuhudaddy</a></div>
+          </article>
+
+          <aside class="r-aside" style="position:sticky;top:88px;display:flex;flex-direction:column;gap:16px;">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+              <div style="display:flex;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--muted);">適用版本</span><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);">1.2.1～</span></div>
+              <div style="display:flex;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--muted);">難度</span><span style="font-size:13px;color:var(--accent);font-weight:600;">進階</span></div>
+              <div style="display:flex;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--muted);">分類</span><span style="font-size:13px;color:var(--ink);">虛化類</span></div>
+              <div style="display:flex;justify-content:space-between;padding:13px 18px;"><span style="font-size:13px;color:var(--muted);">系列</span><span style="font-size:13px;color:var(--ink);">番外21</span></div>
+            </div>
+            <a href="https://youtu.be/MWBVJsLTA0c" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:#faf9f5;font-size:15px;font-weight:500;padding:13px;border-radius:11px;box-shadow:0 0 0 1px var(--brand);text-decoration:none;"><svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;"><polygon points="6,4 20,12 6,20"></polygon></svg>在 YouTube 觀看</a>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;">
+              <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:12px;letter-spacing:.04em;">相關技巧 · RELATED</div>
+              <a href="https://youtu.be/WLSjvOTQXO8" target="_blank" rel="noopener" style="display:block;padding:10px 0;border-top:1px solid var(--border);text-decoration:none;"><div style="font-family:'Spectral','Noto Serif TC',serif;font-size:16px;font-weight:500;color:var(--ink);">怪持虛化口袋火箭 IPR</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">番外23（會員）</div></a>
+              <a href="https://youtu.be/aELlly95zCk" target="_blank" rel="noopener" style="display:block;padding:10px 0;border-top:1px solid var(--border);text-decoration:none;"><div style="font-family:'Spectral','Noto Serif TC',serif;font-size:16px;font-weight:500;color:var(--ink);">再同步並列 Swap Resync</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">番外20</div></a>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <span style="background:var(--sand);color:var(--text);font-size:13px;padding:5px 12px;border-radius:999px;">王國之淚</span>
+              <span style="background:var(--sand);color:var(--text);font-size:13px;padding:5px 12px;border-radius:999px;">虛化類</span>
+              <span style="background:var(--sand);color:var(--text);font-size:13px;padding:5px 12px;border-radius:999px;">進階</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- =================== VIDEOS =================== -->
+    <sc-if value="{{ isVideos }}">
+      <section style="max-width:1180px;margin:0 auto;padding:48px 32px 84px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);">影片總覽 · Video Wall</div>
+        <h1 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:42px;color:var(--ink);margin:14px 0 10px;">所有攻略影片</h1>
+        <p style="color:var(--text);font-size:16px;margin-bottom:28px;">點縮圖直接前往 YouTube 觀看 · 目前共 <span style="color:var(--ink);font-weight:500;">{{ count }}</span> 部</p>
+        <div style="position:relative;margin-bottom:18px;max-width:520px;">
+          <span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+          <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="搜尋技巧名稱,例如「虛化」「餘料儲存」…" style="width:100%;padding:13px 16px 13px 44px;border-radius:12px;border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);font-size:15px;font-family:inherit;outline:none;">
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:36px;">
+          <sc-for list="{{ filterChips }}" as="c" hint-placeholder-count="8">
+            <span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ grouped }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;"><span style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:24px;color:var(--ink);">王國之淚 TotK</span><span style="flex:1;height:1px;background:var(--border-strong);"></span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:52px;">
+            <sc-for list="{{ totk }}" as="v" hint-placeholder-count="8">
+              <dc-import name="VideoCard" style="width:100%;" vid="{{ v.id }}" title="{{ v.title }}" meta="{{ v.meta }}" hint-size="100%,236px"></dc-import>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;"><span style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:24px;color:var(--ink);">曠野之息 BotW</span><span style="flex:1;height:1px;background:var(--border-strong);"></span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
+            <sc-for list="{{ botw }}" as="v" hint-placeholder-count="4">
+              <dc-import name="VideoCard" style="width:100%;" vid="{{ v.id }}" title="{{ v.title }}" meta="{{ v.meta }}" hint-size="100%,236px"></dc-import>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ flat }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
+            <sc-for list="{{ shown }}" as="v" hint-placeholder-count="8">
+              <dc-import name="VideoCard" style="width:100%;" vid="{{ v.id }}" title="{{ v.title }}" meta="{{ v.meta }}" hint-size="100%,236px"></dc-import>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ empty }}">
+          <div style="text-align:center;padding:60px 20px;color:var(--muted);"><p style="font-family:'Spectral','Noto Serif TC',serif;font-size:22px;color:var(--ink);margin-bottom:8px;">這裡還空空的～</p><p style="font-size:15px;">換個關鍵字或標籤試試吧。</p></div>
+        </sc-if>
+      </section>
+    </sc-if>
+
+    <!-- =================== TAGS =================== -->
+    <sc-if value="{{ isTags }}">
+      <section style="max-width:1180px;margin:0 auto;padding:48px 32px 84px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);">標籤索引 · Tags</div>
+        <h1 style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:42px;color:var(--ink);margin:14px 0 10px;">依標籤瀏覽</h1>
+        <p style="color:var(--text);font-size:16px;line-height:1.6;margin-bottom:28px;max-width:54ch;">依類型、難度、版本交叉檢索每篇攻略。點任一標籤,即可看到相關影片。</p>
+        <div style="position:relative;max-width:560px;margin-bottom:12px;">
+          <span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+          <input value="{{ search }}" onInput="{{ onSearchGo }}" placeholder="直接搜尋技巧名稱…" style="width:100%;padding:14px 16px 14px 44px;border-radius:12px;border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);font-size:16px;font-family:inherit;outline:none;">
+        </div>
+        <sc-for list="{{ tagGroups }}" as="g" hint-placeholder-count="3">
+          <div style="margin-top:34px;">
+            <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:14px;letter-spacing:.05em;">{{ g.label }}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+              <sc-for list="{{ g.tags }}" as="t" hint-placeholder-count="6">
+                <span onClick="{{ t.onClick }}" style="font-size:15px;padding:9px 18px;border-radius:999px;cursor:pointer;background:var(--surface);border:1px solid var(--border-strong);color:var(--ink);">{{ t.label }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </section>
+    </sc-if>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer style="border-top:1px solid var(--border);background:var(--surface);">
+    <div style="max-width:1180px;margin:0 auto;padding:42px 32px;display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap;align-items:flex-start;">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><span style="width:26px;height:26px;border-radius:7px;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#faf9f5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M3 19 L9 7 L13 13 L16 8 L21 19 Z"></path></svg></span><span style="font-family:'Spectral','Noto Serif TC',serif;font-weight:500;font-size:17px;color:var(--ink);">曠野・王國攻略</span></div>
+        <p style="font-size:14px;color:var(--muted);max-width:44ch;line-height:1.6;">薩爾達傳說 BotW / TotK 技巧與 Glitch 攻略,整理自 Yuhudaddy 的 YouTube 頻道。</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:14px;">© 2026 Yuhudaddy · 內容整理自個人 YouTube 頻道</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a href="https://www.youtube.com/@zb_yuhudaddy" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;background:var(--surface-2);color:var(--ink);font-size:14px;font-weight:500;padding:9px 16px;border-radius:9px;box-shadow:0 0 0 1px var(--border-strong);text-decoration:none;">YouTube 頻道</a>
+        <a href="https://github.com/Yuhudaddy" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;background:var(--surface-2);color:var(--ink);font-size:14px;font-weight:500;padding:9px 16px;border-radius:9px;box-shadow:0 0 0 1px var(--border-strong);text-decoration:none;">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { route: 'home', catKey: 'totk', theme: 'light', search: '', tag: null };
+
+  componentDidMount() {
+    let t = 'light';
+    try { t = localStorage.getItem('wiki-theme') || 'light'; } catch (e) {}
+    if (t !== this.state.theme) this.setState({ theme: t });
+    document.body.style.background = t === 'dark' ? '#141413' : '#f5f4ed';
+  }
+  componentDidUpdate() {
+    document.body.style.background = this.state.theme === 'dark' ? '#141413' : '#f5f4ed';
+  }
+
+  go(route, key) { this.setState({ route, catKey: key || this.state.catKey, tag: null, search: '' }); try { window.scrollTo(0, 0); } catch (e) {} }
+  goVideosTag(t) { this.setState({ route: 'videos', tag: t, search: '' }); try { window.scrollTo(0, 0); } catch (e) {} }
+  toggleTheme() { const t = this.state.theme === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('wiki-theme', t); } catch (e) {} this.setState({ theme: t }); }
+
+  renderVals() {
+    const s = this.state;
+
+    const navStyle = (active) => ({ padding: '8px 13px', borderRadius: '8px', fontSize: '15px', textDecoration: 'none', cursor: 'pointer', color: active ? 'var(--ink)' : 'var(--text)', background: active ? 'var(--sand)' : 'transparent', fontWeight: active ? 500 : 400 });
+    const navItems = [
+      { label: '首頁', route: 'home', k: null },
+      { label: '曠野之息', route: 'category', k: 'botw' },
+      { label: '王國之淚', route: 'category', k: 'totk' },
+      { label: '影片總覽', route: 'videos', k: null },
+      { label: '標籤', route: 'tags', k: null },
+    ].map(n => {
+      const active = n.route === 'category'
+        ? ((s.route === 'category' && s.catKey === n.k) || (s.route === 'article' && n.k === 'totk'))
+        : s.route === n.route;
+      return { label: n.label, style: navStyle(active), onClick: () => (n.route === 'category' ? this.go('category', n.k) : this.go(n.route)) };
+    });
+
+    const mk = (children) => React.createElement('svg', { viewBox: '0 0 24 24', width: 16, height: 16, fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }, children);
+    const moon = mk(React.createElement('path', { key: 'm', d: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z' }));
+    const sunCh = [React.createElement('circle', { key: 'c', cx: 12, cy: 12, r: 4 })];
+    [[12,1,12,4],[12,20,12,23],[4.2,4.2,5.6,5.6],[18.4,18.4,19.8,19.8],[1,12,4,12],[20,12,23,12],[4.2,19.8,5.6,18.4],[18.4,5.6,19.8,4.2]]
+      .forEach((l, i) => sunCh.push(React.createElement('line', { key: 'l' + i, x1: l[0], y1: l[1], x2: l[2], y2: l[3] })));
+    const themeIconEl = s.theme === 'dark' ? mk(sunCh) : moon;
+
+    const totkCat = {
+      game: '王國之淚', en: 'Tears of the Kingdom',
+      desc: '《薩爾達傳說：王國之淚》技巧與 Glitch 攻略。分類涵蓋虛化、儲存、左納烏裝置、跨檔繼承、速通錯傳等。每篇都標註適用版本與難度。',
+      tip: '王國之淚常見版本：NS1 的 1.2.1、NS2 的 1.4.3。許多 glitch 只在特定版本可用,操作前務必確認頁面標註的適用版本。',
+      cats: [
+        { no: '01', title: '虛化裝備 Void Dip / DI', desc: '虛空次元歸來的虛化裝備：無限耐久、複製、無限彈簧火箭盾。', meta: '2 篇 · 1.2.1～', status: 'active', onClick: () => this.go('article') },
+        { no: '02', title: '餘料儲存 Fuse Storage', desc: '將餘料狀態儲存以達成各種效果的基礎技巧。', meta: '1 篇 · ～1.4.3', status: 'active', onClick: () => this.goVideosTag('儲存類') },
+        { no: '03', title: '跨檔繼承 PSLOT', desc: '永久跨檔繼承（Permanent Save Load Object Transfer）。', meta: '敬請期待', status: 'wip' },
+        { no: '04', title: '速通 / 錯傳', desc: '序章大師劍（MsgNotFound）、指標錯傳（Index Wrong Warp）等。', meta: '敬請期待', status: 'wip' },
+        { no: '05', title: '左納烏裝置 Zonai', desc: '口袋火箭、GAS、ARAZ、米涅魯相關技巧。', meta: '敬請期待', status: 'wip' },
+        { no: '06', title: '並列 Zuggle', desc: '再同步並列、米涅魯地圖並列等並列技巧。', meta: '敬請期待', status: 'wip' },
+      ],
+    };
+    const botwCat = {
+      game: '曠野之息', en: 'Breath of the Wild',
+      desc: '《薩爾達傳說：曠野之息》技巧與 Glitch 攻略。必殺技、盾擋、移動位移等技巧分類整理。',
+      tip: '曠野之息常見版本：NS1 的 1.6.0、NS2 的 1.8.2 / 1.9.0。操作前請確認頁面標註的適用版本。',
+      cats: [
+        { no: '01', title: '過場必殺劍 Obliterator', desc: '過場動畫觸發的一擊必殺劍 (Cutscene One-Hit Obliterator)。', meta: '番外58 · NS2', status: 'active', onClick: () => this.goVideosTag('必殺技類') },
+        { no: '02', title: '盾擋類 Shield', desc: '轉向盾擋重置 Turnaround SBR 等盾擋相關技巧。', meta: '番外10.5 · NS2', status: 'active', onClick: () => this.goVideosTag('盾擋類') },
+        { no: '03', title: '版本比較', desc: 'NS1 vs NS2 必看技巧與版本差異整理。', meta: 'ED01 / ED02', status: 'active', onClick: () => this.goVideosTag('版本比較') },
+      ],
+    };
+    const cat = s.catKey === 'botw' ? botwCat : totkCat;
+    const catCats = cat.cats.map(c => ({
+      ...c,
+      badge: c.status === 'active' ? '進行中' : '建置中',
+      badgeStyle: c.status === 'active'
+        ? { fontSize: '12px', fontWeight: 600, padding: '3px 10px', borderRadius: '999px', background: 'rgba(201,100,66,0.13)', color: 'var(--accent)' }
+        : { fontSize: '12px', fontWeight: 500, padding: '3px 10px', borderRadius: '999px', background: 'var(--sand)', color: 'var(--muted)' },
+      cardStyle: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px 24px 22px', display: 'flex', flexDirection: 'column', gap: '10px', height: '100%', boxSizing: 'border-box', cursor: c.onClick ? 'pointer' : 'default' },
+    }));
+
+    const featured = [
+      { id: 'MWBVJsLTA0c', title: '虛化裝備 Void Dip & DI', meta: '王國之淚 · 虛化類' },
+      { id: 'AdwFCk77JsE', title: '永久跨檔繼承 PSLOT', meta: '王國之淚 · 跨檔繼承' },
+      { id: 'siBcEvxr1Y0', title: '過場必殺劍 Obliterator', meta: '曠野之息 · 必殺技類' },
+      { id: 'MzbtzsGB34A', title: '餘料儲存 Fuse Storage', meta: '王國之淚 · 儲存類' },
+      { id: 'HmocgDZFVdk', title: '序章大師劍 MsgNotFound', meta: '王國之淚 · 速通/錯傳' },
+      { id: 'h7MpbgUvizw', title: '無限／究極口袋火箭', meta: '王國之淚 · 左納烏裝置' },
+    ];
+    const latest = [
+      { title: '虛化裝備 Void Dip & DI', sub: '王國之淚 · 虛化類', ver: '1.2.1～', onClick: () => this.go('article') },
+      { title: '餘料儲存 Fuse Storage', sub: '王國之淚 · 儲存類', ver: '～1.4.3', onClick: () => this.goVideosTag('儲存類') },
+      { title: '過場必殺劍 Obliterator', sub: '曠野之息 · 必殺技類', ver: 'NS2', onClick: () => this.goVideosTag('必殺技類') },
+      { title: '無限口袋火箭 Pocket Rockets', sub: '王國之淚 · 左納烏裝置', ver: '1.1.2～', onClick: () => this.goVideosTag('左納烏裝置') },
+    ];
+
+    const totk = [
+      { id: 'AdwFCk77JsE', title: '永久跨檔繼承 PSLOT', meta: '番外20.5 · All Versions', game: '王國之淚', cat: '跨檔繼承' },
+      { id: 'HmocgDZFVdk', title: '序章大師劍 MsgNotFound', meta: '番外16 · 1.4.3｜NS2', game: '王國之淚', cat: '速通/錯傳' },
+      { id: 'MWBVJsLTA0c', title: '虛化裝備 Void Dip & DI', meta: '番外21 · 1.2.1～', game: '王國之淚', cat: '虛化類' },
+      { id: 'MzbtzsGB34A', title: '餘料儲存 Fuse Storage', meta: '不廢話02 · ～1.4.3', game: '王國之淚', cat: '儲存類' },
+      { id: 'h7MpbgUvizw', title: '無限／究極口袋火箭', meta: '番外22 · 1.1.2～', game: '王國之淚', cat: '左納烏裝置' },
+      { id: 'WLSjvOTQXO8', title: '怪持虛化口袋火箭 Enemy DI IPR', meta: '番外23（會員）· 1.4.3｜NS2', game: '王國之淚', cat: '虛化類' },
+      { id: '7DS_ZmOVuR8', title: 'IPR 與 LSW 的挑戰', meta: '番外23 · 1.4.3｜NS2', game: '王國之淚', cat: '左納烏裝置' },
+      { id: 'aELlly95zCk', title: '再同步並列 Swap Resync Zuggle', meta: '番外20 · 全屬性大師劍', game: '王國之淚', cat: '並列' },
+      { id: 'eXGglGGWwO4', title: '恆動餘料左納烏 GAS', meta: '不廢話23 · 全版本', game: '王國之淚', cat: '左納烏裝置' },
+      { id: 'kxGm05yjyM8', title: '暴打彈簧 ARAZ', meta: '不廢話22 · 1.2.X', game: '王國之淚', cat: '左納烏裝置' },
+      { id: '41ARX3F0I9M', title: '米涅魯糾纏 Mineru FE', meta: '不廢話03 · 1.4.0～', game: '王國之淚', cat: '左納烏裝置' },
+      { id: 'zaSkPSgXmn8', title: '米涅魯地圖並列 Mineru Map Zuggle', meta: '不廢話23 · 全版本', game: '王國之淚', cat: '並列' },
+      { id: 'lcNTPBSBiEY', title: '實體賢者 Physical Sages', meta: '番外19 · All Versions', game: '王國之淚', cat: '左納烏裝置' },
+      { id: '0MBy9e3FQu0', title: 'CAIZ 幹走神廟物件', meta: '番外11.5 · 1.2.0～1.2.1', game: '王國之淚', cat: '速通/錯傳' },
+      { id: 'wd8nhzBJoLg', title: '乾坤返 Recall Locked PFD', meta: '番外18 · 1.0.0 神廟速通', game: '王國之淚', cat: '速通/錯傳' },
+      { id: 'TSQ2JGjfVKs', title: '3 分鐘神廟速通世界紀錄', meta: '番外18.5 · 1.0.0', game: '王國之淚', cat: '速通/錯傳' },
+      { id: '7HeUApBT2Ng', title: 'NS1(1.2.1) vs NS2(1.4.3) 差異', meta: '版本比較', game: '王國之淚', cat: '版本比較' },
+    ];
+    const botw = [
+      { id: 'siBcEvxr1Y0', title: '過場必殺劍 Obliterator', meta: '番外58 · NS2', game: '曠野之息', cat: '必殺技類' },
+      { id: '5-h3TNlXaLk', title: '轉向盾擋重置 Turnaround SBR', meta: '番外10.5 · NS2', game: '曠野之息', cat: '盾擋類' },
+      { id: 'taDfBSyTdU0', title: 'NS1(1.6.0) vs NS2 差異', meta: '版本比較', game: '曠野之息', cat: '版本比較' },
+      { id: 'Zpc6r4T8Wwk', title: 'NS2 必看技巧（下）', meta: 'ED02', game: '曠野之息', cat: '版本比較' },
+      { id: 'K5JjZHBTC9c', title: 'NS2 必看小知識（上）', meta: 'ED01', game: '曠野之息', cat: '版本比較' },
+    ];
+    const all = [...totk, ...botw];
+    const q = s.search.trim().toLowerCase();
+    const shown = all.filter(v => (!s.tag || v.game === s.tag || v.cat === s.tag) && (!q || (v.title + ' ' + v.meta).toLowerCase().includes(q)));
+    const grouped = !s.tag && q === '';
+    const flat = !grouped;
+    const empty = flat && shown.length === 0;
+
+    const CHIP = (active) => ({ fontSize: '14px', padding: '7px 15px', borderRadius: '999px', cursor: 'pointer', border: '1px solid var(--border-strong)', background: active ? 'var(--brand)' : 'var(--surface)', color: active ? '#faf9f5' : 'var(--text)' });
+    const chips = ['王國之淚', '曠野之息', '虛化類', '儲存類', '左納烏裝置', '跨檔繼承', '速通/錯傳', '必殺技類', '並列', '版本比較'];
+    const filterChips = [{ label: '全部', tag: null }, ...chips.map(c => ({ label: c, tag: c }))].map(c => ({
+      label: c.label,
+      onClick: () => (c.tag ? this.goVideosTag(c.tag) : this.setState({ tag: null })),
+      style: CHIP(s.tag === c.tag),
+    }));
+
+    const tagGroups = [
+      { label: '遊戲 · Game', tags: ['王國之淚', '曠野之息'] },
+      { label: '分類 · Category', tags: ['虛化類', '儲存類', '左納烏裝置', '跨檔繼承', '速通/錯傳', '必殺技類', '盾擋類', '並列'] },
+      { label: '其他 · Misc', tags: ['版本比較'] },
+    ].map(g => ({ label: g.label, tags: g.tags.map(t => ({ label: t, onClick: () => this.goVideosTag(t) })) }));
+
+    const quickNav = [
+      { no: '01', title: '曠野之息 BotW', desc: '必殺技、盾擋、移動位移等技巧分類整理。', onClick: () => this.go('category', 'botw') },
+      { no: '02', title: '王國之淚 TotK', desc: '虛化、儲存、左納烏裝置、跨檔繼承、速通錯傳。', onClick: () => this.go('category', 'totk') },
+      { no: '03', title: '影片總覽', desc: '所有攻略影片的縮圖牆,一頁瀏覽、直接點開。', onClick: () => this.go('videos') },
+      { no: '04', title: '標籤索引', desc: '依類型、難度、版本交叉檢索每篇攻略。', onClick: () => this.go('tags') },
+    ];
+
+    return {
+      theme: s.theme, themeIconEl, toggleTheme: () => this.toggleTheme(),
+      isHome: s.route === 'home', isCategory: s.route === 'category', isArticle: s.route === 'article', isVideos: s.route === 'videos', isTags: s.route === 'tags',
+      navItems,
+      goHome: () => this.go('home'), goTags: () => this.go('tags'), goVideos: () => this.go('videos'), goTotk: () => this.go('category', 'totk'), goBotw: () => this.go('category', 'botw'),
+      cat, catCats, featured, latest, quickNav,
+      totk, botw, shown, grouped, flat, empty, count: shown.length,
+      search: s.search, onSearch: (e) => this.setState({ search: e.target.value }), onSearchGo: (e) => this.setState({ search: e.target.value, route: 'videos', tag: null }),
+      filterChips, tagGroups,
+    };
+  }
+}
+</script>
+</body>
+</html>
