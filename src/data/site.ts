@@ -35,8 +35,8 @@ export interface LatestItem {
 }
 export const latest: LatestItem[] = [
   { title: "虛化裝備 Void Dip & DI", sub: "王國之淚 · 虛化類", ver: "1.2.1～", path: "/article/void-dip-di" },
-  { title: "餘料儲存 Fuse Storage", sub: "王國之淚 · 儲存類", ver: "～1.4.3", path: "/videos?tag=儲存類" },
-  { title: "過場必殺劍 Obliterator", sub: "曠野之息 · 必殺技類", ver: "NS2", path: "/videos?tag=必殺技類" },
+  { title: "餘料儲存 Fuse Storage", sub: "王國之淚 · 儲存類", ver: "～1.4.3", path: "/article/fuse-storage" },
+  { title: "過場必殺劍 Obliterator", sub: "曠野之息 · 必殺技類", ver: "NS2", path: "/article/cutscene-obliterator" },
   { title: "無限口袋火箭 Pocket Rockets", sub: "王國之淚 · 左納烏裝置", ver: "1.1.2～", path: "/videos?tag=左納烏裝置" },
 ];
 
