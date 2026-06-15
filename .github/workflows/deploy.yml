@@ -25,7 +25,9 @@ jobs:
 
       - name: 建置 Astro 站台
         uses: withastro/action@v3
-        # 預設讀 package.json 的 build 腳本，輸出 ./dist，並自動上傳為 Pages artifact
+        with:
+          node-version: 22 # Astro 6 需 Node >=22.12，action 預設的 20 會失敗
+        # 讀 package.json 的 build 腳本，輸出 ./dist，並自動上傳為 Pages artifact
 
   deploy:
     needs: build
