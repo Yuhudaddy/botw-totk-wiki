@@ -1,4 +1,0 @@
-# 曠野・王國攻略 Wiki — 建置相依套件
-mkdocs-material>=9.5.0
-# 繁體中文搜尋分詞（Material 偵測到即自動啟用）
-jieba>=0.42.1

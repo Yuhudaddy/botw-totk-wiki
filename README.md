@@ -2,44 +2,68 @@
 
 《薩爾達傳說：曠野之息 (BotW)》／《王國之淚 (TotK)》技巧與 Glitch 攻略，整理自 YouTube 頻道 [@zb_yuhudaddy](https://www.youtube.com/@zb_yuhudaddy)。
 
-- 技術：**MkDocs Material**
+- 技術：**Astro + Tailwind CSS v4 + Content Collections**
 - 語言：繁體中文（台灣）
-- 設計：Claude (Anthropic) 設計語言 — 羊皮紙底 + 赤陶強調
-- 部署：GitHub Actions → `gh-pages` 分支 → GitHub Pages
+- 設計：Claude (Anthropic) 設計語言 — 羊皮紙底 + 赤陶強調，淺／深雙主題
+- 部署：GitHub Actions → GitHub Pages
 
 線上網址：<https://yuhudaddy.github.io/botw-totk-wiki/>
 
 ## 本機預覽
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-mkdocs serve          # http://127.0.0.1:8000
+npm install
+npm run dev          # http://localhost:4321/botw-totk-wiki/
 ```
 
-## 新增內容
+其他指令：
 
-見站內頁面 [如何新增攻略](docs/how-to-add.md)：複製範本、填入影片 ID 與步驟、放進對應資料夾，再到 `mkdocs.yml` 的 `nav` 加入選單。
+```bash
+npm run build        # 產生靜態站到 dist/
+npm run preview      # 本機預覽 build 結果
+```
+
+## 新增一篇攻略
+
+在 `src/content/glitches/` 新增一個 `.md`，frontmatter 填 metadata、內文寫散文：
+
+```markdown
+---
+title: 技巧名稱
+game: totk            # totk 或 botw
+category: 虛化類
+series: 番外21
+difficulty: 進階
+versions: ["1.2.1～"]
+videoId: YouTube_ID
+tags: ["王國之淚", "虛化類"]
+---
+
+## 這是什麼
+...
+
+## 常用步驟
+1. **步驟標題** — 說明
+```
+
+首頁、影片總覽、標籤頁、攻略頁會自動生成，不需手動同步。
 
 ## 專案結構
 
 ```
-mkdocs.yml                  # 站台設定（主題、導覽、外掛）
-requirements.txt            # mkdocs-material、jieba（中文搜尋分詞）
-.github/workflows/deploy.yml# push 到 main 自動部署
-docs/
-├─ index.md                 # 首頁
-├─ assets/stylesheets/extra.css  # Claude 配色（可微調）
-├─ botw/                    # 曠野之息分類
-├─ totk/                    # 王國之淚分類
-├─ videos.md                # 影片總覽卡片牆
-├─ tags.md                  # 標籤索引
-├─ about.md                 # 關於
-└─ how-to-add.md            # 新增攻略教學
+src/
+├─ components/   # Header、Footer、VideoCard、CategoryCard、ArticleAside 等
+├─ content/
+│  └─ glitches/  # 每篇攻略一個 .md
+├─ data/         # 影片清單、分類定義、站台資料
+├─ layouts/      # BaseLayout
+├─ lib/          # url.ts（base path 連結工具）
+├─ pages/        # 路由：index、[game]、article/[...slug]、videos、tags、404
+└─ styles/       # global.css（雙主題 CSS 變數）
+astro.config.mjs # site / base path 設定
 ```
 
-## 部署設定（一次性）
+## 部署
 
-1. 推送本 repo 到 `main`，GitHub Actions 會自動建置並推到 `gh-pages`。
-2. 到 repo **Settings → Pages**，將來源設為 `gh-pages` 分支、根目錄 `/`。
+push 到 `main` → GitHub Actions（`.github/workflows/deploy.yml`）自動建置並部署。
+Repo **Settings → Pages → Source** 須設為「**GitHub Actions**」。
