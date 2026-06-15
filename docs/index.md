@@ -10,10 +10,10 @@ hide:
 《薩爾達傳說：曠野之息 (BotW)》與《王國之淚 (TotK)》的技巧與 Glitch 攻略整理。<br>
 影片與步驟皆出自個人 YouTube 頻道 <a href="https://www.youtube.com/@zb_yuhudaddy">@zb_yuhudaddy</a>。
 </p>
-<p class="hero-actions">
-[瀏覽王國之淚 TotK](totk/index.md){ .md-button .md-button--primary }
-[瀏覽曠野之息 BotW](botw/index.md){ .md-button }
-</p>
+<div class="hero-actions">
+<a href="totk/" class="md-button md-button--primary">瀏覽王國之淚 TotK</a>
+<a href="botw/" class="md-button">瀏覽曠野之息 BotW</a>
+</div>
 </div>
 
 ## 精選技巧
