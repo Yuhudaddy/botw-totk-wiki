@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import VideoCard from "../../components/VideoCard.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
 
@@ -28,7 +27,7 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
 >
   {/* 麵包屑 + 標題 */}
   <section class="border-b border-border-soft">
-    <div class="mx-auto max-w-[780px] px-8 pb-12 pt-[54px]">
+    <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
         <a href={href("/")} class="no-underline text-muted">首頁</a>
         <span>/</span>
@@ -46,22 +45,30 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
     </div>
   </section>
 
-  {/* 步驟說明 */}
-  <article class="mx-auto max-w-[780px] px-8 pb-16 pt-10">
-    <div class="prose-custom">
-      <h2>前置知識</h2>
-      <p>
-        本系列說明「{item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。
-      </p>
+  {/* 主體內容：左右兩欄 + 下方注意事項 */}
+  <article class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
+    {/* 左：操作步驟 ／ 右：原理說明 */}
+    <div class="grid gap-10 md:grid-cols-2">
+      <div class="prose-custom">
+        <h2>操作步驟</h2>
+        <p class="note">⚠️ 步驟待補——Yuda 會陸續整理更新。</p>
+        <ol>
+          <li>（步驟一）</li>
+          <li>（步驟二）</li>
+          <li>（步驟三）</li>
+        </ol>
+      </div>
 
-      <h2>操作步驟</h2>
-      <p class="note">⚠️ 步驟待補——Yuda 會陸續整理更新。</p>
-      <ol>
-        <li>（步驟一）</li>
-        <li>（步驟二）</li>
-        <li>（步驟三）</li>
-      </ol>
+      <div class="prose-custom">
+        <h2>原理說明</h2>
+        <p>
+          本系列說明「{item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。
+        </p>
+      </div>
+    </div>
 
+    {/* 注意事項：跨兩欄 */}
+    <div class="prose-custom mt-10 border-t border-border-soft pt-10">
       <h2>注意事項</h2>
       <ul>
         <li>本頁說明為示意內容，正式攻略步驟尚在整理中。</li>
@@ -138,7 +145,7 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
     font-size: 22px;
     font-weight: 500;
     color: var(--ink);
-    margin-top: 2.4em;
+    margin-top: 0;
     margin-bottom: 0.7em;
     padding-bottom: 0.4em;
     border-bottom: 1px solid var(--border-soft);
