@@ -1,10 +1,10 @@
 // 「常見類型」頁的資料：依遊戲分組的系列／播放清單。
-// playlist 連結待補；補上後卡片即自動變成可點連結。
 export interface TypeItem {
   no: string;
   zh: string;
   en: string;
-  playlist?: string; // YouTube 播放清單連結（待補）
+  playlist?: string;  // YouTube 播放清單連結（待補）
+  videos?: string[];  // 詳細頁底部顯示的 YouTube 影片 ID（待補）
 }
 
 export interface TypeGroup {

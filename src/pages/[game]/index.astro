@@ -1,21 +1,22 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CategoryCard from "../../components/CategoryCard.astro";
-import { href } from "../../lib/url";
+import { href, ytThumb, ytWatch } from "../../lib/url";
 import { gameCategories, type GameKey } from "../../data/categories";
+import youtubeData from "../../data/youtube.json";
 
 export function getStaticPaths() {
-  return (["botw", "totk"] as GameKey[]).map((game) => ({
-    params: { game },
-  }));
+  return (["botw", "totk"] as GameKey[]).map((game) => ({ params: { game } }));
 }
 
 const { game } = Astro.params as { game: GameKey };
 const cat = gameCategories[game];
+const videos = game === "botw" ? youtubeData.botw : youtubeData.totk;
+const PER_PAGE = 10;
+const totalPages = Math.ceil(videos.length / PER_PAGE);
 ---
 
 <BaseLayout title={cat.game} active={game}>
-  {/* 麵包屑 + 標題 */}
+  {/* 標題 */}
   <section class="border-b border-border-soft">
     <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
@@ -23,9 +24,7 @@ const cat = gameCategories[game];
         <span>/</span>
         <span class="text-ink">{cat.game}</span>
       </div>
-      <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
-        {cat.en} · 技巧分類
-      </div>
+      <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{cat.en} · 影片清單</div>
       <h1 class="mb-[18px] mt-3.5 font-serif text-[46px] font-medium leading-[1.14] text-ink">
         {cat.game}
       </h1>
@@ -35,38 +34,112 @@ const cat = gameCategories[game];
 
   {/* 版本提醒 */}
   <section class="mx-auto max-w-[1180px] px-8 pb-3 pt-9">
-    <div
-      class="flex items-start gap-3 rounded-[14px] border border-border-strong bg-surface px-[22px] py-[18px]"
-    >
+    <div class="flex items-start gap-3 rounded-[14px] border border-border-strong bg-surface px-[22px] py-[18px]">
       <span class="mt-px flex-none text-accent">
-        <svg
-          viewBox="0 0 24 24"
-          width="18"
-          height="18"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3 L22 20 L2 20 Z"></path>
           <line x1="12" y1="10" x2="12" y2="14"></line>
           <circle cx="12" cy="17.4" r="0.6" fill="currentColor"></circle>
         </svg>
       </span>
       <div>
-        <div class="mb-[5px] text-[11px] font-bold uppercase tracking-[1.2px] text-accent">
-          版本提醒 · NOTE
-        </div>
+        <div class="mb-[5px] text-[11px] font-bold uppercase tracking-[1.2px] text-accent">版本提醒 · NOTE</div>
         <p class="text-sm leading-[1.6] text-text">{cat.tip}</p>
       </div>
     </div>
   </section>
 
-  {/* 分類網格 */}
-  <section class="mx-auto max-w-[1180px] px-8 pb-20 pt-[30px]">
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-[18px]">
-      {cat.cats.map((item) => <CategoryCard item={item} />)}
+  {/* 影片列表 */}
+  <section class="mx-auto max-w-[1180px] px-8 pb-20 pt-6">
+    <div class="mb-4 flex items-center justify-between">
+      <span class="text-[13px] text-muted">
+        共 <span class="font-medium text-ink">{videos.length}</span> 部影片
+      </span>
+      <span id="page-label" class="text-[13px] text-muted">
+        第 1 頁，共 {totalPages} 頁
+      </span>
     </div>
+
+    <div id="video-list">
+      {
+        videos.map((v, i) => (
+          <a
+            href={ytWatch(v.id)}
+            target="_blank"
+            rel="noopener"
+            data-index={i}
+            class="video-row flex cursor-pointer items-center gap-4 border-b border-border-soft py-[14px] no-underline transition-colors hover:bg-surface"
+          >
+            <img
+              src={ytThumb(v.id)}
+              alt={v.title}
+              loading="lazy"
+              class="h-[79px] w-[140px] flex-none rounded-lg bg-sand object-cover"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="line-clamp-2 font-serif text-[17px] font-medium leading-[1.3] text-ink">
+                {v.title}
+              </div>
+              <div class="mt-1 text-[13px] text-muted">{v.meta}</div>
+            </div>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="flex-none text-muted">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        ))
+      }
+    </div>
+
+    {totalPages > 1 && (
+      <div class="mt-8 flex items-center justify-between gap-4">
+        <button
+          id="prev-btn"
+          type="button"
+          class="rounded-[10px] border border-border-strong bg-surface px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          ← 上一頁
+        </button>
+        <span id="page-info" class="text-sm text-muted"></span>
+        <button
+          id="next-btn"
+          type="button"
+          class="rounded-[10px] border border-border-strong bg-surface px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          下一頁 →
+        </button>
+      </div>
+    )}
   </section>
 </BaseLayout>
+
+<script define:vars={{ total: videos.length, PER_PAGE }}>
+  (function () {
+    const rows = Array.from(document.querySelectorAll('.video-row'));
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageInfo = document.getElementById('page-info');
+    const pageLabel = document.getElementById('page-label');
+    const totalPages = Math.ceil(total / PER_PAGE);
+    let page = 1;
+
+    function render() {
+      const start = (page - 1) * PER_PAGE;
+      const end = start + PER_PAGE;
+      rows.forEach(function (r, i) {
+        r.style.display = i >= start && i < end ? '' : 'none';
+      });
+      if (prevBtn) prevBtn.disabled = page === 1;
+      if (nextBtn) nextBtn.disabled = page === totalPages;
+      const label = '第 ' + page + ' 頁，共 ' + totalPages + ' 頁';
+      if (pageInfo) pageInfo.textContent = label;
+      if (pageLabel) pageLabel.textContent = label;
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { if (page > 1) { page--; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+    if (nextBtn) nextBtn.addEventListener('click', function () { if (page < totalPages) { page++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+
+    render();
+  })();
+</script>

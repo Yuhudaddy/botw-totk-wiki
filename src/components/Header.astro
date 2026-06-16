@@ -8,6 +8,7 @@ interface Props {
   active?: string;
 }
 const { active = "" } = Astro.props;
+const videosUrl = href("/videos");
 ---
 
 <header class="sticky top-0 z-50 border-b border-border-soft bg-bg">
@@ -40,25 +41,38 @@ const { active = "" } = Astro.props;
     </nav>
 
     <div class="ml-auto flex items-center gap-2.5">
-      <a
-        href={href("/tags")}
-        class="r-navsearch flex w-[300px] items-center gap-2 rounded-[10px] border border-border-strong bg-surface px-3.5 py-2 text-sm text-muted no-underline transition-colors hover:border-brand"
+      <div
+        class="r-navsearch relative flex w-[300px] items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand"
+        data-videos-url={videosUrl}
       >
-        <svg
-          viewBox="0 0 24 24"
-          width="15"
-          height="15"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+        <input
+          id="nav-search"
+          type="text"
+          placeholder="搜尋技巧…"
+          autocomplete="off"
+          class="w-full bg-transparent py-2 pl-3.5 pr-1 text-sm text-ink outline-none placeholder:text-muted"
+        />
+        <button
+          id="nav-search-btn"
+          type="button"
+          aria-label="搜尋"
+          class="flex flex-none cursor-pointer items-center px-3 py-2 text-muted transition-colors hover:text-brand"
         >
-          <circle cx="11" cy="11" r="7"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        搜尋技巧…
-      </a>
+          <svg
+            viewBox="0 0 24 24"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
       <ThemeToggle />
     </div>
   </div>
@@ -77,3 +91,24 @@ const { active = "" } = Astro.props;
     }
   }
 </style>
+
+<script is:inline>
+  (function () {
+    var container = document.querySelector('[data-videos-url]');
+    var input = document.getElementById('nav-search');
+    var btn = document.getElementById('nav-search-btn');
+    if (!container || !input || !btn) return;
+    var videosUrl = container.getAttribute('data-videos-url');
+
+    function go() {
+      var q = input.value.trim();
+      if (!q) return;
+      window.location.href = videosUrl + '?search=' + encodeURIComponent(q);
+    }
+
+    btn.addEventListener('click', go);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') go();
+    });
+  })();
+</script>

@@ -24,7 +24,7 @@ import { typeGroups } from "../data/types";
         常見類型
       </h1>
       <p class="max-w-[62ch] text-lg leading-[1.65] text-text">
-        依系列瀏覽頻道內容——從風彈、轉存格到神廟特解與主線任務。各系列陸續補上對應的影片清單與攻略。
+        依系列瀏覽頻道內容——從風彈、轉存格到神廟特解與主線任務。各系列陸續補上對應的步驟說明與影片。
       </p>
     </div>
   </section>
@@ -44,45 +44,28 @@ import { typeGroups } from "../data/types";
             href={href(`/${group.game}`)}
             class="whitespace-nowrap text-sm text-accent no-underline"
           >
-            技巧分類 →
+            全部影片 →
           </a>
         </div>
 
         <div class="grid grid-cols-[repeat(auto-fill,minmax(248px,1fr))] gap-[18px]">
-          {group.items.map((item) => {
-            const inner = (
-              <>
-                <div class="flex items-center justify-between">
-                  <span class="font-mono text-[13px] text-accent">{item.no}</span>
-                  {item.playlist ? (
-                    <span class="text-[12px] text-muted group-hover:text-accent">播放清單 →</span>
-                  ) : (
-                    <span class="rounded-full bg-mono-bg px-2 py-[2px] font-mono text-[11px] text-muted">
-                      敬請期待
-                    </span>
-                  )}
-                </div>
-                <div class="mt-3 font-serif text-[21px] font-medium leading-[1.25] text-ink">
-                  {item.zh}
-                </div>
-                <div class="mt-1 text-[13px] text-muted">{item.en}</div>
-              </>
-            );
-            const cls =
-              "group flex h-full flex-col rounded-2xl border border-border-soft bg-surface px-[22px] py-5 no-underline transition-colors";
-            return item.playlist ? (
-              <a
-                href={item.playlist}
-                target="_blank"
-                rel="noopener"
-                class={`${cls} hover:border-brand`}
-              >
-                {inner}
-              </a>
-            ) : (
-              <div class={cls}>{inner}</div>
-            );
-          })}
+          {group.items.map((item) => (
+            <a
+              href={href(`/types/${group.game}-${item.no}`)}
+              class="group flex h-full flex-col rounded-2xl border border-border-soft bg-surface px-[22px] py-5 no-underline transition-colors hover:border-brand"
+            >
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[13px] text-accent">{item.no}</span>
+                <span class="text-[12px] text-muted transition-colors group-hover:text-accent">
+                  了解更多 →
+                </span>
+              </div>
+              <div class="mt-3 font-serif text-[21px] font-medium leading-[1.25] text-ink">
+                {item.zh}
+              </div>
+              <div class="mt-1 text-[13px] text-muted">{item.en}</div>
+            </a>
+          ))}
         </div>
       </section>
     ))

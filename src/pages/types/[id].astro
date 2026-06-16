@@ -1,0 +1,166 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import VideoCard from "../../components/VideoCard.astro";
+import { href, ytThumb, ytWatch } from "../../lib/url";
+import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
+
+export function getStaticPaths() {
+  const paths: { params: { id: string }; props: { group: TypeGroup; item: TypeItem } }[] = [];
+  for (const group of typeGroups) {
+    for (const item of group.items) {
+      paths.push({
+        params: { id: `${group.game}-${item.no}` },
+        props: { group, item },
+      });
+    }
+  }
+  return paths;
+}
+
+const { group, item } = Astro.props;
+const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
+---
+
+<BaseLayout
+  title={`${item.zh} · ${gameLabel}`}
+  description={`${item.zh}（${item.en}）攻略說明，${gameLabel}系列。`}
+  active="types"
+>
+  {/* 麵包屑 + 標題 */}
+  <section class="border-b border-border-soft">
+    <div class="mx-auto max-w-[780px] px-8 pb-12 pt-[54px]">
+      <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
+        <a href={href("/")} class="no-underline text-muted">首頁</a>
+        <span>/</span>
+        <a href={href("/types")} class="no-underline text-muted">常見類型</a>
+        <span>/</span>
+        <span class="text-ink">{item.zh}</span>
+      </div>
+      <div class="mb-2 flex items-center gap-2.5">
+        <span class="font-mono text-[13px] text-accent">{group.en} · {item.no}</span>
+      </div>
+      <h1 class="mb-[18px] font-serif text-[46px] font-medium leading-[1.12] text-ink">
+        {item.zh}
+      </h1>
+      <p class="text-[17px] text-muted">{item.en}</p>
+    </div>
+  </section>
+
+  {/* 步驟說明 */}
+  <article class="mx-auto max-w-[780px] px-8 pb-16 pt-10">
+    <div class="prose-custom">
+      <h2>前置知識</h2>
+      <p>
+        本系列說明「{item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。
+      </p>
+
+      <h2>操作步驟</h2>
+      <p class="note">⚠️ 步驟待補——Yuda 會陸續整理更新。</p>
+      <ol>
+        <li>（步驟一）</li>
+        <li>（步驟二）</li>
+        <li>（步驟三）</li>
+      </ol>
+
+      <h2>注意事項</h2>
+      <ul>
+        <li>本頁說明為示意內容，正式攻略步驟尚在整理中。</li>
+        <li>如有疑問，歡迎前往 YouTube 頻道留言詢問。</li>
+      </ul>
+    </div>
+  </article>
+
+  {/* 相關影片 */}
+  {item.videos && item.videos.length > 0 && (
+    <section class="border-t border-border-soft bg-surface">
+      <div class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
+        <div class="mb-6">
+          <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+            相關影片 · Videos
+          </div>
+          <h2 class="mt-2 font-serif text-[26px] font-medium text-ink">
+            {item.zh} 相關影片
+          </h2>
+        </div>
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
+          {item.videos.map((vid) => (
+            <a
+              href={ytWatch(vid)}
+              target="_blank"
+              rel="noopener"
+              class="group block overflow-hidden rounded-2xl border border-border-soft bg-bg no-underline transition-colors hover:border-brand"
+            >
+              <div class="relative leading-[0]">
+                <img
+                  src={ytThumb(vid)}
+                  alt=""
+                  loading="lazy"
+                  class="aspect-video w-full bg-sand object-cover"
+                />
+                <span class="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/75 px-2 py-1 text-xs text-white">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="9" height="9">
+                    <polygon points="6,4 20,12 6,20"></polygon>
+                  </svg>
+                  YouTube
+                </span>
+              </div>
+              <div class="p-4">
+                <div class="font-serif text-[16px] font-medium leading-snug text-ink">
+                  {item.zh} 相關影片
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* 無影片時的佔位 */}
+  {(!item.videos || item.videos.length === 0) && (
+    <section class="border-t border-border-soft bg-surface">
+      <div class="mx-auto max-w-[1180px] px-8 py-12">
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">相關影片 · Videos</div>
+        <p class="mt-3 text-[15px] text-muted">影片整理中，敬請期待。</p>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .prose-custom {
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 16px;
+  }
+  .prose-custom h2 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-top: 2.4em;
+    margin-bottom: 0.7em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .prose-custom p,
+  .prose-custom ul,
+  .prose-custom ol {
+    margin-bottom: 1.1em;
+  }
+  .prose-custom ul,
+  .prose-custom ol {
+    padding-left: 1.6em;
+  }
+  .prose-custom li {
+    margin-bottom: 0.4em;
+  }
+  .prose-custom .note {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>

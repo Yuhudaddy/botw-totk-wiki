@@ -1,17 +1,43 @@
 {
   "featured": [
-    { "id": "MWBVJsLTA0c", "title": "虛化裝備 Void Dip & DI", "meta": "王國之淚 · 虛化類" },
-    { "id": "AdwFCk77JsE", "title": "永久跨檔繼承 PSLOT", "meta": "王國之淚 · 跨檔繼承" },
-    { "id": "siBcEvxr1Y0", "title": "過場必殺劍 Obliterator", "meta": "曠野之息 · 必殺技類" },
-    { "id": "MzbtzsGB34A", "title": "餘料儲存 Fuse Storage", "meta": "王國之淚 · 儲存類" },
-    { "id": "HmocgDZFVdk", "title": "序章大師劍 MsgNotFound", "meta": "王國之淚 · 速通/錯傳" },
-    { "id": "h7MpbgUvizw", "title": "無限／究極口袋火箭", "meta": "王國之淚 · 左納烏裝置" }
+    { "id": "MWBVJsLTA0c", "title": "虛化裝備 Void Dip & DI", "meta": "王國之淚 · 虛化類", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "AdwFCk77JsE", "title": "永久跨檔繼承 PSLOT", "meta": "王國之淚 · 跨檔繼承", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "siBcEvxr1Y0", "title": "過場必殺劍 Obliterator", "meta": "曠野之息 · 必殺技類", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "MzbtzsGB34A", "title": "餘料儲存 Fuse Storage", "meta": "王國之淚 · 儲存類", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "HmocgDZFVdk", "title": "序章大師劍 MsgNotFound", "meta": "王國之淚 · 速通/錯傳", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "h7MpbgUvizw", "title": "無限／究極口袋火箭", "meta": "王國之淚 · 左納烏裝置", "publishedAt": "2024-01-01T00:00:00Z" }
   ],
   "latest": [
-    { "id": "MWBVJsLTA0c", "title": "虛化裝備 Void Dip & DI", "publishedAt": "2026-06-16T00:00:00Z" },
-    { "id": "MzbtzsGB34A", "title": "餘料儲存 Fuse Storage", "publishedAt": "2026-06-16T00:00:00Z" },
-    { "id": "siBcEvxr1Y0", "title": "過場必殺劍 Obliterator", "publishedAt": "2026-06-16T00:00:00Z" },
-    { "id": "h7MpbgUvizw", "title": "無限／究極口袋火箭", "publishedAt": "2026-06-16T00:00:00Z" }
+    { "id": "MWBVJsLTA0c", "title": "虛化裝備 Void Dip & DI", "meta": "王國之淚 · 虛化類", "publishedAt": "2026-06-16T00:00:00Z" },
+    { "id": "MzbtzsGB34A", "title": "餘料儲存 Fuse Storage", "meta": "王國之淚 · 儲存類", "publishedAt": "2026-06-16T00:00:00Z" },
+    { "id": "siBcEvxr1Y0", "title": "過場必殺劍 Obliterator", "meta": "曠野之息 · 必殺技類", "publishedAt": "2026-06-16T00:00:00Z" },
+    { "id": "h7MpbgUvizw", "title": "無限／究極口袋火箭", "meta": "王國之淚 · 左納烏裝置", "publishedAt": "2026-06-16T00:00:00Z" }
+  ],
+  "botw": [
+    { "id": "siBcEvxr1Y0", "title": "過場必殺劍 Obliterator", "meta": "番外58 · NS2", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "5-h3TNlXaLk", "title": "轉向盾擋重置 Turnaround SBR", "meta": "番外10.5 · NS2", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "taDfBSyTdU0", "title": "NS1(1.6.0) vs NS2 差異", "meta": "版本比較", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "Zpc6r4T8Wwk", "title": "NS2 必看技巧（下）", "meta": "ED02", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "K5JjZHBTC9c", "title": "NS2 必看小知識（上）", "meta": "ED01", "publishedAt": "2024-01-01T00:00:00Z" }
+  ],
+  "totk": [
+    { "id": "AdwFCk77JsE", "title": "永久跨檔繼承 PSLOT", "meta": "番外20.5", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "HmocgDZFVdk", "title": "序章大師劍 MsgNotFound", "meta": "番外16", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "MWBVJsLTA0c", "title": "虛化裝備 Void Dip & DI", "meta": "番外21", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "MzbtzsGB34A", "title": "餘料儲存 Fuse Storage", "meta": "不廢話02", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "h7MpbgUvizw", "title": "無限／究極口袋火箭", "meta": "番外22", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "WLSjvOTQXO8", "title": "怪持虛化口袋火箭 Enemy DI IPR", "meta": "番外23", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "7DS_ZmOVuR8", "title": "IPR 與 LSW 的挑戰", "meta": "番外23", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "aELlly95zCk", "title": "再同步並列 Swap Resync Zuggle", "meta": "番外20", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "eXGglGGWwO4", "title": "恆動餘料左納烏 GAS", "meta": "不廢話23", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "kxGm05yjyM8", "title": "暴打彈簧 ARAZ", "meta": "不廢話22", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "41ARX3F0I9M", "title": "米涅魯糾纏 Mineru FE", "meta": "不廢話03", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "zaSkPSgXmn8", "title": "米涅魯地圖並列 Mineru Map Zuggle", "meta": "不廢話23", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "lcNTPBSBiEY", "title": "實體賢者 Physical Sages", "meta": "番外19", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "0MBy9e3FQu0", "title": "CAIZ 幹走神廟物件", "meta": "番外11.5", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "wd8nhzBJoLg", "title": "乾坤返 Recall Locked PFD", "meta": "番外18", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "TSQ2JGjfVKs", "title": "3 分鐘神廟速通世界紀錄", "meta": "番外18.5", "publishedAt": "2024-01-01T00:00:00Z" },
+    { "id": "7HeUApBT2Ng", "title": "NS1(1.2.1) vs NS2(1.4.3) 差異", "meta": "版本比較", "publishedAt": "2024-01-01T00:00:00Z" }
   ],
   "updatedAt": "2026-06-16T00:00:00Z"
 }
