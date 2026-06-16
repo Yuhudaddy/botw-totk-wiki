@@ -15,30 +15,33 @@ import { featured, latest, quickNav, SITE } from "../data/site";
         <div
           class="mb-[26px] border-b border-border-strong pb-[18px] text-[11px] font-bold uppercase tracking-[2px] text-accent"
         >
-          技巧索引 · The Hyrule Glitch Index
+          技巧索引 · The Technique & Glitch Index
         </div>
         <h1
           class="r-h1 mb-5 font-serif text-[52px] font-medium leading-[1.12] tracking-[-0.01em] text-ink"
         >
-          把每個 Glitch<br />整理成一頁攻略
+          BotW & TotK<br />Yuda的頻道攻略百科
         </h1>
         <p class="mb-[30px] max-w-[46ch] text-lg leading-[1.65] text-text">
-          薩爾達傳說 曠野之息 與 王國之淚 的技巧與 Glitch — 虛化、儲存、左納烏裝置、跨檔繼承、速通錯傳，依分類與版本交叉檢索。全部出自我的 YouTube 頻道 <span
-            class="text-ink">@zb_yuhudaddy</span
+          《薩爾達傳說》曠野之息 與 王國之淚 的技巧與程錯查找網，依分類與版本交叉檢索。來源出自 Yuda 的 YouTube 頻道 <a
+            href={SITE.youtube}
+            target="_blank"
+            rel="noopener"
+            class="font-medium text-accent no-underline hover:underline">@zb_yuhudaddy</a
           >。
         </p>
         <div class="flex flex-wrap gap-3">
           <a
             href={href("/totk")}
-            class="inline-flex items-center rounded-[10px] bg-brand px-[22px] py-3 text-[15px] font-medium text-ivory no-underline shadow-[0_0_0_1px_var(--brand)]"
+            class="inline-flex items-center rounded-[10px] border border-border-strong bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:bg-sand hover:text-brand"
           >
             瀏覽王國之淚 →
           </a>
           <a
             href={href("/botw")}
-            class="inline-flex items-center rounded-[10px] bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline shadow-[0_0_0_1px_var(--border-strong)]"
+            class="inline-flex items-center rounded-[10px] border border-border-strong bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:bg-sand hover:text-brand"
           >
-            瀏覽曠野之息
+            瀏覽曠野之息 →
           </a>
         </div>
       </div>
@@ -77,8 +80,8 @@ import { featured, latest, quickNav, SITE } from "../data/site";
   <section class="mx-auto max-w-[1180px] px-8 py-[72px]">
     <div class="mb-[30px] flex items-end justify-between gap-5">
       <div>
-        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">精選技巧 · Featured</div>
-        <h2 class="mt-3 font-serif text-[34px] font-medium text-ink">最受歡迎的幾招</h2>
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">精選 · Featured</div>
+        <h2 class="mt-3 font-serif text-[34px] font-medium text-ink">最熱門的技巧與程錯</h2>
       </div>
       <a
         href={href("/videos")}
@@ -102,12 +105,16 @@ import { featured, latest, quickNav, SITE } from "../data/site";
           quickNav.map((q) => (
             <a
               href={href(q.path)}
-              class="flex h-full flex-col gap-2.5 rounded-2xl border border-border-soft bg-bg px-6 py-[26px] no-underline"
+              class="group flex h-full flex-col rounded-2xl border border-border-soft bg-bg px-6 py-[26px] no-underline transition-colors hover:border-brand"
             >
-              <span class="font-serif text-[15px] font-medium text-accent">{q.no}</span>
-              <div class="font-serif text-[21px] font-medium text-ink">{q.title}</div>
-              <p class="text-sm leading-[1.6] text-text">{q.desc}</p>
-              <span class="mt-auto text-sm text-accent">前往 →</span>
+              <div class="flex items-baseline gap-2">
+                <span class="font-mono text-[13px] text-accent">{q.no}</span>
+                <span class="text-[13px] text-muted">{q.series}</span>
+              </div>
+              <div class="mt-3 font-serif text-[22px] font-medium leading-[1.3] text-ink">
+                {q.title}
+              </div>
+              <span class="mt-auto pt-4 text-sm text-accent">前往 →</span>
             </a>
           ))
         }

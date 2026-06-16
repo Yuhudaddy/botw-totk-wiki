@@ -6,11 +6,10 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { label: "首頁", path: "/", match: "home" },
+  { label: "影片總覽", path: "/videos", match: "videos" },
   { label: "曠野之息", path: "/botw", match: "botw" },
   { label: "王國之淚", path: "/totk", match: "totk" },
-  { label: "影片總覽", path: "/videos", match: "videos" },
-  { label: "標籤", path: "/tags", match: "tags" },
+  { label: "常見類型", path: "/types", match: "types" },
 ];
 
 export interface FeaturedItem {
@@ -42,15 +41,15 @@ export const latest: LatestItem[] = [
 
 export interface QuickNavItem {
   no: string;
-  title: string;
-  desc: string;
+  series: string; // 小字系列名
+  title: string; // 主標題（問句）
   path: string;
 }
 export const quickNav: QuickNavItem[] = [
-  { no: "01", title: "曠野之息 BotW", desc: "必殺技、盾擋、移動位移等技巧分類整理。", path: "/botw" },
-  { no: "02", title: "王國之淚 TotK", desc: "虛化、儲存、左納烏裝置、跨檔繼承、速通錯傳。", path: "/totk" },
-  { no: "03", title: "影片總覽", desc: "所有攻略影片的縮圖牆，一頁瀏覽、直接點開。", path: "/videos" },
-  { no: "04", title: "標籤索引", desc: "依類型、難度、版本交叉檢索每篇攻略。", path: "/tags" },
+  { no: "01", series: "風彈系列", title: "風彈是 Bug 嗎？", path: "/types" },
+  { no: "02", series: "轉存格系列", title: "救救我的背包！", path: "/types" },
+  { no: "03", series: "萊尼爾系列", title: "打不贏人馬！", path: "/types" },
+  { no: "04", series: "被更新系列", title: "新版不能用了？", path: "/types" },
 ];
 
 export interface TagGroup {

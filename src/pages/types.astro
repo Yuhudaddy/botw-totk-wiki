@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { typeGroups } from "../data/types";
+---
+
+<BaseLayout
+  title="常見類型"
+  description="依系列瀏覽 Yuda 頻道的曠野之息與王國之淚攻略內容。"
+  active="types"
+>
+  {/* 標題 */}
+  <section class="border-b border-border-soft">
+    <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+      <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
+        <a href={href("/")} class="no-underline text-muted">首頁</a>
+        <span>/</span>
+        <span class="text-ink">常見類型</span>
+      </div>
+      <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+        Browse by Series · 系列索引
+      </div>
+      <h1 class="mb-[18px] mt-3.5 font-serif text-[46px] font-medium leading-[1.14] text-ink">
+        常見類型
+      </h1>
+      <p class="max-w-[62ch] text-lg leading-[1.65] text-text">
+        依系列瀏覽頻道內容——從風彈、轉存格到神廟特解與主線任務。各系列陸續補上對應的影片清單與攻略。
+      </p>
+    </div>
+  </section>
+
+  {/* 兩個遊戲分組 */}
+  {
+    typeGroups.map((group) => (
+      <section class="mx-auto max-w-[1180px] px-8 pb-4 pt-[52px] last:pb-20">
+        <div class="mb-[22px] flex items-end justify-between gap-5">
+          <div>
+            <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+              {group.en}
+            </div>
+            <h2 class="mt-2.5 font-serif text-[30px] font-medium text-ink">{group.label}</h2>
+          </div>
+          <a
+            href={href(`/${group.game}`)}
+            class="whitespace-nowrap text-sm text-accent no-underline"
+          >
+            技巧分類 →
+          </a>
+        </div>
+
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(248px,1fr))] gap-[18px]">
+          {group.items.map((item) => {
+            const inner = (
+              <>
+                <div class="flex items-center justify-between">
+                  <span class="font-mono text-[13px] text-accent">{item.no}</span>
+                  {item.playlist ? (
+                    <span class="text-[12px] text-muted group-hover:text-accent">播放清單 →</span>
+                  ) : (
+                    <span class="rounded-full bg-mono-bg px-2 py-[2px] font-mono text-[11px] text-muted">
+                      敬請期待
+                    </span>
+                  )}
+                </div>
+                <div class="mt-3 font-serif text-[21px] font-medium leading-[1.25] text-ink">
+                  {item.zh}
+                </div>
+                <div class="mt-1 text-[13px] text-muted">{item.en}</div>
+              </>
+            );
+            const cls =
+              "group flex h-full flex-col rounded-2xl border border-border-soft bg-surface px-[22px] py-5 no-underline transition-colors";
+            return item.playlist ? (
+              <a
+                href={item.playlist}
+                target="_blank"
+                rel="noopener"
+                class={`${cls} hover:border-brand`}
+              >
+                {inner}
+              </a>
+            ) : (
+              <div class={cls}>{inner}</div>
+            );
+          })}
+        </div>
+      </section>
+    ))
+  }
+</BaseLayout>
