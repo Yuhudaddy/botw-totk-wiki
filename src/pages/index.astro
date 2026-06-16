@@ -2,7 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import VideoCard from "../components/VideoCard.astro";
 import { href } from "../lib/url";
-import { featured, latest, quickNav, SITE } from "../data/site";
+import { latest, quickNav, SITE } from "../data/site";
+import youtubeData from "../data/youtube.json";
+const featured = youtubeData.featured;
 ---
 
 <BaseLayout active="home">

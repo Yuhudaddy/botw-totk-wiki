@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 2 * * *'  # 每天台灣時間 10:00 自動重建
   workflow_dispatch:
 
 permissions:
@@ -23,11 +25,31 @@ jobs:
       - name: 取得原始碼
         uses: actions/checkout@v4
 
-      - name: 建置 Astro 站台
-        uses: withastro/action@v3
+      - name: 設定 Node 22
+        uses: actions/setup-node@v4
         with:
-          node-version: 22 # Astro 6 需 Node >=22.12，action 預設的 20 會失敗
-        # 讀 package.json 的 build 腳本，輸出 ./dist，並自動上傳為 Pages artifact
+          node-version: 22
+          cache: 'npm'
+
+      - name: 安裝依賴
+        run: npm ci
+
+      - name: 抓取 YouTube 熱門影片
+        run: node scripts/fetch-youtube.mjs
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+
+      - name: 建置 Astro 站台
+        run: npm run build
+
+      - name: 設定 GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上傳 Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
   deploy:
     needs: build
