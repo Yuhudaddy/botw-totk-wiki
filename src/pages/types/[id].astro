@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
+import { typeContent } from "../../data/type-content";
 
 export function getStaticPaths() {
   const paths: { params: { id: string }; props: { group: TypeGroup; item: TypeItem } }[] = [];
@@ -17,7 +18,14 @@ export function getStaticPaths() {
 }
 
 const { group, item } = Astro.props;
+const { id } = Astro.params as { id: string };
 const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
+const content = typeContent[id];
+
+// 把 __文字__ 解析成可加底線的片段
+function parseUnderline(text: string) {
+  return text.split("__").map((seg, i) => ({ text: seg, underline: i % 2 === 1 }));
+}
 ---
 
 <BaseLayout
@@ -45,24 +53,61 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
     </div>
   </section>
 
-  {/* 主體內容：左右兩欄 + 下方注意事項 */}
+  {/* 主體：操作步驟（左）／原理說明（右）＋ 注意事項（下） */}
   <article class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
-    {/* 左：操作步驟 ／ 右：原理說明 */}
-    <div class="grid gap-10 md:grid-cols-2">
+    <div class="grid gap-x-12 gap-y-10 md:grid-cols-[1.6fr_1fr]">
+      {/* 左：操作步驟 */}
       <div class="prose-custom">
         <h2>操作步驟</h2>
-        <p class="note">⚠️ 步驟待補——Yuda 會陸續整理更新。</p>
-        <ol>
-          <li>（步驟一）</li>
-          <li>（步驟二）</li>
-          <li>（步驟三）</li>
-        </ol>
+        {content?.methods ? (
+          <div class="method-tabs">
+            <div role="tablist" class="mb-5 flex flex-wrap gap-2">
+              {content.methods.map((m, i) => (
+                <button
+                  type="button"
+                  role="tab"
+                  data-tab={i}
+                  class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium text-text transition-colors hover:border-brand"
+                >
+                  {m.tab}
+                </button>
+              ))}
+            </div>
+            {content.methods.map((m, i) => (
+              <div class="method-panel" data-panel={i} hidden={i !== 0}>
+                <div class="mb-3 inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+                  {m.suit}
+                </div>
+                <ol>
+                  {m.steps.map((s) => (
+                    <li>
+                      {parseUnderline(s).map((seg) =>
+                        seg.underline ? <u>{seg.text}</u> : seg.text
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <p class="note">⚠️ 步驟待補——Yuda 會陸續整理更新。</p>
+            <ol>
+              <li>（步驟一）</li>
+              <li>（步驟二）</li>
+              <li>（步驟三）</li>
+            </ol>
+          </>
+        )}
       </div>
 
+      {/* 右：原理說明 */}
       <div class="prose-custom">
         <h2>原理說明</h2>
         <p>
-          本系列說明「{item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。
+          {content?.principle ??
+            `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`}
         </p>
       </div>
     </div>
@@ -71,14 +116,21 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
     <div class="prose-custom mt-10 border-t border-border-soft pt-10">
       <h2>注意事項</h2>
       <ul>
-        <li>本頁說明為示意內容，正式攻略步驟尚在整理中。</li>
-        <li>如有疑問，歡迎前往 YouTube 頻道留言詢問。</li>
+        {content?.notes ? (
+          content.notes.map((n) => <li>{n}</li>)
+        ) : (
+          <>
+            <li>本頁說明為示意內容，正式攻略步驟尚在整理中。</li>
+            <li>如有疑問，歡迎前往 YouTube 頻道留言詢問。</li>
+          </>
+        )}
       </ul>
+      {content?.closing && <p class="mt-1 text-[15px] text-muted">{content.closing}</p>}
     </div>
   </article>
 
   {/* 相關影片 */}
-  {item.videos && item.videos.length > 0 && (
+  {content?.videos && content.videos.length > 0 ? (
     <section class="border-t border-border-soft bg-surface">
       <div class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
         <div class="mb-6">
@@ -89,42 +141,42 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
             {item.zh} 相關影片
           </h2>
         </div>
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
-          {item.videos.map((vid) => (
+        <div>
+          {content.videos.map((v) => (
             <a
-              href={ytWatch(vid)}
+              href={ytWatch(v.id)}
               target="_blank"
               rel="noopener"
-              class="group block overflow-hidden rounded-2xl border border-border-soft bg-bg no-underline transition-colors hover:border-brand"
+              class="flex cursor-pointer items-center gap-4 border-b border-border-soft py-[14px] no-underline transition-colors hover:bg-bg"
             >
-              <div class="relative leading-[0]">
-                <img
-                  src={ytThumb(vid)}
-                  alt=""
-                  loading="lazy"
-                  class="aspect-video w-full bg-sand object-cover"
-                />
-                <span class="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/75 px-2 py-1 text-xs text-white">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="9" height="9">
+              <img
+                src={ytThumb(v.id)}
+                alt={v.title}
+                loading="lazy"
+                class="h-[79px] w-[140px] flex-none rounded-lg bg-sand object-cover"
+              />
+              <div class="min-w-0 flex-1">
+                <div class="line-clamp-2 font-serif text-[17px] font-medium leading-[1.3] text-ink">
+                  {v.title}
+                </div>
+                <div class="mt-1 flex items-center gap-1.5 text-[13px] text-muted">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
                     <polygon points="6,4 20,12 6,20"></polygon>
                   </svg>
                   YouTube
-                </span>
-              </div>
-              <div class="p-4">
-                <div class="font-serif text-[16px] font-medium leading-snug text-ink">
-                  {item.zh} 相關影片
                 </div>
               </div>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="flex-none text-muted">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
             </a>
           ))}
         </div>
       </div>
     </section>
-  )}
-
-  {/* 無影片時的佔位 */}
-  {(!item.videos || item.videos.length === 0) && (
+  ) : (
     <section class="border-t border-border-soft bg-surface">
       <div class="mx-auto max-w-[1180px] px-8 py-12">
         <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">相關影片 · Videos</div>
@@ -159,8 +211,24 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
   .prose-custom ol {
     padding-left: 1.6em;
   }
+  .prose-custom ol {
+    list-style: decimal;
+  }
+  .prose-custom ul {
+    list-style: disc;
+  }
+  .prose-custom li::marker {
+    color: var(--accent);
+  }
   .prose-custom li {
-    margin-bottom: 0.4em;
+    margin-bottom: 0.5em;
+  }
+  .prose-custom ol li {
+    padding-left: 0.2em;
+  }
+  .prose-custom u {
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
   }
   .prose-custom .note {
     background: var(--surface);
@@ -170,4 +238,26 @@ const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
     font-size: 14px;
     color: var(--muted);
   }
+
+  /* 分頁啟用樣式 */
+  .method-tab[aria-selected="true"] {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--ivory);
+  }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".method-tabs").forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>(".method-tab"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>(".method-panel"));
+
+    function select(index: number) {
+      tabs.forEach((t, i) => t.setAttribute("aria-selected", String(i === index)));
+      panels.forEach((p, i) => (p.hidden = i !== index));
+    }
+
+    tabs.forEach((tab, i) => tab.addEventListener("click", () => select(i)));
+    select(0);
+  });
+</script>

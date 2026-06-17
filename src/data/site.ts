@@ -83,5 +83,6 @@ export const SITE = {
     "薩爾達傳說 曠野之息(BotW) / 王國之淚(TotK) 技巧與 Glitch 攻略，整理自 Yuhudaddy 的 YouTube 頻道。",
   youtube: "https://www.youtube.com/@zb_yuhudaddy",
   github: "https://github.com/Yuhudaddy",
+  discord: "https://discord.com/invite/5V872Y8",
   author: "Yuhudaddy",
 };
