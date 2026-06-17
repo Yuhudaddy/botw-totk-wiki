@@ -22,9 +22,18 @@ const { id } = Astro.params as { id: string };
 const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
 const content = typeContent[id];
 
-// 把 __文字__ 解析成可加底線的片段
-function parseUnderline(text: string) {
-  return text.split("__").map((seg, i) => ({ text: seg, underline: i % 2 === 1 }));
+// 把 __文字__ 解析成可加橙色的片段
+function parseAccent(text: string) {
+  return text.split("__").map((seg, i) => ({ text: seg, accent: i % 2 === 1 }));
+}
+
+// 把 【人名】 解析成白色底線
+function parseName(text: string) {
+  return text.split("【").map((part, i) => {
+    if (i === 0) return { text: part, name: false };
+    const [name, rest] = part.split("】");
+    return [{ text: name, name: true }, { text: rest, name: false }];
+  }).flat();
 }
 ---
 
@@ -81,8 +90,8 @@ function parseUnderline(text: string) {
                 <ol>
                   {m.steps.map((s) => (
                     <li>
-                      {parseUnderline(s).map((seg) =>
-                        seg.underline ? <u>{seg.text}</u> : seg.text
+                      {parseAccent(s).map((seg) =>
+                        seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                       )}
                     </li>
                   ))}
@@ -106,8 +115,13 @@ function parseUnderline(text: string) {
       <div class="prose-custom">
         <h2>原理說明</h2>
         <p>
-          {content?.principle ??
-            `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`}
+          {content?.principle ? (
+            parseName(content.principle).map((seg) =>
+              seg.name ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u> : seg.text
+            )
+          ) : (
+            `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`
+          )}
         </p>
       </div>
     </div>
@@ -219,6 +233,18 @@ function parseUnderline(text: string) {
   }
   .prose-custom li::marker {
     color: var(--accent);
+  }
+
+  /* 步驟中的橙色文字 */
+  .accent-text {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* 原理說明中的人名白色底線 */
+  .name-underline {
+    text-decoration: underline 2px white;
+    text-underline-offset: 3px;
   }
   .prose-custom li {
     margin-bottom: 0.5em;
