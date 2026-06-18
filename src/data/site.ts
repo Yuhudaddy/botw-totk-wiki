@@ -46,9 +46,9 @@ export interface QuickNavItem {
   path: string;
 }
 export const quickNav: QuickNavItem[] = [
-  { no: "01", series: "風彈系列", title: "風彈是 Bug 嗎？", path: "/types" },
-  { no: "02", series: "轉存格系列", title: "救救我的背包！", path: "/types" },
-  { no: "03", series: "萊尼爾系列", title: "打不贏人馬！", path: "/types" },
+  { no: "01", series: "風彈系列", title: "風彈是 Bug 嗎？", path: "/types/botw-01" },
+  { no: "02", series: "轉存格系列", title: "救救我的背包！", path: "/types/botw-02" },
+  { no: "03", series: "萊尼爾系列", title: "打不贏人馬！", path: "/types/botw-03" },
   { no: "04", series: "被更新系列", title: "新版不能用了？", path: "/types" },
 ];
 

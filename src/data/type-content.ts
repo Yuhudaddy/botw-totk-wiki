@@ -41,7 +41,7 @@ export const typeContent: Record<string, TypeContent> = {
   "botw-01": {
     videoFolder: "botw-windbomb",
     principle:
-      "2019/9/6 【さとう菓子】玩家發展出的擊飛方法。按照曠野之息的物理機制，利用子彈時間降低近距離的物體受炸彈爆風擊碎或是引爆的機率，使第一顆炸彈爆炸的推進力足以推進第二顆炸彈來撞擊林克，同時解除子彈時間讓林克高速飛出去的技巧。",
+      "2019/9/6 【さとう菓子】玩家發展出的擊飛方法，而後由 Yuda, Kleric 等玩家相繼協助改良得穩定且快速的風彈。依曠野之息的物理機制，利用子彈時間降低第二顆炸彈被引爆的機率，使第一顆爆炸時的推進力足以推進第二顆炸彈來撞擊林克，同時解除子彈時間讓林克高速擊飛出去的技巧。",
     methods: [
       {
         tab: "前跳",
@@ -210,7 +210,7 @@ export const typeContent: Record<string, TypeContent> = {
         image: "DC&PE.png",
         sections: [
           {
-            title: "K+1 法（通用版，NS2 版__須關閉 Zelda Notes__）",
+            title: "K+1 法（通用版，NS2 版須關閉 Zelda Notes）",
             steps: [
               "準備 3 頁以上的材料與料理，確保背包內有可以食用或手持的物品",
               "觸發等同於「重要物品數量 + 1」格的轉存格（無效格）",
@@ -220,9 +220,6 @@ export const typeContent: Record<string, TypeContent> = {
               "讀檔後，重複輸入兩次以下指令：「暫停(+)」 ➔ 「按 L 鍵切回背包」 ➔ 「右搖桿往右切換頁籤」 ➔ 「按 B 鍵退出暫停」",
               "在系統存檔頁籤將左搖桿往左推，若游標消失即表示成功觸發無效格",
               "不回標題的情形下直接讀取需要進行同位操作的舊存檔",
-              "讀檔後開啟暫停選單，讓游標停在任意頁籤的「第五格」",
-              "接著依序操作：「右搖桿往左推」 ➔ 「左搖桿往上推」",
-              "確認游標停在一個特殊的星號頁籤，即「脫頁游標」準備就緒",
               "游標停留的位置與借視窗操作的流程請參考番外56進行同位操作",
             ],
           },
@@ -280,6 +277,26 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "oJ8bo2Nltcg", title: "竊取未來的道具回來吧！穿越時空的技能 -《IST》的應用(不廢話系列)", desc: "把未來才會拿到的道具繼承到現在時間點" },
       { id: "W5fmXiwnM3Y", title: "轉存格害我一堆克洛格果實怎麼辦？(不廢話系列 - 通過證也適用)", desc: "流程示範過多「克洛格果實」格位的問題" },
       { id: "Okv-0so2jys", title: "6分鐘$500000｜吃(用)不完的料理與素材 -「新檔訛轉」的可怕！（不廢話系列）", desc: "借用初始檔案來訛轉材料和料理" },
+    ],
+  },
+
+  "botw-03": {
+    videos: [
+      { id: "ChdbQCjaTCo", title: "EX04 - 新手絕對適用！曠野第一隻人馬的「雷獸山『紅髮人馬』」攻略", desc: "最對症下藥的人馬攻略！" },
+      { id: "QLcx-svQpco", title: "技巧03 - 強敵對策・DLC 2最終試煉skip指法（中文解說）" },
+      { id: "QGtFTN75YvQ", title: "技巧12 - 新手專用！初學者人馬對戰詳細攻略（教學中不使用盾反等太難技巧）", desc: "早期最人氣的人馬攻略！" },
+      { id: "yST2Nm11GHA", title: "技巧12.5 - 騎上人馬的5種方法（中文解說）", desc: "為什麼我騎不上去？看這片就對了！" },
+      { id: "D-2S_KcD-3k", title: "技巧18 - 純操作擊倒「大劍人馬」的3種方法 -「馬下迴避」介紹（示範短片/Q&A詳見敘述）" },
+      { id: "esJ4FAg34CI", title: "技巧18(補) - 讓「大劍人馬」看到你都怕（合集解說）", desc: "最多樣化的大劍人馬攻略" },
+      { id: "mNdzGlDqWDQ", title: "番外09 - 限制按鈕的人馬戰(\"No ZL\" or \"No L Stick\" v.s Lynel)" },
+      { id: "W6eb08aCMXQ", title: "番外44 - 人馬站著給你打！「歸祠現象(Shrine Storage)」（中文解說）" },
+      { id: "dXb-jqvf0EU", title: "打不贏「台地人馬(DLC)」？初學者也能輕鬆打贏的懶人打法！（流程解說）" },
+      { id: "0qcXVqlWFgw", title: "2個冰柱就能打爆台地人馬？(Kill Great Plateau Lynel with 2 Cryonis Blocks?)" },
+      { id: "1y_FZb9cWvw", title: "15秒內解決黃金人馬（BoTW: Golden Lynel Speed Kill sub 15 seconds）" },
+      { id: "l5l70AaGxCg", title: "回應21 - 8秒內解決黃金人馬！「騎乘擊點殘留(Permanent Active Hitbox on a Horse/Zero Cycle)」" },
+      { id: "3qPsBJpPiTU", title: "常見的18種人馬戰鬥狂你是哪一種？(18 Types of Lynel Slayers - Which One Are You?)" },
+      { id: "voH5iBOR5kk", title: "番外45.5(進階) - 騎完人馬後的飛雷神！「落馬閃擊(Jump-off Thunderclap Rush)」" },
+      { id: "gva5ZCkuRlE", title: "指法15 -「跳馬盾擋」與「落馬閃擊」(Jump-off Shield Block & Thunderclap Rush, 簡易說明)" },
     ],
   },
 };
