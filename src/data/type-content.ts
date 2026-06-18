@@ -27,14 +27,16 @@ export interface TypeNote {
 }
 
 export interface TypeContent {
-  videoFolder?: string;    // public/type-videos/ 下的子資料夾名稱（影片用）
-  imageFolder?: string;    // public/type-videos/ 下的子資料夾名稱（圖片用）
-  principle?: string;      // 原理說明
-  methods?: TypeMethod[];  // 流程步驟（分頁）
-  notes?: TypeNote[];      // 注意事項
-  closing?: string;        // 注意事項下方的結語
+  videoFolder?: string;     // public/type-videos/ 下的子資料夾名稱（影片用）
+  imageFolder?: string;     // public/type-videos/ 下的子資料夾名稱（圖片用）
+  methodsTitle?: string;    // A 區左欄標題，預設「流程步驟」
+  principleTitle?: string;  // B 區右欄標題，預設「原理說明」
+  principle?: string;       // B 區內文
+  methods?: TypeMethod[];   // A 區流程步驟（分頁）
+  notes?: TypeNote[];       // 注意事項
+  closing?: string;         // 注意事項下方的結語
   faqLink?: { label: string; path: string }; // Q&A 頁面連結（選填）
-  videos?: RelatedVideo[]; // 相關影片
+  videos?: RelatedVideo[];  // 相關影片
 }
 
 export const typeContent: Record<string, TypeContent> = {
@@ -281,6 +283,59 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-03": {
+    methodsTitle:   "攻擊模式",
+    principleTitle: "對應策略",
+    principle:
+      "攻略人馬時有幾個核心原則：保持 ZL 鎖定並維持近距離，可避免引發箭雨，並創造更多完美迴避機會。" +
+      "人馬吐火若點燃草地，可藉由上升氣流升空進入「子彈時間」補輸出。" +
+      "見到白髮人馬仰天大吼，需立刻拉開距離或爆頭打斷範圍大爆炸。" +
+      "持大劍人馬的下砸衝擊波不可只靠一般側跳，需完美迴避；待在其側面或背面時務必提防迴旋斬。" +
+      "成功擊暈人馬騎上去前，可先趁機補幾刀。",
+    methods: [
+      {
+        tab:  "共通",
+        name: "所有武器的人馬皆會使用的攻擊",
+        steps: [
+          "__突進__：收起武器，以四足直接衝撞玩家",
+          "__火球__：往後跳後連續吐出 3 顆火球（草地上吐火可產生上升氣流）",
+          "__掃斬__：橫向大範圍揮武掃擊（有時跑走後回頭接這招）",
+          "__射箭 / 箭雨__：玩家距離過遠時切換弓箭，可射出全範圍難躲箭雨",
+          "__範圍大爆炸__（白髮以上限定）：仰天大吼集氣後砸地，周圍產生大範圍屬性爆炸",
+        ],
+      },
+      {
+        tab:  "持劍",
+        name: "持劍人馬（單手劍＋盾）",
+        steps: [
+          "__3 連斬__：最常見招式，連續快速三刀，有時連續使出",
+          "__交叉斬__：另一常見招式，有時與 3 連斬接連使出",
+          "__跳斬__：躍起後落下斬擊",
+          "__衝斬__：快速衝刺接斬擊",
+        ],
+      },
+      {
+        tab:  "持槍",
+        name: "持槍人馬（長槍）",
+        steps: [
+          "__跳刺__：高躍起後向下突刺，落地產生__衝擊波__範圍傷害",
+          "衝擊波__無法單純盾擋__，需預判迴避或事先拉開距離",
+        ],
+      },
+      {
+        tab:  "持大劍",
+        name: "持大劍人馬（雙手大劍 / 獸神大劍）",
+        steps: [
+          "__迴旋斬（大風車）__：玩家待在側面或背面時極易觸發，需立刻後退",
+          "__3 連錘 / 重錘（下砸）__：每次下砸伴隨極大衝擊波，__不可只靠一般側跳迴避__",
+          "__衝錘__：衝刺後接錘擊",
+          "下砸類需__完美迴避__或跑動拉開距離；迴旋斬需立刻後退",
+        ],
+      },
+    ],
+    notes: [
+      { text: "戰鬥中記得隨時按 ZL 鍵鎖定視角。" },
+      { text: "擊暈人馬並準備騎上去之前，可以先趁機補幾刀。" },
+    ],
     videos: [
       { id: "ChdbQCjaTCo", title: "EX04 - 新手絕對適用！曠野第一隻人馬的「雷獸山『紅髮人馬』」攻略", desc: "最對症下藥的人馬攻略！" },
       { id: "QLcx-svQpco", title: "技巧03 - 強敵對策・DLC 2最終試煉skip指法（中文解說）" },
