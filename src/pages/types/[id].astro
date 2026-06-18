@@ -27,7 +27,12 @@ const content = typeContent[id];
 const videoBase = content?.videoFolder
   ? `${BASE}/type-videos/${content.videoFolder}`
   : null;
+const imageBase = content?.imageFolder
+  ? `${BASE}/type-videos/${content.imageFolder}`
+  : null;
 const hasAnyVideo = content?.methods?.some((m) => m.video) ?? false;
+const hasAnyImage = content?.methods?.some((m) => m.image) ?? false;
+const hasMedia = hasAnyVideo || hasAnyImage;
 
 const VIDEOS_PER_PAGE = 10;
 
@@ -85,19 +90,19 @@ function parseName(text: string) {
                   type="button"
                   role="tab"
                   data-tab={i}
-                  class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium text-text transition-colors hover:border-brand"
+                  class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
                 >
                   {m.tab}
                 </button>
               ))}
             </div>
             {content.methods.map((m, i) => (
-              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} hidden={i !== 0}>
+              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} hidden={i !== 0}>
                 {m.name ? (
-                  <div class="mb-3 text-[15px] font-medium text-white">{m.name}</div>
+                  <div class="mb-3 text-[15px] font-medium text-ink">{m.name}</div>
                 ) : m.tags && m.tags.length > 0 ? (
                   <div class="mb-3 flex flex-wrap items-center gap-2">
-                    <span class="text-[13px] text-white">適合</span>
+                    <span class="text-[13px] text-ink">適合</span>
                     {m.tags.map((tag) => (
                       <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
                         {tag}
@@ -108,7 +113,11 @@ function parseName(text: string) {
                 {m.sections ? (
                   m.sections.map((sec) => (
                     <div class="method-section">
-                      <div class="method-section-title">{sec.title}</div>
+                      <div class="method-section-title">
+                        {parseAccent(sec.title).map((seg) =>
+                          seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+                        )}
+                      </div>
                       <ol>
                         {sec.steps.map((s) => (
                           <li>
@@ -162,13 +171,14 @@ function parseName(text: string) {
           </p>
         </div>
 
-        {/* C: 快速示意（只有 videoFolder 存在才顯示） */}
-        {hasAnyVideo && (
+        {/* C: 快速示意（影片或圖片，隨分頁切換） */}
+        {hasMedia && (
           <div class="prose-custom">
             <h2>快速示意</h2>
             <div
-              id="demo-video-wrap"
+              id="demo-media-wrap"
               data-video-base={videoBase}
+              data-image-base={imageBase}
               class="relative overflow-hidden rounded-xl bg-sand"
             >
               <video
@@ -177,13 +187,21 @@ function parseName(text: string) {
                 loop
                 muted
                 playsinline
-                class="w-full rounded-xl"
+                class="hidden w-full rounded-xl"
               ></video>
+              <a id="demo-image-link" href="#" target="_blank" rel="noopener" class="hidden">
+                <img
+                  id="demo-image"
+                  alt="快速示意圖"
+                  loading="lazy"
+                  class="w-full rounded-xl"
+                />
+              </a>
               <div
-                id="demo-video-empty"
+                id="demo-media-empty"
                 class="hidden flex-col items-center justify-center py-10 text-center text-[14px] text-muted"
               >
-                <span>示意影片準備中</span>
+                <span>示意內容準備中</span>
               </div>
             </div>
           </div>
@@ -408,6 +426,12 @@ function parseName(text: string) {
     margin-bottom: 0.75em;
     text-transform: uppercase;
   }
+  /* 區塊標題內的重點：以底線強調（標題本身已是橙色） */
+  .method-section-title .accent-strong {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
 
   /* Q&A 按鈕 */
   .faq-btn {
@@ -425,11 +449,14 @@ function parseName(text: string) {
     color: var(--brand);
   }
 
-  /* 分頁啟用樣式 */
+  /* 分頁字色：未選為一般文字色，選中為象牙白（兩個主題皆清晰） */
+  .method-tab {
+    color: var(--text);
+  }
   .method-tab[aria-selected="true"] {
     background: var(--brand);
     border-color: var(--brand);
-    color: var(--ivory);
+    color: #faf9f5;
   }
 </style>
 
@@ -438,38 +465,53 @@ function parseName(text: string) {
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>(".method-tab"));
     const panels = Array.from(root.querySelectorAll<HTMLElement>(".method-panel"));
 
-    const videoWrap = document.getElementById("demo-video-wrap");
+    const mediaWrap = document.getElementById("demo-media-wrap");
     const videoEl = document.getElementById("demo-video") as HTMLVideoElement | null;
-    const videoEmpty = document.getElementById("demo-video-empty");
-    const videoBase = videoWrap?.dataset.videoBase ?? "";
+    const imageLink = document.getElementById("demo-image-link") as HTMLAnchorElement | null;
+    const imageEl = document.getElementById("demo-image") as HTMLImageElement | null;
+    const mediaEmpty = document.getElementById("demo-media-empty");
+    const videoBase = mediaWrap?.dataset.videoBase ?? "";
+    const imageBase = mediaWrap?.dataset.imageBase ?? "";
 
-    function updateVideo(index: number) {
-      if (!videoEl || !videoEmpty || !videoWrap) return;
+    function showOnly(which: "video" | "image" | "empty") {
+      videoEl?.classList.toggle("hidden", which !== "video");
+      imageLink?.classList.toggle("hidden", which !== "image");
+      if (mediaEmpty) {
+        mediaEmpty.classList.toggle("hidden", which !== "empty");
+        mediaEmpty.classList.toggle("flex", which === "empty");
+      }
+    }
+
+    function updateMedia(index: number) {
+      if (!mediaWrap) return;
       const panel = panels[index];
-      const filename = panel?.dataset.video ?? "";
-      if (filename) {
-        const newSrc = `${videoBase}/${filename}`;
-        if (videoEl.getAttribute("src") !== newSrc) {
+      const image = panel?.dataset.image ?? "";
+      const video = panel?.dataset.video ?? "";
+
+      if (image && imageEl && imageLink) {
+        const src = `${imageBase}/${image}`;
+        if (imageEl.getAttribute("src") !== src) imageEl.src = src;
+        imageLink.href = src;
+        videoEl?.pause();
+        showOnly("image");
+      } else if (video && videoEl) {
+        const src = `${videoBase}/${video}`;
+        if (videoEl.getAttribute("src") !== src) {
           videoEl.pause();
-          videoEl.src = newSrc;
+          videoEl.src = src;
           videoEl.load();
         }
-        videoEl.classList.remove("hidden");
-        videoEmpty.classList.add("hidden");
-        videoEmpty.classList.remove("flex");
+        showOnly("video");
       } else {
-        videoEl.pause();
-        videoEl.removeAttribute("src");
-        videoEl.classList.add("hidden");
-        videoEmpty.classList.remove("hidden");
-        videoEmpty.classList.add("flex");
+        videoEl?.pause();
+        showOnly("empty");
       }
     }
 
     function select(index: number) {
       tabs.forEach((t, i) => t.setAttribute("aria-selected", String(i === index)));
       panels.forEach((p, i) => (p.hidden = i !== index));
-      updateVideo(index);
+      updateMedia(index);
     }
 
     tabs.forEach((tab, i) => tab.addEventListener("click", () => select(i)));
