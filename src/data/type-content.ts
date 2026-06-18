@@ -1,9 +1,10 @@
 // 「常見類型」詳細頁的結構化內容。
 // 步驟字串中以 __文字__ 包住的片段會在頁面上加底線。
 export interface TypeMethod {
-  tab: string;     // 分頁名稱，例：前跳
-  suit: string;    // 適合說明，例：適合「先圓後方」
-  steps: string[]; // 編號步驟，可含 __底線__ 標記
+  tab: string;      // 分頁名稱，例：前跳
+  tags: string[];   // 標籤陣列，例：["先圓後方"] 或 ["先方後圓", "Switch 2 Edition 版"]
+  steps: string[];  // 編號步驟，可含 __底線__ 標記
+  video?: string;   // 快速示意影片檔名，例："前跳.MP4"
 }
 
 export interface RelatedVideo {
@@ -12,8 +13,9 @@ export interface RelatedVideo {
 }
 
 export interface TypeContent {
+  videoFolder?: string;    // public/type-videos/ 下的子資料夾名稱
   principle?: string;      // 原理說明
-  methods?: TypeMethod[];  // 操作步驟（分頁）
+  methods?: TypeMethod[];  // 流程步驟（分頁）
   notes?: string[];        // 注意事項
   closing?: string;        // 注意事項下方的結語
   videos?: RelatedVideo[]; // 相關影片
@@ -21,16 +23,18 @@ export interface TypeContent {
 
 export const typeContent: Record<string, TypeContent> = {
   "botw-01": {
+    videoFolder: "botw-windbomb",
     principle:
       "2019/9/6 【さとう菓子】玩家發展出的擊飛方法。按照曠野之息的物理機制，利用子彈時間降低近距離的物體受炸彈爆風擊碎或是引爆的機率，使第一顆炸彈爆炸的推進力足以推進第二顆炸彈來撞擊林克，同時解除子彈時間讓林克高速飛出去的技巧。",
     methods: [
       {
         tab: "前跳",
-        suit: "適合「先圓後方」",
+        tags: ["先圓後方"],
+        video: "前跳.MP4",
         steps: [
           "裝備好弓(有箭)、希卡道具設定為__圓形__炸彈，林克__前方__地勢較低",
           "按住 ZL",
-          "往前 Ｘ → L → ZR，離地後放出__圓形__炸彈，跳到高點進入子彈時間。",
+          "往前 Ｘ → L → ZR，離地後放出__圓形__炸彈，跳到高點進入子彈時間",
           "十字鍵▲切換到另一種__方形__炸彈",
           "按 L 放出__方形__炸彈",
           "十字鍵▲切換回原本的__圓形__炸彈",
@@ -39,7 +43,8 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "後跳",
-        suit: "適合「先方後圓」",
+        tags: ["先方後圓"],
+        video: "後跳.MP4",
         steps: [
           "裝備好弓(有箭)、希卡道具設定為__方形__炸彈，林克__後方__地勢較低且平穩",
           "在起跳位置後方兩個後空翻的距離往前放置一個__方形__炸彈",
@@ -52,21 +57,23 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "擊上",
-        suit: "適合「先方後圓」",
+        tags: ["先方後圓"],
+        video: "擊上.MP4",
         steps: [
-          "在樹幹等等高低差及腰的位置，在起跳位置後方放置一個方形炸彈",
+          "在樹幹等等高低差及腰的位置，在起跳位置__後方__放置一個__方形__炸彈",
           "裝備好弓(有箭)、希卡道具設定為__圓形__炸彈",
           "站在高處往後緊貼邊緣按住 ZL",
-          "往後 X 跳的瞬間林克呈水平時，同時按下 L 和 ZR，並瞬間按住十字鍵▲",
-          "切換到方形炸彈",
+          "往後 X 跳的瞬間林克呈__倒立__時，同時按下 L 和 ZR 放出炸彈並進入子彈時間，並瞬間按住十字鍵▲",
+          "切換到__方形__炸彈",
           "放開十字鍵後瞬間按 L 引爆",
         ],
       },
       {
         tab: "空中",
-        suit: "適合「先圓後方」",
+        tags: ["先圓後方"],
+        video: "空中.MP4",
         steps: [
-          "裝備好弓(有箭)、希卡道具設定為__圓形__炸彈，林克__前方__地勢較低",
+          "裝備好弓(有箭)、希卡道具設定為__圓形__炸彈",
           "滑翔翼往前滑行",
           "放開左搖桿後按 L 丟出圓形炸彈",
           "圓形炸彈落到林克後下方 45 度處後按 ZR 進入子彈時間",
@@ -78,7 +85,8 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "跑跳",
-        suit: "適合「先方後圓」、Switch 2 Edition 版",
+        tags: ["先方後圓", "Switch 2 Edition 版"],
+        video: "跑跳.MP4",
         steps: [
           "裝備好弓(有箭)、希卡道具設定為__方形__炸彈，林克__前方__地勢較低",
           "按住 B 往前奔跑",
