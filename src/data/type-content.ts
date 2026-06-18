@@ -12,6 +12,7 @@ export interface TypeMethod {
   steps?: string[]; // 單一編號步驟（與 sections 擇一）
   sections?: TypeMethodSection[]; // 多區塊步驟，每區塊各自從 1 開始編號
   video?: string;   // 快速示意影片檔名，例："前跳.MP4"
+  image?: string;   // 快速示意圖片檔名（與 video 擇一），例："IST.png"
 }
 
 export interface RelatedVideo {
@@ -26,7 +27,8 @@ export interface TypeNote {
 }
 
 export interface TypeContent {
-  videoFolder?: string;    // public/type-videos/ 下的子資料夾名稱
+  videoFolder?: string;    // public/type-videos/ 下的子資料夾名稱（影片用）
+  imageFolder?: string;    // public/type-videos/ 下的子資料夾名稱（圖片用）
   principle?: string;      // 原理說明
   methods?: TypeMethod[];  // 流程步驟（分頁）
   notes?: TypeNote[];      // 注意事項
@@ -130,12 +132,14 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-02": {
+    imageFolder: "botw-ist",
     principle:
       "2022/6/17 有程式背景的玩家 【zxrobbin】 觀看 Yuda 的番外 51「物品置換」影片，並參照 【leoetlino】 反編譯出的程式碼後，發現其中存在一個程式編譯上的問題。利用「手持材料(Hold)」將材料獨立出來，接著在販賣時把該材料賣光並移除該材料欄位，之後再把手上的捆包丟棄，以上動作會造成遊戲誤判實際的道具格數。當玩家讀檔後，正常系統認知的道具格數會和玩家背包中所看見、顯示的道具格數同步，但由於上述動作導致的不同步(Desync)，遊戲用誤判的較少格數依序移除該存檔的道具，最右邊原本應被刪除的道具沒有被清掉，因而被保留到下一個存檔中，進而達成繼承的效果。",
     methods: [
       {
         tab: "IST",
         name: "轉存格（Inventory Slot Transfer）",
+        image: "IST.png",
         steps: [
           "準備多把多發弓和電箭，並確認要繼承的道具在倒數第 n 格",
           "裝備多發弓和電箭，並按 ZR 將弓箭放到前面",
@@ -153,6 +157,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "FDIC",
         name: "向前數值訛轉（Forward Direct Inventory Corruption）",
+        image: "FDIC.png",
         steps: [
           "重新開始遊戲，依照要訛轉的目標種類，準備撿過蘋果或烤蘋果，並把它吃掉",
           "撿取「樵夫斧頭」，前往時之神殿觸發__斧頭裝備中、開過目標(材料或料理)頁籤__的自動存檔 A → 讀取舊存檔",
@@ -171,8 +176,9 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "BDIC",
         name: "向後數值訛轉（Backward Direct Inventory Corruption）",
+        image: "BDIC.png",
         steps: [
-          "將最高耐久度的弓放在該頁籤最後一格並裝備它後，手動存檔",
+          "將最高耐久度的弓放在該頁籤__最後一格並裝備它__後，手動存檔",
           "確認想要訛轉的屬性箭在第 n 格，如持有 6 種屬性箭時，電箭固定在第 n = 4 格",
           "合計在武器和弓的頁籤中空出 n 格（譬如武器 3 格＋弓箭 1 格，n = 4）",
           "使用掉或清除重要物品中所有可堆疊的道具（克洛格果實、考驗通過證等等）",
@@ -186,6 +192,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "WMC",
         name: "訛植料理詞綴（Weapon Modifier Corruption）",
+        image: "WMC.png",
         steps: [
           "準備好目標詞綴的 60 個料理 或 一格 500 個以上的可堆疊料理",
           "利用 BDIC 準備超過 500 發的各種屬性箭，手動存檔",
@@ -198,11 +205,12 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "PE",
-        name: "同位操作（Prompt Entanglement）",
+        tab: "DC & PE",
+        name: "脫頁游標與同位操作（Desync Cursor & Prompt Entanglement）",
+        image: "DC&PE.png",
         sections: [
           {
-            title: "K+1 法（通用版）",
+            title: "K+1 法（通用版，NS2 版__須關閉 Zelda Notes__）",
             steps: [
               "準備 3 頁以上的材料與料理，確保背包內有可以食用或手持的物品",
               "觸發等同於「重要物品數量 + 1」格的轉存格（無效格）",
@@ -214,22 +222,24 @@ export const typeContent: Record<string, TypeContent> = {
               "不回標題的情形下直接讀取需要進行同位操作的舊存檔",
               "讀檔後開啟暫停選單，讓游標停在任意頁籤的「第五格」",
               "接著依序操作：「右搖桿往左推」 ➔ 「左搖桿往上推」",
-              "此時游標會停在一個特殊的星號頁籤（__幻星頁籤 Phantom Star Tab__），代表無效格成功繼承，同位操作準備就緒",
+              "確認游標停在一個特殊的星號頁籤，即「脫頁游標」準備就緒",
+              "游標停留的位置與借視窗操作的流程請參考番外56進行同位操作",
             ],
           },
           {
             title: "NS2 Editions 版：單格偏移法（One-Offset Setup）",
             steps: [
               "先觸發 1 格轉存格",
-              "開啟 Zelda Notes，並確保 Zelda Notes 的道具排在重要道具頁的「最後面」（若沒有在最後面，請關閉後再重開 Zelda Notes）",
+              "開啟 Zelda Notes，並確保 Zelda Notes 的道具排在重要道具頁的「最後面」，若沒有在最後面關閉再重開 Zelda Notes",
               "回到遊戲標題畫面，開啟「新檔案」",
-              "開始新遊戲，在林克剛醒來時，故意開關一次暫停選單",
-              "前往控制台拔取並獲得希卡石",
-              "隨意打開選單，若看見衣服出現在希卡石的右邊，即表示狀態正確",
-              "讀取新遊戲一開始（剛醒來還未拿希卡石前）的自動存檔",
-              "再次前往拿取希卡石，在出現「獲得希卡石」的提示視窗時，將「右搖桿往左推」",
-              "若游標成功停在重要道具頁的「星號（幻星頁籤）」上，即表示觸發成功",
-              "最後切換到系統選單，不回標題的情形下讀取原本的舊檔案，即可將此狀態繼承回去完成同位操作",
+              "開始新遊戲，可操作後故意開關一次暫停選單",
+              "前往控制台獲得希卡石",
+              "隨意打開選單，確認衣服出現在希卡石的右側",
+              "讀取剛才剛醒來時的自動存檔",
+              "再次前往拿取希卡石，「獲得希卡石」提示視窗時按＋號進入背包",
+              "右搖桿往左推，確認游標停在重要道具頁的「星號（幻星頁籤）」上",
+              "切換到系統選單，不回標題的情形下讀取原本的舊檔案",
+              "游標停留的位置與借視窗操作的流程請參考番外56進行同位操作",
             ],
           },
         ],

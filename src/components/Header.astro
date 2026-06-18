@@ -40,7 +40,7 @@ const videosUrl = href("/videos");
       }
     </nav>
 
-    <div class="ml-auto flex items-center gap-2.5">
+    <div class="r-navactions ml-auto flex items-center gap-2.5">
       <div
         class="r-navsearch relative flex w-[300px] items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand"
         data-videos-url={videosUrl}
@@ -81,6 +81,7 @@ const videosUrl = href("/videos");
 <style>
   @media (max-width: 600px) {
     .r-navbar {
+      position: relative;
       height: auto;
       flex-wrap: wrap;
       padding: 11px 18px;
@@ -88,6 +89,13 @@ const videosUrl = href("/videos");
     }
     .r-navsearch {
       display: none;
+    }
+    /* 深淺色按鈕固定在 header 右上角，避免被導覽列擠到空行 */
+    .r-navactions {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      margin-left: 0;
     }
   }
 </style>
