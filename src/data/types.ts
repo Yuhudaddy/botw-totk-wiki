@@ -24,7 +24,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "02", zh: "轉存格", en: "Inventory Slot Transfer" },
       { no: "03", zh: "萊尼爾", en: "Lynels" },
       { no: "04", zh: "月步", en: "Moonjump" },
-      { no: "05", zh: "DLC 劍之考驗", en: "Trial of the Sword" },
+      { no: "05", zh: "劍之考驗(DLC1)", en: "Trial of the Sword" },
       { no: "06", zh: "新手學習", en: "Beginners" },
       { no: "07", zh: "神廟特解", en: "Shrine Strategies" },
       { no: "08", zh: "技巧指法", en: "Inputs" },
@@ -41,6 +41,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "01", zh: "必備小程錯", en: "Glitches" },
       { no: "02", zh: "序章大師劍", en: "MsgNotFound Sword in Prologue" },
       { no: "03", zh: "進階技巧", en: "Advanced Techniques" },
+      { no: "04", zh: "神廟特解", en: "Shrine Strategies" },
     ],
   },
 ];
