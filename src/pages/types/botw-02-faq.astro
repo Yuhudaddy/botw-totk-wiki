@@ -1,0 +1,500 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { href } from "../../lib/url";
+
+interface FaqItem {
+  no: number;
+  type: string;
+  q: string;
+  a: string;
+}
+
+const typeLabel: Record<string, string> = {
+  IST: "轉存格",
+  DIC: "數值訛轉",
+  WMC: "加成訛植",
+  PE:  "同位操作",
+};
+
+const faqs: FaqItem[] = [
+  {
+    no: 1,
+    type: "IST",
+    q: "製作轉存格時，賣掉4格道具之後，手持丟在地上的材料可以再撿起來使用嗎？",
+    a: "可以，重點在「丟在地上」的那個動作而已，丟完轉存格就觸發了，之後你要怎麼使用在地上的那個東西都不影響。",
+  },
+  {
+    no: 2,
+    type: "IST",
+    q: "番外52.5的流程要繼承光弓回舊檔案，如果有4個英傑+和傳送標記器，一開始製作轉存格時就要多做5個嗎？",
+    a: "4個就好，番外52.5的流程不會觸發傳送標記器的黑格。你可以一開始就多做4格或是讀檔後再觸發4格轉存格。反正重點是讓mCount=0清空背包，這樣之後就只會繼承光弓回去舊檔。",
+  },
+  {
+    no: 3,
+    type: "IST",
+    q: "網路上有其他薩爾達YT做的影片不用清空背包就能繼承光弓和必殺之劍，原因是什麼呢？",
+    a: "據我所知，該影片使用的檔案，每一種屬性箭已經大於500發，這樣讀取時原讀檔的屬性箭就不會讀進來（∵AddToPouch函數）。所以事實上該流程有前提條件「每種屬性箭≧500」發。",
+  },
+  {
+    no: 4,
+    type: "WMC",
+    q: "可以做一個詳細WMC的步驟影片嗎？",
+    a: "WMC的步驟和玩家的需求、袋子內的道具種類有關，所以一種步驟影片無法通用所有玩家的情況（所以你搜尋網路會有一大堆不同的流程），我不喜歡同種原理做一大堆類似影片。",
+  },
+  {
+    no: 5,
+    type: "IST",
+    q: "轉存格或光弓可以繼承到另一個帳號嗎？",
+    a: "不行，相對地你可以試想，如果可以繼承到另一個帳號，表示你即便關閉遊戲也無法取消這個程錯，那不是很可怕嗎？",
+  },
+  {
+    no: 6,
+    type: "PE",
+    q: "光標BUG能吃掉光弓嗎？",
+    a: "光弓的運算數值＝10000，你吃10000次就可以吃掉。",
+  },
+  {
+    no: 7,
+    type: "IST",
+    q: "身上的衣服要留著，要不要算進轉存格裡？",
+    a: "要，只要你游標停在它上面、會顯示格子內容的道具都要。理由是：系統對於袋子內道具的認知是「從左到右、從上到下非空格的所有道具格」。",
+  },
+  {
+    no: 8,
+    type: "IST",
+    q: "用一般模式繼承到大師模式，一般模式可以讀取到還沒賣掉所有東西的檔案嗎？（怕舊檔不見）",
+    a: "看不太懂問題的出發點（我影片從來沒說過舊檔會不見），只能針對你的問題回答。轉存格從來不影響原檔，只影響被讀取的檔案，所以你原本的普通模式絕對不會不見。",
+  },
+  {
+    no: 9,
+    type: "IST",
+    q: "轉存格黏手法那段，說看不到草莓就算失敗，是要注意哪裡？我確定材料有黏在手上跟商人對話，但進去都看不到 x0 的草莓。跟TV模式有關嗎？",
+    a: "請勿氣餒，幀技就是這樣，即便你認為你按對，系統說你沒按對就是沒按對，請多次嘗試並重新修正輸入的時機。破除謠言，沒有一個程錯是跟TV模式/掌機模式有關。",
+  },
+  {
+    no: 10,
+    type: "IST",
+    q: "萬一當初已經將光弓繼承到一般模式了，是否可以直接用轉存格轉到大師模式繼承背包？（空出背包的轉存格後不打加儂，直接回到標題畫面重開檔案）",
+    a: "可以，番外52所提到的法(1)就是這樣。沒錄製的原因是……這就跟你沒剪刀要去買剪刀，結果包裝把剪刀捆起來你還要用剪刀來剪一樣。",
+  },
+  {
+    no: 11,
+    type: "IST",
+    q: "大師模式可以繼承光弓嗎？",
+    a: "可以，Yuda的教學影片左下角有沒有大師模式符號、直播紀錄也有。",
+  },
+  {
+    no: 12,
+    type: "PE",
+    q: "吃掉了卓拉鎧甲的話想要再得到怎麼辦？",
+    a: "從別的檔繼承過來。（建議操作前先想好後果）",
+  },
+  {
+    no: 13,
+    type: "DIC",
+    q: "我有459顆克洛格果實，只能一次五顆五顆丟地上來消除嗎？",
+    a: `我個人會選擇用數值訛轉(DIC)的方式，請參考（後半部）：<a href="https://www.youtube.com/watch?v=W5fmXiwnM3Y&t=411s" target="_blank" rel="noopener" class="faq-link">youtu.be/W5fmXiwnM3Y</a>`,
+  },
+  {
+    no: 14,
+    type: "IST",
+    q: "繼承光弓到舊檔「屬性箭」和「不能賣的衣服」為什麼要×2？只有這兩種要多算嗎？另外，mCount=0存檔關閉遊戲取消轉存格後再讀檔，背包裡只有傳送標記器而已，其他的重要物品系統沒有還給我，這是怎麼回事？",
+    a: `<p>1. 因為轉存格算到光弓，讀檔繼承後，屬性箭和不能賣的衣服一定會各多一個，所以×2。</p>
+<p>2. 這是系統的安全機制（failsafe）。讀取mCount=0存檔（淨空檔案）時，系統如果判斷你的進度已經解放神獸、拿過傳送標記器，但是你這個檔的背包沒有，它就會還你那些對應的道具（只有英傑能力和傳送標記器有failsafe）。如果沒還你，那表示檔案沒有該進度。另外還你越少越好不是？因為你只要繼承光弓回舊檔，不要繼承到一些阿里不砸的最安全。</p>`,
+  },
+  {
+    no: 15,
+    type: "DIC",
+    q: "向前訛轉的時候，背包的排列順序是怎麼看的？",
+    a: "袋子內的道具順序對於系統而言是從左到右、從上往下。如果你觸發mCount＜1，並丟撿一個武器，讓它出現在重要物品右側的頁籤，這樣那個武器的順序就在重要物品之後了。",
+  },
+  {
+    no: 16,
+    type: "DIC",
+    q: "我想將海利亞盾的數值移轉到王族之弓，再將6種箭矢全部變80000支，背包有：武器×8、弓×5、箭矢6種、盾×3、衣服×3、材料留11個、料理×4、重要物品×2，共42個。現在卡在第一步驟，背包排列怎麼排？",
+    a: "假設你原檔案海利亞盾是第8+5+6+3=第22格，將mCount觸發至＜1，丟撿武器或弓讓它們出現在右側頁籤，並且讓王族之弓出現在第22格後觸發自動存檔（或手動），這樣那個存檔的第22格道具就會是王族之弓。接著關遊戲重新讀取存檔，系統會幫你把袋子的道具恢復正常，這時候海利亞盾是第22格。這時候現有袋子裡的道具和存檔內道具的順序出現錯位（Offset），所以剛才讀完檔時不要同步袋子，直接觸發自動存檔或手動存檔，第22格海利亞盾的運算數值（耐久度）就會被存入袋子裡的第22格王族之弓。",
+  },
+  {
+    no: 17,
+    type: "PE",
+    q: "光弓丟在野外，魔物能不能去撿來用？",
+    a: "不能。",
+  },
+  {
+    no: 18,
+    type: "WMC",
+    q: "用向後訛轉的法2，可以將最強料理訛值到武器嗎？感覺附魔好像是不同概念。",
+    a: "DIC是存檔時因為道具錯位而導致運算數值覆蓋在不同道具上；WMC是料理無法讀入造成CookData→WeaponData覆蓋在最後讀取的道具上，當然不同。",
+  },
+  {
+    no: 19,
+    type: "PE",
+    q: "做轉存格的時候沒加黑格子，又複製了一大堆，還有8個雷神獸通行證，只能吃掉了嗎？",
+    a: "多出來的DLC2雷神獸通行證建議同位操作把它吃掉沒錯。",
+  },
+  {
+    no: 20,
+    type: "IST",
+    q: "普通模式開新檔會覆蓋舊檔嗎？",
+    a: "不手動存檔不就不會覆蓋了嗎？",
+  },
+  {
+    no: 21,
+    type: "IST",
+    q: "光弓繼承時弓箭亂掉了該怎麼辦？",
+    a: `<p>法(1) 數值訛轉：從其他檔案繼承超過999發屬性箭（或合計超過999）。</p>
+<p>法(2) 同位操作：利用同位操作手持、最後吃掉多出來的弓箭。</p>
+<p>具體流程請參考右側連結，裡面都有（番外53(上) 和番外56）。</p>`,
+  },
+  {
+    no: 22,
+    type: "PE",
+    q: "怎麼手持料理？",
+    a: "可以用無效箭格或幻星頁籤來達成同位操作。最簡單的方式是借用材料頁籤的對話框來手持料理頁籤的道具。",
+  },
+  {
+    no: 23,
+    type: "DIC",
+    q: "我普通模式玩到1/3，打了兩頭神獸，買了DLC後用大師模式從頭玩，如果想要在大師模式裡擁有光弓＋80000箭，最快速的流程大概是如何？",
+    a: `<p>事實上如果沒有要炸向宇宙，是不用到8萬支箭，1萬發就夠你玩1000小時了。這邊建議先訛轉再拿光弓，這樣你的普通模式和大師模式都有機會拿到光弓和8萬箭。大概流程：</p>
+<ol>
+<li>參考番外52.5一開始的部分，了解如何製造轉存格和複製武器。</li>
+<li>參考番外53(上)，訛轉海利亞盾到某一支弓上，接著再從弓→6種箭。</li>
+<li>完成訛轉後（選一個即可）：<br>
+(1) 觸發算到光弓的轉存格⇒打加儂拿光弓⇒開啟大師模式新檔案⇒拿希卡石後存檔<br>
+(2) 觸發算到光弓的轉存格⇒打加儂拿光弓⇒讀取大師模式的檔案⇒開關暫停後存檔<br>
+(3) 完整清空流程：觸發算到光弓的轉存格⇒只保留打加儂需要的道具⇒打加儂拿光弓⇒把能丟的都丟掉⇒讀取普通模式⇒手動存檔⇒回到標題開啟大師模式新檔案</li>
+</ol>`,
+  },
+  {
+    no: 24,
+    type: "PE",
+    q: "如果無法觸發轉存格還能使用脫頁游標嗎？（普通模式、沒有正常的自動存檔，箭格亂掉了沒有電箭）",
+    a: `<p><strong>PE法（稍快）：</strong>別的模式或檔案觸發轉存格、黏手法觸發k+1格轉存格，利用同位操作吃掉箭，詳細按法請參考番外56。</p>
+<p><strong>DIC法（普通）：</strong></p>
+<ol>
+<li>武器預留3格空格、裝備最後一格光弓後存檔（手動A）</li>
+<li>黏手法觸發k+1格轉存格⇒進入劍之考驗初級⇒撿1個樹枝後讀取手動A⇒按+暫停⇒按R到系統選單直接存檔（手動B）後關閉遊戲（※不可整理道具、關暫停、重新裝備等）</li>
+<li>重新進入手動B去買一支電箭手動存檔C</li>
+<li>觸發k+2格轉存格⇒進入劍之考驗初級⇒撿2個樹枝後讀取手動C⇒存檔D後關閉遊戲</li>
+<li>觸發k+3格轉存格⇒進入劍之考驗初級⇒撿3個樹枝後讀取手動D⇒存檔E後關閉遊戲</li>
+<li>進入手動E後三種箭發數＝10000</li>
+</ol>`,
+  },
+  {
+    no: 25,
+    type: "IST",
+    q: "番外52.5的地方，快轉那邊的轉存格是過載法嗎？",
+    a: "是，大量製造轉存格的話，落弓過載是最快的，嚴格來說我的影片一直都是「雙弓過載」，這樣可以避免自己忘記先撿弓。",
+  },
+  {
+    no: 26,
+    type: "DIC",
+    q: "我不小心複製了太多果實、考驗通過證和神獸試煉證，變成9頁，請問能怎麼處理？如果有古代馬鞍、秘密信封、怪物商人給的那個證，需要處理嗎？",
+    a: `<p>果實和考驗通過證請參照以下影片後半的方法，DLC2的試煉證請參照前半的方法，其原理都是向後訛轉（番外53(上)）：</p>
+<p><a href="https://www.youtube.com/watch?v=W5fmXiwnM3Y" target="_blank" rel="noopener" class="faq-link">youtu.be/W5fmXiwnM3Y</a></p>`,
+  },
+  {
+    no: 27,
+    type: "WMC",
+    q: "要訛植180的大師劍，是不是一定要用偷拔刀然後再解劍之試煉後再訛植？之前如果拔過就不能訛植180進去了嗎？另外開新檔來玩這塊，對包包大小有一定需求嗎？",
+    a: `<p>1. 新檔：從新檔案做是最不需要邏輯，但也最花時間的。</p>
+<p>2. 舊檔：先把弓/盾放滿、箭先蒐集或訛轉到500發以上後手動存檔。接著把衣服都處理掉，必要時先吃掉，製作必要料理來做訛植。比較簡單的方法就是做60個料理，而第60個料理是你的訛植料理，然後轉存格做到第一把弓，在前面一格就是大師劍，整個過程都用自動存檔進行。詳細原理可以參考番外54.5。</p>
+<p>3. 做完WMC後繼承回過去的檔案。</p>`,
+  },
+  {
+    no: 28,
+    type: "WMC",
+    q: "10連的狙擊弓能夠拿來觸發過載嗎？",
+    a: "可以，它們是多發弓。我直播都是用它們過載的。",
+  },
+  {
+    no: 29,
+    type: "WMC",
+    q: "什麼是k+1、k+60的附魔方法？",
+    a: "k就是重要物品的數量，k+1法是只要k+1格轉存格，k+60法是需要k+60格轉存格。前者需搭配999訛植料理（番外54.5），後者需要有60格料理（番外54）。",
+  },
+  {
+    no: 30,
+    type: "WMC",
+    q: "有5個料理，從別的檔繼承56個料理。原本預計訛植必殺之劍，但把最後一個擠到61沒成功，讀檔多轉4格轉存湊到60才成功（非堆疊料理）。為什麼？",
+    a: "因為最後一個讀入的道具是你那個5個料理的第4個，而讀不進來的料理是第5個料理，所以第5個料理的CookData（食譜數據）會訛植到第4個料理上。放滿頁籤＋轉存格全算就可以略過該頁籤。",
+  },
+  {
+    no: 31,
+    type: "WMC",
+    q: "有沒有在同一個檔案完成WMC又可以避免卓拉鎧甲被吃掉的方法？",
+    a: `<ol>
+<li>遊戲機調時間調到2個月後，進入遊戲然後在商店手動存檔。</li>
+<li>遊戲機調時間調到1個月後，賣掉所有料理、只保留9種×2以上材料，觸發自動存檔。（此時卓拉鎧甲在倒數第8格，含重要物品）</li>
+<li>遊戲機調回現在時間，讀取手動存檔開始操作WMC，中間都使用自動存檔操作。</li>
+<li>完成繼承到手動存檔後關閉遊戲取消轉存格程錯。</li>
+<li>進入1個月後的自動存檔，觸發8格轉存格繼承卓拉鎧甲回手動存檔並存檔。</li>
+</ol>`,
+  },
+  {
+    no: 32,
+    type: "WMC",
+    q: "怎麼取消黑格？",
+    a: `<p><strong>黑格的產生時機</strong>（以下3種道具在特定條件下會觸發）：</p>
+<ol>
+<li>神廟通過證 — 繼承神廟的通過證到有相同通過證的檔案時</li>
+<li>傳送標記器 — 繼承傳送標記器到空背包檔時</li>
+<li>英傑能力+ — 繼承英傑能力+到有對應神獸解放進度的檔案</li>
+</ol>
+<p><strong>解決方法：</strong></p>
+<ol>
+<li>永久存在的黑格（神廟通過證）→ 同位操作把它吃光，或數值訛轉把它弄到500個以上</li>
+<li>暫時存在的黑格（英傑能力+ 或 傳送標記器）：<br>
+(1) 只讀檔繼承一次、最後產生的黑格：存檔後關閉遊戲，下次讀檔時會消失。<br>
+(2) 連鎖訛植時黑格一直增殖：每讀檔一次就增加轉存格格數，直到重要物品達40格；或配合同位操作(PE)，每讀檔一次就吃掉一次。</li>
+</ol>
+<p><strong>原理補充：</strong></p>
+<p>傳送標記器的安全機制（Failsafe）只看你的存檔有沒有傳送標記器，不是看袋子，所以繼承1個傳送標記器到空檔案後，系統認為空檔案沒有傳送標記器，又還你一個，造成袋子裡出現兩個，後來讀進來的呈現黑格狀態。英傑能力+的讀取函數尚未被反編譯，行為類似堆疊物品，因此會增殖，但下一次讀檔時系統發現重複就會停止讀入，所以黑格會消失。</p>
+<p>※ Line群玩家提供：可暫時卸載DLC處理，避免未Decompiled的程式運作。</p>`,
+  },
+  {
+    no: 33,
+    type: "PE",
+    q: "為什麼同位操作的方法新檔案袋子沒辦法往右移？",
+    a: "我本身用了3個檔案（有無克洛格果實等等都試過），相同的k+1 Setup都有成功，請確認是否忘記重讀一次自動存檔。",
+  },
+  {
+    no: 34,
+    type: "WMC",
+    q: "怎麼讓料理在最後一格？",
+    a: `<p>WMC中，重要的是你想要的訛植料理的食譜在不在最後一格，而非料理本身是否在最後一格。以下提供兩種範例：</p>
+<p><strong>例1</strong>（k＝非堆疊重要物品數）：</p>
+<ol>
+<li>先準備A格非堆疊料理，假設A=40格。</li>
+<li>準備訛植料理，出現在第A+1=41格。若在它後面有其他料理，請通通吃掉或賣掉。</li>
+<li>觸發k+20格轉存格後存讀檔，觸發k+60-A格，讓讀檔後的料理格數＞60格觸發訛植。</li>
+<li>繼續觸發轉存格，數量直到你想要訛植的裝備上後存讀檔，第A+1格的食譜會覆蓋在第A格上。</li>
+</ol>
+<p><strong>例2</strong>（訛植料理在第1格、其他非堆疊料理在第2~60格）：</p>
+<ol>
+<li>存檔A⇒吃掉第2~60格料理⇒觸發自動存檔B</li>
+<li>讀取自動存檔A⇒觸發k+59格轉存格</li>
+<li>讀取自動存檔B</li>
+<li>再觸發1格轉存格變成k+60，繼續操作訛植武器的流程。</li>
+</ol>`,
+  },
+  {
+    no: 35,
+    type: "WMC",
+    q: "如果有英傑能力+的話，該怎麼做附魔？",
+    a: `<p>由於沒有提供袋子的狀況，這邊針對英傑能力+造成黑格影響連鎖訛植的問題推薦：</p>
+<ol>
+<li>每讀檔一次就多觸發n格轉存格（n=英傑能力+數=黑格數），直到重要物品格滿40格。</li>
+<li>先觸發好同位操作的幻星頁籤，每讀檔一次都把黑格吃掉再繼續操作WMC。（推薦）</li>
+</ol>
+<p>※ Line群玩家提供：可暫時卸載DLC處理，避免未Decompiled的程式運作。</p>`,
+  },
+  {
+    no: 36,
+    type: "WMC",
+    q: "為什麼攻擊力150的附魔大師劍打完劍之考驗變回40了？",
+    a: `<p>番外54已經提過，請先解完劍之考驗再做WMC。</p>
+<p><strong>原理：</strong> 大師劍的攻擊力＝「基礎攻擊力 + 進度修正 + 數值加成修正」，也就是「30 + 10×進度值 + Modifier」，進度值＝初級通過(1)/中級通過(2)/頂級通過(3)。而劍之考驗只會還你「30 + 10×進度值」的大師劍，Modifier（數值修正）就是你們所謂的附魔。</p>
+<p><strong>例如：</strong> 如果你拿180大師劍進入劍之考驗，考驗沒收180大師劍並清空袋子，通過後系統依照你的進度「還你」大師劍。如果你通過頂級，還你的攻擊力＝30 + 10×3＝60，不含你之前附魔的Modifier，所以變成60而不是180。</p>`,
+  },
+  {
+    no: 37,
+    type: "DIC",
+    q: "為什麼某影片裡，在繼承道具的時候，道具1和999能同時存在呢？",
+    a: "當讀檔時，mCount＝0時讀入道具時會忽略審核機制，也就是說讀檔時第1個讀進來的道具不受任何審核機制約束（AddToPouch, cannotgetitem）。該影片中，遊戲在讀檔時刪除完袋子裡mCount個道具之後，回到mCount＝0停止刪除指令，雖然袋子裡面有6妖精，但因為第一個讀進來的是999妖精，所以可以繞過審核機制安全被讀入檔案。",
+  },
+];
+---
+
+<BaseLayout
+  title="轉存格常見問題 Q&A · 曠野之息"
+  description="《轉存格》IST、DIC、WMC、PE 37個常見問題與 Yuda 的解答，整理自會員質問箱。"
+  active="types"
+>
+  {/* 麵包屑 + 標題 */}
+  <section class="border-b border-border-soft">
+    <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+      <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
+        <a href={href("/")} class="no-underline text-muted">首頁</a>
+        <span>/</span>
+        <a href={href("/types")} class="no-underline text-muted">常見類型</a>
+        <span>/</span>
+        <a href={href("/types/botw-02")} class="no-underline text-muted">轉存格</a>
+        <span>/</span>
+        <span class="text-ink">Q&A</span>
+      </div>
+      <div class="mb-2 flex items-center gap-2.5">
+        <span class="font-mono text-[13px] text-accent">BotW · 02</span>
+      </div>
+      <h1 class="mb-[18px] font-serif text-[46px] font-medium leading-[1.12] text-ink">
+        轉存格常見問題 Q&A
+      </h1>
+      <p class="text-[17px] text-muted">Inventory Slot Transfer — FAQ</p>
+    </div>
+  </section>
+
+  {/* 分類說明 */}
+  <div class="border-b border-border-soft bg-surface">
+    <div class="mx-auto max-w-[1180px] px-8 py-5">
+      <div class="flex flex-wrap gap-3 text-[13px]">
+        {Object.entries(typeLabel).map(([k, v]) => (
+          <span class={`type-badge type-${k.toLowerCase()}`}>{k} · {v}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* FAQ 列表 */}
+  <article class="mx-auto max-w-[1180px] px-8 pb-20 pt-10">
+    <div class="faq-list">
+      {faqs.map((item) => (
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <div class="faq-no">{String(item.no).padStart(2, "0")}</div>
+            <span class={`type-badge type-${item.type.toLowerCase()}`}>{item.type}</span>
+            <div class="faq-q">{item.q}</div>
+            <svg class="faq-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <div class="faq-answer">
+            <Fragment set:html={item.a.includes("<") ? item.a : `<p>${item.a}</p>`} />
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <div class="mt-12 border-t border-border-soft pt-8">
+      <a href={href("/types/botw-02")} class="back-btn inline-flex items-center gap-2 no-underline">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        返回轉存格頁面
+      </a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  /* 分類標籤 */
+  .type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .type-ist  { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+  .type-dic  { background: color-mix(in srgb, #60a5fa 15%, transparent); color: #60a5fa; }
+  .type-wmc  { background: color-mix(in srgb, #c084fc 15%, transparent); color: #c084fc; }
+  .type-pe   { background: color-mix(in srgb, #34d399 15%, transparent); color: #34d399; }
+
+  /* FAQ 列表 */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .faq-item:first-child {
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .faq-summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 4px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: background 0.1s;
+  }
+  .faq-summary::-webkit-details-marker { display: none; }
+  .faq-summary:hover { background: var(--surface); border-radius: 8px; }
+
+  .faq-no {
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 22px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .faq-q {
+    flex: 1;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.55;
+    padding-top: 1px;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: var(--muted);
+    margin-top: 3px;
+    transition: transform 0.2s;
+  }
+  details[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    padding: 4px 4px 20px calc(22px + 14px + 52px + 14px);
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.75;
+  }
+  .faq-answer p { margin-bottom: 0.8em; }
+  .faq-answer p:last-child { margin-bottom: 0; }
+  .faq-answer ol, .faq-answer ul {
+    padding-left: 1.5em;
+    margin-bottom: 0.8em;
+  }
+  .faq-answer ol { list-style: decimal; }
+  .faq-answer ul { list-style: disc; }
+  .faq-answer li { margin-bottom: 0.4em; }
+  .faq-answer strong { color: var(--ink); font-weight: 600; }
+
+  :global(.faq-link) {
+    color: var(--accent);
+    text-underline-offset: 3px;
+  }
+  :global(.faq-link:hover) { opacity: 0.8; }
+
+  /* 返回按鈕 */
+  .back-btn {
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .back-btn:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+
+  @media (max-width: 640px) {
+    .faq-answer {
+      padding-left: 4px;
+    }
+    .faq-summary {
+      flex-wrap: nowrap;
+    }
+    .faq-no {
+      display: none;
+    }
+  }
+</style>
