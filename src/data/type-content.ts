@@ -13,6 +13,7 @@ export interface TypeMethod {
   sections?: TypeMethodSection[]; // 多區塊步驟，每區塊各自從 1 開始編號
   video?: string;   // 快速示意影片檔名，例："前跳.MP4"
   image?: string;   // 快速示意圖片檔名（與 video 擇一），例："IST.png"
+  note?: string;    // 步驟下方的灰色備註
 }
 
 export interface RelatedVideo {
@@ -385,10 +386,8 @@ export const typeContent: Record<string, TypeContent> = {
     principleItems: [
       "月步有固定座標的功能",
       "__重生（Respawn）邏輯__：當林克落水或掉入深淵時，遊戲不會把你放回岸邊，而是會將你傳送到「傳送標記器的座標值」",
-      "__重新讀取（Restart）邏輯__：當林克死亡或「讀取存檔」時，遊戲會將你傳送到「傳送到傳送標記器前的上一個最後讀取位置（傳送點座標或讀檔的位置）」",
+      "__再現（Restart）邏輯__：當林克死亡或「讀取存檔」時，遊戲會將你傳送到「傳送到傳送標記器前的上一個最後讀取位置（傳送點座標或讀檔的位置）」",
     ],
-    principleNote:
-      "應用場景：傳送到神獸，經過讀取畫面後進入神獸內部，接著傳送到 TM，此時「上一個最後讀取位置」就是神獸入口。接著你無論讀取哪一個普通模式的存檔（傳送後才建立的），遊戲都會把你直接傳送回神獸內部。這個邏輯常被用來將進度帶入大師模式，或是用來突破系統限制強行進入劇情無法到達，或已被封鎖的區域。",
     methods: [
       {
         tab:  "月步",
@@ -442,6 +441,7 @@ export const typeContent: Record<string, TypeContent> = {
           "傳送到傳送標記器",
           "觸發自動或手動存檔後讀取該檔案",
         ],
+        note: "應用場景：傳送到神獸，經過讀取畫面後進入神獸內部，接著傳送到 TM，此時「上一個最後讀取位置」就是神獸入口。接著你無論讀取哪一個普通模式的存檔（傳送後才建立的），遊戲都會把你直接傳送回神獸內部。這個邏輯常被用來將進度帶入大師模式，或是用來突破系統限制強行進入劇情無法到達，或已被封鎖的區域。",
       },
     ],
     notes: [
@@ -457,6 +457,151 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "t8D6hblY3ss", title: "番外39 - 誰說月步只能跳？「定位月步傳送（Moonjump Wrong Warp）」（原理解說版）" },
       { id: "D5fL3TLcuzY", title: "番外40 - 開場DLC任務！未出台地解「必殺之劍」與「最終試煉」！(適用進階玩家)" },
       { id: "2zHiRnhdMk8", title: "番外41 - 海拉魯最夯坐騎！與「希多王子」馳騁海拉魯（MWW的應用之一）" },
+    ],
+  },
+
+  "botw-05": {
+    videos: [
+      { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
+      { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
+      { id: "EjX0-Pj6wG0", title: "高效率3心無傷！『劍之考驗 - 初級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Beginning）" },
+      { id: "ce21Z79Zbtc", title: "破除夢魘！詳解《劍之考驗 - 初級地下10樓》！（ToTS B10 Tutorial）" },
+      { id: "9AM19fJ7mSo", title: "回應07「劍之考驗(ToTS)」的穿牆重點講解（人聲解說）" },
+      { id: "g8eqZ6LaK10", title: "番外23 - 在劍之試煉騎機車（Cycle Zero in ToTS）" },
+      { id: "5nzrj_5-FNM", title: "劍試01 - 簡單無傷通過「劍之試煉（一般模式）- 初級」攻略（2018年版）" },
+      { id: "Dxh3W_sQmmo", title: "劍試02 - 簡單無傷通過「劍之試煉（一般模式）- 中級」攻略（2018年版）" },
+      { id: "pjix1ZahVQ4", title: "劍試03 - 簡單無傷通過「劍之試煉（一般模式）- 頂級」攻略（2018年版）" },
+      { id: "jC-mr7ZJhoc", title: "劍試04 - 無傷「劍之試煉（大師模式）- 初級」攻略流程（2018年版）" },
+      { id: "IJElnqcy-ok", title: "劍試05 - 無傷「劍之試煉（大師模式）- 中級」攻略流程（2018年版）" },
+      { id: "5080qSOLtNg", title: "劍試06 - 無傷「劍之試煉（大師模式）- 頂級」攻略流程（2018年版）" },
+      { id: "QlJw8N7cMyo", title: "劍試07 - 劍之試煉 -「靜止衝撞法(Stasis Clipping)」（大師／一般模式皆通用．新方法請見敘述）" },
+      { id: "wPsT2Ienj9k", title: "劍試08 - 牆外路線(Oob Route)初級12F冰柱放置教學（中文解說）" },
+      { id: "OYu_vHdo2wo", title: "劍試09 - 劍之試煉OOB -「盾跳穿牆法（Shield Skew Clipping）」（示範影片）" },
+      { id: "FHMarfPxVhY", title: "技巧21 - 劍之試煉的 14 個攻略重點與技巧（大師模式・中文解說）" },
+    ],
+  },
+
+  "botw-07": {
+    videos: [
+      { id: "eKNFTJVV85c", title: "神特01 - 初始台地區域（Shrine Strategies in Great Plateua Area）" },
+      { id: "wKRYj0hMy18", title: "神特02 - 塔邦撻地區（Shrine Strategies in Tabantha region）" },
+      { id: "-ulpjJecjVM", title: "神特03 - 森林之塔地區（Shrine Strategies in Woodland Tower region）" },
+      { id: "QtECOMOfHPM", title: "神特04 - 丘陵之塔地區（Shrine Strategies in Ridgeland Tower region）" },
+      { id: "9aqRXjRdxz4", title: "神特05 - 哈特諾之塔地區（Shrine Strategies in Hateno Tower region）" },
+      { id: "k1_spfqit_w", title: "神特06 - 平原之塔地區（Shrine Strategies in Central Tower region）" },
+      { id: "yLjG8q9M5zk", title: "神特07 - 拉聶爾之塔地區（Shrine Strategies in Lanayru Tower region）" },
+      { id: "f5gXuOBRWRw", title: "神特08 - 阿卡萊之塔地區（Shrine Strategies in Akkala Tower region）" },
+      { id: "T-IPtYWB9Jc", title: "神特09 - 格魯德地區（Shrine Strategies in Gerudo region）" },
+      { id: "_7B4TZ1Z4-w", title: "神特10 - 海布拉之塔地區（Shrine Strategies in Hebra Tower region）" },
+      { id: "MX2JtbRsf2U", title: "神特11 - 荒野之塔地區（Shrine Strategies in Wasteland Tower region）" },
+      { id: "ADEWHdqgbSM", title: "神特15 - 雙子山之塔地區（Shrine Strategies in Dueling Peaks Tower region）" },
+      { id: "LgqZjLm9_S8", title: "神特16 - DLC2英傑之詩神廟（Shrine Strategies in DLC2 Champions' Ballad）" },
+    ],
+  },
+
+  "botw-09": {
+    videos: [
+      { id: "2vL2TXpLh7U", title: "EX5 - 新手怎麼潛入依蓋隊基地？Yuda教你直接闖空門！(Area Clearing)" },
+      { id: "1y-BGwQ0_zs", title: "DLC2《虛幻空間》的四咒加儂 - 快速重點攻略(Walkthrough of Blight Ganons in Illusory Realm)（2022年版）" },
+      { id: "qttzw1yxKUU", title: "鼓隆的絕對防禦！《火之神獸》重點攻略 - 瓦・魯達尼亞(Divine Beast Vah Rudania)（2022年版）" },
+      { id: "0Sc9ZEIXAdQ", title: "格魯德的綠色閃電！《雷之神獸》重點攻略 - 瓦・娜波力斯(Divine Beast Vah Naboris)（2022年版）" },
+      { id: "JFTL_9GRCOU", title: "青梅竹馬的祝福！《水之神獸》重點攻略 - 瓦・露塔(Divine Beast Vah Ruta)（2022年版）" },
+      { id: "4cKUAZS9wjM", title: "傲嬌的勁敵！《風之神獸》重點攻略 - 瓦・梅德(Divine Beast Vah Meloh)（2022年版）" },
+      { id: "VMvBroSNM04", title: "依蓋隊基地戒備森嚴？「弓鎖」讓你如入無人之境！（Sneak into Yiga Clan with Bow Lock glitch）" },
+      { id: "2ipanD0eQ_o", title: "攻略09 - 速解「風」「水」神獸內部流程（中文解說）" },
+      { id: "K9g-q4tBVL0", title: "攻略10.5 - 依蓋團速解流程 - 雷鳴兜奪還任務（中文解說）" },
+      { id: "N9gqAwdA7G8", title: "初學者的夢魘：「使其停止方為上策/以靜制動」DLC神廟安全解法" },
+      { id: "LgHgYaZn8NE", title: "DLC必殺之劍神廟「平常心」：第二輪就該不一樣！(Yowaka Ita Shrine Strategies)" },
+      { id: "iGcDvFbTq2g", title: "幾個神廟前置任務的特殊解法（Complete Shrine Quests in Special Ways）" },
+      { id: "Jjjgo8oLUHk", title: "到底該怎麼解「野外的考驗」呢？(無Mic)" },
+      { id: "eKac8miVWAQ", title: "攻略10.5(補) - 20秒速解依蓋隊任務（中文解說）" },
+      { id: "ewAYrlnrmMk", title: "攻略11 - 速解「雷」「炎」神獸內部流程（中文解說）" },
+      { id: "FYU9Xn2yZ7I", title: "攻略22 -〖DLC 2〗英傑之詩：一擊之劍（大師模式・CHC流程・中文解說）" },
+      { id: "Hvg92UXrz3o", title: "攻略23 -〖DLC 2〗英傑之詩：力巴爾篇（大師模式・CHC流程・中文解說）" },
+      { id: "OgsCtBHpXZc", title: "攻略24 -〖DLC 2〗英傑之詩：烏魯波薩篇（大師模式・CHC流程・中文解說）" },
+      { id: "xkmmww_PGG0", title: "攻略25 -〖DLC 2〗英傑之詩：米法篇（大師模式・CHC流程・中文解說）" },
+      { id: "Plo2BjuWTNA", title: "攻略26 -〖DLC 2〗英傑之詩：達爾凱爾篇（大師模式・CHC流程・中文解說）" },
+      { id: "yS3CS9r21c4", title: "攻略27 -〖DLC 2〗英傑之詩：最終試煉篇（大師模式・CHC流程・中文解說）" },
+      { id: "xMe208vzezo", title: "攻略27.5 -〖DLC 2〗「略過『最終試煉』(Final Trial Skip)」（中文解說）" },
+    ],
+  },
+
+  "botw-12": {
+    videos: [
+      { id: "Okv-0so2jys", title: "6分鐘$500000｜吃(用)不完的料理與素材 -「新檔訛轉」的可怕！（不廢話系列）" },
+      { id: "JtSHil_1AYM", title: "不用洗箭！快速全屬性80000箭｜無原理快速示範「連鎖向前訛轉(FDIC Chain)」！（不廢話系列）" },
+      { id: "M7BPZmuS0Do", title: "整天愁武器太快壞？開個新檔就能複製一把800耐久的武器！（不廢話系列）" },
+      { id: "hPp7mvGvJPc", title: "無敵＋無限精力！「溺水儲存／阿姆斯狀態(ARMS, Aqua Reverse Memory Storage)」（不廢話系列）" },
+      { id: "K1px5KFeo5E", title: "EX6 - 初學者8分鐘搞懂「純光弓繼承」！新檔｜舊檔｜普通｜大師｜沒DLC全適用！(不廢話語音＋新手適用版)" },
+      { id: "oJ8bo2Nltcg", title: "竊取未來的道具回來吧！穿越時空的技能 -《IST》的應用(不廢話系列)" },
+      { id: "SOQrIwNqoQo", title: "簡單快速增殖妖精/巨大核心！「轉存格增殖」！(不廢話系列)" },
+      { id: "W5fmXiwnM3Y", title: "轉存格害我一堆克洛格果實怎麼辦？(不廢話系列 - 通過證也適用)" },
+      { id: "8g8htS8hy0g", title: "不廢話系列！新手照做也能輕鬆「物品置換」！(Item Transmutation for Beginners)" },
+      { id: "luZrf-E1N8Y", title: "不廢話！1分鐘學會如何觸發「無機車第一人稱視角」！(1-Minute Tutorial of How to Trigger FPS View without Cycle Zero)" },
+      { id: "dOVAzYGLwoU", title: "不廢話！畫面暫停一下快速檢查「空中風彈」失敗的原因！" },
+      { id: "z_3QuSgUc1g", title: "只要有水有機車就能飛！冰柱機車擊飛（Cryonis Master-Cycle Launch, 不廢話系列）" },
+      { id: "8biCvDxKw1o", title: "54秒教你怎麼「逆攀擊飛(Instant Climb Launch)」（不廢話系列）" },
+      { id: "y__ia85ppwM", title: "英傑投降！45秒「元氣彈姿勢」教學（不廢話系列）" },
+      { id: "8QaUm9pJEY0", title: "超遠距離丟物品！1分鐘「原點釋放(Cycle Return Throw/Origin Throw)」教學（不廢話系列）" },
+    ],
+  },
+
+  "botw-06": {
+    videos: [
+      { id: "ewnlB6jK7M8", title: "番外04(新) - 原來不只有「完美迴避的突擊」？Yuda教你所有「進階突擊(Advanced Flurry Rush, TCR/PDR/ATR)」" },
+      { id: "Zpc6r4T8Wwk", title: "ED02 - NS2才知道也不遲！絕對不能錯過的技巧！（下）" },
+      { id: "eCKsWlOQzrA", title: "EX00《大師模式》新手實用技巧！別讓大師台地勸退你（字幕解說）" },
+      { id: "cgqAOlvubVQ", title: "EX01 -「從初學者畢業的13堂技巧課」 - 遊戲攻略技巧精華（人聲解說）" },
+      { id: "0A6dkkeEtQo", title: "EX02 - 初學者一定用得到的小技巧和小知識（中文解說）" },
+      { id: "pi2w0KLnO1U", title: "EX03 - 缺武器？初學者也能複製魔物手上的武器！（初學者適用）" },
+      { id: "ChdbQCjaTCo", title: "EX04 - 新手絕對適用！曠野第一隻人馬的「雷獸山『紅髮人馬』」攻略" },
+      { id: "2vL2TXpLh7U", title: "EX5 - 新手怎麼潛入依蓋隊基地？Yuda教你直接闖空門！(Area Clearing)" },
+      { id: "K1px5KFeo5E", title: "EX6 - 初學者8分鐘搞懂「純光弓繼承」！新檔｜舊檔｜普通｜大師｜沒DLC全適用！(不廢話語音＋新手適用版)" },
+      { id: "9d1ks1E_a3A", title: "番外00「災厄之路(The way to \"Calamity\")」- 戰鬥技巧詳解" },
+      { id: "kO0dD9NF8U0", title: "技巧06 - 新手也能變達人！取消動畫硬直（中文解說）" },
+      { id: "QGtFTN75YvQ", title: "技巧12 - 新手專用！初學者人馬對戰詳細攻略（教學中不使用盾反等太難技巧）" },
+      { id: "tDvHvBp3WpY", title: "技巧29 - 無限靜止！「重置靜止器(Stasis Resetting)」（中文解說）" },
+      { id: "pcMbBoBD64g", title: "為什麼「雷龍」都沒出現？為什麼Yuda都有用不完的30分鐘料理？(Where's my Farosh? Why does Yuda have infinite Level-3 food?)" },
+      { id: "dXb-jqvf0EU", title: "打不贏「台地人馬(DLC)」？初學者也能輕鬆打贏的懶人打法！（流程解說）" },
+      { id: "8Ue5WQGP6S4", title: "初學者適用！正當獲得2個海利亞盾的方法大公開！" },
+      { id: "00N40ZXRSRw", title: "58秒示範「無限礦石獲得法」流程(Infinite Ore Method)" },
+      { id: "N9gqAwdA7G8", title: "初學者的夢魘：「使其停止方為上策/以靜制動」DLC神廟安全解法" },
+      { id: "9WWn9T660a0", title: "10個「曠野新手」和「曠野老手」的差異（Top 10 Differences between a BoTW Beginner & Veteran）" },
+      { id: "rv8b5ltFuW8", title: "再10個「曠野新手」和「曠野老手」的差異（10 Differences AGAIN between a BoTW Beginner & Veteran）" },
+    ],
+  },
+
+  "botw-08": {
+    videos: [
+      { id: "qxRxWDyohMI", title: "指法01 - 強制子彈時間／完美達爾克爾突擊（PDR）" },
+      { id: "2Q_KbMJ1d6Q", title: "指法02 - 烏魯波薩炸彈盾反（UBP）" },
+      { id: "zmz4dSZybRA", title: "指法03 - 盾擋重置與二段跳射箭（SBR）" },
+      { id: "AvS1nBtXidk", title: "指法04 - 卸盾垂直炸彈跳（S.R. VBJ）" },
+      { id: "CL1bppn6Zeg", title: "指法05 - 雙彈盾反（2 Bomb Parry）" },
+      { id: "y9xzZtNvbE8", title: "指法06 - 炸箭盾反（Bomb Arrow Parry）" },
+      { id: "Vt-NhxATWcA", title: "指法07 - 無限襲步／馬的體力重置法（Infinite Horse Stamina）" },
+      { id: "xcybVn2tCs0", title: "指法08 - 跳炸迴避（Bomb Dodge Jump）" },
+      { id: "PElLfMZX1Fs", title: "指法09 - 爆頭炸彈盾反（Headshot Bomb Parry）" },
+      { id: "7zs5Vt8Xoa4", title: "指法10 -「二段式強制子彈時間（Shield Block Reset + Perfect Daruk Rush）」" },
+      { id: "EYYCye4Qfak", title: "指法11 - 擊上風彈（Vertical Windbomb, 撃ち上げウインドボム）" },
+      { id: "x5HAWCtBhoE", title: "指法12 - 天跳（Skyjump, スカイジャンプ）" },
+      { id: "llbIv0QoWbk", title: "指法13 - 側盾跳穿牆（ISPC, Instant Shield Pull Clip）" },
+      { id: "jOofy1OH9M0", title: "指法14 - 光弓繼承的前置動作！「回憶儲存(Memory Storage)」" },
+      { id: "gva5ZCkuRlE", title: "指法15 -「跳馬盾擋」與「落馬閃擊」(Jump-off Shield Block & Thunderclap Rush, 簡易說明)" },
+      { id: "PlakwPcfJjM", title: "指法16 -「風彈」與「導向風彈」(Windbomb & Directional Windbomb)" },
+      { id: "meteDHOBaTQ", title: "指法17 -「天滑｜手持炸彈版」(Bow Lift Smuggling Slide with a Bomb) (Ver.1.6.0以下限定）" },
+      { id: "KlBJPZ8LoGA", title: "指法18 - 不需月步！「連續蹬牆跳（Wall Jump Chain）」" },
+    ],
+  },
+
+  "botw-10": {
+    videos: [
+      { id: "aOum8IcaiQs", title: "『英傑們(Champions)』- CHC Homemade Opening 1" },
+      { id: "tZm2ezavdmM", title: "『覺醒(Awakening)』- CHC Homemade Opening 2" },
+      { id: "DPSuVuvoJLw", title: "『災滅之刃(Saimetsu no Yaiba)』- CHC Homemade Opening 3" },
+      { id: "XAH3BdCeyfo", title: "『重逢(Reunion)』- CHC Homemade Opening 4" },
+      { id: "Xuhi0MbRK8c", title: "『通往真實的未來(To the True Future)』- Yuda's Fanmade Opening 5（Vivy OP Remix）" },
+      { id: "-TJFB0uS9AQ", title: "『絶望を超えて(Beyond Despair, 突破絕望)』- CHC Fanmade Opening 6（頭ん中DEAD END）" },
     ],
   },
 };

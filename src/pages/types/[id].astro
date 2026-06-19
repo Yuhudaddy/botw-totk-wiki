@@ -34,6 +34,13 @@ const hasAnyVideo = content?.methods?.some((m) => m.video) ?? false;
 const hasAnyImage = content?.methods?.some((m) => m.image) ?? false;
 const hasMedia = hasAnyVideo || hasAnyImage;
 
+// 只顯示「相關影片」區的分類（05~12）：隱藏流程／原理／注意事項，
+// 並讓影片區延續上方標題區的背景色（不另加 bg-surface）。
+const videosOnly = item.videosOnly ?? false;
+const vidSectionClass = videosOnly ? "" : "border-t border-border-soft bg-surface";
+const vidRowHover = videosOnly ? "hover:bg-surface" : "hover:bg-bg";
+const vidBtnBg = videosOnly ? "bg-surface" : "bg-bg";
+
 const VIDEOS_PER_PAGE = 10;
 
 // 把 __文字__ 解析成可加橙色的片段
@@ -76,7 +83,8 @@ function parseName(text: string) {
     </div>
   </section>
 
-  {/* 主體：流程步驟（左）／原理說明＋快速示意（右）＋ 注意事項（下） */}
+  {/* 主體：流程步驟（左）／原理說明＋快速示意（右）＋ 注意事項（下）。videosOnly 分類不顯示 */}
+  {!videosOnly && (
   <article class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
     <div class="grid gap-x-12 gap-y-10 md:grid-cols-[1.6fr_1fr]">
       {/* 左：流程步驟 */}
@@ -139,6 +147,9 @@ function parseName(text: string) {
                       </li>
                     ))}
                   </ol>
+                )}
+                {m.note && (
+                  <p class="mt-4 text-[13px] leading-[1.7] text-muted">{m.note}</p>
                 )}
               </div>
             ))}
@@ -258,10 +269,11 @@ function parseName(text: string) {
       )}
     </div>
   </article>
+  )}
 
   {/* 相關影片 */}
   {content?.videos && content.videos.length > 0 ? (
-    <section class="border-t border-border-soft bg-surface">
+    <section class={vidSectionClass}>
       <div class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
         <div class="mb-6 flex items-end justify-between gap-5">
           <div>
@@ -283,7 +295,7 @@ function parseName(text: string) {
               target="_blank"
               rel="noopener"
               data-vindex={i}
-              class="related-video flex cursor-pointer items-center gap-4 border-b border-border-soft py-[14px] no-underline transition-colors hover:bg-bg"
+              class={`related-video flex cursor-pointer items-center gap-4 border-b border-border-soft py-[14px] no-underline transition-colors ${vidRowHover}`}
             >
               <img
                 src={ytThumb(v.id)}
@@ -316,7 +328,7 @@ function parseName(text: string) {
             <button
               id="vid-prev"
               type="button"
-              class="rounded-[10px] border border-border-strong bg-bg px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+              class={`rounded-[10px] border border-border-strong ${vidBtnBg} px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
               ← 上一頁
             </button>
@@ -324,7 +336,7 @@ function parseName(text: string) {
             <button
               id="vid-next"
               type="button"
-              class="rounded-[10px] border border-border-strong bg-bg px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+              class={`rounded-[10px] border border-border-strong ${vidBtnBg} px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
               下一頁 →
             </button>
@@ -333,7 +345,7 @@ function parseName(text: string) {
       </div>
     </section>
   ) : (
-    <section class="border-t border-border-soft bg-surface">
+    <section class={vidSectionClass}>
       <div class="mx-auto max-w-[1180px] px-8 py-12">
         <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">相關影片 · Videos</div>
         <p class="mt-3 text-[15px] text-muted">影片整理中，敬請期待。</p>
