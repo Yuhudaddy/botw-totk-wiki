@@ -380,4 +380,17 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "gva5ZCkuRlE", title: "指法15 -「跳馬盾擋」與「落馬閃擊」(Jump-off Shield Block & Thunderclap Rush, 簡易說明)" },
     ],
   },
+  "botw-04": {
+    principle:
+      "月步（Moonjump）是透過騎射程錯（Mounted Archery Glitch, MAG）衍生出的進階技巧。利用馬匹跳躍時的特殊狀態，讓林克無限上升，突破地圖邊界與海拔限制。核心機制源自騎馬狀態下射箭的判定漏洞，可用於探索隱藏區域、快速移動或破解謎題。",
+    videos: [
+      { id: "hM23UzbUkII", title: "番外37(上) - 3分鐘學會「無限跳躍法」（簡易流程示範）" },
+      { id: "x0y9v_QpbD4", title: "番外37(中) -「騎射程錯『月步篇』(Mounted Archery Glitch - Moonjump)」（中文解說）" },
+      { id: "sGxoHBm9viQ", title: "番外37(下) -「騎射程錯『地滑篇』(Mounted Archery Glitch - Grounded Slide)」" },
+      { id: "kIuvvisfXAA", title: "番外38 - 逃出海拉魯！「地圖邊界穿牆法(Clip out of Hyrule Barriers)」（中文語音）" },
+      { id: "t8D6hblY3ss", title: "番外39 - 誰說月步只能跳？「定位月步傳送（Moonjump Wrong Warp）」（原理解說版）" },
+      { id: "D5fL3TLcuzY", title: "番外40 - 開場DLC任務！未出台地解「必殺之劍」與「最終試煉」！(適用進階玩家)" },
+      { id: "2zHiRnhdMk8", title: "番外41 - 海拉魯最夯坐騎！與「希多王子」馳騁海拉魯（MWW的應用之一）" },
+    ],
+  },
 };
