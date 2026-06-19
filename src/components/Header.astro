@@ -92,13 +92,18 @@ const videosUrl = href("/videos");
       order: 2;
       margin-left: auto;
     }
-    /* Row 2：nav 佔滿整行 */
+    /* Row 2：nav 佔滿整行，字體與間距縮小讓四項同行 */
     .r-navlist {
       order: 3;
       width: 100%;
       margin-left: 0;
       padding: 6px 0 2px;
       flex-wrap: wrap;
+      gap: 2px;
+    }
+    .r-navlist a {
+      font-size: 13px;
+      padding: 6px 8px;
     }
     .r-navsearch {
       display: none;
