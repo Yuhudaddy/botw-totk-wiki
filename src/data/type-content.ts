@@ -33,6 +33,7 @@ export interface TypeContent {
   principleTitle?: string;    // B 區右欄標題，預設「原理說明」
   principle?: string;         // B 區內文（段落式，與 principleItems 擇一）
   principleItems?: string[];  // B 區內文（條列式，有值則覆蓋 principle）
+  principleNote?: string;     // B 區備註（灰色小字，顯示於 principle/principleItems 下方）
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
   notes?: TypeNote[];         // 注意事項
   closing?: string;           // 注意事項下方的結語
@@ -381,8 +382,13 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
   "botw-04": {
-    principle:
-      "異常結束騎馬射箭小遊戲，可以將林克的位置卡在馬背上，解除林克的跳躍動作和硬直的同步，提早結束跳躍硬直以達成連續跳躍。除此之外林克的位置座標會被固定在上一次最後讀取的位置，在地上移動時會不停拉扯實際座標位置。",
+    principleItems: [
+      "月步有固定座標的功能",
+      "__重生（Respawn）邏輯__：當林克落水或掉入深淵時，遊戲不會把你放回岸邊，而是會將你傳送到「傳送標記器的座標值」",
+      "__重新讀取（Restart）邏輯__：當林克死亡或「讀取存檔」時，遊戲會將你傳送到「傳送到傳送標記器前的上一個最後讀取位置（傳送點座標或讀檔的位置）」",
+    ],
+    principleNote:
+      "應用場景：傳送到神獸，經過讀取畫面後進入神獸內部，接著傳送到 TM，此時「上一個最後讀取位置」就是神獸入口。接著你無論讀取哪一個普通模式的存檔（傳送後才建立的），遊戲都會把你直接傳送回神獸內部。這個邏輯常被用來將進度帶入大師模式，或是用來突破系統限制強行進入劇情無法到達，或已被封鎖的區域。",
     methods: [
       {
         tab:  "月步",
@@ -429,11 +435,19 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab:  "MWW",
         name: "Moonjump Wrong Warp",
+        steps: [
+          "將「傳送標記器（TM）」放置在你想要利用其座標的目的地",
+          "觸發月步",
+          "傳送到神廟、移動，或讀檔到目標位置",
+          "傳送到傳送標記器",
+          "觸發自動或手動存檔後讀取該檔案",
+        ],
       },
     ],
     notes: [
       { text: "未開滑翔翼落地的情形，放開 ZL 林克就會恢復成原本的「月步狀態」" },
       { text: "月步狀態下爬上樓梯或接觸牆壁會變得只能緩慢走路，手持材料可以解除" },
+      { text: "再次正常騎乘（馬、機車、萊尼爾等等）可以解除月步" },
     ],
     videos: [
       { id: "hM23UzbUkII", title: "番外37(上) - 3分鐘學會「無限跳躍法」（簡易流程示範）" },

@@ -162,7 +162,9 @@ function parseName(text: string) {
           <h2>{content?.principleTitle ?? "原理說明"}</h2>
           {content?.principleItems ? (
             <ul>
-              {content.principleItems.map((item) => <li>{item}</li>)}
+              {content.principleItems.map((item) => (
+                <li>{parseAccent(item).map((seg) => seg.accent ? <span class="text-accent">{seg.text}</span> : seg.text)}</li>
+              ))}
             </ul>
           ) : (
             <p>
@@ -174,6 +176,9 @@ function parseName(text: string) {
                 `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`
               )}
             </p>
+          )}
+          {content?.principleNote && (
+            <p class="mt-3 text-[13px] leading-[1.7] text-muted">{content.principleNote}</p>
           )}
         </div>
 
