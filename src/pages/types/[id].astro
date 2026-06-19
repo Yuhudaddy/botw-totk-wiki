@@ -160,15 +160,21 @@ function parseName(text: string) {
         {/* B: 原理說明 */}
         <div class="prose-custom">
           <h2>{content?.principleTitle ?? "原理說明"}</h2>
-          <p>
-            {content?.principle ? (
-              parseName(content.principle).map((seg) =>
-                seg.name ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u> : seg.text
-              )
-            ) : (
-              `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`
-            )}
-          </p>
+          {content?.principleItems ? (
+            <ul>
+              {content.principleItems.map((item) => <li>{item}</li>)}
+            </ul>
+          ) : (
+            <p>
+              {content?.principle ? (
+                parseName(content.principle).map((seg) =>
+                  seg.name ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u> : seg.text
+                )
+              ) : (
+                `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`
+              )}
+            </p>
+          )}
         </div>
 
         {/* C: 快速示意（影片或圖片，隨分頁切換） */}

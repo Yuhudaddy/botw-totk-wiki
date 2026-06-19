@@ -27,16 +27,17 @@ export interface TypeNote {
 }
 
 export interface TypeContent {
-  videoFolder?: string;     // public/type-videos/ 下的子資料夾名稱（影片用）
-  imageFolder?: string;     // public/type-videos/ 下的子資料夾名稱（圖片用）
-  methodsTitle?: string;    // A 區左欄標題，預設「流程步驟」
-  principleTitle?: string;  // B 區右欄標題，預設「原理說明」
-  principle?: string;       // B 區內文
-  methods?: TypeMethod[];   // A 區流程步驟（分頁）
-  notes?: TypeNote[];       // 注意事項
-  closing?: string;         // 注意事項下方的結語
+  videoFolder?: string;       // public/type-videos/ 下的子資料夾名稱（影片用）
+  imageFolder?: string;       // public/type-videos/ 下的子資料夾名稱（圖片用）
+  methodsTitle?: string;      // A 區左欄標題，預設「流程步驟」
+  principleTitle?: string;    // B 區右欄標題，預設「原理說明」
+  principle?: string;         // B 區內文（段落式，與 principleItems 擇一）
+  principleItems?: string[];  // B 區內文（條列式，有值則覆蓋 principle）
+  methods?: TypeMethod[];     // A 區流程步驟（分頁）
+  notes?: TypeNote[];         // 注意事項
+  closing?: string;           // 注意事項下方的結語
   faqLink?: { label: string; path: string }; // Q&A 頁面連結（選填）
-  videos?: RelatedVideo[];  // 相關影片
+  videos?: RelatedVideo[];    // 相關影片
 }
 
 export const typeContent: Record<string, TypeContent> = {
@@ -285,12 +286,15 @@ export const typeContent: Record<string, TypeContent> = {
   "botw-03": {
     methodsTitle:   "攻擊模式",
     principleTitle: "對應策略",
-    principle:
-      "攻略人馬時有幾個核心原則：保持 ZL 鎖定並維持近距離，可避免引發箭雨，並創造更多完美迴避機會。" +
-      "人馬吐火若點燃草地，可藉由上升氣流升空進入「子彈時間」補輸出。" +
-      "見到白髮人馬仰天大吼，需立刻拉開距離或爆頭打斷範圍大爆炸。" +
-      "持大劍人馬的下砸衝擊波不可只靠一般側跳，需完美迴避；待在其側面或背面時務必提防迴旋斬。" +
-      "成功擊暈人馬騎上去前，可先趁機補幾刀。",
+    principleItems: [
+      "保持 ZL 鎖定並靠近人馬，可避免引發箭雨，也能創造更多完美迴避機會",
+      "人馬吐火點燃草地時，可藉由上升氣流升空進入「子彈時間」補輸出",
+      "見到白髮人馬仰天大吼，立刻拉開距離，或趁機爆頭打斷範圍大爆炸",
+      "持大劍人馬的下砸衝擊波不可只靠一般側跳，需完美迴避或跑動拉開距離",
+      "待在持大劍人馬側面或背面時，務必提防迴旋斬（需立刻後退閃避）",
+      "持槍人馬落地的衝擊波無法單純盾擋，需預判迴避或事先拉開距離",
+      "成功騎乘人馬前，可先趁暈眩空檔補幾刀（不消耗武器耐久）",
+    ],
     methods: [
       {
         tab:  "共通",
@@ -333,8 +337,22 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     notes: [
-      { text: "戰鬥中記得隨時按 ZL 鍵鎖定視角。" },
-      { text: "擊暈人馬並準備騎上去之前，可以先趁機補幾刀。" },
+      {
+        text: "騎背砍（Mountable Back Slash）不消耗武器耐久度，是對人馬最高效的輸出方式，建議優先掌握騎乘時機。",
+      },
+      {
+        text: "可騎乘的 5 種時機：",
+        sub: [
+          "(1) 爆頭 / 射臉 ── 射中人馬臉部使其單膝跪地（真暈眩）",
+          "(2) 烏爾波扎的憤怒 ── 解完神獸後的英傑電擊可強制暈眩",
+          "(3) 突進結束後的空檔 ── 人馬衝刺停下、重新起身前",
+          "(4) 林克位置較高 ── 從空中直接落騎（跳馬、地形、技巧皆可）",
+          "(5) 人馬脫離戰鬥範圍 ── 走回原地途中、或傳送紅光前",
+        ],
+      },
+      {
+        text: "無法騎乘的 2 種情形：靜止器假暈眩期間；人馬掏弓時 / 剛被騎下的瞬間。",
+      },
     ],
     videos: [
       { id: "ChdbQCjaTCo", title: "EX04 - 新手絕對適用！曠野第一隻人馬的「雷獸山『紅髮人馬』」攻略", desc: "最對症下藥的人馬攻略！" },
