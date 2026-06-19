@@ -284,6 +284,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-03": {
+    videoFolder:    "botw-lynel",
     methodsTitle:   "攻擊模式",
     principleTitle: "對應策略",
     principleItems: [
@@ -297,8 +298,9 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     methods: [
       {
-        tab:  "共通",
-        name: "所有武器的人馬皆會使用的攻擊",
+        tab:   "共通",
+        name:  "所有武器的人馬皆會使用的攻擊",
+        video: "共通.mp4",
         steps: [
           "__突進__：收起武器，以四足直接衝撞玩家",
           "__火球__：往後跳後連續吐出 3 顆火球（草地上吐火可產生上升氣流）",
@@ -308,8 +310,9 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab:  "持劍",
-        name: "持劍人馬（單手劍＋盾）",
+        tab:   "持劍",
+        name:  "持劍人馬（單手劍＋盾）",
+        video: "持劍.mp4",
         steps: [
           "__3 連斬__：最常見招式，連續快速三刀，有時連續使出",
           "__交叉斬__：另一常見招式，有時與 3 連斬接連使出",
@@ -318,16 +321,18 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab:  "持槍",
-        name: "持槍人馬（長槍）",
+        tab:   "持槍",
+        name:  "持槍人馬（長槍）",
+        video: "持槍.mp4",
         steps: [
           "__跳刺__：高躍起後向下突刺，落地產生__衝擊波__範圍傷害",
           "衝擊波__無法單純盾擋__，需預判迴避或事先拉開距離",
         ],
       },
       {
-        tab:  "持大劍",
-        name: "持大劍人馬（雙手大劍 / 獸神大劍）",
+        tab:   "持大劍",
+        name:  "持大劍人馬（雙手大劍 / 獸神大劍）",
+        video: "持大劍.mp4",
         steps: [
           "__迴旋斬（大風車）__：玩家待在側面或背面時極易觸發，需立刻後退",
           "__3 連錘 / 重錘（下砸）__：每次下砸伴隨極大衝擊波，__不可只靠一般側跳迴避__",
