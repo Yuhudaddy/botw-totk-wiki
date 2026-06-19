@@ -18,14 +18,14 @@ const totalPages = Math.ceil(videos.length / PER_PAGE);
 <BaseLayout title={cat.game} active={game}>
   {/* 標題 */}
   <section class="border-b border-border-soft">
-    <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+    <div class="r-game-hero mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
         <a href={href("/")} class="no-underline text-muted">首頁</a>
         <span>/</span>
         <span class="text-ink">{cat.game}</span>
       </div>
       <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{cat.en} · 影片清單</div>
-      <h1 class="mb-[18px] mt-3.5 font-serif text-[46px] font-medium leading-[1.14] text-ink">
+      <h1 class="r-game-h1 mb-[18px] mt-3.5 font-serif text-[46px] font-medium leading-[1.14] text-ink">
         {cat.game}
       </h1>
       <p class="max-w-[62ch] text-lg leading-[1.65] text-text">{cat.desc}</p>
@@ -113,6 +113,18 @@ const totalPages = Math.ceil(videos.length / PER_PAGE);
     )}
   </section>
 </BaseLayout>
+
+<style>
+  @media (max-width: 600px) {
+    .r-game-hero {
+      padding-top: 28px;
+      padding-bottom: 24px;
+    }
+    .r-game-h1 {
+      font-size: 32px;
+    }
+  }
+</style>
 
 <script define:vars={{ total: videos.length, PER_PAGE }}>
   (function () {
