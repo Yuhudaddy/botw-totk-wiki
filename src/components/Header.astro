@@ -20,7 +20,7 @@ const videosUrl = href("/videos");
       <span class="font-serif text-lg font-medium text-ink">{SITE.shortTitle}</span>
     </a>
 
-    <nav class="ml-1.5 flex gap-1">
+    <nav class="r-navlist ml-1.5 flex gap-1">
       {
         navItems.map((n) => {
           const isActive = n.match === active;
@@ -81,21 +81,27 @@ const videosUrl = href("/videos");
 <style>
   @media (max-width: 600px) {
     .r-navbar {
-      position: relative;
       height: auto;
       flex-wrap: wrap;
-      padding: 11px 18px;
-      gap: 6px 14px;
+      align-items: center;
+      padding: 10px 18px;
+      gap: 0;
+    }
+    /* Row 1 右側：ThemeToggle 推到最右，與 Logo 同行 */
+    .r-navactions {
+      order: 2;
+      margin-left: auto;
+    }
+    /* Row 2：nav 佔滿整行 */
+    .r-navlist {
+      order: 3;
+      width: 100%;
+      margin-left: 0;
+      padding: 6px 0 2px;
+      flex-wrap: wrap;
     }
     .r-navsearch {
       display: none;
-    }
-    /* 深淺色按鈕固定在 header 右上角，避免被導覽列擠到空行 */
-    .r-navactions {
-      position: absolute;
-      top: 14px;
-      right: 18px;
-      margin-left: 0;
     }
   }
 </style>
