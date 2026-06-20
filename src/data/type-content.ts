@@ -150,7 +150,7 @@ export const typeContent: Record<string, TypeContent> = {
           "裝備多發弓和電箭，並按 ZR 將弓箭放到前面",
           "暫停丟棄裝備中的多發弓 → 裝備另一把多發弓",
           "關閉暫停讓另一把電箭多發弓的模型顯現",
-          "重複__步驟 3 ～ 4__，直到暫停選單的林克出現模組缺陷的「選單過載(Menu Overload)」，__NS2 版必須解除暫停 B → ZR 將弓收起再拿出來釋放負載__",
+          "重複__步驟 3 ～ 4__，直到暫停選單的林克出現模組缺陷的「選單過載(Menu Overload)」，__NS2 版必須關閉暫停 B → ZR 將弓收起再拿出來釋放負載__",
           "嘗試手持材料 m 種不同的材料(m ≦ 4)，並確認模型__沒有正常顯示__",
           "撿起 1 ～ 2 把多發弓解除選單過載",
           "找商店賣光__步驟 6__ 手持的材料",
@@ -462,6 +462,17 @@ export const typeContent: Record<string, TypeContent> = {
 
   "botw-06": {
     videos: [
+      { id: "9d1ks1E_a3A", title: "番外00「災厄之路(The way to \"Calamity\")」- 戰鬥技巧詳解" },
+      { id: "yyJroBo6oWc", title: "番外10 -「盾擋重置(Shield Block Reset／盾受けリセット)」" },
+      { id: "CTycsi72RlE", title: "番外12 - 瞬盾翔(PDPL)／光劍硬直取消／盾擋重置(SBR)應用" },
+      { id: "zmz4dSZybRA", title: "指法03 - 盾擋重置與二段跳射箭（SBR）" },
+      { id: "O8afIFdhb18", title: "番外22 自燃火把／完美盾擋重置(DSBR)／烏魯波薩突擊(Urbosa Rush)" },
+      { id: "5-h3TNlXaLk", title: "番外10.5 - 閃擊(TCR)不標記也能打中！「轉向盾擋重置（Turnaround SBR）」" },
+    ],
+  },
+
+  "botw-07": {
+    videos: [
       { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
       { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
       { id: "EjX0-Pj6wG0", title: "高效率3心無傷！『劍之考驗 - 初級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Beginning）" },
@@ -481,7 +492,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-08": {
+  "botw-09": {
     videos: [
       { id: "eKNFTJVV85c", title: "神特01 - 初始台地區域（Shrine Strategies in Great Plateua Area）" },
       { id: "wKRYj0hMy18", title: "神特02 - 塔邦撻地區（Shrine Strategies in Tabantha region）" },
@@ -499,7 +510,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-10": {
+  "botw-11": {
     videos: [
       { id: "2vL2TXpLh7U", title: "EX5 - 新手怎麼潛入依蓋隊基地？Yuda教你直接闖空門！(Area Clearing)" },
       { id: "1y-BGwQ0_zs", title: "DLC2《虛幻空間》的四咒加儂 - 快速重點攻略(Walkthrough of Blight Ganons in Illusory Realm)（2022年版）" },
@@ -526,7 +537,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-12": {
+  "botw-14": {
     videos: [
       { id: "Okv-0so2jys", title: "6分鐘$500000｜吃(用)不完的料理與素材 -「新檔訛轉」的可怕！（不廢話系列）" },
       { id: "JtSHil_1AYM", title: "不用洗箭！快速全屬性80000箭｜無原理快速示範「連鎖向前訛轉(FDIC Chain)」！（不廢話系列）" },
@@ -546,7 +557,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-07": {
+  "botw-08": {
     videos: [
       { id: "ewnlB6jK7M8", title: "番外04(新) - 原來不只有「完美迴避的突擊」？Yuda教你所有「進階突擊(Advanced Flurry Rush, TCR/PDR/ATR)」" },
       { id: "K5JjZHBTC9c", title: "ED01 - NS2才入手的必看！絕對不能錯過的小知識（上）" },
@@ -572,7 +583,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-09": {
+  "botw-10": {
     videos: [
       { id: "qxRxWDyohMI", title: "指法01 - 強制子彈時間／完美達爾克爾突擊（PDR）" },
       { id: "2Q_KbMJ1d6Q", title: "指法02 - 烏魯波薩炸彈盾反（UBP）" },
@@ -595,7 +606,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-11": {
+  "botw-12": {
     videos: [
       { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製/耐久移植和維修！「落弓過載法(Multi-Shot Bow Method)」（適用：~ver.1.9.0）", desc: "最常使用的複製方法和選單過載法！" },
       { id: "pnUMPB2kyvk", title: "番外13 - 魔物觸發的「電箭過載法」", desc: "最早被發現的複製武器盾牌法！" },
