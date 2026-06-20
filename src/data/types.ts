@@ -57,7 +57,7 @@ export const typeGroups: TypeGroup[] = [
     items: [
       { no: "01", zh: "大岩蛇", en: "Onix" },
       { no: "02", zh: "萊尼爾", en: "Lynel" },
-      { no: "03", zh: "飛天遁地", en: "Skybound & Burrow", videosOnly: true },
+      { no: "03", zh: "飛天遁地", en: "Skybound", videosOnly: true },
     ],
   },
 ];

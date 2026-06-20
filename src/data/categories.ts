@@ -59,7 +59,7 @@ export const eowCategory: GameCategory = {
   cats: [
     { no: "01", title: "大岩蛇 Onix", desc: "以大岩蛇再現達成的高度位移與攻略應用。", meta: "敬請期待", status: "wip" },
     { no: "02", title: "萊尼爾 Lynel", desc: "萊尼爾再現的戰鬥與位移應用。", meta: "敬請期待", status: "wip" },
-    { no: "03", title: "飛天遁地 Skybound & Burrow", desc: "上天下地的自由位移與出界技巧。", meta: "敬請期待", status: "wip" },
+    { no: "03", title: "飛天遁地 Skybound", desc: "上天下地的自由位移與出界技巧。", meta: "敬請期待", status: "wip" },
   ],
 };
 
