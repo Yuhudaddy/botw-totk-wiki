@@ -596,12 +596,14 @@ export const typeContent: Record<string, TypeContent> = {
 
   "botw-10": {
     videos: [
-      { id: "aOum8IcaiQs", title: "『英傑們(Champions)』- CHC Homemade Opening 1" },
-      { id: "tZm2ezavdmM", title: "『覺醒(Awakening)』- CHC Homemade Opening 2" },
-      { id: "DPSuVuvoJLw", title: "『災滅之刃(Saimetsu no Yaiba)』- CHC Homemade Opening 3" },
-      { id: "XAH3BdCeyfo", title: "『重逢(Reunion)』- CHC Homemade Opening 4" },
-      { id: "Xuhi0MbRK8c", title: "『通往真實的未來(To the True Future)』- Yuda's Fanmade Opening 5（Vivy OP Remix）" },
-      { id: "-TJFB0uS9AQ", title: "『絶望を超えて(Beyond Despair, 突破絕望)』- CHC Fanmade Opening 6（頭ん中DEAD END）" },
+      { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製/耐久移植和維修！「落弓過載法(Multi-Shot Bow Method)」（適用：~ver.1.9.0）", desc: "最常使用的複製方法和選單過載法！" },
+      { id: "pnUMPB2kyvk", title: "番外13 - 魔物觸發的「電箭過載法」", desc: "最早被發現的複製武器盾牌法！" },
+      { id: "YxPHU-FFeto", title: "番外25 -  手骨武器複製法" },
+      { id: "8ujsCX4GQMQ", title: "回應08 -「手骨複製法」補充（Other Tips of Bone Arm Weapon Duplication）" },
+      { id: "pi2w0KLnO1U", title: "EX03 - 缺武器？初學者也能複製魔物手上的武器！（初學者適用）" },
+      { id: "VSOgkio5Ojw", title: "番外32 - (NS1限定)不需人馬弓複製劍/盾/弓！「跳馬複製法(Horse Duping/Duplication)」（中文解說）" },
+      { id: "n4895SGurGs", title: "「雙弓過載法」- 2把多發弓就能複製武器！？(NS2版必須地上已經有部分落弓過載)" },
+      { id: "erkGAtF2QnY", title: "番外36.5 - 下了初始台地就能複製武器！「馬滑武器複製法(Horse Slide Duplication)」" },
     ],
   },
 };
