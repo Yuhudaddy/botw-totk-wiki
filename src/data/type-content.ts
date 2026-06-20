@@ -460,7 +460,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-05": {
+  "botw-06": {
     videos: [
       { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
       { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
@@ -481,7 +481,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-07": {
+  "botw-08": {
     videos: [
       { id: "eKNFTJVV85c", title: "神特01 - 初始台地區域（Shrine Strategies in Great Plateua Area）" },
       { id: "wKRYj0hMy18", title: "神特02 - 塔邦撻地區（Shrine Strategies in Tabantha region）" },
@@ -499,7 +499,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-09": {
+  "botw-10": {
     videos: [
       { id: "2vL2TXpLh7U", title: "EX5 - 新手怎麼潛入依蓋隊基地？Yuda教你直接闖空門！(Area Clearing)" },
       { id: "1y-BGwQ0_zs", title: "DLC2《虛幻空間》的四咒加儂 - 快速重點攻略(Walkthrough of Blight Ganons in Illusory Realm)（2022年版）" },
@@ -546,11 +546,12 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-06": {
+  "botw-07": {
     videos: [
       { id: "ewnlB6jK7M8", title: "番外04(新) - 原來不只有「完美迴避的突擊」？Yuda教你所有「進階突擊(Advanced Flurry Rush, TCR/PDR/ATR)」" },
+      { id: "K5JjZHBTC9c", title: "ED01 - NS2才入手的必看！絕對不能錯過的小知識（上）" },
       { id: "Zpc6r4T8Wwk", title: "ED02 - NS2才知道也不遲！絕對不能錯過的技巧！（下）" },
-      { id: "eCKsWlOQzrA", title: "EX00《大師模式》新手實用技巧！別讓大師台地勸退你（字幕解說）" },
+      { id: "eCKsWlOQzrA", title: "EX00 -《大師模式》新手實用技巧！別讓大師台地勸退你（字幕解說）" },
       { id: "cgqAOlvubVQ", title: "EX01 -「從初學者畢業的13堂技巧課」 - 遊戲攻略技巧精華（人聲解說）" },
       { id: "0A6dkkeEtQo", title: "EX02 - 初學者一定用得到的小技巧和小知識（中文解說）" },
       { id: "pi2w0KLnO1U", title: "EX03 - 缺武器？初學者也能複製魔物手上的武器！（初學者適用）" },
@@ -571,7 +572,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-08": {
+  "botw-09": {
     videos: [
       { id: "qxRxWDyohMI", title: "指法01 - 強制子彈時間／完美達爾克爾突擊（PDR）" },
       { id: "2Q_KbMJ1d6Q", title: "指法02 - 烏魯波薩炸彈盾反（UBP）" },
@@ -594,7 +595,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-10": {
+  "botw-11": {
     videos: [
       { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製/耐久移植和維修！「落弓過載法(Multi-Shot Bow Method)」（適用：~ver.1.9.0）", desc: "最常使用的複製方法和選單過載法！" },
       { id: "pnUMPB2kyvk", title: "番外13 - 魔物觸發的「電箭過載法」", desc: "最早被發現的複製武器盾牌法！" },

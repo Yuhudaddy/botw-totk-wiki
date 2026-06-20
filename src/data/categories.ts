@@ -1,5 +1,5 @@
 // 遊戲分類定義（示意資料，沿用原型）。
-export type GameKey = "botw" | "totk";
+export type GameKey = "botw" | "totk" | "eow";
 
 export interface CategoryItem {
   no: string;
@@ -50,7 +50,21 @@ export const botwCategory: GameCategory = {
   ],
 };
 
+export const eowCategory: GameCategory = {
+  key: "eow",
+  game: "智慧的再現",
+  en: "Echoes of Wisdom",
+  desc: "《薩爾達傳說：智慧的再現》技巧與 Glitch 攻略。以「再現（Echo）」召喚怪物與物件達成各種位移、戰鬥與序破，分類整理自頻道內容。",
+  tip: "智慧的再現的技巧多與遊戲版本相關，部分 glitch 僅限特定版本可用，操作前請確認頁面標註的適用版本。",
+  cats: [
+    { no: "01", title: "大岩蛇 Onix", desc: "以大岩蛇再現達成的高度位移與攻略應用。", meta: "敬請期待", status: "wip" },
+    { no: "02", title: "萊尼爾 Lynel", desc: "萊尼爾再現的戰鬥與位移應用。", meta: "敬請期待", status: "wip" },
+    { no: "03", title: "飛天遁地 Skybound & Burrow", desc: "上天下地的自由位移與出界技巧。", meta: "敬請期待", status: "wip" },
+  ],
+};
+
 export const gameCategories: Record<GameKey, GameCategory> = {
   totk: totkCategory,
   botw: botwCategory,
+  eow: eowCategory,
 };

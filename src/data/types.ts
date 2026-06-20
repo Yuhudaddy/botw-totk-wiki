@@ -9,7 +9,7 @@ export interface TypeItem {
 }
 
 export interface TypeGroup {
-  game: "botw" | "totk";
+  game: "botw" | "totk" | "eow";
   label: string;
   en: string;
   items: TypeItem[];
@@ -25,13 +25,13 @@ export const typeGroups: TypeGroup[] = [
       { no: "02", zh: "轉存格", en: "Inventory Slot Transfer" },
       { no: "03", zh: "萊尼爾", en: "Lynels" },
       { no: "04", zh: "月步", en: "Moonjump" },
-      { no: "05", zh: "劍之考驗", en: "Trial of the Sword (DLC1)", videosOnly: true },
-      { no: "06", zh: "新手學習", en: "Beginners", videosOnly: true },
-      { no: "07", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
-      { no: "08", zh: "技巧指法", en: "Inputs", videosOnly: true },
-      { no: "09", zh: "主線任務", en: "Main Story", videosOnly: true },
-      { no: "10", zh: "裝備複製", en: "Equipment Duping", videosOnly: true },
-      { no: "11", zh: "回應觀眾", en: "Viewer Replies", videosOnly: true },
+      { no: "05", zh: "過場必殺劍", en: "Cutscene OHO" },
+      { no: "06", zh: "劍之考驗", en: "Trial of the Sword (DLC1)", videosOnly: true },
+      { no: "07", zh: "新手學習", en: "Beginners", videosOnly: true },
+      { no: "08", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
+      { no: "09", zh: "技巧指法", en: "Inputs", videosOnly: true },
+      { no: "10", zh: "主線任務", en: "Main Story", videosOnly: true },
+      { no: "11", zh: "裝備複製", en: "Equipment Duping", videosOnly: true },
       { no: "12", zh: "不廢話系列", en: "Zero Fluff", videosOnly: true },
     ],
   },
@@ -44,6 +44,20 @@ export const typeGroups: TypeGroup[] = [
       { no: "02", zh: "序章大師劍", en: "MsgNotFound Sword in Prologue" },
       { no: "03", zh: "進階技巧", en: "Advanced Techniques" },
       { no: "04", zh: "神廟特解", en: "Shrine Strategies" },
+      { no: "05", zh: "西方高原", en: "Western Highlands" },
+      { no: "06", zh: "黏手並列", en: "Smuggle & Zuggle" },
+      { no: "07", zh: "過載", en: "Overload" },
+      { no: "08", zh: "虛化裝備", en: "Void-Dip & DI" },
+    ],
+  },
+  {
+    game: "eow",
+    label: "智慧的再現",
+    en: "Echoes of Wisdom",
+    items: [
+      { no: "01", zh: "大岩蛇", en: "Onix" },
+      { no: "02", zh: "萊尼爾", en: "Lynel" },
+      { no: "03", zh: "飛天遁地", en: "Skybound & Burrow", videosOnly: true },
     ],
   },
 ];

@@ -5,12 +5,17 @@ import { gameCategories, type GameKey } from "../../data/categories";
 import youtubeData from "../../data/youtube.json";
 
 export function getStaticPaths() {
-  return (["botw", "totk"] as GameKey[]).map((game) => ({ params: { game } }));
+  return (["botw", "totk", "eow"] as GameKey[]).map((game) => ({ params: { game } }));
 }
 
 const { game } = Astro.params as { game: GameKey };
 const cat = gameCategories[game];
-const videos = game === "botw" ? youtubeData.botw : youtubeData.totk;
+const videosByGame: Record<GameKey, typeof youtubeData.botw> = {
+  botw: youtubeData.botw,
+  totk: youtubeData.totk,
+  eow: youtubeData.eow,
+};
+const videos = videosByGame[game];
 const PER_PAGE = 10;
 const totalPages = Math.ceil(videos.length / PER_PAGE);
 ---

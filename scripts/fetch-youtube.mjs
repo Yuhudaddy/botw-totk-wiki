@@ -71,6 +71,15 @@ const totkAll = allVideos
   .filter((v) => matchTag(v.snippet.tags, '王國之淚', 'totk'))
   .map(toVideo);
 
+// 智慧的再現（Echoes of Wisdom）：tag 含「智慧的再現」/「eow」或標題含「智慧的再現」
+const eowAll = allVideos
+  .filter(
+    (v) =>
+      matchTag(v.snippet.tags, '智慧的再現', 'eow') ||
+      v.snippet.title.includes('智慧的再現')
+  )
+  .map(toVideo);
+
 // ── 5. 精選：30 天內觀看數最高的 6 部 ────────────────────────────────────────
 const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 const recent = allVideos.filter((v) => v.snippet.publishedAt >= thirtyDaysAgo);
@@ -90,9 +99,10 @@ const out = {
   latest,
   botw: botwAll,
   totk: totkAll,
+  eow: eowAll,
   updatedAt: new Date().toISOString(),
 };
 writeFileSync(join(__dirname, '../src/data/youtube.json'), JSON.stringify(out, null, 2));
 console.log(
-  `已更新 youtube.json（精選 ${featured.length}、最新 ${latest.length}、BotW ${botwAll.length}、TotK ${totkAll.length}）`
+  `已更新 youtube.json（精選 ${featured.length}、最新 ${latest.length}、BotW ${botwAll.length}、TotK ${totkAll.length}、EoW ${eowAll.length}）`
 );
