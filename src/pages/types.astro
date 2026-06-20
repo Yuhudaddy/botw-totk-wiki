@@ -52,11 +52,11 @@ import { typeGroups } from "../data/types";
           {group.items.map((item) => (
             <a
               href={href(`/types/${group.game}-${item.no}`)}
-              class="group flex flex-col rounded-2xl border border-border-soft bg-surface px-4 py-3.5 no-underline transition-colors hover:border-brand"
+              class="group flex min-w-0 flex-col rounded-2xl border border-border-soft bg-surface px-4 py-3.5 no-underline transition-colors hover:border-brand"
             >
-              <div class="flex items-baseline gap-2">
-                <span class="font-mono text-[13px] text-accent">{item.no}</span>
-                <span class="font-serif text-[18px] font-medium text-ink">{item.zh}</span>
+              <div class="flex min-w-0 items-baseline gap-2">
+                <span class="flex-none font-mono text-[13px] text-accent">{item.no}</span>
+                <span class="truncate font-serif text-[18px] font-medium text-ink">{item.zh}</span>
               </div>
               <div class="truncate text-[12px] text-muted">{item.en}</div>
             </a>
@@ -76,7 +76,7 @@ import { typeGroups } from "../data/types";
       font-size: 32px;
     }
     .r-type-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
   }

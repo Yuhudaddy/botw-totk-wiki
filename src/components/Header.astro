@@ -92,20 +92,22 @@ const videosUrl = href("/videos");
       order: 2;
       margin-left: auto;
     }
-    /* Row 2：nav 佔滿整行，字體與間距縮小讓四項同行 */
+    /* Row 2：nav 佔滿整行，等寬不換行讓各分頁平均分佈 */
     .r-navlist {
       order: 3;
       width: 100%;
       margin-left: 0;
       padding: 6px 0 2px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 2px;
     }
     .r-navlist a {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
       text-align: center;
       font-size: 13px;
-      padding: 6px 4px;
+      padding: 6px 2px;
+      white-space: nowrap;
     }
     .r-navsearch {
       display: none;
