@@ -33,7 +33,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "10", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
       { no: "11", zh: "技巧指法", en: "Inputs", videosOnly: true },
       { no: "12", zh: "主線任務", en: "Main Story", videosOnly: true },
-      { no: "13", zh: "裝備複製", en: "Equipment Duping", videosOnly: true },
+      { no: "13", zh: "裝備複製", en: "Equipment Duping" },
       { no: "14", zh: "回應觀眾", en: "Viewer Replies", videosOnly: true },
       { no: "15", zh: "不廢話系列", en: "Zero Fluff", videosOnly: true },
       { no: "16", zh: "合作戰鬥集", en: "Combat Montage", videosOnly: true },

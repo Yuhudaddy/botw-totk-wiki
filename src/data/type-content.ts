@@ -471,6 +471,12 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "botw-07": {
+    videos: [
+      { id: "46EcbtMQ9V8", title: "技巧31 - 無寧靜也能暗殺！偷襲方法與敵意機制詳解" },
+    ],
+  },
+
   "botw-08": {
     videos: [
       { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
