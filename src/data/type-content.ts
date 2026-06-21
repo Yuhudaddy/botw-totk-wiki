@@ -471,7 +471,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-07": {
+  "botw-08": {
     videos: [
       { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
       { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
@@ -492,7 +492,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-09": {
+  "botw-10": {
     videos: [
       { id: "eKNFTJVV85c", title: "神特01 - 初始台地區域（Shrine Strategies in Great Plateua Area）" },
       { id: "wKRYj0hMy18", title: "神特02 - 塔邦撻地區（Shrine Strategies in Tabantha region）" },
@@ -510,7 +510,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-11": {
+  "botw-12": {
     videos: [
       { id: "2vL2TXpLh7U", title: "EX5 - 新手怎麼潛入依蓋隊基地？Yuda教你直接闖空門！(Area Clearing)" },
       { id: "1y-BGwQ0_zs", title: "DLC2《虛幻空間》的四咒加儂 - 快速重點攻略(Walkthrough of Blight Ganons in Illusory Realm)（2022年版）" },
@@ -537,7 +537,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-14": {
+  "botw-15": {
     videos: [
       { id: "Okv-0so2jys", title: "6分鐘$500000｜吃(用)不完的料理與素材 -「新檔訛轉」的可怕！（不廢話系列）" },
       { id: "JtSHil_1AYM", title: "不用洗箭！快速全屬性80000箭｜無原理快速示範「連鎖向前訛轉(FDIC Chain)」！（不廢話系列）" },
@@ -557,7 +557,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-08": {
+  "botw-09": {
     videos: [
       { id: "ewnlB6jK7M8", title: "番外04(新) - 原來不只有「完美迴避的突擊」？Yuda教你所有「進階突擊(Advanced Flurry Rush, TCR/PDR/ATR)」" },
       { id: "K5JjZHBTC9c", title: "ED01 - NS2才入手的必看！絕對不能錯過的小知識（上）" },
@@ -583,7 +583,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-10": {
+  "botw-11": {
     videos: [
       { id: "qxRxWDyohMI", title: "指法01 - 強制子彈時間／完美達爾克爾突擊（PDR）" },
       { id: "2Q_KbMJ1d6Q", title: "指法02 - 烏魯波薩炸彈盾反（UBP）" },
@@ -606,7 +606,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "botw-12": {
+  "botw-13": {
     videos: [
       { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製/耐久移植和維修！「落弓過載法(Multi-Shot Bow Method)」（適用：~ver.1.9.0）", desc: "最常使用的複製方法和選單過載法！" },
       { id: "pnUMPB2kyvk", title: "番外13 - 魔物觸發的「電箭過載法」", desc: "最早被發現的複製武器盾牌法！" },
