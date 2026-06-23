@@ -10,7 +10,7 @@ export const navItems: NavItem[] = [
   { label: "曠野之息", path: "/botw", match: "botw" },
   { label: "王國之淚", path: "/totk", match: "totk" },
   { label: "智慧再現", path: "/eow", match: "eow" },
-  { label: "常見類型", path: "/types", match: "types" },
+  { label: "主題解說", path: "/types", match: "types" },
 ];
 
 export interface FeaturedItem {
