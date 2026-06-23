@@ -931,5 +931,12 @@ export const typeContent: Record<string, TypeContent> = {
       "Ver.1.1.2 版以後可以用「隱藏儲存(Cull Storage)」的方式再現 SLD，但前置作業較長，還要想辦法先繼承裝備到序章打開背包分頁。",
       "Ver.1.2.0 版以後「丟切隱藏(Drop Swap Cull)」可以減少很多前置作業，配合「虛幽化裝備（DI Ghost Equipment）」可以更簡單地繼承裝備和觸發過載，以便快速繼承東西到序章以便作業。",
     ],
+    videos: [
+      { id: "-oifw9PKeh4", title: "回應03 - 錯過就不再的實用道具？「不壞的序章大師劍」與「料理效果轉移」(1.1.1版以前限定)", desc: "最早也是最快的方法（限定Ver.1.1.1以前）" },
+      { id: "Gn90XQwp5zU", title: "番外16(1) - 1.1.2版～1.2.1版通用流程「序章大師劍(MNF/MSG)」", desc: "Ver.1.1.1以後難度很高但是很快的方法（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "siGVEF5-AZY", title: "番外16(2) - 1.2.0版～1.2.1版獨有｜不在序章手動存檔之「序章大師劍(MNF/MSG)」流程", desc: "Ver.1.2.0～1.2.1最早被復刻的拿法（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "qumkO3l09Kw", title: "番外16(3) - 1.2.X版覺醒大師劍檔(AMS)專用｜失傳已久的過載法「序章大師劍(MNF/MSG)」繼承流程", desc: "Ver.1.2.0～1.2.1最早必須在AMS檔的做法（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "HmocgDZFVdk", title: "番外16(NS2) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）" },
+    ],
   },
 };
