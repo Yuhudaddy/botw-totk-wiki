@@ -383,6 +383,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
   "botw-04": {
+    videoFolder: "botw-moonjump",
     principleItems: [
       "月步有固定座標的功能",
       "__重生（Respawn）邏輯__：當林克落水或掉入深淵時，遊戲不會把你放回岸邊，而是會將你傳送到「傳送標記器的座標值」",
@@ -392,6 +393,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab:  "月步",
         name: "Moonjump",
+        video: "月步.mp4",
         steps: [
           "前往費羅尼草原的「騎射演武報名處(Mounted Archery Camp)」，與 NPC 對話並開始騎馬射箭小遊戲",
           "遊戲開始後，轉身騎馬前往後方山丘上",
@@ -404,6 +406,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab:  "地滑",
         name: "Grounded Slide",
+        video: "地滑.mp4",
         sections: [
           {
             title: "法一：力巴爾勇猛",
@@ -433,7 +436,8 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab:  "MWW",
-        name: "Moonjump Wrong Warp",
+        name: "定位月步傳送（Moonjump Wrong Warp）",
+        video: "MWW.mp4",
         steps: [
           "將「傳送標記器（TM）」放置在你想要利用其座標的目的地",
           "觸發月步",
@@ -461,10 +465,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-06": {
+    videoFolder: "botw-sbr",
     methods: [
       {
         tab: "SBR",
         name: "盾擋重置（Shield Block Reset）",
+        video: "SBR.mp4",
         steps: [
           "裝備耐久度夠高、不會因為格擋而損壞的盾牌",
           "按住 ZL 舉盾，「左搖桿 ←/↑/→ ＋ X」鎖定跳的同時在空中盾擋傷害",
@@ -474,6 +480,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "SSBR",
         name: "舉炸彈盾擋重置（Slip Shield Block Reset）",
+        video: "SSBR.mp4",
         steps: [
           "裝備__耐久度高於 30 的盾牌、單手劍__，希卡石為遙控炸彈",
           "按 L 舉起炸彈",
@@ -485,6 +492,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "DSBR",
         name: "達爾克爾盾擋重置（Daruk Shield Block Reset）",
+        video: "DSBR.mp4",
         steps: [
           "裝備任意盾牌、啟動__達爾克爾的守護__",
           "按住 ZL 舉盾並開啟達爾克爾的守護",
@@ -497,6 +505,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "TSBR",
         name: "轉身盾擋重置（Turnaround Shield Block Reset）",
+        video: "TSBR.mp4",
         steps: [
           "裝備耐久度 30 以上的盾牌（炸彈給盾的傷害），希卡石為遙控炸彈",
           "左搖桿↓＋ZL＋X 後空翻，在空中放開 ZL 並保持左搖桿往 ↓ 後推",
@@ -506,7 +515,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
     ],
-    principle: "2017/3/10 發售後第八天由【Pewable】首度發現並應用於神廟特解，由於太傷盾牌（耐久-30）被棄用。2018/6/17【Yuda】得知此技巧後首度使用於戰鬥上。盾擋非膽怯型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
+    principle: "2017/3/10 發售後第八天由 【Pewable】 首度發現並應用於神廟特解，由於太傷盾牌（耐久-30）被棄用。2018/6/17 【Yuda】 得知此技巧後首度使用於戰鬥上。盾擋非膽怯型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
     notes: [
       { text: "鎖定跳必須帶有「方向」，原地跳雖然可以第二段跳，但通常高度不足無法進入子彈時間，此種 SBR 僅有弊無利。" },
       { text: "炸彈箭觸發的 BSBR 或炸彈箭轉身的 BABSBR 需要相當多的抓幀技巧，屬於高成本低報酬的 SBR，除非製作 Combat Montage 或炫技，不然較少被使用。" },
@@ -522,9 +531,11 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-07": {
+    videoFolder: "botw-sneakstrike",
     methods: [
       {
         tab: "低聲潛行",
+        video: "低聲潛行.mp4",
         steps: [
           "裝備__潛行裝__、吃__寧靜料理__，或蹲下靠近、極緩慢速行走等等",
           "在魔物視線 60 度以外的位置，以極低音量靠近魔物背後",
@@ -533,6 +544,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "限定敵意",
+        video: "限定敵意.mp4",
         steps: [
           "攻擊魔物",
           "在魔物受到攻擊、面向攻擊來源之前抵達魔物的背後",
@@ -541,6 +553,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "炸彈轉移",
+        video: "炸彈轉移.mp4",
         steps: [
           "在__無敵意__的情形下放置一個炸彈讓魔物去踢",
           "繞到魔物背後按下 Y 進行偷襲",
@@ -548,9 +561,16 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     principleItems: [
-      "魔物的意識狀態（或稱仇恨值）：① 無警戒 → ② 困惑（？）→ ③ __限定__（受傷或被干擾）→ ④ 敵意（！）。在「__限定狀態__」下，怪物會完全失去聽覺，是絕佳的偷襲時機；但如果「？」號正在累積填滿或怪物「原地困惑未移動」，則無法觸發偷襲。",
+      "魔物的意識狀態（或稱仇恨值）：",
+      "① 無警戒",
+      "② 困惑（？）",
+      "③ __限定__（受傷或被干擾）",
+      "④ 敵意（！）",
+      "在「__限定狀態__」下，怪物會完全失去聽覺，是絕佳的偷襲時機；但如果「？」號正在累積填滿或怪物「原地困惑未移動」，則無法觸發偷襲。",
       "連鎖偷襲：偷襲將怪物擊倒後，怪物起身時會轉向「最後被攻擊的來源點」。因此在偷襲成功後，立刻跑到怪物的反方向，等牠起身面向攻擊來源時，就能在背後進行下一次偷襲。",
-      "拖延時間工具：① __靜止器__ — 鎖定怪物時完全凍結視線與聽覺，在靜止器結束前都不得發出聲音；② __屬性箭__ — 利用火（3秒）、雷（3秒）、冰（30秒）的定身效果可爭取繞背時間",
+      "拖延時間工具：",
+      "① __靜止器__ — 鎖定怪物時完全凍結視線與聽覺，在靜止器結束前都不得發出聲音",
+      "② __屬性箭__ — 利用火（3秒）、雷（3秒）、冰（30秒）的定身效果可爭取繞背時間",
     ],
     notes: [
       {
