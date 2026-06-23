@@ -174,7 +174,9 @@ function parseName(text: string) {
           {content?.principleItems ? (
             <ul>
               {content.principleItems.map((item) => (
-                <li>{parseAccent(item).map((seg) => seg.accent ? <span class="text-accent">{seg.text}</span> : seg.text)}</li>
+                <li class={/^[①②③④⑤⑥⑦⑧⑨⑩]/.test(item) ? "principle-sub" : ""}>
+                  {parseAccent(item).map((seg) => seg.accent ? <span class="text-accent">{seg.text}</span> : seg.text)}
+                </li>
               ))}
             </ul>
           ) : (
@@ -409,6 +411,13 @@ function parseName(text: string) {
   }
   .prose-custom .note-sub li::marker {
     content: none;
+  }
+
+  /* 原理說明的次層條列（①②③ 開頭） */
+  .prose-custom .principle-sub {
+    list-style: none;
+    padding-left: 0.8em;
+    margin-bottom: 0.25em;
   }
 
   /* 原理說明中的人名白色底線 */
