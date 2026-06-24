@@ -730,6 +730,32 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "botw-17": {
+    principle: "利用騎乘、靜止器等特定條件，主動發起的突擊（Flurry Rush），不需要靠閃避觸發。",
+  },
+
+  "totk-12": {
+    principle: "在王國之淚中複製道具的方式，依版本不同有多種操作方法。",
+  },
+
+  "eow-01": {
+    videos: [
+      { id: "fsTX3L_vga8", title: "番外03 - 用大岩蛇就可以半小時就破關！「指標錯傳(Index Wrong Warp)」（適用：ver.1.0.1以下）" },
+    ],
+  },
+
+  "eow-02": {
+    videos: [
+      { id: "eWfciKd6-cc", title: "番外01 - 初學者適用！4種「1星借物」也能擊倒人馬的方法！" },
+    ],
+  },
+
+  "eow-03": {
+    videos: [
+      { id: "O8bKXDLW2u8", title: "番外02 - 飛天遁地！最實用的高速移動與飛行的技巧解說！" },
+    ],
+  },
+
   "totk-04": {
     methods: [
       {

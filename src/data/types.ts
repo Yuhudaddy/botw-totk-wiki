@@ -37,6 +37,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "14", zh: "回應觀眾", en: "Viewer Replies", videosOnly: true },
       { no: "15", zh: "不廢話系列", en: "Zero Fluff", videosOnly: true },
       { no: "16", zh: "合作戰鬥集", en: "Combat Montage", videosOnly: true },
+      { no: "17", zh: "主動突擊", en: "Active Flurry Rush" },
     ],
   },
   {
@@ -55,6 +56,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "09", zh: "偷襲機制", en: "Sneakstrike" },
       { no: "10", zh: "進階餘料建造", en: "Advanced Fuse" },
       { no: "11", zh: "隱藏剔除", en: "Cull" },
+      { no: "12", zh: "道具複製", en: "Item Duplication" },
     ],
   },
   {
