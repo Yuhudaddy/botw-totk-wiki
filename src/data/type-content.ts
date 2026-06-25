@@ -306,8 +306,8 @@ export const typeContent: Record<string, TypeContent> = {
         name:  "所有武器的人馬皆會使用的攻擊",
         video: "共通.mp4",
         steps: [
-          "__三一節奏__：先使用 3 次常見招式後固定會吐火球",
-          "__突進__：收起武器，以四足直接衝撞玩家，可__舉炸彈按 ZL 往後跳__",
+          "__三階段進攻模式__：3 次近距離招式 或 2次掃斬 後 → 衝刺性招式 → 火球",
+          "__突進__：收起武器，以四足直接衝撞玩家。若不想進入子彈時間，__舉炸彈按 ZL 往後跳會無傷__",
           "__火球__：往後跳後連續吐出 3 顆火球，草地上吐火可產生上升氣流",
           "__掃斬__：距離人馬較遠時會側向揮動武器掃擊",
           "__射箭 / 箭雨__：玩家距離過遠、有高地差時，會鎖定林克射箭",
@@ -776,6 +776,15 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "VSOgkio5Ojw", title: "番外32 - (NS1限定)不需人馬弓複製劍/盾/弓！「盾跳馬複製法(Shield Jump Dismount Duplication)」" },
       { id: "n4895SGurGs", title: "「雙弓過載法」- 2把多發弓就能複製武器！？(NS2版必須地上已經有部分落弓過載)" },
       { id: "erkGAtF2QnY", title: "番外36.5 - (NS1限定)下了初始台地就能複製武器！「馬滑武器複製法(Horse Slide Duplication)」" },
+    ],
+  },
+
+  "botw-16": {
+    videos: [
+      { id: "UJRURurOp3M", title: "「The Four」：曠野之息戰鬥合輯微電影 - 預告(BoTW Combat Montage Trailer)", desc: "Trailer of The Four（預告片）" },
+      { id: "QIzqy4KVY6c", title: "「The Four」：曠野之息戰鬥合輯微電影(BoTW Cinematic Combat Montage)", desc: "RinHara5aki、Kleric、Peco、Yuda 曠野界首度跨國合作的戰鬥微電影" },
+      { id: "2Aa60Q0vBxE", title: "『Will of the Sword』：曠野之息 - 戰鬥合輯微電影｜預告", desc: "Trailer of Will of the Sword（預告片）" },
+      { id: "twOHhBIR1bY", title: "Will Of The Sword - BOTW Cinematic Combat Montage", desc: "Firefly、Jhent、Shibainu、RinHara5aki、A.xk、Kleric、Breneko、Yuda 多位戰鬥玩家攜手合作的戰鬥微電影" },
     ],
   },
 
