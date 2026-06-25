@@ -385,14 +385,14 @@ export const typeContent: Record<string, TypeContent> = {
   "botw-04": {
     videoFolder: "botw-moonjump",
     principleItems: [
-      "月步有固定座標的功能",
-      "__重生（Respawn）邏輯__：當林克落水或掉入深淵時，遊戲不會把你放回岸邊，而是會將你傳送到「傳送標記器的座標值」",
-      "__再現（Restart）邏輯__：當林克死亡或「讀取存檔」時，遊戲會將你傳送到「傳送到傳送標記器前的上一個最後讀取位置（傳送點座標或讀檔的位置）」",
+      "2019/7/8 由 【メレシスト】 玩家發現，異常結束騎馬射箭小遊戲，可以將林克的位置卡在馬背上，解除林克的跳躍動作和硬直的同步，提早結束跳躍硬直以達成連續跳躍。除此之外林克的位置座標會被固定在上一次最後讀取的位置，在地上移動時會不停拉扯實際座標位置。2019/7/26 【Yuda】找出固定座標的邏輯，利用該邏輯成功第一次在未完成初始台地的狀態下離開初始台地。",
+      "__MWW重生（Respawn）的邏輯__：當林克落水或掉入深淵時，遊戲不會把你放回岸邊，而是會將你傳送到「傳送標記器的座標值」",
+      "__MWW再現（Restart）的邏輯__：當林克死亡或「讀取存檔」時，遊戲會將你傳送到「傳送到傳送標記器前的上一個最後讀取位置（傳送點座標或讀檔的位置）」",
     ],
     methods: [
       {
         tab:  "月步",
-        name: "Moonjump",
+        name: "月步（Moonjump）",
         video: "月步.mp4",
         steps: [
           "前往費羅尼草原的「騎射演武報名處(Mounted Archery Camp)」，與 NPC 對話並開始騎馬射箭小遊戲",
@@ -405,7 +405,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab:  "地滑",
-        name: "Grounded Slide",
+        name: "地滑（Grounded Slide）",
         video: "地滑.mp4",
         sections: [
           {
@@ -435,8 +435,8 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab:  "MWW",
-        name: "定位月步傳送（Moonjump Wrong Warp）",
+        tab:  "定位月傳",
+        name: "定位月步傳送（Mww, Moonjump Wrong Warp）",
         video: "MWW.mp4",
         steps: [
           "將「傳送標記器（TM）」放置在你想要利用其座標的目的地",
@@ -718,15 +718,64 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-13": {
+    principleItems: [
+      "觸發__選單過載__或是__座標偏移造成裝備來不及加載__的時候切換裝備，會讓選單和實際裝備不同步，此時將脫離同步、實際裝備在身上的武器、弓、盾牌與林克分離（掛牆壁、受電擊、投擲等等）就能增殖道具。",
+    ],
+    methods: [
+      {
+        tab: "選單過載",
+        name: "落弓過載法（Multi-shot Bow Overload）",
+        steps: [
+          "準備 4 ～ 7 把多發弓（如獸神弓、二連弓）以及 1 發以上的電箭",
+          "裝備多連弓與電箭，並輕點 ZR 將弓拿到前面",
+          "打開選單，丟棄裝備中的多發弓",
+          "切換另一把多發弓後關閉暫停",
+          "確認多發弓和電箭模型有確實顯現",
+          "重複步驟 3～5",
+          "暫停畫面的林克模型出現異常時，切換裝備",
+          "確認選單和實際裝備不同步時，掛在家裡、投擲丟棄、電擊掉切換的裝備",
+        ],
+      },
+      {
+        tab: "裝備未加載",
+        sections: [
+          {
+            title: "盾跳馬複製法（Shield Jump Dismount Duplication）",
+            steps: [
+              "在馬的前方準備一個高台，高台高度約為林克騎馬時的高度高一點",
+              "騎上馬後，移動至前後腳呈現前低後高的狀態",
+              "按住 ZL + A，接著按 X 從馬上踩盾跳",
+              "踩盾跳後盾牌落在高台上，林克開始逆時針旋轉，方向正對大約__ 8 點半方向__時卸盾，將觸發高程座標錯亂",
+              "系統尚未將武器讀取完成時，投擲武器、或舉盾/弓時受電擊後，馬上切換該類型的裝備",
+            ],
+          },
+          {
+            title: "馬滑複製法（Horse Slide Duplication）",
+            steps: [
+              "馬放在前低後高的斜坡上，按住 ZL 從側邊往前按 X 跳上馬",
+              "筆直地往前跑一段距離，直到馬的精力用完的瞬間按下跳躍鍵",
+              "跳下馬的瞬間，馬上按住 R 鍵後再快速放開",
+              "武器丟出去後，立刻按十字鍵▶︎切換武器",
+            ],
+          },
+        ],
+        note: "※ 馬滑複製法時機不好抓，也可以利用「快速選單」來抓幀。",
+      },
+    ],
+    notes: [
+      { text: "NS2版落弓過載法在步驟 7 出現模型異常時，須先關閉暫停，點擊 B → ZR 釋放負載，再執行步驟 7 ～ 8 才能確實過載。" },
+      { text: "落弓過載法若弓數不足，把法杖、章魚氣球丟在地上，也能增加選單的負載量。" },
+      { text: "由於多發弓的過載在最後一次丟棄時，無法正常切換到單發弓來複製。因此單發弓的複製法可以借用法杖、章魚氣球來新增最後一次的負載，並且可以掛在家裡來避免用被電的方式複製裝備。" },
+    ],
     videos: [
       { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製/耐久移植和維修！「落弓過載法(Multi-Shot Bow Method)」（適用：~ver.1.9.0）", desc: "最常使用的複製方法和選單過載法！" },
       { id: "pnUMPB2kyvk", title: "番外13 - 魔物觸發的「電箭過載法」", desc: "最早被發現的複製武器盾牌法！" },
-      { id: "YxPHU-FFeto", title: "番外25 -  手骨武器複製法" },
+      { id: "YxPHU-FFeto", title: "番外25 - 手骨武器複製法（Weapon Duplication with a Skeleton Arm）" },
       { id: "8ujsCX4GQMQ", title: "回應08 -「手骨複製法」補充（Other Tips of Bone Arm Weapon Duplication）" },
       { id: "pi2w0KLnO1U", title: "EX03 - 缺武器？初學者也能複製魔物手上的武器！（初學者適用）" },
-      { id: "VSOgkio5Ojw", title: "番外32 - (NS1限定)不需人馬弓複製劍/盾/弓！「跳馬複製法(Horse Duping/Duplication)」（中文解說）" },
+      { id: "VSOgkio5Ojw", title: "番外32 - (NS1限定)不需人馬弓複製劍/盾/弓！「盾跳馬複製法(Shield Jump Dismount Duplication)」" },
       { id: "n4895SGurGs", title: "「雙弓過載法」- 2把多發弓就能複製武器！？(NS2版必須地上已經有部分落弓過載)" },
-      { id: "erkGAtF2QnY", title: "番外36.5 - 下了初始台地就能複製武器！「馬滑武器複製法(Horse Slide Duplication)」" },
+      { id: "erkGAtF2QnY", title: "番外36.5 - (NS1限定)下了初始台地就能複製武器！「馬滑武器複製法(Horse Slide Duplication)」" },
     ],
   },
 
@@ -952,7 +1001,7 @@ export const typeContent: Record<string, TypeContent> = {
       { text: "若是有 Castle AMS（脫逃城堡的覺醒大師劍）的存檔，必須選擇用 Zuggle 的方法。" },
     ],
     principleItems: [
-      "MNF 為 Message Not Found 的縮寫，中文社群常用 MSG 或 味精劍 稱呼，本站仍以原始的 __MNF 劍__ 稱呼。2023/5/17 發售後五天由 LegendofLinkk (Zuggle Method)、Abahbob (SLD Method) 發展出繼承序章大師劍到進度檔的方法，最主要是用 SLD 或 Zuggle 的方式，將序章大師劍帶回進度存檔。",
+      "MNF 為 Message Not Found 的縮寫，中文社群常用 MSG 或 味精劍 稱呼，本站仍以原始的 __MNF 劍__ 稱呼。2023/5/17 發售後五天由 【LegendofLinkk】 (Zuggle Method)、【Abahbob】 (SLD Method) 發展出繼承序章大師劍到進度檔的方法，最主要是用 SLD 或 Zuggle 的方式，將序章大師劍帶回進度存檔。",
       "Ver.1.1.1 版以前靠單純丟切裝備就能觸發 SLD 時，可以很簡單找到與序章地圖相同座標的位置進行互相繼承來獲得 MNF。",
       "Ver.1.1.2 版以後可以用「隱藏儲存(Cull Storage)」的方式再現 SLD，但前置作業較長，還要想辦法先繼承裝備到序章打開背包分頁。",
       "Ver.1.2.0 版以後「丟切隱藏(Drop Swap Cull)」可以減少很多前置作業，配合「虛幽化裝備（DI Ghost Equipment）」可以更簡單地繼承裝備和觸發過載，以便快速繼承東西到序章以便作業。",
