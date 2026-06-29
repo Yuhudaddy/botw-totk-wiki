@@ -6,11 +6,9 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { label: "影片總覽", path: "/videos", match: "videos" },
-  { label: "曠野之息", path: "/botw", match: "botw" },
-  { label: "王國之淚", path: "/totk", match: "totk" },
-  { label: "智慧再現", path: "/eow", match: "eow" },
   { label: "主題解說", path: "/types", match: "types" },
+  { label: "影片索引", path: "/videos", match: "videos" },
+  { label: "關於 Yuda", path: "/about", match: "about" },
 ];
 
 export interface FeaturedItem {

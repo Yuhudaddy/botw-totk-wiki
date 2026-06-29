@@ -1,105 +1,56 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import VideoCard from "../components/VideoCard.astro";
-import { totkVideos, botwVideos, allVideos } from "../data/videos";
-import { filterChips } from "../data/site";
+import { buildVideoIndex } from "../lib/video-index";
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const { guides, videos, facets } = buildVideoIndex();
 ---
 
-<BaseLayout title="影片總覽" active="videos">
+<BaseLayout title="影片索引" active="videos">
   <section class="mx-auto max-w-[1180px] px-8 pb-[84px] pt-12">
-    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">影片總覽 · Video Wall</div>
-    <h1 class="mb-2.5 mt-3.5 font-serif text-[42px] font-medium text-ink">所有攻略影片</h1>
-    <p class="mb-7 text-base text-text">
-      點縮圖直接前往 YouTube 觀看 · 目前共 <span id="video-count" class="font-medium text-ink"
-        >{allVideos.length}</span
-      > 部
+    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">影片索引 · Video Index</div>
+    <h1 class="mb-2.5 mt-3.5 font-serif text-[42px] font-medium text-ink">搜尋頻道內所有內容</h1>
+    <p class="mb-7 max-w-[60ch] text-base leading-[1.6] text-text">
+      一次搜尋手寫教學與相關影片。輸入多個關鍵字（以空格分隔）可疊加篩選，例如「偷襲 曠野」。
     </p>
 
-    {/* 搜尋 */}
-    <div class="relative mb-[18px] max-w-[520px]">
+    {/* 搜尋框 */}
+    <div class="relative mb-[18px] max-w-[560px]">
       <span class="pointer-events-none absolute left-[15px] top-1/2 -translate-y-1/2 text-muted">
-        <svg
-          viewBox="0 0 24 24"
-          width="16"
-          height="16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </span>
       <input
-        id="video-search"
+        id="idx-search"
         type="search"
-        placeholder="搜尋技巧名稱，例如「虛化」「餘料儲存」…"
-        class="w-full rounded-xl border border-border-strong bg-surface py-[13px] pl-11 pr-4 text-[15px] text-ink outline-none"
+        placeholder="搜尋教學或影片，例如「轉存格」「偷襲 曠野」…"
+        class="w-full rounded-xl border border-border-strong bg-surface py-[13px] pl-11 pr-4 text-[15px] text-ink outline-none focus:border-brand"
       />
     </div>
 
-    {/* 篩選籌碼 */}
-    <div id="filter-chips" class="mb-9 flex flex-wrap gap-2.5">
-      <button
-        type="button"
-        data-tag=""
-        class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm"
-      >
+    {/* 遊戲篩選 */}
+    <div id="idx-facets" class="mb-9 flex flex-wrap gap-2.5">
+      <button type="button" data-game="" class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm">
         全部
       </button>
       {
-        filterChips.map((c) => (
-          <button
-            type="button"
-            data-tag={c}
-            class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm"
-          >
-            {c}
+        facets.map((f) => (
+          <button type="button" data-game={f.key} class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm">
+            {f.label}
           </button>
         ))
       }
     </div>
 
-    {/* TotK 區 */}
-    <div data-section="totk">
-      <div class="mb-[18px] flex items-center gap-3.5">
-        <span class="font-serif text-2xl font-medium text-ink">王國之淚 TotK</span>
-        <span class="h-px flex-1 bg-border-strong"></span>
-      </div>
-      <div class="mb-[52px] grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[18px]">
-        {
-          totkVideos.map((v) => (
-            <div class="video-item" data-title={v.title} data-game="王國之淚" data-cat={v.cat}>
-              <VideoCard vid={v.id} title={v.title} meta={v.meta} />
-            </div>
-          ))
-        }
-      </div>
-    </div>
-
-    {/* BotW 區 */}
-    <div data-section="botw">
-      <div class="mb-[18px] flex items-center gap-3.5">
-        <span class="font-serif text-2xl font-medium text-ink">曠野之息 BotW</span>
-        <span class="h-px flex-1 bg-border-strong"></span>
-      </div>
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[18px]">
-        {
-          botwVideos.map((v) => (
-            <div class="video-item" data-title={v.title} data-game="曠野之息" data-cat={v.cat}>
-              <VideoCard vid={v.id} title={v.title} meta={v.meta} />
-            </div>
-          ))
-        }
-      </div>
-    </div>
+    {/* 結果區（由 JS 渲染） */}
+    <div id="idx-results"></div>
 
     {/* 空狀態 */}
-    <div id="empty-state" class="hidden py-[60px] text-center text-muted">
-      <p class="mb-2 font-serif text-[22px] text-ink">這裡還空空的～</p>
-      <p class="text-[15px]">換個關鍵字或標籤試試吧。</p>
+    <div id="idx-empty" class="hidden py-[60px] text-center text-muted">
+      <p class="mb-2 font-serif text-[22px] text-ink">找不到符合的內容</p>
+      <p class="text-[15px]">換個關鍵字，或清除篩選試試。</p>
     </div>
   </section>
 </BaseLayout>
@@ -115,76 +66,216 @@ import { filterChips } from "../data/site";
     color: #faf9f5;
     border-color: var(--brand);
   }
+  .idx-group-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 22px 0 4px;
+  }
+  .idx-bucket-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 8px 0 4px;
+  }
+  .idx-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--border-soft);
+    text-decoration: none;
+    transition: background-color 0.15s;
+  }
+  .idx-row:hover {
+    background: var(--surface);
+  }
+  .idx-thumb {
+    width: 140px;
+    height: 79px;
+    flex: none;
+    border-radius: 8px;
+    background: var(--sand);
+    object-fit: cover;
+  }
+  .idx-thumb-guide {
+    width: 140px;
+    height: 79px;
+    flex: none;
+    border-radius: 8px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    box-shadow: 0 0 0 1px var(--border-strong);
+  }
+  .idx-tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--muted);
+    white-space: nowrap;
+    box-shadow: 0 0 0 1px var(--border-strong);
+  }
+  .idx-hl {
+    color: var(--accent);
+    font-weight: 500;
+  }
 </style>
 
-<script is:inline>
+<script define:vars={{ guides, videos, facets, BASE }}>
   (function () {
-    const search = document.getElementById("video-search");
-    const chipBox = document.getElementById("filter-chips");
-    const chips = Array.from(document.querySelectorAll(".chip"));
-    const items = Array.from(document.querySelectorAll(".video-item"));
-    const sections = Array.from(document.querySelectorAll("[data-section]"));
-    const empty = document.getElementById("empty-state");
-    const countEl = document.getElementById("video-count");
+    var search = document.getElementById("idx-search");
+    var facetBox = document.getElementById("idx-facets");
+    var results = document.getElementById("idx-results");
+    var empty = document.getElementById("idx-empty");
+    var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
 
-    let activeTag = "";
-    let query = "";
+    var game = "";
+    var terms = [];
 
-    function setActiveChip(tag) {
-      chips.forEach((c) => {
-        c.setAttribute("data-active", c.getAttribute("data-tag") === tag ? "true" : "false");
+    function esc(s) {
+      return String(s).replace(/[&<>]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c];
       });
     }
-
-    function apply() {
-      let shown = 0;
-      items.forEach((it) => {
-        const title = (it.getAttribute("data-title") || "").toLowerCase();
-        const game = it.getAttribute("data-game") || "";
-        const cat = it.getAttribute("data-cat") || "";
-        const matchTag = !activeTag || game === activeTag || cat === activeTag;
-        const matchQ = !query || title.includes(query);
-        const ok = matchTag && matchQ;
-        it.style.display = ok ? "" : "none";
-        if (ok) shown++;
-      });
-      // 隱藏整個沒有結果的區塊標題
-      sections.forEach((sec) => {
-        const visible = sec.querySelectorAll('.video-item:not([style*="display: none"])').length;
-        sec.style.display = visible ? "" : "none";
-      });
-      if (empty) empty.classList.toggle("hidden", shown > 0);
-      if (countEl) countEl.textContent = String(shown);
+    function escRe(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+    function hl(text) {
+      var out = esc(text);
+      for (var i = 0; i < terms.length; i++) {
+        if (!terms[i]) continue;
+        out = out.replace(new RegExp(escRe(terms[i]), "gi"), function (m) {
+          return '<span class="idx-hl">' + m + "</span>";
+        });
+      }
+      return out;
+    }
+    function matchAll(hay) {
+      for (var i = 0; i < terms.length; i++) {
+        if (terms[i] && hay.indexOf(terms[i]) < 0) return false;
+      }
+      return true;
+    }
+    function inGame(g) {
+      return !game || g === game;
+    }
+    function ytThumb(id) {
+      return "https://img.youtube.com/vi/" + id + "/hqdefault.jpg";
     }
 
-    // 初始化：讀 URL 的 ?tag= 與 ?search=
+    function videoRow(v) {
+      return (
+        '<a class="idx-row" href="https://youtu.be/' + v.ytId + '" target="_blank" rel="noopener">' +
+        '<img class="idx-thumb" loading="lazy" alt="" src="' + ytThumb(v.ytId) + '" />' +
+        '<div style="flex:1; min-width:0;">' +
+        '<div style="font-size:15px; line-height:1.4; color:var(--ink);" class="font-serif">' + hl(v.title) + "</div>" +
+        '<div style="font-size:13px; color:var(--muted); margin-top:3px;">' + esc(v.gameLabel) + "</div>" +
+        "</div>" +
+        '<span class="idx-tag">' + esc(v.fromZh) + "</span>" +
+        "</a>"
+      );
+    }
+    function guideRow(g) {
+      return (
+        '<a class="idx-row" href="' + BASE + "/types/" + g.id + '">' +
+        '<div class="idx-thumb-guide">' +
+        '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5a2 2 0 0 1 2-2h12a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2z"></path><line x1="8" y1="7" x2="15" y2="7"></line><line x1="8" y1="11" x2="15" y2="11"></line></svg>' +
+        "</div>" +
+        '<div style="flex:1; min-width:0;">' +
+        '<div style="font-size:15px; font-weight:500; color:var(--ink);" class="font-serif">' + hl(g.zh) +
+        ' <span style="font-weight:400; color:var(--muted); font-size:13px;">' + hl(g.en) + "</span></div>" +
+        '<div style="font-size:13px; color:var(--muted); margin-top:3px;">' + esc(g.gameLabel) + " · 教學頁</div>" +
+        "</div>" +
+        '<span class="idx-tag" style="color:var(--accent);">教學</span>' +
+        "</a>"
+      );
+    }
+
+    function render() {
+      var html = "";
+      var anyShown = false;
+
+      if (terms.length === 0) {
+        var vs = videos.filter(function (v) { return inGame(v.game); });
+        var gs = guides.filter(function (g) { return inGame(g.game); });
+        html += '<div style="font-size:13px; color:var(--text); margin-bottom:6px;">共 ' + gs.length + " 篇教學 · " + vs.length + " 支影片</div>";
+        for (var i = 0; i < facets.length; i++) {
+          var gk = facets[i].key;
+          if (game && game !== gk) continue;
+          var rows = vs.filter(function (v) { return v.game === gk; });
+          if (!rows.length) continue;
+          html += '<div class="idx-group-title">' + esc(facets[i].label) + "</div>";
+          for (var j = 0; j < rows.length; j++) html += videoRow(rows[j]);
+          anyShown = true;
+        }
+      } else {
+        var mg = guides.filter(function (g) { return inGame(g.game) && matchAll(g.search); });
+        var mv = videos.filter(function (v) { return inGame(v.game) && matchAll(v.search); });
+        if (mg.length) {
+          html +=
+            '<div class="idx-bucket-title" style="color:var(--accent);">' +
+            '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a2 2 0 0 1 2-2h12a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2z"></path></svg>' +
+            "教學頁（" + mg.length + "）</div>";
+          for (var k = 0; k < mg.length; k++) html += guideRow(mg[k]);
+          anyShown = true;
+        }
+        if (mv.length) {
+          html +=
+            '<div class="idx-bucket-title" style="color:var(--muted); margin-top:18px;">' +
+            '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>' +
+            "影片（" + mv.length + "）</div>";
+          for (var m = 0; m < mv.length; m++) html += videoRow(mv[m]);
+          anyShown = true;
+        }
+      }
+
+      results.innerHTML = html;
+      if (empty) empty.classList.toggle("hidden", anyShown);
+    }
+
+    function setActiveChip() {
+      chips.forEach(function (c) {
+        c.setAttribute("data-active", c.getAttribute("data-game") === game ? "true" : "false");
+      });
+    }
+    function setTerms(str) {
+      terms = (str || "").toLowerCase().split(/\s+/).filter(Boolean);
+    }
+
+    // 初始化：讀 URL 的 ?search= / ?tag= / ?game=
     try {
-      const params = new URLSearchParams(window.location.search);
-      const t = params.get("tag");
-      const s = params.get("search");
-      if (t) activeTag = t;
-      if (s) {
-        query = s.toLowerCase();
-        if (search) search.value = s;
+      var params = new URLSearchParams(window.location.search);
+      var q = params.get("search") || params.get("tag") || "";
+      var g = params.get("game") || "";
+      if (g && facets.some(function (f) { return f.key === g; })) game = g;
+      if (q) {
+        setTerms(q);
+        if (search) search.value = q;
       }
     } catch (e) {}
 
-    setActiveChip(activeTag);
-    apply();
+    setActiveChip();
+    render();
 
     if (search) {
       search.addEventListener("input", function (e) {
-        query = (e.target.value || "").toLowerCase().trim();
-        apply();
+        setTerms((e.target.value || "").trim());
+        render();
       });
     }
-    if (chipBox) {
-      chipBox.addEventListener("click", function (e) {
-        const btn = e.target.closest(".chip");
+    if (facetBox) {
+      facetBox.addEventListener("click", function (e) {
+        var btn = e.target.closest(".chip");
         if (!btn) return;
-        activeTag = btn.getAttribute("data-tag") || "";
-        setActiveChip(activeTag);
-        apply();
+        game = btn.getAttribute("data-game") || "";
+        setActiveChip();
+        render();
       });
     }
   })();

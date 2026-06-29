@@ -4,6 +4,7 @@ export interface TypeItem {
   zh: string;
   en: string;
   videosOnly?: boolean; // 詳細頁只顯示「相關影片」區（隱藏流程／原理／注意事項）
+  aliases?: string[]; // 影片索引搜尋用的別名／關鍵字（例：["IST", "背包", "格子"]）
   playlist?: string;  // YouTube 播放清單連結（待補）
   videos?: string[];  // 詳細頁底部顯示的 YouTube 影片 ID（待補）
 }
