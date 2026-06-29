@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
-import { typeContent } from "../../data/type-content";
+import { typeContent, type TypeStep } from "../../data/type-content";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -46,6 +46,13 @@ const VIDEOS_PER_PAGE = 10;
 // 把 __文字__ 解析成可加橙色的片段
 function parseAccent(text: string) {
   return text.split("__").map((seg, i) => ({ text: seg, accent: i % 2 === 1 }));
+}
+
+// 把步驟正規化為 { text, sub }（純字串視為無子項目）
+function stepParts(s: TypeStep) {
+  return typeof s === "string"
+    ? { text: s, sub: [] as string[] }
+    : { text: s.text, sub: s.sub ?? [] };
 }
 
 // 把 【人名】 解析成白色底線
@@ -127,29 +134,75 @@ function parseName(text: string) {
                         )}
                       </div>
                       <ol>
-                        {sec.steps.map((s) => (
-                          <li>
-                            {parseAccent(s).map((seg) =>
-                              seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
-                            )}
-                          </li>
-                        ))}
+                        {sec.steps.map((s) => {
+                          const { text, sub } = stepParts(s);
+                          return (
+                            <li>
+                              {parseAccent(text).map((seg) =>
+                                seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                              )}
+                              {sub.length > 0 && (
+                                <ul class="step-sub">
+                                  {sub.map((d) => (
+                                    <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
+                                      {parseAccent(d).map((seg) =>
+                                        seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </li>
+                          );
+                        })}
                       </ol>
                     </div>
                   ))
-                ) : (
-                  <ol>
-                    {(m.steps ?? []).map((s) => (
+                ) : m.bullets ? (
+                  <ul>
+                    {m.bullets.map((b) => (
                       <li>
-                        {parseAccent(s).map((seg) =>
+                        {parseAccent(b.replace(/^・\s*/, "")).map((seg) =>
                           seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                         )}
                       </li>
                     ))}
+                  </ul>
+                ) : (
+                  <ol>
+                    {(m.steps ?? []).map((s) => {
+                      const { text, sub } = stepParts(s);
+                      return (
+                        <li>
+                          {parseAccent(text).map((seg) =>
+                            seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                          )}
+                          {sub.length > 0 && (
+                            <ul class="step-sub">
+                              {sub.map((d) => (
+                                <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
+                                  {parseAccent(d).map((seg) =>
+                                    seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ol>
                 )}
                 {m.note && (
-                  <p class="mt-4 text-[13px] leading-[1.7] text-muted">{m.note}</p>
+                  Array.isArray(m.note) ? (
+                    <div class="mt-4 space-y-1">
+                      {m.note.map((n) => (
+                        <p class="text-[13px] leading-[1.7] text-muted">{n}</p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p class="mt-4 text-[13px] leading-[1.7] text-muted">{m.note}</p>
+                  )
                 )}
               </div>
             ))}
@@ -240,10 +293,18 @@ function parseName(text: string) {
         {content?.notes ? (
           content.notes.map((n) => (
             <li>
-              {n.text}
+              {parseAccent(n.text).map((seg) =>
+                seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+              )}
               {n.sub && n.sub.length > 0 && (
                 <ul class="note-sub">
-                  {n.sub.map((s) => <li>{s}</li>)}
+                  {n.sub.map((s) => (
+                    <li>
+                      {parseAccent(s).map((seg) =>
+                        seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                      )}
+                    </li>
+                  ))}
                 </ul>
               )}
             </li>
@@ -411,6 +472,26 @@ function parseName(text: string) {
   }
   .prose-custom .note-sub li::marker {
     content: none;
+  }
+
+  /* 步驟內的巢狀子項目（・、(1)(2) 開頭） */
+  .prose-custom .step-sub {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+  .prose-custom .step-sub li {
+    margin-bottom: 0.35em;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .prose-custom .step-sub li::marker {
+    content: none;
+  }
+  .prose-custom .step-sub .step-sub-deep {
+    padding-left: 1.2em;
   }
 
   /* 原理說明的次層條列（①②③ 開頭） */

@@ -25,7 +25,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "02", zh: "轉存格", en: "Inventory Slot Transfer" },
       { no: "03", zh: "萊尼爾", en: "Lynels" },
       { no: "04", zh: "月步", en: "Moonjump" },
-      { no: "05", zh: "過場必殺劍", en: "Cutscene OHO" },
+      { no: "05", zh: "過場必殺劍", en: "Cutscene OHO (DLC2)" },
       { no: "06", zh: "盾擋重置", en: "Shield Block Reset" },
       { no: "07", zh: "偷襲機制", en: "Sneakstrike" },
       { no: "08", zh: "劍之考驗", en: "Trial of the Sword (DLC1)", videosOnly: true },

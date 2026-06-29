@@ -1,19 +1,23 @@
 // 「常見類型」詳細頁的結構化內容。
 // 步驟字串中以 __文字__ 包住的片段會在頁面上顯示為橙色。
+// 單一步驟：純字串，或附帶巢狀子項目的物件（子項目不影響主編號）
+export type TypeStep = string | { text: string; sub: string[] };
+
 export interface TypeMethodSection {
-  title: string;    // 子章節標題，例："K+1 法（通用版）"
-  steps: string[];  // 該區塊的編號步驟
+  title: string;      // 子章節標題，例："K+1 法（通用版）"
+  steps: TypeStep[];  // 該區塊的編號步驟
 }
 
 export interface TypeMethod {
-  tab: string;      // 分頁名稱，例：前跳
-  tags?: string[];  // 標籤陣列（顯示為「適合 + badge」），例：["先圓後方"]
-  name?: string;    // 方法中文全名（白色字，與 tags 擇一），例："轉存格（Inventory Slot Transfer）"
-  steps?: string[]; // 單一編號步驟（與 sections 擇一）
+  tab: string;        // 分頁名稱，例：前跳
+  tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["先圓後方"]
+  name?: string;      // 方法中文全名（白色字，與 tags 擇一），例："轉存格（Inventory Slot Transfer）"
+  steps?: TypeStep[]; // 單一編號步驟（與 sections / bullets 擇一）
+  bullets?: string[]; // 無序條列（圓點，與 steps / sections 擇一），用於並列分類
   sections?: TypeMethodSection[]; // 多區塊步驟，每區塊各自從 1 開始編號
-  video?: string;   // 快速示意影片檔名，例："前跳.MP4"
-  image?: string;   // 快速示意圖片檔名（與 video 擇一），例："IST.png"
-  note?: string;    // 步驟下方的灰色備註
+  video?: string;     // 快速示意影片檔名，例："前跳.MP4"
+  image?: string;     // 快速示意圖片檔名（與 video 擇一），例："IST.png"
+  note?: string | string[]; // 步驟下方的灰色備註（可多行）
 }
 
 export interface RelatedVideo {
@@ -464,6 +468,44 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "botw-05": {
+    methods: [
+      {
+        tab: "步驟",
+        steps: [
+          "解完 3 個必殺之劍的神廟",
+          "觸發轉存格，數量須達隨時可以「轉存格數 ≧ 道具格的總數」的狀態（身上的道具可以先保留著，到導師面前再丟棄即可）",
+          "前往第 4 個神廟，並且來到導師前方",
+          "丟棄步驟2為了保險起見保留的材料或裝備，直到「轉存格數 ≧ 道具格的總數」（撿起道具時出現在重要物品頁籤的右側，或是背包外觀為空的）",
+          "和導師對話，離開神廟",
+          "動畫結束後確認背包有「過場必殺劍（cOHO）」",
+          "再利用轉存格的方式將過場必殺劍繼承回舊檔案",
+        ],
+      },
+    ],
+    principleItems: [
+      "為什麼會有「過場必殺劍」？",
+      "①這是遊戲官方為了確保 DLC 結尾過場動畫順利演出，而特製的動畫專用複製品。它和考驗中的必殺劍不同，具備無限耐久度，且不會吸血、可以自由切換，正常情況下會在動畫結束時被系統強制回收。",
+      "成功拿走「過場必殺劍」的原理是什麼？",
+      "②當系統道具認知格數(mCount)小於等於 0 時，進入背包的道具會出現在重要物品右側的「未歸類道具頁籤」。而過場動畫只會掃描正常在背包序列裡面的「必殺劍」做刪除，當動畫結束系統執行刪除指令時，會因為不在掃描路徑上而無法將它刪除，玩家便能順利將其卡進存檔帶走。",
+    ],
+    notes: [
+      {
+        text: "若離開第 4 個神廟的時候，滿足以下條件，會獲得一把卡在手上的白色「神聖過場必殺劍(Holy cOHO)」：",
+        sub: [
+          "(1) 手上已經有一把「過場必殺劍」",
+          "(2) mCount = 0 且裝備著在正常武器頁籤的過場必殺劍，或 mCount ≧ 1 的情形下解完必殺之劍任務（仍也有其他條件，但不明確）",
+        ],
+      },
+    ],
+    videos: [
+      {
+        id: "siBcEvxr1Y0",
+        title: "番外58 - 遊戲中唯一不會壞的單手劍！獲得「過場必殺劍(Cutscene One-Hit Obliterator)」的詳細原理與步驟說明！",
+      },
+    ],
+  },
+
   "botw-06": {
     videoFolder: "botw-sbr",
     methods: [
@@ -794,9 +836,17 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "DR",
         name: "(完美)達爾克爾突擊（(Perfect) Daruk Rush）",
         steps: [
-          "開啟達爾克爾的守護，按住 ZL 啟動守護",
-          "受到攻擊觸發守護破開或完美守護的__慢動作期間，做出「迴避跳攻擊（「ZL+X+→/←/↓」 → 空中 Y）」__",
-          "落地時連打 Y",
+          "開啟達爾克爾的守護，按住 ZL 啟動守護，並且__鎖定到對象__",
+          {
+            text: "受到攻擊觸發「達爾克爾的守護（破開或完美彈反）」的慢動作期間，做出「迴避跳（「ZL+X+→/←/↓」）」",
+            sub: [
+              "・一般可以分做「先迴避跳再空中觸發守護」或「先觸發守護再迴避跳」，前者較常見。",
+              "(1) 空中觸發：刻意做出「迴避跳」，並且尚未落地前觸發「達爾克爾的守護」（特殊例：追擊型達爾克爾突擊 LDR）",
+              "(2) 子時觸發：刻意先觸發「達爾克爾的守護」，子彈時間期間做出「迴避跳」（特殊例：淺灘突擊 SDR）",
+            ],
+          },
+          "落地前點擊 Y 觸發落地突擊",
+          "落地時出現「突擊 Y」判定時，按住 ZL 的情形下連打 Y",
         ],
       },
       {
@@ -805,9 +855,13 @@ export const typeContent: Record<string, TypeContent> = {
         steps: [
           "未觸發過盾反、完美迴避的情形下，從地勢較高處往低處做出「迴避跳（ZL+X+→/←/↓）」",
           "一定高度以上，保持按住 ZL 同時按下 ZR + Y",
-          "落地時連打 Y",
+          "落地時出現「突擊 Y」判定時，按住 ZL 的情形下連打 Y",
         ],
-        note: "※ 閃擊的追擊(Chase)條件：進入過一次「能觸發完美迴避」的攻擊範圍內（包含受傷、盾擋）",
+        note: [
+          "※ 閃擊的追擊(Chase)條件：進入過一次「能觸發完美迴避」的攻擊範圍內（包含受傷、盾擋），期間不能再觸發盾反或完美迴避",
+          "※ 拿出武器的情形下出現水平拉弓的情形時，點擊 B 或 R 可以解除子彈時間",
+          "※ 先點擊 ZR 進入子彈時間，按 R 瞬間同時按下 ZR + Y，可以藉由投擲動作來做「閃擊轉換」，從一般拉弓轉成閃擊的拉弓",
+        ],
       },
       {
         tab: "ATR",
@@ -815,12 +869,81 @@ export const typeContent: Record<string, TypeContent> = {
         steps: [
           "開啟達爾克爾的守護",
           "在空中按住 ZL，點擊 ZR 拉弓進入子彈時間",
-          "在子彈時間期間受到攻擊，觸發守護破開或完美守護",
-          "執行「閃擊」步驟 1～3 的操作",
+          "在子彈時間期間受到攻擊觸發「達爾克爾的守護（破開或完美彈反）」",
+          "執行「閃擊(TCR)」步驟 1～3 的操作",
         ],
+      },
+      {
+        tab: "QFR",
+        name: "快速突擊（Quick Flurry Rush）",
+        bullets: [
+          "・物理型：舉炸彈之後__後跳__進行完美迴避 → 連打 Y 突擊",
+          "・系統型：執行一次「無鎖定的不完全跳躍」後，__側跳__進行完美迴避 → 連打 Y 突擊",
+          "・護盾型：ZL 鎖定目標，落地前才觸發達爾克爾守護，且在慢動作判定期間落地 → 連打 Y 突擊（即 LDR）",
+        ],
+        note: "※ 細節請參考下方相關連結的「番外28 - 快速突擊（Quick Rush）」",
       },
     ],
     principle: "正常的「突擊(Flurry Rush)」，是部分種類的傷害接近林克時，林克做出「迴避跳（ZL+X+→/←/↓）」就能「完美迴避」，並且在成功完美迴避時的子彈時間內觸發突擊。而在達爾克爾的守護破開或完美守護、空中 ZR 拉弓等等的子彈時間內做出能觸發完美迴避的「迴避跳（ZL+X+→/←/↓）」，也可以主動觸發突擊。",
+    notes: [
+      {
+        text: "若沒有鎖定目標，落地出現「突擊 Y」判定時會無法啟動突擊。__左搖桿繞一圈點打 Y__或__直接連打 A__可以觸發不需要鎖定的突擊（不穩定）。",
+      },
+      {
+        text: "「雙手武器」側跳的達爾克爾突擊，在空中必須只輸入一次 Y，落地按住 ZL 連打 Y 就好。若在空中就連打 Y，會被一般攻擊取代，不會觸發突擊。",
+      },
+      {
+        text: "「盾反後的瞬間切換裝備解除盾反的特效」，或「林克前面放炸彈，若魔物先攻擊到炸彈才擊中林克」，這種情形下的盾反不會解除閃擊的追擊判定。",
+      },
+    ],
+    videos: [
+      {
+        id: "ewnlB6jK7M8",
+        title: "番外04(新) - 原來不只有「完美迴避的突擊」？Yuda教你所有「進階突擊(Advanced Flurry Rush, TCR/PDR/ATR)」",
+        desc: "最完整的「主動式突擊（Active Flurry Rush）」教學！",
+      },
+      {
+        id: "JsMFQVpUJcI",
+        title: "番外04(補) - 極限距離的超遠突擊！「無鎖定突擊」與「雙手武器的側跳PDR」（中文解說）",
+      },
+      {
+        id: "pZWqxIHxweA",
+        title: "番外45 - 當英傑學會飛雷神之術！「閃擊(Thunderclap Rush)」（非詳盡解說）",
+        desc: "最早的「閃擊（Thunderclap Rush）」教學！",
+      },
+      {
+        id: "voH5iBOR5kk",
+        title: "番外45.5(進階) - 騎完人馬後的飛雷神！「落馬閃擊(Jump-off Thunderclap Rush)」",
+      },
+      {
+        id: "gva5ZCkuRlE",
+        title: "指法15 -「跳馬盾擋」與「落馬閃擊」(Jump-off Shield Block & Thunderclap Rush, 簡易說明)",
+      },
+      {
+        id: "BZtJ2BzjkDw",
+        title: "番外28 -「快速突擊（Quick Rush）」（中文解說）",
+      },
+      {
+        id: "O8afIFdhb18",
+        title: "番外22 自燃火把／完美盾擋重置(DSBR)／烏魯波薩突擊(Urbosa Rush)（補充教學）",
+      },
+      {
+        id: "7zs5Vt8Xoa4",
+        title: "指法10「二段式強制子彈時間（Shield Block Reset + Perfect Daruk Rush）」",
+      },
+      {
+        id: "qxRxWDyohMI",
+        title: "指法01 強制子彈時間／完美達爾克爾突擊（PDR）",
+      },
+      {
+        id: "mK-hlDjgfjs",
+        title: "番外04 強制子彈時間(Daruk Rush / 強制ダルケルラッシュ)",
+      },
+      {
+        id: "WJhWim4S-KI",
+        title: "28 遊戲攻略技巧（五）- Advanced Techniques（中文解說）",
+      },
+    ],
   },
 
   "totk-12": {
