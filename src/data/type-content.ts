@@ -1035,6 +1035,25 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "totk-03": {
+    videos: [
+      { id: "nQVypHKJKGY", title: "神特01(新) -『格魯德峽谷』地區神廟特解（Shrine Strategies in Gerudo Canyon）" },
+      { id: "HOs8LqVKzBc", title: "神特02 -『泡泡拉高地』地區神廟特解（Shrine Strategies in Popla Foothills）" },
+      { id: "26YjpvH_iVc", title: "神特03 -『撒哈斯拉平原』地區神廟特解（Shrine Strategies in Sahasra Slope）" },
+      { id: "Vncrwztk1v0", title: "神特04 -『拉聶爾山』地區神廟特解（Shrine Strategies in Mount Lanayra）" },
+      { id: "yqRyCZZfvE4", title: "神特05 -『烏爾利山』地區神廟特解（Shrine Strategies in Ulra Mountain）" },
+      { id: "cfaBC9BlqUI", title: "神特06 -『奧爾汀峽谷』地區神廟特解（Shrine Strategies in Eldin Canyon）" },
+      { id: "eUb4l9Naiaw", title: "神特07 -『卓拉台地』地區神廟特解（Shrine Strategies in Upland Zorana）" },
+      { id: "58FYdV9vDig", title: "神特08 -『格魯德高地』地區神廟特解（Shrine Strategies in Gerudo Highlands）" },
+      { id: "mucxdW5tgc0", title: "神特09 -『茨茨齊齊雪原』地區神廟特解（Shrine Strategies in Pikida Stonegrove）" },
+      { id: "wCFXe8Rm-ds", title: "神特10 -『德依布朗遺跡』地區神廟特解（Shrine Strategies in Thyphlo Ruins）" },
+      { id: "HJQOvlZPD4c", title: "神特11 -『拉布拉山』地區神廟特解（Shrine Strategies in Lindor's Brow）" },
+      { id: "doEx5HnjGng", title: "神特12 -『卡爾加嶺』地區神廟特解（Shrine Strategies in Rospro Pass）" },
+      { id: "f8PBQ0SeIaw", title: "神特13 -『監視堡壘』地區神廟特解（Shrine Strategies in Lookout Landing）(1/2)" },
+      { id: "KDZcchuNqSw", title: "神特14(End) -『海拉魯平原』地區神廟特解（Shrine Strategies in Hyrule Field）" },
+    ],
+  },
+
   "totk-05": {
     methods: [
       { tab: "Mount Lock + PR" },

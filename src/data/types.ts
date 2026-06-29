@@ -48,7 +48,7 @@ export const typeGroups: TypeGroup[] = [
     items: [
       { no: "01", zh: "必備小程錯", en: "Glitches", videosOnly: true },
       { no: "02", zh: "進階技巧", en: "Advanced Techniques", videosOnly: true },
-      { no: "03", zh: "神廟特解", en: "Shrine Strategies" },
+      { no: "03", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
       { no: "04", zh: "序章大師劍", en: "MsgNotFound Sword in Prologue" },
       { no: "05", zh: "西方高原", en: "Western Highlands" },
       { no: "06", zh: "黏手與並列", en: "Smuggle & Zuggle" },
