@@ -628,6 +628,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-08": {
+    intro: "DLC1「古代英雄的詩篇」收錄的試煉挑戰，需要在沒有任何裝備的狀態下連續擊敗多波敵人。本系列包含初級、中級、頂級的重點攻略，以及大師模式下各樓層的應對方法，適合在試煉中卡關或想省時完成的玩家參考。",
     videos: [
       { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
       { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
@@ -649,6 +650,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-10": {
+    intro: "依塔的管轄區域分類的神廟解謎攻略，收錄全地圖各區域神廟的快速解法與解題思路。每集對應一個地區，直接找到卡關的神廟所在區域即可查閱，不需要從頭看起。",
     videos: [
       { id: "eKNFTJVV85c", title: "神特01 - 初始台地區域（Shrine Strategies in Great Plateua Area）" },
       { id: "wKRYj0hMy18", title: "神特02 - 塔邦撻地區（Shrine Strategies in Tabantha region）" },
@@ -667,6 +669,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-12": {
+    intro: "主線流程的攻略影片集，包含四座神獸的破解步驟、加儂多夫的實戰攻略，以及 DLC 追加任務的完整走法。如果在主線特定關卡卡關，找到對應的影片即可直接參考。",
     videos: [
       { id: "2vL2TXpLh7U", title: "EX5 - 新手怎麼潛入依蓋隊基地？Yuda教你直接闖空門！(Area Clearing)" },
       { id: "1y-BGwQ0_zs", title: "DLC2《虛幻空間》的四咒加儂 - 快速重點攻略(Walkthrough of Blight Ganons in Illusory Realm)（2022年版）" },
@@ -694,6 +697,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-15": {
+    intro: "直接給步驟，不說廢話。每集針對單一技巧或訛轉做快速示範，沒有背景介紹、沒有原理分析，只有你需要的操作流程。適合已有基礎、只想快速查閱特定技巧的玩家。",
     videos: [
       { id: "Okv-0so2jys", title: "6分鐘$500000｜吃(用)不完的料理與素材 -「新檔訛轉」的可怕！（不廢話系列）" },
       { id: "JtSHil_1AYM", title: "不用洗箭！快速全屬性80000箭｜無原理快速示範「連鎖向前訛轉(FDIC Chain)」！（不廢話系列）" },
@@ -714,6 +718,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-09": {
+    intro: "專為初學者設計的入門與進階攻略系列，從所有「進階突擊」的判定原理、到裝備管理、戰鬥技巧、大師模式的應對思路，一步一步幫助你建立遊戲的底層理解。不管是剛入手的新玩家，還是想補強某個環節的老手，都能找到對應的影片。",
     videos: [
       { id: "ewnlB6jK7M8", title: "番外04(新) - 原來不只有「完美迴避的突擊」？Yuda教你所有「進階突擊(Advanced Flurry Rush, TCR/PDR/ATR)」" },
       { id: "K5JjZHBTC9c", title: "ED01 - NS2才入手的必看！絕對不能錯過的小知識（上）" },
@@ -740,6 +745,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-11": {
+    intro: "細化到按鍵層級的指法解說系列。每集聚焦在單一技術，說明觸發條件、操作時機，以及實戰中的應用場景。適合想把特定技巧練得更穩定、或想理解為什麼某個操作會成功的玩家。",
     videos: [
       { id: "qxRxWDyohMI", title: "指法01 - 強制子彈時間／完美達爾克爾突擊（PDR）" },
       { id: "2Q_KbMJ1d6Q", title: "指法02 - 烏魯波薩炸彈盾反（UBP）" },
@@ -825,6 +831,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-14": {
+    intro: "觀眾在留言或社群中提出的疑問，以影片形式逐一回答。內容橫跨各種技巧、神廟、任務，問題形式多樣，常常是一句問題帶出一整個機制的解說。",
     videos: [
       { id: "yoQ_Gywq7Qs", title: "回應01「沃托里漁村的克洛格」該怎麼解？" },
       { id: "khj7UDxoFIA", title: "回應02 該怎麼穿越「迷途森林」？" },
@@ -862,6 +869,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-16": {
+    intro: "以電影化手法呈現的戰鬥合輯，包含「The Four」與「Will of the Sword」兩部作品。純欣賞性質，展示曠野之息戰鬥系統在極限操作下的美學呈現。",
     videos: [
       { id: "UJRURurOp3M", title: "「The Four」：曠野之息戰鬥合輯微電影 - 預告(BoTW Combat Montage Trailer)", desc: "Trailer of The Four（預告片）" },
       { id: "QIzqy4KVY6c", title: "「The Four」：曠野之息戰鬥合輯微電影(BoTW Cinematic Combat Montage)", desc: "RinHara5aki、Kleric、Peco、Yuda 曠野界首度跨國合作的戰鬥微電影" },
@@ -987,6 +995,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-01": {
+    intro: "收錄王國之淚各種主要小程錯的「不廢話」教學，從餘料糾纏、纏桿、隱藏，到並列裝備與各式繼承技術，每集針對單一技術做示範。每支影片標注適用版本，查詢前請確認你的遊戲版本。",
     videos: [
       { id: "sSEDfRdcbmI", title: "不廢話01 -「餘料糾纏(FE, Fuse Entanglement)」(適用：～Ver.1.1.2)" },
       { id: "O0mY1o3Pb04", title: "不廢話02 -「餘存型餘料糾纏(FSFE, Fuse Storage Fuse Entanglement)」(適用：全版本)" },
@@ -1018,6 +1027,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-02": {
+    intro: "超越基本操作的實用技巧彙整，包含右手能力的進階應用、NS1 與 NS2 版本的差異解說、無限火箭與虛化裝備等高階技術的完整步驟，以及各種容易被忽略的細節與機制。",
     videos: [
       { id: "zFLuHyITm00", title: "番外01 - 實用技巧攻略(一)｜王國之淚也通用的曠野之息技巧解說！（ver.1.2.0版｜#八位堂）" },
       { id: "R4WyZineaDI", title: "番外02 - 無軌道無裝置！初學者也能順利搭乘「翼」的７種方法！（ver.1.2.0版）" },
@@ -1037,6 +1047,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-03": {
+    intro: "依地區分類的神廟快速解法，收錄全海拉魯各區域神廟的解題思路，共 14 集對應不同地區。直接找到你所在的區域即可，不需要逐集翻找。",
     videos: [
       { id: "nQVypHKJKGY", title: "神特01(新) -『格魯德峽谷』地區神廟特解（Shrine Strategies in Gerudo Canyon）" },
       { id: "HOs8LqVKzBc", title: "神特02 -『泡泡拉高地』地區神廟特解（Shrine Strategies in Popla Foothills）" },
@@ -1146,6 +1157,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "eow-03": {
+    intro: "智慧的再現中的高速移動與飛行技巧解說，讓你突破地形限制、快速抵達地圖各處。適合想在探索上省時間的玩家。",
     videos: [
       { id: "O8bKXDLW2u8", title: "番外02 - 飛天遁地！最實用的高速移動與飛行的技巧解說！" },
     ],
