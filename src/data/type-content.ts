@@ -18,6 +18,7 @@ export interface TypeMethod {
   video?: string;     // 快速示意影片檔名，例："前跳.MP4"
   image?: string;     // 快速示意圖片檔名（與 video 擇一），例："IST.png"
   note?: string | string[]; // 步驟下方的灰色備註（可多行）
+  principle?: string;       // 此分頁的原理說明（覆蓋 TypeContent.principle）
 }
 
 export interface RelatedVideo {
@@ -36,6 +37,7 @@ export interface TypeContent {
   imageFolder?: string;       // public/type-videos/ 下的子資料夾名稱（圖片用）
   methodsTitle?: string;      // A 區左欄標題，預設「流程步驟」
   principleTitle?: string;    // B 區右欄標題，預設「原理說明」
+  notesTitle?: string;        // 注意事項區標題（預設「注意事項」）
   principle?: string;         // B 區內文（段落式，與 principleItems 擇一）
   principleItems?: string[];  // B 區內文（條列式，有值則覆蓋 principle）
   principleNote?: string;     // B 區備註（灰色小字，顯示於 principle/principleItems 下方）
@@ -979,6 +981,130 @@ export const typeContent: Record<string, TypeContent> = {
       {
         id: "WJhWim4S-KI",
         title: "28 遊戲攻略技巧（五）- Advanced Techniques（中文解說）",
+      },
+    ],
+  },
+
+  "totk-01": {
+    videos: [
+      { id: "sSEDfRdcbmI", title: "不廢話01 -「餘料糾纏(FE, Fuse Entanglement)」(適用：～Ver.1.1.2)" },
+      { id: "O0mY1o3Pb04", title: "不廢話02 -「餘存型餘料糾纏(FSFE, Fuse Storage Fuse Entanglement)」(適用：全版本)" },
+      { id: "MzbtzsGB34A", title: "不廢話02(NS2版) -「餘料儲存(Fuse Storage)」(適用：～ver.1.4.3)" },
+      { id: "EG9qwZXSAOI", title: "不廢話03 -「米涅魯糾纏(Mineru FE)」(適用：全版本)" },
+      { id: "41ARX3F0I9M", title: "不廢話03(NS2) -「米涅魯糾纏(Mineru FE)」(適用：1.4.0~)" },
+      { id: "lA7el-E2YoA", title: "不廢話04 -「冷餘料(Cold Fuse, CF)」(適用：全版本)" },
+      { id: "bVnFIYKHMZg", title: "不廢話05 -「纏桿(Stick Desync Clip, SDC)」(適用：全版本)" },
+      { id: "qnq6E_8b9rU", title: "不廢話06 -「纏桿隱藏(SDC Culling)」(適用：全版本)" },
+      { id: "rGCvHgch9jI", title: "不廢話07 -「萊克吞桿隱藏(LLSC, Like-Like Stick Culling)」(適用：全版本)" },
+      { id: "GZLuq0Xh8Dg", title: "不廢話08 -「攜帶式隱藏(Portable Culling)」(適用：Ver.1.2.0～)" },
+      { id: "FYrrFcB40uE", title: "不廢話09 -「米涅魯纏桿糾纏(YeeFE)」(適用：全版本)" },
+      { id: "sfw0n6ywqjg", title: "不廢話10 -「閃藏糾纏(Portacull FE)」(適用：Ver.1.2.0～)" },
+      { id: "YGSfZsvz-Tc", title: "不廢話11 -「丟棄大師劍(Drop Normal Master Sword)」(適用：Ver.1.2.0～)" },
+      { id: "mAx3ox3fOYQ", title: "不廢話12 -「無框相機(Frameless Camera/Scope)」(適用：全版本)" },
+      { id: "BhOnDZf5kV8", title: "不廢話13 -「投擲複製法(MTD, Midair Throw Duplication)」(適用：全版本)" },
+      { id: "AXHn-WTZh8E", title: "不廢話14 -「並列裝備(Zuggle)」(適用：全版本)" },
+      { id: "wUL-pHB2P7Q", title: "不廢話15 -「存讀繼承(Save Load Duping, SLD)」(適用：全版本)" },
+      { id: "fQ1WwnusSXk", title: "不廢話16 -「並列繼承(Zuggle Load Object Transfer)」與「乾坤鎖(Recall Lock)」(適用：全版本)" },
+      { id: "3B3f77u_TOI", title: "不廢話17 -「隱藏儲存(Cull Storage)」(適用：全版本)" },
+      { id: "_XG5lYJzSpk", title: "不廢話18 -「黏足(Drop Smuggle)」與「足下並列(Drop Zuggle)」(適用：1.2.X)" },
+      { id: "BhagRZoBQRE", title: "不廢話19 -「隱存無形並列(Cull Area Invizuggle)」(適用：全版本)" },
+      { id: "Ne1vx1SA_Sk", title: "不廢話20 -「深穴延遲並列(Chasm Delay Zuggle)」(適用：Ver.1.2.0～)" },
+      { id: "95RPAqAllJo", title: "不廢話21 -「沐彼並列/繼承/掉落/幽體繼承(Advanced Moobe glitches)」(適用：Ver.1.2.0～)" },
+      { id: "kxGm05yjyM8", title: "不廢話22 -「暴打彈簧 - ARAZ（Attached Rangeless Active Zonai）」(適用：1.2.X)" },
+      { id: "eXGglGGWwO4", title: "不廢話23 -「恆動餘料左納烏 - GAS（Guard-less Active Shield）」(適用全版本｜但本片為針對1.2.X的流程)" },
+      { id: "zaSkPSgXmn8", title: "不廢話24 -「米涅魯地圖並列(Mineru Map Zuggle)」(適用：全版本)" },
+    ],
+  },
+
+  "totk-02": {
+    videos: [
+      { id: "zFLuHyITm00", title: "番外01 - 實用技巧攻略(一)｜王國之淚也通用的曠野之息技巧解說！（ver.1.2.0版｜#八位堂）" },
+      { id: "R4WyZineaDI", title: "番外02 - 無軌道無裝置！初學者也能順利搭乘「翼」的７種方法！（ver.1.2.0版）" },
+      { id: "oXODBhMDS5Q", title: "番外04 - 實用技巧攻略(二)｜14個小知識與小技巧（ver.1.2.1版）" },
+      { id: "Y3AUNIheO84", title: "番外05 - 實用技巧攻略(三)｜王淚戰鬥系統的精髓（～ver.1.2.1版）" },
+      { id: "rdXxd7kU9xs", title: "番外06 - 實用技巧攻略(四)｜初學者適用的右手能力應用解說(上)（～ver.1.2.1版）" },
+      { id: "1Ppx8LOBPjA", title: "番外07 - 實用技巧攻略(五)｜你確定你了解「倒轉乾坤(Recall)」嗎？初學者適用的右手能力應用解說(下)（～ver.1.2.1版）" },
+      { id: "QWevjL_rbE8", title: "番外08(舊) - 300小時還不知道的12種玩法（~ver.1.2.1, Still Don't Know Until 300 Hours Play-Time）" },
+      { id: "8oVnBYqYJL4", title: "番外09 - 雪兔號無敵的秘密！「傷害無效化(Damage Invalidation)」" },
+      { id: "MTnMDNy8hxE", title: "回應05 - 只會叫的人馬連新手都躺著打！各版本專虐人馬的藍圖組合！" },
+      { id: "7HeUApBT2Ng", title: "NS1(1.2.1)版和NS2(1.4.3)版差在哪裡？有哪些新的方法呢？" },
+      { id: "h7MpbgUvizw", title: "番外22 - 永久連噴、不會消耗的「無限/究極口袋火箭（Infinite/Ultimate Pocket Rockets）」！百科級流程說明（適用ver.1.1.2～）" },
+      { id: "aELlly95zCk", title: "番外20 - 全屬性大師劍！並列多把裝備在手上的「再同步並列(Swap Resync Zuggle)」步驟與原理解說" },
+      { id: "MWBVJsLTA0c", title: "番外21 - 無限耐久＆複製＆無限彈簧火箭盾！虛空次元歸來的「虛化裝備(Void Dip & DI)」原理解說與常用步驟示範（適用ver.1.2.1～）" },
+      { id: "AdwFCk77JsE", title: "番外20.5 - 和林克無關聯的繼承！「永久跨檔繼承(PSLOT, Permanent Save Load Object Transfer)」(適用：All Versions)" },
+    ],
+  },
+
+  "totk-05": {
+    methods: [
+      { tab: "Mount Lock + PR" },
+      { tab: "LSW" },
+    ],
+    videos: [
+      {
+        id: "7DS_ZmOVuR8",
+        title: "番外23 - 海拉魯西方那座高山用火箭可以上去嗎？IPR 和 LSW 的挑戰！（ver.1.4.3｜Nintendo Switch 2）",
+      },
+      {
+        id: "WLSjvOTQXO8",
+        title: "番外23(會員) -「怪持虛化口袋火箭(Enemy DI IPR)」前往西方高原（ver.1.4.3｜Nintendo Switch 2）",
+      },
+    ],
+  },
+
+  "totk-06": {
+    methodsTitle: "裝備狀態",
+    notesTitle: "備註說明",
+    methods: [
+      { tab: "Smuggle" },
+      { tab: "Zuggle" },
+      { tab: "Wuggle" },
+      { tab: "Zoggle" },
+    ],
+    videos: [
+      {
+        id: "aELlly95zCk",
+        title: "番外20 - 全屬性大師劍！並列多把裝備在手上的「再同步並列(Swap Resync Zuggle)」步驟與原理解說",
+      },
+    ],
+  },
+
+  "totk-07": {
+    methods: [
+      { tab: "Zuggle" },
+      { tab: "Fuse" },
+      { tab: "SFO" },
+      { tab: "Constraint" },
+    ],
+    videos: [
+      {
+        id: "MWBVJsLTA0c",
+        title: "番外21 - 無限耐久＆複製＆無限彈簧火箭盾！虛空次元歸來的「虛化裝備(Void Dip & DI)」原理解說與常用步驟示範（適用ver.1.2.1～）",
+        desc: "代替 Invizuggle 的「可調式過載」！",
+      },
+      {
+        id: "UIHuP5k0myM",
+        title: "番外17 - 無限的代名詞！「過載(Overload)」全應用！（無限複製｜無限火箭｜無限跳躍）",
+        desc: "過載後想怎麼用就怎麼用，不用電池！",
+      },
+      {
+        id: "MWBVJsLTA0c",
+        title: "番外21 - 無限耐久＆複製＆無限彈簧火箭盾！虛空次元歸來的「虛化裝備(Void Dip & DI)」原理解說與常用步驟示範（適用ver.1.2.1～）",
+        desc: "偷走 NPC 手上裝備的方法！",
+      },
+    ],
+  },
+
+  "totk-08": {
+    methods: [
+      { tab: "Void Dip" },
+      { tab: "DI" },
+    ],
+    videos: [
+      {
+        id: "MWBVJsLTA0c",
+        title: "番外21 - 無限耐久＆複製＆無限彈簧火箭盾！虛空次元歸來的「虛化裝備(Void Dip & DI)」原理解說與常用步驟示範（適用ver.1.2.1～）",
+        desc: "用途非常廣、不消耗耐久的裝備狀態",
       },
     ],
   },

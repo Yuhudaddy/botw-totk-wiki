@@ -42,6 +42,7 @@ const vidRowHover = videosOnly ? "hover:bg-surface" : "hover:bg-bg";
 const vidBtnBg = videosOnly ? "bg-surface" : "bg-bg";
 
 const VIDEOS_PER_PAGE = 10;
+const hasDynamicPrinciple = content?.methods?.some((m) => m.principle != null) ?? false;
 
 // 把 __文字__ 解析成可加橙色的片段
 function parseAccent(text: string) {
@@ -112,7 +113,7 @@ function parseName(text: string) {
               ))}
             </div>
             {content.methods.map((m, i) => (
-              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} hidden={i !== 0}>
+              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={m.principle ?? ""} hidden={i !== 0}>
                 {m.name ? (
                   <div class="mb-3 text-[15px] font-medium text-ink">{m.name}</div>
                 ) : m.tags && m.tags.length > 0 ? (
@@ -232,6 +233,8 @@ function parseName(text: string) {
                 </li>
               ))}
             </ul>
+          ) : hasDynamicPrinciple ? (
+            <p id="principle-text">{content?.methods?.[0]?.principle ?? ""}</p>
           ) : (
             <p>
               {content?.principle ? (
@@ -288,7 +291,7 @@ function parseName(text: string) {
 
     {/* 注意事項：跨兩欄 */}
     <div class="prose-custom mt-10 border-t border-border-soft pt-10">
-      <h2>注意事項</h2>
+      <h2>{content?.notesTitle ?? "注意事項"}</h2>
       <ul>
         {content?.notes ? (
           content.notes.map((n) => (
@@ -621,10 +624,15 @@ function parseName(text: string) {
       }
     }
 
+    const principleText = document.getElementById("principle-text");
+
     function select(index: number) {
       tabs.forEach((t, i) => t.setAttribute("aria-selected", String(i === index)));
       panels.forEach((p, i) => (p.hidden = i !== index));
       updateMedia(index);
+      if (principleText) {
+        principleText.textContent = panels[index]?.dataset.principle ?? "";
+      }
     }
 
     tabs.forEach((tab, i) => tab.addEventListener("click", () => select(i)));
