@@ -337,6 +337,20 @@ function parseName(text: string) {
   </article>
   )}
 
+  {/* videosOnly 頁的簡介與說明 */}
+  {videosOnly && (
+    <div class="border-b border-border-soft">
+      <div class="mx-auto max-w-[1180px] px-8 pb-10 pt-10">
+        <h2 class="mb-4 font-serif text-[22px] font-medium text-ink">簡介與說明</h2>
+        {content?.intro ? (
+          <p class="text-[16px] leading-[1.8] text-ink">{content.intro}</p>
+        ) : (
+          <p class="text-[15px] text-muted">說明內容整理中，敬請期待。</p>
+        )}
+      </div>
+    </div>
+  )}
+
   {/* 相關影片 */}
   {content?.videos && content.videos.length > 0 ? (
     <section class={vidSectionClass}>

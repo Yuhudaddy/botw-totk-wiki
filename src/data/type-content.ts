@@ -37,6 +37,7 @@ export interface TypeContent {
   imageFolder?: string;       // public/type-videos/ 下的子資料夾名稱（圖片用）
   methodsTitle?: string;      // A 區左欄標題，預設「流程步驟」
   principleTitle?: string;    // B 區右欄標題，預設「原理說明」
+  intro?: string;             // videosOnly 頁的簡介文字（顯示於影片區上方）
   notesTitle?: string;        // 注意事項區標題（預設「注意事項」）
   principle?: string;         // B 區內文（段落式，與 principleItems 擇一）
   principleItems?: string[];  // B 區內文（條列式，有值則覆蓋 principle）
