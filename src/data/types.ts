@@ -46,7 +46,7 @@ export const typeGroups: TypeGroup[] = [
     label: "王國之淚",
     en: "Tears of the Kingdom",
     items: [
-      { no: "01", zh: "必備小程錯", en: "Short Glitches", videosOnly: true },
+      { no: "01", zh: "必備小程錯", en: "Basic Glitches", videosOnly: true },
       { no: "02", zh: "進階技巧", en: "Advanced Techniques", videosOnly: true },
       { no: "03", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
       { no: "04", zh: "序章大師劍", en: "MsgNotFound Sword in Prologue" },
@@ -58,6 +58,8 @@ export const typeGroups: TypeGroup[] = [
       { no: "10", zh: "進階餘料建造", en: "Advanced Fuse" },
       { no: "11", zh: "隱藏剔除", en: "Cull" },
       { no: "12", zh: "道具複製", en: "Item Duplication" },
+      { no: "13", zh: "偷襲機制", en: "Sneakstrike" },
+      { no: "14", zh: "盾擋重置", en: "Shield Block Reset" },
     ],
   },
   {
