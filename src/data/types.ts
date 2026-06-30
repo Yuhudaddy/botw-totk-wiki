@@ -4,13 +4,14 @@ export interface TypeItem {
   zh: string;
   en: string;
   videosOnly?: boolean; // 詳細頁只顯示「相關影片」區（隱藏流程／原理／注意事項）
+  termsOnly?: boolean;  // 詳細頁只顯示「名詞說明」＋「相關影片」（大亂鬥用）
   aliases?: string[]; // 影片索引搜尋用的別名／關鍵字（例：["IST", "背包", "格子"]）
   playlist?: string;  // YouTube 播放清單連結（待補）
   videos?: string[];  // 詳細頁底部顯示的 YouTube 影片 ID（待補）
 }
 
 export interface TypeGroup {
-  game: "botw" | "totk" | "eow";
+  game: "botw" | "totk" | "eow" | "ssbu";
   label: string;
   en: string;
   items: TypeItem[];
@@ -70,6 +71,21 @@ export const typeGroups: TypeGroup[] = [
       { no: "01", zh: "大岩蛇", en: "Onix" },
       { no: "02", zh: "萊尼爾", en: "Lynel" },
       { no: "03", zh: "飛天技巧", en: "Skybound", videosOnly: true },
+    ],
+  },
+  {
+    game: "ssbu",
+    label: "任天堂明星大亂鬥特別版",
+    en: "Super Smash Bros. Ultimate",
+    items: [
+      { no: "01", zh: "入門篇", en: "Beginner's Guide", termsOnly: true },
+      { no: "02", zh: "初級篇", en: "Elementary Guide", termsOnly: true },
+      { no: "03", zh: "中級篇", en: "Intermediate Guide", termsOnly: true },
+      { no: "04", zh: "上級篇", en: "Advanced Guide", termsOnly: true },
+      { no: "05", zh: "專業術語", en: "Terminology", termsOnly: true },
+      { no: "06", zh: "彈弓", en: "Slingshot", videosOnly: true },
+      { no: "07", zh: "個別角色", en: "Character Guides", videosOnly: true },
+      { no: "08", zh: "1分鐘快學", en: "1-Minute Tips", videosOnly: true },
     ],
   },
 ];

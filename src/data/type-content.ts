@@ -32,6 +32,16 @@ export interface TypeNote {
   sub?: string[]; // 縮排子清單，例：["(1) …", "(2) …"]
 }
 
+export interface TermEntry {
+  zh: string;    // 中文術語
+  en?: string;   // 英文術語（選填）
+}
+
+export interface TermGroup {
+  title: string;       // 分組標題，例："入門技巧 EX01"
+  terms: TermEntry[];  // 術語列表
+}
+
 export interface TypeContent {
   videoFolder?: string;       // public/type-videos/ 下的子資料夾名稱（影片用）
   imageFolder?: string;       // public/type-videos/ 下的子資料夾名稱（圖片用）
@@ -47,6 +57,7 @@ export interface TypeContent {
   closing?: string;           // 注意事項下方的結語
   faqLink?: { label: string; path: string }; // Q&A 頁面連結（選填）
   videos?: RelatedVideo[];    // 相關影片
+  termGroups?: TermGroup[];   // termsOnly 頁的名詞說明分組（大亂鬥用）
 }
 
 export const typeContent: Record<string, TypeContent> = {

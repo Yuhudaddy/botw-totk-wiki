@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
-import { typeContent, type TypeStep } from "../../data/type-content";
+import { typeContent, type TypeStep, type TermGroup } from "../../data/type-content";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -21,7 +21,13 @@ export function getStaticPaths() {
 
 const { group, item } = Astro.props;
 const { id } = Astro.params as { id: string };
-const gameLabel = group.game === "botw" ? "曠野之息" : "王國之淚";
+const gameLabelMap: Record<string, string> = {
+  botw: "曠野之息",
+  totk: "王國之淚",
+  eow: "智慧的再現",
+  ssbu: "大亂鬥特別版",
+};
+const gameLabel = gameLabelMap[group.game] ?? group.label;
 const content = typeContent[id];
 
 const videoBase = content?.videoFolder
@@ -34,12 +40,15 @@ const hasAnyVideo = content?.methods?.some((m) => m.video) ?? false;
 const hasAnyImage = content?.methods?.some((m) => m.image) ?? false;
 const hasMedia = hasAnyVideo || hasAnyImage;
 
-// 只顯示「相關影片」區的分類（05~12）：隱藏流程／原理／注意事項，
+// 只顯示「相關影片」區的分類：隱藏流程／原理／注意事項，
 // 並讓影片區延續上方標題區的背景色（不另加 bg-surface）。
 const videosOnly = item.videosOnly ?? false;
-const vidSectionClass = videosOnly ? "" : "border-t border-border-soft bg-surface";
-const vidRowHover = videosOnly ? "hover:bg-surface" : "hover:bg-bg";
-const vidBtnBg = videosOnly ? "bg-surface" : "bg-bg";
+// 只顯示「名詞說明」＋「相關影片」（大亂鬥用）
+const termsOnly = item.termsOnly ?? false;
+const isSimpleLayout = videosOnly || termsOnly;
+const vidSectionClass = isSimpleLayout ? "" : "border-t border-border-soft bg-surface";
+const vidRowHover = isSimpleLayout ? "hover:bg-surface" : "hover:bg-bg";
+const vidBtnBg = isSimpleLayout ? "bg-surface" : "bg-bg";
 
 const VIDEOS_PER_PAGE = 10;
 const hasDynamicPrinciple = content?.methods?.some((m) => m.principle != null) ?? false;
@@ -91,8 +100,8 @@ function parseName(text: string) {
     </div>
   </section>
 
-  {/* 主體：流程步驟（左）／原理說明＋快速示意（右）＋ 注意事項（下）。videosOnly 分類不顯示 */}
-  {!videosOnly && (
+  {/* 主體：流程步驟（左）／原理說明＋快速示意（右）＋ 注意事項（下）。videosOnly / termsOnly 分類不顯示 */}
+  {!videosOnly && !termsOnly && (
   <article class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
     <div class="grid gap-x-12 gap-y-10 md:grid-cols-[1.6fr_1fr]">
       {/* 左：流程步驟 */}
@@ -335,6 +344,32 @@ function parseName(text: string) {
       )}
     </div>
   </article>
+  )}
+
+  {/* termsOnly 頁的名詞說明 */}
+  {termsOnly && (
+    <div class="border-b border-border-soft">
+      <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-10">
+        <h2 class="mb-8 font-serif text-[22px] font-medium text-ink">名詞說明</h2>
+        {content?.termGroups && content.termGroups.length > 0 ? (
+          content.termGroups.map((tg: TermGroup) => (
+            <div class="mb-10 last:mb-0">
+              <div class="mb-4 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{tg.title}</div>
+              <ul class="space-y-2.5 list-none p-0">
+                {tg.terms.map((term) => (
+                  <li class="flex gap-0 text-[15px] leading-[1.7]">
+                    <span class="text-ink">{term.zh}</span>
+                    {term.en && <span class="text-muted">&nbsp;/&nbsp;{term.en}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        ) : (
+          <p class="text-[15px] text-muted">名詞說明整理中，敬請期待。</p>
+        )}
+      </div>
+    </div>
   )}
 
   {/* videosOnly 頁的簡介與說明 */}
