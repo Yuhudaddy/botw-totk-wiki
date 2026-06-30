@@ -628,7 +628,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-08": {
-    intro: "DLC1「古代英雄的詩篇」收錄的試煉挑戰，需要在沒有任何裝備的狀態下連續擊敗多波敵人。本系列包含初級、中級、頂級的重點攻略，以及大師模式下各樓層的應對方法，適合在試煉中卡關或想省時完成的玩家參考。",
+    intro: "DLC1「考驗的霸者」收錄的考驗挑戰，清空既有進度的裝備進入考驗，連續通過各個樓層擊敗魔物。本系列包含普通模式和大師模式的初級、中級、頂級的重點攻略，以及大師模式更需要學習的「偷襲」技巧，適合在試煉中卡關或想省時完成的玩家參考。",
     videos: [
       { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
       { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
@@ -650,7 +650,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-10": {
-    intro: "依塔的管轄區域分類的神廟解謎攻略，收錄全地圖各區域神廟的快速解法與解題思路。每集對應一個地區，直接找到卡關的神廟所在區域即可查閱，不需要從頭看起。",
+    intro: "收錄全地圖各個區域的解謎神廟。以早期無風彈、無天滑的方式，單靠「操作」來通過神廟。",
     videos: [
       { id: "eKNFTJVV85c", title: "神特01 - 初始台地區域（Shrine Strategies in Great Plateua Area）" },
       { id: "wKRYj0hMy18", title: "神特02 - 塔邦撻地區（Shrine Strategies in Tabantha region）" },
@@ -697,7 +697,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-15": {
-    intro: "直接給步驟，不說廢話。每集針對單一技巧或訛轉做快速示範，沒有背景介紹、沒有原理分析，只有你需要的操作流程。適合已有基礎、只想快速查閱特定技巧的玩家。",
+    intro: "不廢話，直接給步驟。每集針對單一技巧或訛轉做快速示範，沒有背景介紹、沒有原理分析，只有你需要的操作流程。適合已有基礎、只想快速查閱特定技巧的玩家。",
     videos: [
       { id: "Okv-0so2jys", title: "6分鐘$500000｜吃(用)不完的料理與素材 -「新檔訛轉」的可怕！（不廢話系列）" },
       { id: "JtSHil_1AYM", title: "不用洗箭！快速全屬性80000箭｜無原理快速示範「連鎖向前訛轉(FDIC Chain)」！（不廢話系列）" },
@@ -718,7 +718,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-09": {
-    intro: "專為初學者設計的入門與進階攻略系列，從所有「進階突擊」的判定原理、到裝備管理、戰鬥技巧、大師模式的應對思路，一步一步幫助你建立遊戲的底層理解。不管是剛入手的新玩家，還是想補強某個環節的老手，都能找到對應的影片。",
+    intro: "專為初學者設計的入門與進階攻略系列，想要跳脫新手的思維，還是想補強某個環節的老手，都能找到對應的影片。",
     videos: [
       { id: "ewnlB6jK7M8", title: "番外04(新) - 原來不只有「完美迴避的突擊」？Yuda教你所有「進階突擊(Advanced Flurry Rush, TCR/PDR/ATR)」" },
       { id: "K5JjZHBTC9c", title: "ED01 - NS2才入手的必看！絕對不能錯過的小知識（上）" },
@@ -745,7 +745,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-11": {
-    intro: "細化到按鍵層級的指法解說系列。每集聚焦在單一技術，說明觸發條件、操作時機，以及實戰中的應用場景。適合想把特定技巧練得更穩定、或想理解為什麼某個操作會成功的玩家。",
+    intro: "分解操作到按鍵層級的指法解說系列。每集聚焦在單一技術，慢動作示範操作與按鈕的時機。適合想把特定技巧練得更穩定、或想不知道為什麼某個操作會失敗的玩家。",
     videos: [
       { id: "qxRxWDyohMI", title: "指法01 - 強制子彈時間／完美達爾克爾突擊（PDR）" },
       { id: "2Q_KbMJ1d6Q", title: "指法02 - 烏魯波薩炸彈盾反（UBP）" },
@@ -831,7 +831,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-14": {
-    intro: "觀眾在留言或社群中提出的疑問，以影片形式逐一回答。內容橫跨各種技巧、神廟、任務，問題形式多樣，常常是一句問題帶出一整個機制的解說。",
+    intro: "觀眾在留言或社群中提出的疑問，以影片形式逐一回答。內容橫跨各種技巧、神廟、任務，問題形式多樣。",
     videos: [
       { id: "yoQ_Gywq7Qs", title: "回應01「沃托里漁村的克洛格」該怎麼解？" },
       { id: "khj7UDxoFIA", title: "回應02 該怎麼穿越「迷途森林」？" },
@@ -869,7 +869,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-16": {
-    intro: "以電影化手法呈現的戰鬥合輯，包含「The Four」與「Will of the Sword」兩部作品。純欣賞性質，展示曠野之息戰鬥系統在極限操作下的美學呈現。",
+    intro: "和海外玩家合作，以微電影的手法呈現的戰鬥合輯，包含「The Four」與「Will of the Sword」兩部作品。純欣賞性質，展示《曠野之息》戰鬥系統在極限操作下的美學呈現。",
     videos: [
       { id: "UJRURurOp3M", title: "「The Four」：曠野之息戰鬥合輯微電影 - 預告(BoTW Combat Montage Trailer)", desc: "Trailer of The Four（預告片）" },
       { id: "QIzqy4KVY6c", title: "「The Four」：曠野之息戰鬥合輯微電影(BoTW Cinematic Combat Montage)", desc: "RinHara5aki、Kleric、Peco、Yuda 曠野界首度跨國合作的戰鬥微電影" },
@@ -995,11 +995,11 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-01": {
-    intro: "收錄王國之淚各種主要小程錯的「不廢話」教學，從餘料糾纏、纏桿、隱藏，到並列裝備與各式繼承技術，每集針對單一技術做示範。每支影片標注適用版本，查詢前請確認你的遊戲版本。",
+    intro: "收錄《王國之淚》各種必備的小程錯，許多大型的程錯都是由這些小程錯拼湊而成的路線流程，從餘料糾纏、纏桿、隱藏，到並列裝備與各式繼承技術，每集針對單一技術做示範。每支影片標注適用版本，查詢前請確認你的遊戲版本。",
     videos: [
       { id: "sSEDfRdcbmI", title: "不廢話01 -「餘料糾纏(FE, Fuse Entanglement)」(適用：～Ver.1.1.2)" },
       { id: "O0mY1o3Pb04", title: "不廢話02 -「餘存型餘料糾纏(FSFE, Fuse Storage Fuse Entanglement)」(適用：全版本)" },
-      { id: "MzbtzsGB34A", title: "不廢話02(NS2版) -「餘料儲存(Fuse Storage)」(適用：～ver.1.4.3)" },
+      { id: "MzbtzsGB34A", title: "不廢話02(NS2) -「餘料儲存(Fuse Storage)」(適用：～ver.1.4.3)" },
       { id: "EG9qwZXSAOI", title: "不廢話03 -「米涅魯糾纏(Mineru FE)」(適用：全版本)" },
       { id: "41ARX3F0I9M", title: "不廢話03(NS2) -「米涅魯糾纏(Mineru FE)」(適用：1.4.0~)" },
       { id: "lA7el-E2YoA", title: "不廢話04 -「冷餘料(Cold Fuse, CF)」(適用：全版本)" },
@@ -1047,7 +1047,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-03": {
-    intro: "依地區分類的神廟快速解法，收錄全海拉魯各區域神廟的解題思路，共 14 集對應不同地區。直接找到你所在的區域即可，不需要逐集翻找。",
+    intro: "依地區分類的神廟特解集，不動腦、純靠玩家操作通過所有需要解謎的神廟。",
     videos: [
       { id: "nQVypHKJKGY", title: "神特01(新) -『格魯德峽谷』地區神廟特解（Shrine Strategies in Gerudo Canyon）" },
       { id: "HOs8LqVKzBc", title: "神特02 -『泡泡拉高地』地區神廟特解（Shrine Strategies in Popla Foothills）" },
@@ -1136,6 +1136,36 @@ export const typeContent: Record<string, TypeContent> = {
         id: "MWBVJsLTA0c",
         title: "番外21 - 無限耐久＆複製＆無限彈簧火箭盾！虛空次元歸來的「虛化裝備(Void Dip & DI)」原理解說與常用步驟示範（適用ver.1.2.1～）",
         desc: "用途非常廣、不消耗耐久的裝備狀態",
+      },
+    ],
+  },
+
+  "totk-09": {
+    methods: [
+      {
+        tab: "Prologue Escape",
+        tags: ["1.2.+"],
+        steps: [
+          "重新開始遊戲，此後不得獲得任何套裝(Armor)（即__準備一個「套裝」2.頁籤尚未被開啟過的檔案__）",
+          "取得足夠長距離移動的材料（或之後可以道具複製）、至少 1 個摩猶伊，解完初始空島",
+          "獲得藍圖、操縱桿、推動和載運NPC用的藍圖（龍骨、神廟電梯、馬車等），並準備一個在序章第二個位置大師劍發光的自動存檔 A",
+          "製作一個纏桿，將纏桿放置於(1226, 1209, X)的位置，和吉爾頓對話請柯爾天出來",
+          "若柯爾天有成功被纏桿擠開，用移動NPC的藍圖將柯爾天載運到納裘亞哈(倒轉乾坤)的神廟",
+          "準備滑坡和滾筒（或用石頭），讓林克站在神廟門口邊緣處，和柯爾天對話的同時被擠進神廟的判定範圍",
+          "在對話首度獲得套裝的視窗，按＋號打開選單，再按 - 號打開地圖觀看回憶",
+          "在讀取畫面中盲按選擇到序章存檔 A 並且讀檔，或是盲按到「回到選單」，就可以直接從標題選單明選序章存檔 A",
+          "序章林克(含MsgNotFound武器與套裝)會繼承到空島的進度",
+        ],
+      },
+    ],
+    principle:
+      "利用第一次與柯爾天對話獲得套裝的特性，在倒轉乾坤的神廟觸發「轉場儲存（Banc Storage）」，儲存「走進神廟的轉場」的行為，在序章存檔裡面執行，進而得到序章林克走進空島神廟的動畫，藉此獲得序章林克身上的道具和特性，而只有倒轉乾坤神廟可以安全出來，不然其他神廟在還沒有拿到石板的情形下都會有落下判定無法在大地圖上移動。",
+    notes: [
+      {
+        text: "不要用繼承過來心心打開空島的生命力試驗之門，這段劇情是觸發傳送 flag 的重要對話，務必按 B 取消掉心心的消耗，不然之後會無法傳送。",
+      },
+      {
+        text: "因為心心數量是滿的，無法撿取之後解完神殿獲得的心心，可以先去神像寄放完之後再去撿心心，心心可達第三排",
       },
     ],
   },
@@ -1366,9 +1396,9 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     videos: [
       { id: "-oifw9PKeh4", title: "回應03 - 錯過就不再的實用道具？「不壞的序章大師劍」與「料理效果轉移」(1.1.1版以前限定)", desc: "最早也是最快的方法（限定Ver.1.1.1以前）" },
-      { id: "Gn90XQwp5zU", title: "番外16(1) - 1.1.2版～1.2.1版通用流程「序章大師劍(MNF/MSG)」", desc: "Ver.1.1.1以後難度很高但是很快的方法（NS2此法已經較少用，但有很多程錯可以學）" },
-      { id: "siGVEF5-AZY", title: "番外16(2) - 1.2.0版～1.2.1版獨有｜不在序章手動存檔之「序章大師劍(MNF/MSG)」流程", desc: "Ver.1.2.0～1.2.1最早被復刻的拿法（NS2此法已經較少用，但有很多程錯可以學）" },
-      { id: "qumkO3l09Kw", title: "番外16(3) - 1.2.X版覺醒大師劍檔(AMS)專用｜失傳已久的過載法「序章大師劍(MNF/MSG)」繼承流程", desc: "Ver.1.2.0～1.2.1最早必須在AMS檔的做法（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "Gn90XQwp5zU", title: "番外16(1 - 舊) - 1.1.2版～1.2.1版通用流程「序章大師劍(MNF/MSG)」", desc: "Ver.1.1.1以後難度很高但是很快的方法（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "siGVEF5-AZY", title: "番外16(2 - 舊) - 1.2.0版～1.2.1版獨有｜不在序章手動存檔之「序章大師劍(MNF/MSG)」流程", desc: "Ver.1.2.0～1.2.1最早被復刻的拿法（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "qumkO3l09Kw", title: "番外16(3 - 舊) - 1.2.X版覺醒大師劍檔(AMS)專用｜失傳已久的過載法「序章大師劍(MNF/MSG)」繼承流程", desc: "Ver.1.2.0～1.2.1最早必須在AMS檔的做法（NS2此法已經較少用，但有很多程錯可以學）" },
       { id: "HmocgDZFVdk", title: "番外16(NS2) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）" },
     ],
   },

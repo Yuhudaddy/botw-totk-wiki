@@ -54,7 +54,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "06", zh: "黏手與並列", en: "Smuggle & Zuggle" },
       { no: "07", zh: "過載", en: "Overload" },
       { no: "08", zh: "虛化裝備", en: "Void-Dip & DI" },
-      { no: "09", zh: "偷襲機制", en: "Sneakstrike" },
+      { no: "09", zh: "序章林克繼承", en: "Prologue Escape" },
       { no: "10", zh: "進階餘料建造", en: "Advanced Fuse" },
       { no: "11", zh: "隱藏剔除", en: "Cull" },
       { no: "12", zh: "道具複製", en: "Item Duplication" },
