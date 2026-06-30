@@ -83,5 +83,9 @@ export const SITE = {
   youtube: "https://www.youtube.com/@zb_yuhudaddy",
   github: "https://github.com/Yuhudaddy",
   discord: "https://discord.com/invite/5V872Y8",
+  x: "https://x.com/zb_yuhudaddy",
+  instagram: "https://www.instagram.com/yuda_chc",
+  threads: "https://www.threads.com/@yuda_chc",
+  marshmallow: "https://marshmallow-qa.com/zb_yuhudaddy?utm_medium=url_text&utm_source=pr",
   author: "Yuhudaddy",
 };

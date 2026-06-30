@@ -10,9 +10,49 @@ import { SITE } from "../data/site";
 
     {/* 簡介 */}
     <div class="rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
-      <p class="whitespace-pre-line text-base leading-[1.9] text-text">曾為日本社畜，玩遊戲玩到研究遊戲的玩家。
-2023/11/30 小孩（Yukito）出生，
-影片更新速度降低請見諒。</p>
+      <p class="text-base leading-[1.9] text-text">
+        曾為日本社畜，玩遊戲玩到研究遊戲的玩家。<br />
+        2023/11/30 小孩（Yukito）出生，影片更新速度降低請見諒。
+      </p>
+    </div>
+
+    {/* 主要遊玩 */}
+    <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">主要遊玩 · Main Games</div>
+      <ol class="space-y-1.5 text-[15px] leading-[1.8] text-text">
+        <li>① 薩爾達傳說（曠野以後的新作）</li>
+        <li>② 寶可夢</li>
+        <li>③ 無雙遊戲</li>
+        <li>④ 洛克人X系列</li>
+        <li>⑤ 瑪利歐系列</li>
+        <li>⑥ 時空幻境</li>
+        <li>⑦ 自己愛的懷舊遊戲</li>
+      </ol>
+    </div>
+
+    {/* 語言 */}
+    <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">語言 · Languages</div>
+      <ul class="space-y-1.5 text-[15px] leading-[1.8] text-text">
+        <li>・ 主要語言為中文（繁體中文／簡體中文），粵語不太會。</li>
+        <li>・ Speak English（I always discuss glitches with English-speakers）</li>
+        <li>・ 日本語可（在日でしたので。）</li>
+      </ul>
+    </div>
+
+    {/* 關於 Yuhu */}
+    <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">關於 Yuhu</div>
+      <p class="text-[15px] leading-[1.8] text-text">
+        大頭貼的黃金長毛臘腸狗是 Yuhu。<br />
+        她的生日在《曠野之息》影片的
+        <a
+          href="https://www.youtube.com/watch?v=sa90NVj6AYQ"
+          target="_blank"
+          rel="noopener"
+          class="text-brand underline underline-offset-2 hover:opacity-80"
+        >番外11(新)</a>。
+      </p>
     </div>
 
     {/* 連結 */}
@@ -28,12 +68,44 @@ import { SITE } from "../data/site";
           YouTube 頻道 →
         </a>
         <a
+          href={SITE.x}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 rounded-[10px] border border-border-strong bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:text-brand"
+        >
+          X (Twitter) →
+        </a>
+        <a
+          href={SITE.instagram}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 rounded-[10px] border border-border-strong bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:text-brand"
+        >
+          Instagram →
+        </a>
+        <a
+          href={SITE.threads}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 rounded-[10px] border border-border-strong bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:text-brand"
+        >
+          Threads →
+        </a>
+        <a
           href={SITE.discord}
           target="_blank"
           rel="noopener"
           class="inline-flex items-center gap-2 rounded-[10px] border border-border-strong bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:text-brand"
         >
           Discord 社群 →
+        </a>
+        <a
+          href={SITE.marshmallow}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 rounded-[10px] border border-border-strong bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:text-brand"
+        >
+          マシュマロ（棉花糖）→
         </a>
       </div>
     </div>
