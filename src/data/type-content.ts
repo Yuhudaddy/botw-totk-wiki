@@ -1469,4 +1469,96 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "HmocgDZFVdk", title: "番外16(NS2) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）" },
     ],
   },
+
+  "ssbu-01": {
+    termGroups: [
+      {
+        title: "入門技巧 EX01",
+        terms: [
+          { zh: "按鍵設定", en: "Button Setting" },
+          { zh: "肌肉記憶／降低思考時間", en: "Muscle Memory" },
+          { zh: "空中迴避", en: "Air Dodge" },
+          { zh: "受身", en: "Tech" },
+          { zh: "攻擊受身", en: "Attack Tech" },
+          { zh: "小跳攻擊", en: "Short Hop Attack" },
+          { zh: "隕石攻擊", en: "Meteor" },
+        ],
+      },
+    ],
+    videos: [
+      { id: "Yx-oJTIyU0A", title: "EX01 - 大亂鬥入門技巧篇", desc: "不想亂玩？先「入門篇」開始學習！" },
+    ],
+  },
+
+  "ssbu-02": {
+    termGroups: [
+      {
+        title: "初級技巧 EX02",
+        terms: [
+          { zh: "速降", en: "Fast Fall / Fast-fallen" },
+          { zh: "踢牆跳", en: "Wall Jump" },
+          { zh: "踩頭跳", en: "Footstool" },
+          { zh: "瞬間衝刺型攻擊", en: "Instant Dash Techniques" },
+          { zh: "小跳", en: "Short Hop / Short Jump" },
+          { zh: "輕擊鎖", en: "Jab Lock" },
+          { zh: "擊飛方向調整", en: "Directional Influence / DI" },
+          { zh: "滑步", en: "Step Dash" },
+        ],
+      },
+    ],
+    videos: [
+      { id: "XvEFg7kRx_Q", title: "EX02(初級) - 脫離新手！大亂鬥進階技巧(上)" },
+    ],
+  },
+
+  "ssbu-03": {
+    termGroups: [
+      {
+        title: "中級技巧 EX03",
+        terms: [
+          { zh: "擊飛慣性阻止", en: "Momentum Cancel" },
+          { zh: "移動防禦", en: "Guarding Move" },
+          { zh: "掙脫", en: "Mashing / レバガチャ" },
+          { zh: "預先輸入", en: "Buffering / 先行入力" },
+          { zh: "抓邊二幀", en: "2 Frames" },
+          { zh: "搶邊／奪崖", en: "Ledge Trump / 崖奪い" },
+          { zh: "落滑", en: "Wavelanding / 台絶" },
+          { zh: "出盾／防禦取消", en: "Out of Shield Options / シールドキャンセル" },
+          { zh: "軸向取消", en: "Pivot Cancel" },
+          { zh: "轉向空中移動", en: "RAR / Reverse Aerial Rush" },
+          { zh: "攻擊取消", en: "Attack Cancel" },
+          { zh: "慣性反轉", en: "B Reverse / Wavebounce" },
+        ],
+      },
+    ],
+    videos: [
+      { id: "Wba5_lZmA9U", title: "EX03(中級) - 不再亂打一通！大亂鬥進階技巧(中)" },
+    ],
+  },
+
+  "ssbu-04": {
+    termGroups: [
+      {
+        title: "上級技巧 EX04",
+        terms: [
+          { zh: "懸線取消", en: "Tether Cancel / ワイヤーキャンセル" },
+          { zh: "蓄力取消", en: "Charge Cancel / チャージキャンセル" },
+          { zh: "酸點", en: "Sour Spot / カス当たり" },
+          { zh: "Z落", en: "Z Drop / Zボタンアイテム落とし" },
+          { zh: "場地隕石", en: "Stage Spike / ステージスパイク" },
+          { zh: "離邊取消", en: "Edge Cancel / エッジ／崖キャンセル" },
+          { zh: "抓邊意識", en: "Edge-Grabbing Mixup" },
+          { zh: "繞背", en: "Cross-up / めくり" },
+          { zh: "二次抓邊", en: "Regrabbing" },
+          { zh: "原地轉身", en: "Turnaround in Place" },
+          { zh: "製造空間", en: "Spacing / 間合い" },
+          { zh: "風險獎勵", en: "Risk-Reward" },
+          { zh: "NIL", en: "No-Impact Landing" },
+        ],
+      },
+    ],
+    videos: [
+      { id: "V5QKv8f17OA", title: "EX04(上級) - 這原來都是老手圈的基本操作！大亂鬥進階技巧(下)" },
+    ],
+  },
 };
