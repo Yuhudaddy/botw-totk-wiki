@@ -46,7 +46,7 @@ export const typeGroups: TypeGroup[] = [
     label: "王國之淚",
     en: "Tears of the Kingdom",
     items: [
-      { no: "01", zh: "必備小程錯", en: "Glitches", videosOnly: true },
+      { no: "01", zh: "必備小程錯", en: "Short Glitches", videosOnly: true },
       { no: "02", zh: "進階技巧", en: "Advanced Techniques", videosOnly: true },
       { no: "03", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
       { no: "04", zh: "序章大師劍", en: "MsgNotFound Sword in Prologue" },
