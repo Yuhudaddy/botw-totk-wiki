@@ -34,7 +34,8 @@ export interface TypeNote {
 
 export interface TermEntry {
   zh: string;    // 中文術語
-  en?: string;   // 英文術語（選填）
+  en?: string;   // 英文術語或日文（選填）
+  desc?: string; // 說明文字（選填，展開時顯示）
 }
 
 export interface TermGroup {
@@ -1200,44 +1201,23 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "SSBR",
-        name: "舉炸彈盾擋重置（Slip Shield Block Reset）",
+        tab: "Bomb SBR",
+        name: "斬彈二段跳（Bomb Shield Block Reset）",
         steps: [
-          "裝備__耐久度高於 30 的盾牌、單手劍__，希卡石為遙控炸彈",
-          "按 L 舉起炸彈",
-          "按住 ZL 鎖定，「左搖桿 ↓ ＋ Y」，拔出單手劍並後退",
-          "按 L ＋「左搖桿 ←/↑/→/↓ ＋ X」引爆炸彈並起跳",
+          "裝備單手劍，按 Y 揮劍",
+          "十字鍵按▲，丟出一個炸彈花（或是本身劍上已經餘料一個炸彈花）",
+          "炸彈花引爆的瞬間，左搖桿往前，並且按住 ZL + X 往前鎖定跳，在空中格擋炸彈花的爆風",
           "在空中「左搖桿 ←/↑/→ ＋ X」第二段跳 → ZR 或 ZR＋Y",
         ],
-      },
-      {
-        tab: "DSBR",
-        name: "達爾克爾盾擋重置（Daruk Shield Block Reset）",
-        steps: [
-          "裝備任意盾牌、啟動__達爾克爾的守護__",
-          "按住 ZL 舉盾並開啟達爾克爾的守護",
-          "「左搖桿 ←/↑/→ ＋ X」鎖定跳",
-          "輸入 X 起跳後瞬間放開 ZL 解除達爾克爾",
-          "在空中格擋傷害後，「左搖桿 ←/↑/→ ＋ X」第二段跳 → ZR 或 ZR＋Y",
-        ],
-        note: "※ 亦可配合 SSBR 操作。",
-      },
-      {
-        tab: "TSBR",
-        name: "轉身盾擋重置（Turnaround Shield Block Reset）",
-        steps: [
-          "裝備耐久度 30 以上的盾牌（炸彈給盾的傷害），希卡石為遙控炸彈",
-          "左搖桿↓＋ZL＋X 後空翻，在空中放開 ZL 並保持左搖桿往 ↓ 後推",
-          "後空翻角色呈水平時按下 L 丟出炸彈",
-          "角色落地並且轉身向後的瞬間，__精準按下 L+X__ 引爆炸彈的同時向後鎖定跳格擋炸彈",
-          "在空中「左搖桿 ↑ ＋ X」第二段跳 → ZR 或 ZR＋Y",
-        ],
+        note: "※ 若武器餘料火焰犄角（古慄歐克或奧爾龍），用武器的火焰餘波點燃炸彈的話，步驟 3 的 ZL+X 往前跳的時機可以比較餘裕。",
       },
     ],
-    principle: "2017/3/10 發售後第八天由 【Pewable】 首度發現並應用於神廟特解，由於太傷盾牌（耐久-30）被棄用。2018/6/17 【Yuda】 得知此技巧後首度使用於戰鬥上。盾擋非膽怯型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
+    principle: "《曠野之息》2017/3/10 由 Pewable 首度發現並應用於神廟特解，2018/6/17 Yuda 首度沿用至戰鬥上。在《王國之淚》也並未被修正。盾擋非膽怯型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
     notes: [
       { text: "鎖定跳必須帶有「方向」，原地跳雖然可以第二段跳，但通常高度不足無法進入子彈時間，此種 SBR 僅有弊無利。" },
-      { text: "炸彈箭觸發的 BSBR 或炸彈箭轉身的 BABSBR 需要相當多的抓幀技巧，屬於高成本低報酬的 SBR，除非製作 Combat Montage 或炫技，不然較少被使用。" },
+    ],
+    videos: [
+      { id: "zFLuHyITm00", title: "番外01 - 實用技巧攻略(一)｜王國之淚也通用的曠野之息技巧解說！（ver.1.2.0版）", desc: "06:27～開始有提到「盾擋重置」的沿用！" },
     ],
   },
 
@@ -1275,7 +1255,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "執行 SLD",
+            title: "繼承裝備到序章",
             steps: [
               "丟棄 → 切換 裝備中的武器",
               "快速關開暫停（Pause Buffer）",
@@ -1284,7 +1264,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "取回大師劍",
+            title: "SLD 繼承大師劍回進度檔案",
             steps: [
               "到加儂多夫前的樓梯途中撿起 SLD 繼承過來的武器",
               "裝備序章大師劍（MNF）執行 SLD",
@@ -1308,7 +1288,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "觸發並列過載",
+            title: "繼承閃藏用的盾牌到序章",
             steps: [
               "觸發並列過載（Zuggle Overload）",
               "準備一個冷餘料觸發的纏桿 X 放在旁邊",
@@ -1327,7 +1307,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "執行 SRZ",
+            title: "執行 SRZ 並列 MNF 在身上",
             steps: [
               "丟棄任意武器",
               "丟棄裝備中的操縱桿盾",
@@ -1364,7 +1344,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "觸發並列過載",
+            title: "觸發 LSW 並繼承 SRZ 的工具",
             steps: [
               "觸發並列過載（Zuggle Overload）",
               "準備 2 個冷餘料觸發的纏桿",
@@ -1375,7 +1355,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "繼承到序章",
+            title: "撿起隱藏的來源",
             steps: [
               "林克隱藏時讀取序章存檔 C",
               "卸掉再裝備一次 MNF（避免過載掉落）、卸掉盾牌，等待 30 秒",
@@ -1383,7 +1363,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "執行 SRZ",
+            title: "執行 SRZ 並列 MNF 在身上",
             steps: [
               "丟棄任意武器",
               "丟棄裝備中的操縱桿盾",
@@ -1420,7 +1400,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "設置武器纏桿",
+            title: "繼承隱藏的來源",
             steps: [
               "用武器 W，FS2FE 觸發纏桿 X，並將纏桿置於隱藏區貼牆位置",
               "離開隱藏區倒轉乾坤纏桿 X，在纏桿 X 不離開牆壁的倒轉期間，丟棄武器 W 後馬上撿起來，解除倒轉乾坤",
@@ -1428,7 +1408,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "執行 Cull Storage",
+            title: "利用一次性隱藏觸發 SLD 繼承 MNF",
             steps: [
               "裝備 MNF 以外的武器",
               "往後走到入口的樓梯上",
@@ -1559,6 +1539,88 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     videos: [
       { id: "V5QKv8f17OA", title: "EX04(上級) - 這原來都是老手圈的基本操作！大亂鬥進階技巧(下)" },
+    ],
+  },
+  "ssbu-05": {
+    termGroups: [
+      {
+        title: "EX09 專業術語（上）",
+        terms: [
+          { zh: "Dtilt" },
+          { zh: "Fsmash" },
+          { zh: "Nair" },
+          { zh: "Jair" },
+          { zh: "Taunt", en: "アピール" },
+          { zh: "Teabag", en: "煽り" },
+          { zh: "Tumble", en: "ダウン" },
+          { zh: "Tech Chase", en: "受身狩り" },
+          { zh: "Trip", en: "転倒" },
+          { zh: "Crawl", en: "しゃがみ歩き" },
+          { zh: "Spike / Meteor", en: "メテオ" },
+          { zh: "Combo", en: "コンボ" },
+          { zh: "Confirmed / True", en: "確定" },
+          { zh: "Lab" },
+          { zh: "Footstool", en: "踏みつけ" },
+          { zh: "Tomahawk", en: "すかし" },
+          { zh: "Delay" },
+          { zh: "Stall" },
+          { zh: "Armor", en: "アーマー" },
+          { zh: "Flinch" },
+          { zh: "Hitlag" },
+          { zh: "Shieldlag" },
+          { zh: "Hitstun" },
+          { zh: "Shieldstun" },
+          { zh: "Frame", en: "フレーム" },
+          { zh: "Hitbox" },
+          { zh: "Hurtbox" },
+          { zh: "Disjoint" },
+          { zh: "Tipper", en: "先端判定" },
+          { zh: "Burst" },
+          { zh: "Option", en: "選択肢" },
+          { zh: "Commit" },
+        ],
+      },
+      {
+        title: "EX10 專業術語（下）",
+        terms: [
+          { zh: "Spam", en: "入れ込み / ぶっぱ" },
+          { zh: "Whiff Punish", en: "差し返し" },
+          { zh: "Clang", en: "相殺" },
+          { zh: "Staling", en: "ワンパターン相殺 / OP相殺" },
+          { zh: "Drag Down", en: "落とし" },
+          { zh: "Gimp", en: "ギンプ" },
+          { zh: "Poke", en: "ポーク" },
+          { zh: "Camp", en: "ヒットエンドラン" },
+          { zh: "Zone", en: "ゾーニング" },
+          { zh: "Juggle", en: "着地阻止" },
+          { zh: "DI", en: "ベク変" },
+          { zh: "LSI" },
+          { zh: "SDI" },
+          { zh: "Pressure", en: "プレッシャー" },
+          { zh: "Bait", en: "釣り" },
+          { zh: "Condition", en: "癖作り" },
+          { zh: "Ledge Trap", en: "崖狩り" },
+          { zh: "Edge Guard", en: "復帰阻止" },
+          { zh: "Mixup", en: "択かけ" },
+          { zh: "Callout", en: "読み" },
+          { zh: "Matchup", en: "キャラ相性" },
+          { zh: "CQC", en: "近接格闘" },
+          { zh: "Gameplan", en: "セットプラン" },
+          { zh: "Stage Control", en: "ライン管理" },
+          { zh: "Advantage", en: "優勢" },
+          { zh: "Disadvantage", en: "劣勢" },
+          { zh: "Neutral", en: "立ち回り" },
+          { zh: "Trade" },
+          { zh: "Follow-up" },
+          { zh: "Interaction" },
+          { zh: "Ditto" },
+          { zh: "Risk & Reward" },
+        ],
+      },
+    ],
+    videos: [
+      { id: "SWboFFEQEIA", title: "【任天堂明星大亂鬥SP】EX09 - 大亂鬥的專業術語 (上)" },
+      { id: "Yj19GT1mjNM", title: "【任天堂明星大亂鬥SP】EX10 - 大亂鬥的專業術語 (下)" },
     ],
   },
 };

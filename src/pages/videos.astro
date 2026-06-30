@@ -10,12 +10,18 @@ const GAME_LABELS: Record<string, string> = {
   eow: "智慧的再現",
 };
 
-const videos = ((youtubeData as any).all ?? []).map((v: any) => ({
+// CI 跑過 fetch-youtube.mjs 後會有 all[]；本地 seed 沒有時 fallback 合併三個遊戲陣列
+const rawAll: any[] = (youtubeData as any).all ?? [
+  ...((youtubeData as any).botw ?? []).map((v: any) => ({ ...v, game: "botw" })),
+  ...((youtubeData as any).totk ?? []).map((v: any) => ({ ...v, game: "totk" })),
+  ...((youtubeData as any).eow  ?? []).map((v: any) => ({ ...v, game: "eow"  })),
+];
+const videos = rawAll.map((v: any) => ({
   ytId: v.id,
   title: v.title,
   game: v.game ?? "",
   gameLabel: GAME_LABELS[v.game] ?? "",
-  search: [v.title, GAME_LABELS[v.game] ?? "", v.game ?? ""].join(" ").toLowerCase(),
+  search: [v.title, v.meta ?? "", GAME_LABELS[v.game] ?? "", v.game ?? ""].join(" ").toLowerCase(),
 }));
 
 const facets = [

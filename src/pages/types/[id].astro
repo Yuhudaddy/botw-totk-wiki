@@ -354,15 +354,28 @@ function parseName(text: string) {
         {content?.termGroups && content.termGroups.length > 0 ? (
           content.termGroups.map((tg: TermGroup) => (
             <div class="mb-10 last:mb-0">
-              <div class="mb-4 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{tg.title}</div>
-              <ul class="space-y-2.5 list-none p-0">
+              <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{tg.title}</div>
+              <div class="term-list">
                 {tg.terms.map((term) => (
-                  <li class="flex gap-0 text-[15px] leading-[1.7]">
-                    <span class="text-ink">{term.zh}</span>
-                    {term.en && <span class="text-muted">&nbsp;/&nbsp;{term.en}</span>}
-                  </li>
+                  <details class="term-item">
+                    <summary class="term-summary">
+                      <span class="term-label">
+                        {term.zh}
+                        {term.en && <span class="term-en"> / {term.en}</span>}
+                      </span>
+                      <svg class="term-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </summary>
+                    <div class="term-answer">
+                      {term.desc
+                        ? <p>{term.desc}</p>
+                        : <p class="term-empty">說明整理中…</p>
+                      }
+                    </div>
+                  </details>
                 ))}
-              </ul>
+              </div>
             </div>
           ))
         ) : (
@@ -622,6 +635,60 @@ function parseName(text: string) {
     background: var(--brand);
     border-color: var(--brand);
     color: #faf9f5;
+  }
+
+  /* 名詞說明 accordion */
+  .term-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .term-item {
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .term-item:first-child {
+    border-top: 1px solid var(--border-soft);
+  }
+  .term-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 6px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: background 0.15s;
+    border-radius: 6px;
+  }
+  .term-summary::-webkit-details-marker { display: none; }
+  .term-summary:hover { background: var(--surface); }
+  .term-label {
+    flex: 1;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .term-en {
+    color: var(--ink);
+  }
+  .term-chevron {
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+  details[open] .term-chevron {
+    transform: rotate(180deg);
+  }
+  .term-answer {
+    padding: 2px 6px 14px 6px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.75;
+  }
+  .term-empty {
+    color: var(--muted);
+    font-style: italic;
+    margin: 0;
   }
 </style>
 
