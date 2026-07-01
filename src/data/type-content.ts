@@ -5,6 +5,7 @@ export type TypeStep = string | { text: string; sub: string[] };
 
 export interface TypeMethodSection {
   title: string;      // 子章節標題，例："K+1 法（通用版）"
+  tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["～Ver.1.1.2"]
   steps: TypeStep[];  // 該區塊的編號步驟
 }
 
@@ -1192,6 +1193,61 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "totk-10": {
+    methods: [
+      {
+        tab: "FE",
+        name: "餘料糾纏（Fuse Entangle）",
+        sections: [
+          {
+            title: "冷切盾糾纏（Shield Swap FE）",
+            tags: ["～Ver.1.1.2"],
+            steps: ["步驟整理中，敬請期待。"],
+          },
+          {
+            title: "餘料儲存糾纏（Fuse Storage FE）",
+            tags: ["All Versions"],
+            steps: ["步驟整理中，敬請期待。"],
+          },
+          {
+            title: "米涅魯隱藏糾纏（Mineru Cull FE / YeeFE）",
+            tags: ["Ver.1.2.0+"],
+            steps: ["步驟整理中，敬請期待。"],
+          },
+        ],
+      },
+      {
+        tab: "CF",
+        name: "冷餘料（Cold Fuse）",
+        sections: [
+          {
+            title: "有特效冷餘料（Animated Cold Fuse）",
+            tags: ["All Versions"],
+            steps: ["步驟整理中，敬請期待。"],
+          },
+          {
+            title: "無特效冷餘料（Non-animated Cold Fuse）",
+            tags: ["All Versions"],
+            steps: ["步驟整理中，敬請期待。"],
+          },
+        ],
+      },
+      {
+        tab: "PF",
+        sections: [
+          {
+            title: "假餘料（Pseudo Fuse）",
+            tags: ["All Versions"],
+            steps: ["步驟整理中，敬請期待。"],
+          },
+        ],
+      },
+    ],
+    notes: [
+      { text: "流程步驟內的步驟和類型僅列出常見的方法，實際能觸發 FE, CF, PF的方法有很多種，不同版本有更多不同的做法。" },
+    ],
+  },
+
   "totk-12": {
     principle: "在王國之淚中複製道具的方式，依版本不同有多種操作方法。",
   },
@@ -1581,7 +1637,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         title: "大亂鬥專業術語 (下) - 來自影片 EX10",
         terms: [
-          { zh: "Spam / Mash", ja: "入れ込み / ぶっぱ / ガン処理", desc: "不斷重複使用相同招式的行為稱為 Spam。不經思考、不觀察對手而無腦狂放猛擊的行為稱為 Mash。" },
+          { zh: "Spam / Mash", ja: "入れ込み / ぶっぱ", desc: "不斷重複使用相同招式的行為稱為 Spam。不經思考、不觀察對手而無腦狂放猛擊的行為稱為 Mash。" },
           { zh: "Whiff Punish", en: "揮空懲罰", ja: "差し返し", desc: "趁對手招式揮空之後，抓準破綻給予的懲罰攻擊。" },
           { zh: "Poke", ja: "牽制 / 置き", desc: "朝對手可能接近的位置揮招，用於試探對手移動方向或限制其接近。" },
           { zh: "Clank / Trade", ja: "相殺 / 相打ち", desc: "雙方攻擊判定互相抵消（Clank），或互換傷害（Trade）。" },
