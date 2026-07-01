@@ -8,7 +8,7 @@ const GAME_LABELS: Record<string, string> = {
   botw: "曠野之息",
   totk: "王國之淚",
   eow: "智慧的再現",
-  ssbu: "任天堂明星大亂鬥特別版",
+  ssbu: "大亂鬥",
 };
 
 // CI 跑過 fetch-youtube.mjs 後會有 all[]；本地 seed 沒有時 fallback 合併三個遊戲陣列
@@ -30,7 +30,7 @@ const facets = [
   { key: "botw", label: "曠野之息" },
   { key: "totk", label: "王國之淚" },
   { key: "eow", label: "智慧的再現" },
-  { key: "ssbu", label: "任天堂明星大亂鬥特別版" },
+  { key: "ssbu", label: "大亂鬥" },
 ];
 ---
 
@@ -214,6 +214,26 @@ const facets = [
     opacity: 0.35;
     cursor: default;
   }
+  :global(.filter-pill) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  :global(.filter-pill:hover) {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  :global(.filter-pill-x) {
+    flex-shrink: 0;
+  }
   @media (max-width: 768px) {
     :global(.idx-grid) {
       grid-template-columns: repeat(2, 1fr);
@@ -329,6 +349,34 @@ const facets = [
       return html;
     }
 
+    /* ── 篩選提示列（顯示目前套用的遊戲標籤／關鍵字，各自可個別清除） ── */
+    function filterBarHTML() {
+      var pills = "";
+      if (game) {
+        var gLabel = "";
+        for (var i = 0; i < facets.length; i++) {
+          if (facets[i].key === game) { gLabel = facets[i].label; break; }
+        }
+        pills +=
+          '<button type="button" class="filter-pill" data-clear="game">' + esc(gLabel || game) +
+          '<svg class="filter-pill-x" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+          "</button>";
+      }
+      if (terms.length > 0) {
+        pills +=
+          '<button type="button" class="filter-pill" data-clear="search">「' + esc(terms.join(" ")) + '」' +
+          '<svg class="filter-pill-x" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+          "</button>";
+      }
+      if (!pills) return "";
+      return (
+        '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px;">' +
+        '<span style="font-size:12px;color:var(--muted);">目前篩選：</span>' +
+        pills +
+        "</div>"
+      );
+    }
+
     /* ── 切換按鈕 HTML ── */
     function viewToggleHTML() {
       return (
@@ -353,6 +401,9 @@ const facets = [
       var mv = hasFilter
         ? videos.filter(function (v) { return inGame(v.game) && matchAll(v.search); })
         : [];
+
+      /* 篩選提示列 */
+      if (hasFilter) html += filterBarHTML();
 
       /* 預設狀態：僅顯示統計提示 */
       if (!hasFilter) {
@@ -402,6 +453,20 @@ const facets = [
           videoPage = parseInt(this.getAttribute("data-page"), 10);
           render();
           results.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      });
+      results.querySelectorAll(".filter-pill").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var clear = this.getAttribute("data-clear");
+          if (clear === "game") {
+            game = "";
+            setActiveChip();
+          } else if (clear === "search") {
+            terms = [];
+            if (search) search.value = "";
+          }
+          videoPage = 0;
+          render();
         });
       });
 
