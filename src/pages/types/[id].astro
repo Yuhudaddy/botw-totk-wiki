@@ -370,6 +370,7 @@ function parseName(text: string) {
                       <span class="term-label">
                         {term.zh}
                         {term.en && <span class="term-en"> / {term.en}</span>}
+                        {term.ja && <span class="term-en"> （{term.ja}）</span>}
                       </span>
                       <svg class="term-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
