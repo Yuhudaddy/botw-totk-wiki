@@ -77,7 +77,7 @@ export const filterChips: string[] = [
 
 export const SITE = {
   title: "曠野・王國攻略 Wiki",
-  shortTitle: "曠野・王國攻略",
+  shortTitle: "Yuda's Channel Guide",
   description:
     "薩爾達傳說 曠野之息(BotW) / 王國之淚(TotK) 技巧與 Glitch 攻略，整理自 Yuhudaddy 的 YouTube 頻道。",
   youtube: "https://www.youtube.com/@zb_yuhudaddy",
