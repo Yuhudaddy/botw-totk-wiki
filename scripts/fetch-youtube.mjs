@@ -28,11 +28,13 @@ function detectGame(v) {
   if (matchTag(tags, '曠野之息', 'botw', 'breath of the wild')) return 'botw';
   if (matchTag(tags, '王國之淚', 'totk', 'tears of the kingdom')) return 'totk';
   if (matchTag(tags, '智慧的再現', 'eow', 'echoes of wisdom')) return 'eow';
+  if (matchTag(tags, '大亂鬥', 'ssbu', 'smash bros', 'super smash bros')) return 'ssbu';
   // 標題關鍵字備援
   const title = v.snippet.title;
   if (title.includes('智慧的再現') || /\beow\b/i.test(title)) return 'eow';
   if (/\btotk\b|王國之淚/i.test(title)) return 'totk';
   if (/\bbotw\b|曠野之息/i.test(title)) return 'botw';
+  if (/\bssbu\b|大亂鬥/i.test(title)) return 'ssbu';
   return '';
 }
 

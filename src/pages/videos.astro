@@ -8,6 +8,7 @@ const GAME_LABELS: Record<string, string> = {
   botw: "曠野之息",
   totk: "王國之淚",
   eow: "智慧的再現",
+  ssbu: "任天堂明星大亂鬥特別版",
 };
 
 // CI 跑過 fetch-youtube.mjs 後會有 all[]；本地 seed 沒有時 fallback 合併三個遊戲陣列
@@ -15,6 +16,7 @@ const rawAll: any[] = (youtubeData as any).all ?? [
   ...((youtubeData as any).botw ?? []).map((v: any) => ({ ...v, game: "botw" })),
   ...((youtubeData as any).totk ?? []).map((v: any) => ({ ...v, game: "totk" })),
   ...((youtubeData as any).eow  ?? []).map((v: any) => ({ ...v, game: "eow"  })),
+  ...((youtubeData as any).ssbu ?? []).map((v: any) => ({ ...v, game: "ssbu" })),
 ];
 const videos = rawAll.map((v: any) => ({
   ytId: v.id,
@@ -28,6 +30,7 @@ const facets = [
   { key: "botw", label: "曠野之息" },
   { key: "totk", label: "王國之淚" },
   { key: "eow", label: "智慧的再現" },
+  { key: "ssbu", label: "任天堂明星大亂鬥特別版" },
 ];
 ---
 
@@ -343,20 +346,21 @@ const facets = [
     /* ── 主要渲染 ── */
     function render() {
       var hasSearch = terms.length > 0;
+      var hasFilter = hasSearch || !!game;
       var html = "";
 
       var totalVideos = videos.filter(function (v) { return inGame(v.game); }).length;
-      var mv = hasSearch
+      var mv = hasFilter
         ? videos.filter(function (v) { return inGame(v.game) && matchAll(v.search); })
         : [];
 
       /* 預設狀態：僅顯示統計提示 */
-      if (!hasSearch) {
+      if (!hasFilter) {
         html += '<div style="font-size:13px;color:var(--muted);margin-bottom:10px;">共 ' + totalVideos + ' 支影片，輸入關鍵字開始搜尋。</div>';
       }
 
       /* 搜尋結果：影片 */
-      if (hasSearch && mv.length > 0) {
+      if (hasFilter && mv.length > 0) {
         var perPage = viewMode === "list" ? VIDEOS_PER_LIST : VIDEOS_PER_GRID;
         var totalPages = Math.ceil(mv.length / perPage);
         if (videoPage >= totalPages) videoPage = 0;
@@ -401,8 +405,8 @@ const facets = [
         });
       });
 
-      /* 空狀態：有搜尋但無結果 */
-      var showEmpty = hasSearch && mv.length === 0;
+      /* 空狀態：有篩選但無結果 */
+      var showEmpty = hasFilter && mv.length === 0;
       if (empty) empty.classList.toggle("hidden", !showEmpty);
     }
 
