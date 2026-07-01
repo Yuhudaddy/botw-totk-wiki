@@ -18,23 +18,24 @@ function formatViews(count) {
   return `${n.toLocaleString()} 次觀看`;
 }
 
-function matchTag(tags, ...keywords) {
-  if (!Array.isArray(tags)) return false;
-  return keywords.some((k) => tags.some((t) => t.toLowerCase() === k.toLowerCase()));
+// 只依標題判斷所屬遊戲，不讀 YouTube 影片的 Tags 中繼資料
+// （頻道內大量影片的 Tags 誤植/複製貼上錯誤，會導致分類錯亂）
+function matchKeyword(text, ...keywords) {
+  const lower = text.toLowerCase();
+  return keywords.some((k) => {
+    const kl = k.toLowerCase();
+    // 短英文縮寫（eow / totk / botw / ssbu）用單字邊界比對，避免命中其他英文字內的子字串
+    if (/^[a-z]{2,5}$/.test(kl)) return new RegExp(`\\b${kl}\\b`, 'i').test(text);
+    return lower.includes(kl);
+  });
 }
 
 function detectGame(v) {
-  const tags = v.snippet.tags || [];
-  if (matchTag(tags, '曠野之息', 'botw', 'breath of the wild')) return 'botw';
-  if (matchTag(tags, '王國之淚', 'totk', 'tears of the kingdom')) return 'totk';
-  if (matchTag(tags, '智慧的再現', 'eow', 'echoes of wisdom')) return 'eow';
-  if (matchTag(tags, '大亂鬥', 'ssbu', 'smash bros', 'super smash bros')) return 'ssbu';
-  // 標題關鍵字備援
   const title = v.snippet.title;
-  if (title.includes('智慧的再現') || /\beow\b/i.test(title)) return 'eow';
-  if (/\btotk\b|王國之淚/i.test(title)) return 'totk';
-  if (/\bbotw\b|曠野之息/i.test(title)) return 'botw';
-  if (/\bssbu\b|大亂鬥/i.test(title)) return 'ssbu';
+  if (matchKeyword(title, '智慧的再現', 'eow', 'echoes of wisdom')) return 'eow';
+  if (matchKeyword(title, '王國之淚', 'totk', 'tears of the kingdom')) return 'totk';
+  if (matchKeyword(title, '曠野之息', 'botw', 'breath of the wild')) return 'botw';
+  if (matchKeyword(title, '大亂鬥', 'ssbu', 'smash bros', 'super smash bros')) return 'ssbu';
   return '';
 }
 
@@ -81,18 +82,18 @@ const toVideo = (v) => ({
   publishedAt: v.snippet.publishedAt,
 });
 
-const botwAll = allVideos.filter((v) => matchTag(v.snippet.tags, '曠野之息', 'botw')).map(toVideo);
-const totkAll = allVideos.filter((v) => matchTag(v.snippet.tags, '王國之淚', 'totk')).map(toVideo);
-const eowAll = allVideos.filter(
-  (v) => matchTag(v.snippet.tags, '智慧的再現', 'eow') || v.snippet.title.includes('智慧的再現')
-).map(toVideo);
+const gameOf = new Map(allVideos.map((v) => [v.id, detectGame(v)]));
+
+const botwAll = allVideos.filter((v) => gameOf.get(v.id) === 'botw').map(toVideo);
+const totkAll = allVideos.filter((v) => gameOf.get(v.id) === 'totk').map(toVideo);
+const eowAll = allVideos.filter((v) => gameOf.get(v.id) === 'eow').map(toVideo);
 
 // ── 5. all：所有影片 + 遊戲標記，供影片索引頁使用 ───────────────────────────
 const all = allVideos.map((v) => ({
   id: v.id,
   title: v.snippet.title,
   publishedAt: v.snippet.publishedAt,
-  game: detectGame(v),
+  game: gameOf.get(v.id),
 }));
 
 // ── 6. 精選：30 天內觀看數最高的 6 部 ────────────────────────────────────────
