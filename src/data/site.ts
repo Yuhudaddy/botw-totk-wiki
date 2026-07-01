@@ -87,5 +87,6 @@ export const SITE = {
   instagram: "https://www.instagram.com/yuda_chc",
   threads: "https://www.threads.com/@yuda_chc",
   marshmallow: "https://marshmallow-qa.com/zb_yuhudaddy?utm_medium=url_text&utm_source=pr",
+  line: "https://line.me/ti/g2/IKGasUeTgT9HmUPX2MtLCfJaYy1N7c9UtBEo6Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default",
   author: "Yuhudaddy",
 };
