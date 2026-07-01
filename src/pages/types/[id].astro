@@ -256,7 +256,11 @@ function parseName(text: string) {
             <p>
               {content?.principle ? (
                 parseName(content.principle).map((seg) =>
-                  seg.name ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u> : seg.text
+                  seg.name
+                    ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u>
+                    : parseAccent(seg.text).map((a) =>
+                        a.accent ? <span class="text-accent">{a.text}</span> : a.text
+                      )
                 )
               ) : (
                 `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`
