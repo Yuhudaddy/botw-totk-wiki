@@ -44,6 +44,11 @@ export interface TermGroup {
   terms: TermEntry[];  // 術語列表
 }
 
+export interface VideoGroup {
+  title: string;         // 分組標題，例：角色名稱「皮丘」
+  videos: RelatedVideo[];
+}
+
 export interface TypeContent {
   videoFolder?: string;       // public/type-videos/ 下的子資料夾名稱（影片用）
   imageFolder?: string;       // public/type-videos/ 下的子資料夾名稱（圖片用）
@@ -60,6 +65,7 @@ export interface TypeContent {
   faqLink?: { label: string; path: string }; // Q&A 頁面連結（選填）
   videos?: RelatedVideo[];    // 相關影片
   termGroups?: TermGroup[];   // termsOnly 頁的名詞說明分組（大亂鬥用）
+  videoGroups?: VideoGroup[]; // videosOnly 頁依分類（例如角色）分組的相關影片
 }
 
 export const typeContent: Record<string, TypeContent> = {
@@ -1598,7 +1604,7 @@ export const typeContent: Record<string, TypeContent> = {
           { zh: "CQC", en: "Close Quarter Combat", ja: "近距離戦", desc: "可互相攻擊範圍內的近距離攻防戰。" },
           { zh: "Line", en: "Stage Control", ja: "ライン", desc: "雙方角色之間畫出的虛擬界線，代表角色的自由活動領域，領域越大代表場地控制權越穩固。" },
           { zh: "Advantage / Disadvantage", en: "優勢/劣勢", ja: "有利 / 不利 / 展開", desc: "依據站位、資源或角色狀態，能做的事情較多的一方為優勢，反之為劣勢。" },
-          { zh: "Neutral", en: "立回", ja: "ニュートラル / 立ち回り", desc: "雙方皆無優劣勢的局面，或是為了獲得優勢而互相試探、走位的進攻模式。" },
+          { zh: "Neutral", en: "立回", ja: "ニュートラル / 立ち回り", desc: "指雙方在正式交戰前，為了取得優勢或試探對手而展開的一切行動、走位或策略。" },
           { zh: "Ditto", ja: "ミラー", desc: "使用相同角色進行的鏡像對戰。" },
           { zh: "Risk and Reward", en: "風險獎勵", ja: "リスク・リターン", desc: "評估操作失誤帶來的風險與成功帶來的獎勵之間的關係。" },
         ],
@@ -1607,6 +1613,64 @@ export const typeContent: Record<string, TypeContent> = {
     videos: [
       { id: "SWboFFEQEIA", title: "【任天堂明星大亂鬥SP】EX09 - 大亂鬥的專業術語 (上)" },
       { id: "Yj19GT1mjNM", title: "【任天堂明星大亂鬥SP】EX10 - 大亂鬥的專業術語 (下)" },
+    ],
+  },
+
+  "ssbu-06": {
+    methods: [
+      {
+        tab: "Slingshot",
+        name: "彈弓（Slingshot）",
+        steps: [
+          "靜止狀態下快彈左搖桿執行__衝刺（Dash）__",
+          "迅速將左搖桿撥向反方向的斜下或斜上",
+          "跳躍（Jump）",
+        ],
+      },
+    ],
+    principle:
+      "在《大亂鬥SP》中，如果在衝刺時反向跳躍，會觸發 RAR（反向空中衝刺），讓角色背對前進方向跳躍。然而，直接輸入「正後方」會與遊戲內的煞車動作或轉身指令衝突，導致無法被穩定預先輸入（Buffer）。【GimR】 發現若使用「斜下（或斜上）」來代替「正後方」，可以避免這個問題。遊戲的指令緩衝系統允許玩家預先儲存指令（指令儲存 9 幀）。當你輸入「斜下」時，系統會判定你進行了轉向，但因為不是正後方，不會觸發煞車或衝刺的覆蓋動作。這樣就能完美保留衝刺時的「最大橫向空中慣性（Max Air Speed）」，在動作結束的瞬間，系統會自動幫你執行一個擁有最完美慣性的轉向跳躍。",
+    notes: [
+      {
+        text: "Slingshot 和 IRAR（Instant Reverse Aerial Rush，瞬間反向空中衝刺）兩者的視覺結果確實相似，但本質上輸入難度與應用層面有不同之處：",
+        sub: [
+          "IRAR 是在初始衝刺（Initial dash）的極短瞬間輸入後方向加跳躍。它需要幾乎幀數完美（Frame-perfect）的精準按壓。如果時機稍微不對，你就會失去衝刺的動能垂直跳起，或者變成單純的地面煞車。Slingshot 單純只有轉向的指令，沒有反向衝刺的煞車去覆蓋原動作，因此可以解釋為一種「高容錯的 IRAR」。你不需要擁有極限的反應神經去抓那 1 幀的完美時機，只要在動作結束前尻好指令，系統就會保證給你一個 100% 滿慣性的 RAR。",
+        ],
+      },
+    ],
+    videos: [
+      { id: "1-4jVbs42-4", title: "EX06 - 改變Meta的技巧！？「彈弓(Slingshot)」極簡化的轉向跳躍！" },
+    ],
+  },
+
+  "ssbu-07": {
+    intro: "依角色分類整理立回、特殊操作或角色特色的分享。",
+    videoGroups: [
+      {
+        title: "皮丘 Pichu",
+        videos: [
+          { id: "ca0uM8-76SE", title: "EX05 - 5分鐘學會「自動取消」與「皮丘的空後連段」！(Autocancel & Pichu's Back Air Loop/ピチューの空後落としループ)" },
+          { id: "oFGgvpKHhYM", title: "EX07 - 大亂鬥的黃色小惡魔鼠！『皮丘』角色特色與進攻模式小講座（Pichu's Tutorial in SSBU, Ver.13.0.1）" },
+          { id: "uHKrtsh-Ln4", title: "EX08 - 緋緞的降雷者！『皮丘』專用房間擊墜集（Pichu Montage in Battle Arenas, on Twitter/Discord｜Joy-Cons使用）" },
+        ],
+      },
+    ],
+  },
+
+  "ssbu-08": {
+    intro: "以短影音的方式快速分享遊戲內常見的特殊操作。",
+    videos: [
+      { id: "NIRUZmBsBcc", title: "貝雷特邊緣下投就能擊墜？「滑離上B」與「跳躍取消」", desc: "滑離上B / Slideoff Up B、跳躍取消 / Jump Cancel" },
+      { id: "lVn-NsJNPuw", title: "變向４次的 Wavebounce 也太難？用「C反」簡化輸入", desc: "C反 / C Bounce" },
+      { id: "3S6Q-yLzhHY", title: "主 Main 瑪利歐必學！收頭強招「轉向猛擊」", desc: "轉向猛擊 / Pivot Cancel Smash" },
+      { id: "DITl9t1-_W4", title: "「Z Drop Combo」動彈不得的撃墜 Combo", desc: "林克的 Z Drop Combo" },
+      { id: "HWLXZVLoQV8", title: "即使 0% 也不要靠近路易吉！0-to-Death Combo", desc: "路易吉即死連招 / 0-to-Death Combo" },
+      { id: "e9tduGit1Lw", title: "不錯過時機！2種「瞬間蹬牆跳」", desc: "瞬間蹬牆跳 / Instant Wall Jump" },
+      { id: "gXcm4yeo0RQ", title: "「空中轉向必殺技」森喜剛不用再怕貝雷特即死 Combo", desc: "空中轉向必殺技" },
+      { id: "dH6f0reQYRM", title: "史提夫的收頭絕技「出盾踩頭」", desc: "出盾踩頭 / Shield Cancel Footstool" },
+      { id: "lwA9PBSnJaQ", title: "超夢的「踩頭定身」原來這麼簡單？", desc: "踩頭定身 / Footstool Disable" },
+      { id: "LYfd9GlG_SE", title: "皮丘也有反擊技？「反擊打雷」", desc: "反擊打雷 / Thunder Counter" },
+      { id: "TUH5ZJIecRo", title: "法爾科的「貼地幻影」是這樣按的！？", desc: "貼地幻影 / Low Phantasm、小跳必殺 / Short Hop Special" },
     ],
   },
 };

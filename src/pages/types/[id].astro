@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
-import { typeContent, type TypeStep, type TermGroup } from "../../data/type-content";
+import { typeContent, type TypeStep, type TermGroup, type VideoGroup } from "../../data/type-content";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -408,6 +408,52 @@ function parseName(text: string) {
     </div>
   )}
 
+  {/* videosOnly 頁的分類影片（例如「個別角色」依角色分組） */}
+  {videosOnly && content?.videoGroups && content.videoGroups.length > 0 && (
+    <div class={vidSectionClass}>
+      <div class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
+        {content.videoGroups.map((vg: VideoGroup) => (
+          <div class="mb-12 last:mb-0">
+            <h2 class="mb-5 font-serif text-[22px] font-medium text-ink">{vg.title}</h2>
+            <div>
+              {vg.videos.map((v) => (
+                <a
+                  href={ytWatch(v.id)}
+                  target="_blank"
+                  rel="noopener"
+                  class={`flex cursor-pointer items-center gap-4 border-b border-border-soft py-[14px] no-underline transition-colors ${vidRowHover}`}
+                >
+                  <img
+                    src={ytThumb(v.id)}
+                    alt={v.title}
+                    loading="lazy"
+                    class="h-[79px] w-[140px] flex-none rounded-lg bg-sand object-cover"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <div class="line-clamp-2 font-serif text-[17px] font-medium leading-[1.3] text-ink">
+                      {v.title}
+                    </div>
+                    <div class="mt-1 flex items-center gap-1.5 text-[13px] text-muted">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+                        <polygon points="6,4 20,12 6,20"></polygon>
+                      </svg>
+                      {v.desc || "YouTube"}
+                    </div>
+                  </div>
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="flex-none text-muted">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
   {/* 相關影片 */}
   {content?.videos && content.videos.length > 0 ? (
     <section class={vidSectionClass}>
@@ -481,7 +527,7 @@ function parseName(text: string) {
         )}
       </div>
     </section>
-  ) : (
+  ) : !(content?.videoGroups && content.videoGroups.length > 0) && (
     <section class={vidSectionClass}>
       <div class="mx-auto max-w-[1180px] px-8 py-12">
         <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">相關影片 · Videos</div>

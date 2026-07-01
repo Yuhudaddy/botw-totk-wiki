@@ -83,7 +83,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "03", zh: "中級篇", en: "Intermediate Guide", termsOnly: true },
       { no: "04", zh: "上級篇", en: "Advanced Guide", termsOnly: true },
       { no: "05", zh: "專業術語", en: "Terminology", termsOnly: true },
-      { no: "06", zh: "彈弓", en: "Slingshot", videosOnly: true },
+      { no: "06", zh: "彈弓", en: "Slingshot" },
       { no: "07", zh: "個別角色", en: "Character Guides", videosOnly: true },
       { no: "08", zh: "1分鐘快學", en: "1-Minute Tips", videosOnly: true },
     ],
