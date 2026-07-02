@@ -12,6 +12,6 @@ export function href(path = "/"): string {
 export function ytThumb(id: string): string {
   return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
 }
-export function ytWatch(id: string): string {
-  return `https://youtu.be/${id}`;
+export function ytWatch(id: string, at?: number): string {
+  return at ? `https://youtu.be/${id}?t=${at}` : `https://youtu.be/${id}`;
 }

@@ -73,6 +73,36 @@ function parseName(text: string) {
     return [{ text: name, name: true }, { text: rest, name: false }];
   }).flat();
 }
+
+function escapeHtml(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// 把原理說明文字轉成 HTML 字串（供分頁切換時的 data-principle 使用，套用 __accent__／【name】規則）
+function principleHtml(text: string) {
+  return parseName(text).map((seg) =>
+    seg.name
+      ? `<u style="text-decoration-color: white; text-underline-offset: 3px;">${escapeHtml(seg.text)}</u>`
+      : parseAccent(seg.text).map((a) =>
+          a.accent ? `<span class="text-accent">${escapeHtml(a.text)}</span>` : escapeHtml(a.text)
+        ).join("")
+  ).join("");
+}
+
+// 把步驟文字解析成片段：[[文字|type-id]] 會變成連結（橙字＋底線），其餘沿用 __文字__ 的橙色規則
+function parseStep(text: string) {
+  const segments: { text: string; accent: boolean; href?: string }[] = [];
+  const linkRe = /\[\[([^\]|]+)\|([^\]]+)\]\]/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = linkRe.exec(text))) {
+    if (m.index > last) segments.push(...parseAccent(text.slice(last, m.index)));
+    segments.push({ text: m[1], accent: true, href: m[2] });
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) segments.push(...parseAccent(text.slice(last)));
+  return segments;
+}
 ---
 
 <BaseLayout
@@ -130,7 +160,7 @@ function parseName(text: string) {
               ))}
             </div>
             {content.methods.map((m, i) => (
-              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={m.principle ?? ""} hidden={i !== 0}>
+              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} hidden={i !== 0}>
                 {m.name ? (
                   <div class="mb-3 text-[15px] font-medium text-ink">{m.name}</div>
                 ) : m.tags && m.tags.length > 0 ? (
@@ -143,6 +173,9 @@ function parseName(text: string) {
                     ))}
                   </div>
                 ) : null}
+                {m.intro && (
+                  <p class="mb-3 text-[13px] leading-[1.7] text-muted">{m.intro}</p>
+                )}
                 {m.sections ? (
                   m.sections.map((sec) => (
                     <div class="method-section">
@@ -166,15 +199,17 @@ function parseName(text: string) {
                           const { text, sub } = stepParts(s);
                           return (
                             <li>
-                              {parseAccent(text).map((seg) =>
-                                seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                              {parseStep(text).map((seg) =>
+                                seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                  : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                               )}
                               {sub.length > 0 && (
                                 <ul class="step-sub">
                                   {sub.map((d) => (
                                     <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
-                                      {parseAccent(d).map((seg) =>
-                                        seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                                      {parseStep(d).map((seg) =>
+                                        seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                          : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                                       )}
                                     </li>
                                   ))}
@@ -202,15 +237,17 @@ function parseName(text: string) {
                       const { text, sub } = stepParts(s);
                       return (
                         <li>
-                          {parseAccent(text).map((seg) =>
-                            seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                          {parseStep(text).map((seg) =>
+                            seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                              : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                           )}
                           {sub.length > 0 && (
                             <ul class="step-sub">
                               {sub.map((d) => (
                                 <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
-                                  {parseAccent(d).map((seg) =>
-                                    seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                                  {parseStep(d).map((seg) =>
+                                    seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                      : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                                   )}
                                 </li>
                               ))}
@@ -225,11 +262,19 @@ function parseName(text: string) {
                   Array.isArray(m.note) ? (
                     <div class="mt-4 space-y-1">
                       {m.note.map((n) => (
-                        <p class="text-[13px] leading-[1.7] text-muted">{n}</p>
+                        <p class="text-[13px] leading-[1.7] text-muted">
+                          {parseAccent(n).map((seg) =>
+                            seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                          )}
+                        </p>
                       ))}
                     </div>
                   ) : (
-                    <p class="mt-4 text-[13px] leading-[1.7] text-muted">{m.note}</p>
+                    <p class="mt-4 text-[13px] leading-[1.7] text-muted">
+                      {parseAccent(m.note).map((seg) =>
+                        seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                      )}
+                    </p>
                   )
                 )}
               </div>
@@ -252,7 +297,22 @@ function parseName(text: string) {
         {/* B: 原理說明 */}
         <div class="prose-custom">
           <h2>{content?.principleTitle ?? "原理說明"}</h2>
-          {content?.principleItems ? (
+          {content?.principleSections ? (
+            content.principleSections.map((sec) => (
+              <div class="principle-block">
+                <div class="principle-block-title">{sec.title}</div>
+                <p>
+                  {parseName(sec.text).map((seg) =>
+                    seg.name
+                      ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u>
+                      : parseAccent(seg.text).map((a) =>
+                          a.accent ? <span class="text-accent">{a.text}</span> : a.text
+                        )
+                  )}
+                </p>
+              </div>
+            ))
+          ) : content?.principleItems ? (
             <ul>
               {content.principleItems.map((item) => (
                 <li class={/^[①②③④⑤⑥⑦⑧⑨⑩]/.test(item) ? "principle-sub" : ""}>
@@ -261,7 +321,7 @@ function parseName(text: string) {
               ))}
             </ul>
           ) : hasDynamicPrinciple ? (
-            <p id="principle-text">{content?.methods?.[0]?.principle ?? ""}</p>
+            <p id="principle-text" set:html={principleHtml(content?.methods?.[0]?.principle ?? "")} />
           ) : (
             <p>
               {content?.principle ? (
@@ -488,7 +548,7 @@ function parseName(text: string) {
         <div id="related-videos">
           {content.videos.map((v, i) => (
             <a
-              href={ytWatch(v.id)}
+              href={ytWatch(v.id, v.at)}
               target="_blank"
               rel="noopener"
               data-vindex={i}
@@ -592,6 +652,18 @@ function parseName(text: string) {
     font-weight: 500;
   }
 
+  /* 步驟中連到其他主題頁的橙色連結 */
+  .accent-link {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .accent-link:hover {
+    opacity: 0.8;
+  }
+
   /* 注意事項的子清單 */
   .prose-custom .note-sub {
     list-style: none;
@@ -633,6 +705,19 @@ function parseName(text: string) {
     list-style: none;
     padding-left: 0.8em;
     margin-bottom: 0.25em;
+  }
+
+  /* 原理說明依副標題分段（例："歷史"／"原理"） */
+  .prose-custom .principle-block + .principle-block {
+    margin-top: 1.4em;
+  }
+  .prose-custom .principle-block-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.5em;
+    text-transform: uppercase;
   }
 
   /* 原理說明中的人名白色底線 */
@@ -816,7 +901,7 @@ function parseName(text: string) {
       panels.forEach((p, i) => (p.hidden = i !== index));
       updateMedia(index);
       if (principleText) {
-        principleText.textContent = panels[index]?.dataset.principle ?? "";
+        principleText.innerHTML = panels[index]?.dataset.principle ?? "";
       }
     }
 
