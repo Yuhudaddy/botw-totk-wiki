@@ -53,7 +53,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "04", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
       { no: "05", zh: "餘料機制", en: "Fuse Mechanics" },
       { no: "06", zh: "纏桿", en: "Stick Desync Clipping" },
-      { no: "07", zh: "隱藏剔除", en: "Cull" },
+      { no: "07", zh: "隱藏(剔除)", en: "Cull" },
       { no: "08", zh: "黏手與並列", en: "Smuggle & Zuggle" },
       { no: "09", zh: "過載", en: "Overload" },
       { no: "10", zh: "偷襲機制", en: "Sneakstrike" },

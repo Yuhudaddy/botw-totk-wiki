@@ -89,15 +89,20 @@ function principleHtml(text: string) {
   ).join("");
 }
 
-// 把步驟文字解析成片段：[[文字|type-id]] 會變成連結（橙字＋底線），其餘沿用 __文字__ 的橙色規則
+// 把步驟文字解析成片段：[[文字|type-id]] 會變成連結（橙字＋底線）；[[文字|tab:分頁名]] 會變成同頁切換分頁的按鈕；其餘沿用 __文字__ 的橙色規則
 function parseStep(text: string) {
-  const segments: { text: string; accent: boolean; href?: string }[] = [];
+  const segments: { text: string; accent: boolean; href?: string; jumpTab?: string }[] = [];
   const linkRe = /\[\[([^\]|]+)\|([^\]]+)\]\]/g;
   let last = 0;
   let m: RegExpExecArray | null;
   while ((m = linkRe.exec(text))) {
     if (m.index > last) segments.push(...parseAccent(text.slice(last, m.index)));
-    segments.push({ text: m[1], accent: true, href: m[2] });
+    const target = m[2];
+    if (target.startsWith("tab:")) {
+      segments.push({ text: m[1], accent: true, jumpTab: target.slice(4) });
+    } else {
+      segments.push({ text: m[1], accent: true, href: target });
+    }
     last = m.index + m[0].length;
   }
   if (last < text.length) segments.push(...parseAccent(text.slice(last)));
@@ -200,7 +205,8 @@ function parseStep(text: string) {
                           return (
                             <li>
                               {parseStep(text).map((seg) =>
-                                seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                  : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
                                   : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                               )}
                               {sub.length > 0 && (
@@ -208,7 +214,8 @@ function parseStep(text: string) {
                                   {sub.map((d) => (
                                     <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
                                       {parseStep(d).map((seg) =>
-                                        seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                        seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
                                           : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                                       )}
                                     </li>
@@ -238,7 +245,8 @@ function parseStep(text: string) {
                       return (
                         <li>
                           {parseStep(text).map((seg) =>
-                            seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                            seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                              : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
                               : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                           )}
                           {sub.length > 0 && (
@@ -246,7 +254,8 @@ function parseStep(text: string) {
                               {sub.map((d) => (
                                 <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
                                   {parseStep(d).map((seg) =>
-                                    seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                    seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                      : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
                                       : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                                   )}
                                 </li>
@@ -298,20 +307,68 @@ function parseStep(text: string) {
         <div class="prose-custom">
           <h2>{content?.principleTitle ?? "原理說明"}</h2>
           {content?.principleSections ? (
-            content.principleSections.map((sec) => (
-              <div class="principle-block">
-                <div class="principle-block-title">{sec.title}</div>
-                <p>
-                  {parseName(sec.text).map((seg) =>
-                    seg.name
-                      ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u>
-                      : parseAccent(seg.text).map((a) =>
-                          a.accent ? <span class="text-accent">{a.text}</span> : a.text
-                        )
+            content.principleSections.map((sec) => {
+              const body = (
+                <>
+                  {sec.text && (
+                    <p>
+                      {parseName(sec.text).map((seg) =>
+                        seg.name
+                          ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u>
+                          : parseAccent(seg.text).map((a) =>
+                              a.accent ? <span class="text-accent">{a.text}</span> : a.text
+                            )
+                      )}
+                    </p>
                   )}
-                </p>
-              </div>
-            ))
+                  {sec.items && (
+                    <ul>
+                      {sec.items.map((it) => {
+                        const { text, sub } = stepParts(it);
+                        return (
+                          <li>
+                            {parseStep(text).map((seg) =>
+                              seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                            )}
+                            {sub.length > 0 && (
+                              <ul class="step-sub">
+                                {sub.map((d) => (
+                                  <li>
+                                    {parseStep(d).map((seg) =>
+                                      seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                        : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                        : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </>
+              );
+              return sec.collapsible ? (
+                <details class="principle-collapse">
+                  <summary class="principle-collapse-summary">
+                    <span class="principle-block-title principle-collapse-title">{sec.title}</span>
+                    <svg class="principle-collapse-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </summary>
+                  <div class="principle-collapse-body">{body}</div>
+                </details>
+              ) : (
+                <div class="principle-block">
+                  {sec.title && <div class="principle-block-title">{sec.title}</div>}
+                  {body}
+                </div>
+              );
+            })
           ) : content?.principleItems ? (
             <ul>
               {content.principleItems.map((item) => (
@@ -663,6 +720,15 @@ function parseStep(text: string) {
   .accent-link:hover {
     opacity: 0.8;
   }
+  /* 跳到同頁其他分頁的按鈕（重置原生 button 樣式，外觀與 .accent-link 一致） */
+  button.accent-link {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    text-align: left;
+  }
 
   /* 注意事項的子清單 */
   .prose-custom .note-sub {
@@ -708,7 +774,10 @@ function parseStep(text: string) {
   }
 
   /* 原理說明依副標題分段（例："歷史"／"原理"） */
-  .prose-custom .principle-block + .principle-block {
+  .prose-custom .principle-block + .principle-block,
+  .prose-custom .principle-block + .principle-collapse,
+  .prose-custom .principle-collapse + .principle-block,
+  .prose-custom .principle-collapse + .principle-collapse {
     margin-top: 1.4em;
   }
   .prose-custom .principle-block-title {
@@ -718,6 +787,40 @@ function parseStep(text: string) {
     letter-spacing: 0.02em;
     margin-bottom: 0.5em;
     text-transform: uppercase;
+  }
+
+  /* 原理說明的可收合段落（手風琴樣式，同「轉存格 Q&A」） */
+  .prose-custom .principle-collapse {
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 0 14px;
+  }
+  .prose-custom .principle-collapse-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .prose-custom .principle-collapse-summary::-webkit-details-marker {
+    display: none;
+  }
+  .prose-custom .principle-collapse-title {
+    margin-bottom: 0;
+  }
+  .prose-custom .principle-collapse-chevron {
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+  .prose-custom details.principle-collapse[open] .principle-collapse-chevron {
+    transform: rotate(180deg);
+  }
+  .prose-custom .principle-collapse-body {
+    padding: 0 0 14px;
   }
 
   /* 原理說明中的人名白色底線 */
@@ -907,6 +1010,15 @@ function parseStep(text: string) {
 
     tabs.forEach((tab, i) => tab.addEventListener("click", () => select(i)));
     select(0);
+
+    // 步驟中「跳到同頁其他分頁」的按鈕（[[文字|tab:分頁名]] 語法）
+    root.querySelectorAll<HTMLButtonElement>(".jump-tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.jumpTab;
+        const idx = tabs.findIndex((t) => t.textContent?.trim() === target);
+        if (idx >= 0) select(idx);
+      });
+    });
   });
 
   // 相關影片分頁（每頁 10 部）

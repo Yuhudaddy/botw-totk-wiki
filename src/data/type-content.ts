@@ -61,7 +61,7 @@ export interface TypeContent {
   notesTitle?: string;        // 注意事項區標題（預設「注意事項」）
   principle?: string;         // B 區內文（段落式，與 principleItems 擇一）
   principleItems?: string[];  // B 區內文（條列式，有值則覆蓋 principle）
-  principleSections?: { title: string; text: string }[]; // B 區依副標題分段（例："歷史"／"原理"），有值則覆蓋以上兩者
+  principleSections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[]; // B 區依副標題分段（例："歷史"／"原理"），text 為段落、items 為條列（擇一）；collapsible 為 true 時該段落預設收合，點擊標題展開（同「轉存格 Q&A」的手風琴樣式）。有值則覆蓋 principle／principleItems
 
   principleNote?: string;     // B 區備註（灰色小字，顯示於 principle/principleItems 下方）
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
@@ -1207,6 +1207,144 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     videos: [
       { id: "bVnFIYKHMZg", title: "不廢話05 -「纏桿(Stick Desync Clip, SDC)」(適用：全版本)", desc: "NS1版的快速纏桿製作示範！" },
+    ],
+  },
+
+  "totk-07": {
+    methods: [
+      {
+        tab: "Portacull",
+        sections: [
+          {
+            title: "閃藏（Portacull = Portable Cull）",
+            tags: ["Ver.1.2.0+"],
+            steps: [
+              "觸發[[纏桿|totk-06]]",
+              "將纏桿餘料在武器或是盾牌上",
+              "丟棄纏桿裝備 → 裝備另一個同類型裝備，可以觸發林克的 4 幀隱藏",
+            ],
+          },
+        ],
+        note: "※Ver.1.2.0+丟切裝備的時候，被丟棄的裝備被證實會有 4 幀的無形隱藏，配合纏桿同步林克的存在，可以讓林克有閃一下的隱藏效果。",
+      },
+      {
+        tab: "Permacull",
+        sections: [
+          {
+            title: "永久隱藏（Permacull = Permanent Cull）",
+            tags: ["All Versions"],
+            steps: [
+              "觸發[[纏桿|totk-06]]",
+              "將纏桿放在隱藏區，或是米涅魯身上",
+              "離開隱藏區，或爬牆 / 在空中讓米涅魯消失不再出現",
+              "林克會永久隱藏",
+            ],
+          },
+        ],
+        note: "※ 隱藏區觸發的隱藏，觀看回憶可以一瞬間解除隱藏。",
+      },
+      {
+        tab: "Aerocull",
+        name: "氣流隱藏（Aerocull = Aero- + Cull）",
+        sections: [
+          {
+            title: "～Ver.1.1.2 流程",
+            tags: ["～Ver.1.1.2"],
+            steps: [
+              "餘料糾纏一個風扇在盾上，走到遠處直到左納烏裝置停止運作的距離，按下 ZL 啟動左納烏，帶著糾纏風扇的裝備走回去觸發 GAS",
+              "調整這個處於 GAS 狀態的盾牌位置，讓他吹向隱藏區內，但盾牌本身和隱藏區域仍保持一段距離（可以把盾牌黏在平台上輔助）",
+              "準備纏桿，把它放在隱藏區",
+              "Map Zuggle 任意盾牌，空手裝備糾纏風扇的盾，走出隱藏區讓林克隱藏",
+              "林克隱藏後丟棄裝備中的盾牌把風扇盾懲戒化，觀看記憶來解除隱藏，並跑回隱藏區",
+              "Zuggle 地上的盾牌，用火箭盾把它解纏",
+              {
+                text: "完成「氣流隱藏」",
+                sub: [
+                  "(1) 纏桿在風場內：步驟 9 的纏桿裝備丟在地上，跳越過左納烏裝置會觸發「物理隱藏」",
+                  "(2) 纏桿裝備在風場內：纏桿遠離隱藏區，站在一些物件（如左納烏）上會間斷性產生「無形隱藏」",
+                ],
+              },
+            ],
+          },
+          {
+            title: "Ver.1.2.0+ 流程",
+            tags: ["Ver.1.2.0+"],
+            steps: [
+              "觸發[[纏桿|totk-06]]，並將纏桿餘料在武器上",
+              "用纏桿武器米涅魯糾纏一個風扇，把風扇餘料在盾牌上",
+              "對著隱藏區的牆壁按住 ZL 啟動風扇",
+              "用纏桿武器 Invizuggle 或 Purgatorize 風扇盾來產生風場",
+              "傳送到附近讓風場視覺化",
+              "用武器(盾牌)FS2FE一個操縱桿，把它纏桿化",
+              "傳送讓操縱桿變成可移動（原本究極手不能移動）",
+              {
+                text: "完成「氣流隱藏」",
+                sub: [
+                  "(1) 纏桿在風場內：步驟 9 的纏桿裝備丟在地上，跳越過左納烏裝置會觸發「物理隱藏」",
+                  "(2) 纏桿裝備在風場內：纏桿遠離隱藏區，站在一些物件（如左納烏）上會間斷性產生「無形隱藏」",
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        tab: "Vortacull",
+        sections: [
+          {
+            title: "渦流隱藏（Vortacull = Vortex + Cull）",
+            tags: ["Ver.1.2.0+"],
+            steps: [
+              "觸發「[[氣流隱藏|tab:Aerocull]]」",
+              "纏桿在風場內，丟→切步驟 9 的纏桿裝備再撿起來",
+              "再丟→切步驟 9 的纏桿裝備，閃藏之後釋放一個「物理隱藏」",
+            ],
+          },
+        ],
+      },
+    ],
+    principleSections: [
+      {
+        text: "「隱藏（Cull）」是遊戲用來節省效能的機制，當某個物件（actor）暫時用不到、較遠看不到細節時，遊戲會把它的運算暫時收起來，同時讓它消失、甚至摸不到。隱藏依「深度」分成兩種狀態：",
+      },
+      {
+        title: "Pause（暫停）— 淺層隱藏",
+        collapsible: true,
+        items: [
+          "只是把 actor 的計算暫停，狀態保留，恢復（unpause）時直接接續原本進度",
+          {
+            text: "觸發原因稱為 pause reason，共 0–5 六種：",
+            sub: [
+              "Reason 0：一般暫停（約 90% 情況）",
+              "Reason 1：隱藏區／洞穴隱藏空間的隱藏",
+              "Reason 2：賢者視錐隱藏（畫面視角外隱藏）",
+              "Reason 3：賢者武器相關（不含 Mineru 構裝）",
+              "Reason 4：事件觸發暫停（過場動畫等）",
+              "Reason 5：NPC 視錐隱藏（畫面視角外隱藏）",
+            ],
+          },
+          "※Reason 1、2 屬於即「__物理隱藏（physical cull）__」，外觀隱藏但仍有碰撞判定的狀態",
+          "※Reason 0、3、4、5等等其他都是「__無形隱藏（intangible cull）__」，碰不到、無碰撞的隱藏狀態",
+        ],
+      },
+      {
+        title: "Sleep（睡眠）— 深層隱藏",
+        collapsible: true,
+        items: [
+          "比 Pause 更徹底：完全不可見、完全不可互動（intangible）",
+          "不論原本疊了幾種 pause reason，全部解除",
+          "attachment 解除、equipment cache 被刪除",
+          "甦醒時呼叫 onReset，等於重新初始化，而非接續原狀態",
+          "通常發生在物件距離玩家過遠、系統判斷短時間內不會用到的情況",
+        ],
+      },
+      {
+        title: "與複製／glitch 技巧的關聯",
+        items: [
+          "多數程錯（如 Zuggle）的原理都是利用 Pause 狀態切換瞬間的空隙（物理隱藏和無形隱藏的時機略有不同），讓「裝備欄」與「場上實際物件」的狀態不同步（__Desync__）",
+          "Resync（重新裝備／交換）能修正這種不同步，但修正的是林克的裝備狀態，並不等於直接把物件解除隱藏（__Uncull__）",
+        ],
+      },
     ],
   },
 
