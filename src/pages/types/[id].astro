@@ -184,7 +184,7 @@ function parseStep(text: string) {
                 {m.sections ? (
                   m.sections.map((sec) => (
                     <div class="method-section">
-                      <div class="method-section-title">
+                      <div class={m.sections!.length === 1 ? "method-section-title-single" : "method-section-title"}>
                         {parseAccent(sec.title).map((seg) =>
                           seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
                         )}
@@ -638,19 +638,19 @@ function parseStep(text: string) {
         </div>
 
         {content.videos.length > VIDEOS_PER_PAGE && (
-          <div class="mt-8 flex items-center justify-between gap-4">
+          <div class="mt-8 flex items-center justify-between gap-2 sm:gap-4">
             <button
               id="vid-prev"
               type="button"
-              class={`rounded-[10px] border border-border-strong ${vidBtnBg} px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
+              class={`whitespace-nowrap rounded-[10px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
               ← 上一頁
             </button>
-            <span id="vid-page-info" class="text-sm text-muted"></span>
+            <span id="vid-page-info" class="whitespace-nowrap text-[12px] sm:text-sm text-muted"></span>
             <button
               id="vid-next"
               type="button"
-              class={`rounded-[10px] border border-border-strong ${vidBtnBg} px-5 py-2 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
+              class={`whitespace-nowrap rounded-[10px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
               下一頁 →
             </button>
@@ -866,6 +866,16 @@ function parseStep(text: string) {
     color: var(--ink);
     text-decoration: underline;
     text-underline-offset: 2px;
+  }
+  /* 分頁內只有單一區塊時，標題改為白字（與 m.name 一致），只有多區塊才用橙色標題區分 */
+  .method-section-title-single {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.75em;
+  }
+  .method-section-title-single .accent-strong {
+    color: var(--accent);
   }
 
   /* Q&A 按鈕 */
