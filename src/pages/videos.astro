@@ -214,6 +214,17 @@ const facets = [
     opacity: 0.35;
     cursor: default;
   }
+  /* 分頁列外層：避免頁碼過多時撐破版面，改為可橫向捲動 */
+  :global(.page-scroll) {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  :global(.page-scroll::-webkit-scrollbar) {
+    display: none;
+  }
+  :global(.page-btn) {
+    flex-shrink: 0;
+  }
   :global(.filter-pill) {
     display: inline-flex;
     align-items: center;
@@ -321,15 +332,18 @@ const facets = [
 
     /* ── 分頁列 ── */
     function paginationHTML(current, total) {
-      var html = '<div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:22px;padding-bottom:4px;">';
+      var html = '<div class="page-scroll" style="overflow-x:auto;margin-top:22px;padding-bottom:4px;">' +
+        '<div style="display:flex;align-items:center;justify-content:center;gap:5px;width:max-content;margin:0 auto;">';
 
       // 上一頁
       html += '<button class="page-btn" data-page="' + (current - 1) + '"' + (current === 0 ? " disabled" : "") + ">←</button>";
 
-      // 頁碼（最多顯示 7 個，超出用 …）
-      var start = Math.max(0, current - 3);
-      var end = Math.min(total - 1, start + 6);
-      if (end - start < 6) start = Math.max(0, end - 6);
+      // 頁碼（桌面最多顯示 7 個，手機縮減為 5 個，超出用 …）
+      var maxVisible = window.innerWidth < 480 ? 5 : 7;
+      var half = Math.floor((maxVisible - 1) / 2);
+      var start = Math.max(0, current - half);
+      var end = Math.min(total - 1, start + maxVisible - 1);
+      if (end - start < maxVisible - 1) start = Math.max(0, end - (maxVisible - 1));
 
       if (start > 0) {
         html += '<button class="page-btn" data-page="0">1</button>';
@@ -345,7 +359,7 @@ const facets = [
 
       // 下一頁
       html += '<button class="page-btn" data-page="' + (current + 1) + '"' + (current === total - 1 ? " disabled" : "") + ">→</button>";
-      html += "</div>";
+      html += "</div></div>";
       return html;
     }
 
@@ -438,6 +452,10 @@ const facets = [
       }
 
       results.innerHTML = html;
+
+      /* 分頁列：讓目前頁碼自動捲動到可視範圍內（手機版可橫向捲動） */
+      var activePageBtn = results.querySelector('.page-btn[data-active="true"]');
+      if (activePageBtn) activePageBtn.scrollIntoView({ block: "nearest", inline: "center" });
 
       /* 動態按鈕事件 */
       results.querySelectorAll(".view-btn").forEach(function (btn) {
