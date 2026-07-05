@@ -496,9 +496,11 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-05": {
+    videoFolder: "botw-cOHO",
     methods: [
       {
         tab: "步驟",
+        video: "過場必殺劍.mp4",
         steps: [
           "解完 3 個必殺之劍的神廟",
           "觸發轉存格，數量須達隨時可以「轉存格數 ≧ 道具格的總數」的狀態（身上的道具可以先保留著，到導師面前再丟棄即可）",
@@ -793,6 +795,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-13": {
+    videoFolder: "botw-equipment duplication",
     principleItems: [
       "觸發__選單過載__或是__座標偏移造成裝備來不及加載__的時候切換裝備，會讓選單和實際裝備不同步，此時將脫離同步、實際裝備在身上的武器、弓、盾牌與林克分離（掛牆壁、受電擊、投擲等等）就能增殖道具。",
     ],
@@ -800,6 +803,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "選單過載",
         name: "落弓過載法（Multi-shot Bow Overload）",
+        video: "落弓過載法.mp4",
         steps: [
           "準備 4 ～ 7 把多發弓（如獸神弓、二連弓）以及 1 發以上的電箭",
           "裝備多連弓與電箭，並輕點 ZR 將弓拿到前面",
@@ -903,10 +907,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-17": {
+    videoFolder: "botw-active rush",
     methods: [
       {
         tab: "DR",
         name: "(完美)達爾克爾突擊（(Perfect) Daruk Rush）",
+        video: "DR.mp4",
         steps: [
           "開啟達爾克爾的守護，按住 ZL 啟動守護，並且__鎖定到對象__",
           {
@@ -924,6 +930,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "TCR",
         name: "閃擊（Thunderclap Rush）",
+        video: "TCR.mp4",
         steps: [
           "未觸發過盾反、完美迴避的情形下，從地勢較高處往低處做出「迴避跳（ZL+X+→/←/↓）」",
           "一定高度以上，保持按住 ZL 同時按下 ZR + Y",
@@ -938,6 +945,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "ATR",
         name: "絕對閃擊（Absolute Thunderclap Rush）",
+        video: "ATR.mp4",
         steps: [
           "開啟達爾克爾的守護",
           "在空中按住 ZL，點擊 ZR 拉弓進入子彈時間",
@@ -948,6 +956,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "QFR",
         name: "快速突擊（Quick Flurry Rush）",
+        video: "QFR.mp4",
         bullets: [
           "・物理型：舉炸彈之後__後跳__進行完美迴避 → 連打 Y 突擊",
           "・系統型：執行一次「無鎖定的不完全跳躍」後，__側跳__進行完美迴避 → 連打 Y 突擊",
@@ -1104,10 +1113,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-05": {
+    videoFolder: "totk-fuse mechanics",
     methods: [
       {
         tab: "FE",
         name: "餘料糾纏（Fuse Entangle）",
+        video: "Fuse Entangle.mp4",
         sections: [
           {
             title: "冷切盾糾纏（Shield Swap FE）",
@@ -1129,6 +1140,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "CF",
         name: "冷餘料（Cold Fuse）",
+        video: "Cold Fuse.mp4",
         sections: [
           {
             title: "有特效冷餘料（Animated Cold Fuse）",
@@ -1144,6 +1156,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "PF",
+        video: "Pseudo Fuse.mp4",
         sections: [
           {
             title: "假餘料（Pseudo Fuse）",
