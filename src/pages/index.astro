@@ -35,13 +35,13 @@ const featured = youtubeData.featured;
         <div class="flex flex-wrap gap-3">
           <a
             href={href("/videos?game=totk")}
-            class="inline-flex items-center rounded-[10px] border border-border-strong bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:bg-sand hover:text-brand"
+            class="ring-hover inline-flex items-center rounded-[10px] border border-border-strong bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:bg-sand hover:text-brand"
           >
             瀏覽王國之淚 →
           </a>
           <a
             href={href("/videos?game=botw")}
-            class="inline-flex items-center rounded-[10px] border border-border-strong bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:bg-sand hover:text-brand"
+            class="ring-hover inline-flex items-center rounded-[10px] border border-border-strong bg-surface-2 px-[22px] py-3 text-[15px] font-medium text-ink no-underline transition-colors hover:border-brand hover:bg-sand hover:text-brand"
           >
             瀏覽曠野之息 →
           </a>
@@ -90,7 +90,7 @@ const featured = youtubeData.featured;
       </div>
       <a
         href={href("/videos")}
-        class="inline-flex items-center whitespace-nowrap rounded-[10px] bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline shadow-[0_0_0_1px_var(--border-strong)]"
+        class="ring-hover inline-flex items-center whitespace-nowrap rounded-[10px] bg-surface-2 px-[18px] py-2.5 text-[15px] font-medium text-ink no-underline shadow-[0_0_0_1px_var(--border-strong)]"
       >
         看全部影片 →
       </a>
@@ -110,7 +110,7 @@ const featured = youtubeData.featured;
           quickNav.map((q) => (
             <a
               href={href(q.path)}
-              class="group flex flex-col rounded-2xl border border-border-soft bg-bg px-4 py-4 no-underline transition-colors hover:border-brand"
+              class="ring-hover group flex flex-col rounded-2xl border border-border-soft bg-bg px-4 py-4 no-underline transition-colors hover:border-brand"
             >
               <div class="flex items-baseline gap-2">
                 <span class="font-mono text-[13px] text-accent">{q.no}</span>
