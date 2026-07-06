@@ -1686,6 +1686,18 @@ export const typeContent: Record<string, TypeContent> = {
     notes: [
       { text: "以上內容整理自 Ultrabroken Archives 社群文檔，實際操作時機、幀數（frame-perfect）要求可能因版本略有差異，建議搭配原站點的影片或 Discord 對照練習。" },
     ],
+    videos: [
+      { id: "pmY_7ixbOjc", title: "1.1.2的複製挺像舊版的YB法 (Credit: Zas & BigDUCCO) #薩爾達傳說 #switch #王國之淚" },
+      { id: "RwfdAWe-S18", title: "回應01 - 1.2.0版可以複製武器嗎？「萊克虛幻手持法(LLSD)」甚至幫你詞綴轉移！（1.1.0~1.2.0限定）" },
+      { id: "22lm85F5rTc", title: "1.2.1版『投擲增殖法』快速說明(New setup: Cupcakesupream) #王國之淚 #薩爾達傳說 #nintendoswitch" },
+      { id: "BhOnDZf5kV8", title: "不廢話13 -「投擲複製法(MTD, Midair Throw Duplication)」(適合：全版本)" },
+      { id: "hfWHsO1-zg4", title: "番外12 - 不用馬不用狗！詳解『捆包無限材料增殖(Bundled Item Duplication)』！（程錯原理與流程說明）" },
+      { id: "s8wXxO8Lzis", title: "番外12(會員) - 不一定要在一始村！２種另類流程觸發『捆包無限材料增殖(Bundled Item Duplication)』(請以暫停觀看字幕)！" },
+      { id: "wUL-pHB2P7Q", title: "不廢話15 -「存讀繼承(Save Load Duping, SLD)」(適用：全版本)" },
+      { id: "UIHuP5k0myM", title: "番外17 - 無限的代名詞！「過載(Overload)」全應用！（無限複製｜無限火箭｜無限跳躍）" },
+      { id: "MWBVJsLTA0c", title: "番外21 - 無限耐久＆複製＆無限彈簧火箭盾！虛空次元歸來的「虛化裝備(Void Dip & DI)」原理解說與常用步驟示範（適用ver.1.2.1～）" },
+      { id: "NYjm4oqBsRo", title: "番外12(NS2) - 高效率無限複製道具！快速示範『捆包複製法(BID, Bundled Item Duplication)』！" },
+    ],
   },
 
   "totk-12": {
