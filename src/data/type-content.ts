@@ -279,6 +279,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     notes: [
+      { text: "除非是要用「單格偏移法」準備「脫頁游標」，不然通常會關閉 Zelda Notes 減少 2 格轉存格。" },
       { text: "轉存格的邏輯非常活，流程步驟有幾百種，上述僅為其中一種應用例，並未提及連鎖訛轉、訛植等連續作業。" },
       {
         text: "數值訛轉的「數值」是指道具資料中可被系統拿來運算或顯示的基本底層數值。不同道具類型會用不同方式解讀同一個 raw value 做運算，裝備則使用定點數運算（Fixed-point Arithmetic）處理：",
@@ -337,7 +338,7 @@ export const typeContent: Record<string, TypeContent> = {
         name:  "所有武器的人馬皆會使用的攻擊",
         video: "共通.mp4",
         steps: [
-          "__三階段進攻模式__：3 次近距離招式 或 2次掃斬 後 → 衝刺性招式 → 火球",
+          "__三階段進攻模式__：3 次近距離招式 或 2次掃斬 → 衝刺型招式 → 火球",
           "__突進__：收起武器，以四足直接衝撞玩家。若不想進入子彈時間，__舉炸彈按 ZL 往後跳會無傷__",
           "__火球__：往後跳後連續吐出 3 顆火球，草地上吐火可產生上升氣流",
           "__掃斬__：距離人馬較遠時會側向揮動武器掃擊",
@@ -655,23 +656,33 @@ export const typeContent: Record<string, TypeContent> = {
 
   "botw-08": {
     intro: "DLC1「考驗的霸者」收錄的考驗挑戰，清空既有進度的裝備進入考驗，連續通過各個樓層擊敗魔物。本系列包含普通模式和大師模式的初級、中級、頂級的重點攻略，以及大師模式更需要學習的「偷襲」技巧，適合在試煉中卡關或想省時完成的玩家參考。",
-    videos: [
-      { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
-      { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
-      { id: "EjX0-Pj6wG0", title: "高效率3心無傷！『劍之考驗 - 初級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Beginning）" },
-      { id: "ce21Z79Zbtc", title: "破除夢魘！詳解《劍之考驗 - 初級地下10樓》！（ToTS B10 Tutorial）" },
-      { id: "9AM19fJ7mSo", title: "回應07「劍之考驗(ToTS)」的穿牆重點講解（人聲解說）" },
-      { id: "g8eqZ6LaK10", title: "番外23 - 在劍之試煉騎機車（Cycle Zero in ToTS）" },
-      { id: "5nzrj_5-FNM", title: "劍試01 - 簡單無傷通過「劍之試煉（一般模式）- 初級」攻略（2018年版）" },
-      { id: "Dxh3W_sQmmo", title: "劍試02 - 簡單無傷通過「劍之試煉（一般模式）- 中級」攻略（2018年版）" },
-      { id: "pjix1ZahVQ4", title: "劍試03 - 簡單無傷通過「劍之試煉（一般模式）- 頂級」攻略（2018年版）" },
-      { id: "jC-mr7ZJhoc", title: "劍試04 - 無傷「劍之試煉（大師模式）- 初級」攻略流程（2018年版）" },
-      { id: "IJElnqcy-ok", title: "劍試05 - 無傷「劍之試煉（大師模式）- 中級」攻略流程（2018年版）" },
-      { id: "5080qSOLtNg", title: "劍試06 - 無傷「劍之試煉（大師模式）- 頂級」攻略流程（2018年版）" },
-      { id: "QlJw8N7cMyo", title: "劍試07 - 劍之試煉 -「靜止衝撞法(Stasis Clipping)」（大師／一般模式皆通用．新方法請見敘述）" },
-      { id: "wPsT2Ienj9k", title: "劍試08 - 牆外路線(Oob Route)初級12F冰柱放置教學（中文解說）" },
-      { id: "OYu_vHdo2wo", title: "劍試09 - 劍之試煉OOB -「盾跳穿牆法（Shield Skew Clipping）」（示範影片）" },
-      { id: "FHMarfPxVhY", title: "技巧21 - 劍之試煉的 14 個攻略重點與技巧（大師模式・中文解說）" },
+    videoGroups: [
+      {
+        title: "正常挑戰",
+        videos: [
+          { id: "4lZpCR8OyzY", title: "高效率3心無傷！『劍之考驗 - 頂級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Final）" },
+          { id: "N3QVfzHn-ps", title: "高效率3心無傷！『劍之考驗 - 中級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Middle）" },
+          { id: "EjX0-Pj6wG0", title: "高效率3心無傷！『劍之考驗 - 初級(大師模式)』重點攻略！（2022 Guide of DLC1 Trial of the Sword - Beginning）" },
+          { id: "ce21Z79Zbtc", title: "破除夢魘！詳解《劍之考驗 - 初級地下10樓》！（ToTS B10 Tutorial）" },
+          { id: "5nzrj_5-FNM", title: "劍試01 - 簡單無傷通過「劍之試煉（一般模式）- 初級」攻略（2018年版）" },
+          { id: "Dxh3W_sQmmo", title: "劍試02 - 簡單無傷通過「劍之試煉（一般模式）- 中級」攻略（2018年版）" },
+          { id: "pjix1ZahVQ4", title: "劍試03 - 簡單無傷通過「劍之試煉（一般模式）- 頂級」攻略（2018年版）" },
+          { id: "jC-mr7ZJhoc", title: "劍試04 - 無傷「劍之試煉（大師模式）- 初級」攻略流程（2018年版）" },
+          { id: "IJElnqcy-ok", title: "劍試05 - 無傷「劍之試煉（大師模式）- 中級」攻略流程（2018年版）" },
+          { id: "5080qSOLtNg", title: "劍試06 - 無傷「劍之試煉（大師模式）- 頂級」攻略流程（2018年版）" },
+          { id: "FHMarfPxVhY", title: "技巧21 - 劍之試煉的 14 個攻略重點與技巧（大師模式・中文解說）" },
+        ],
+      },
+      {
+        title: "程錯通關",
+        videos: [
+          { id: "9AM19fJ7mSo", title: "回應07「劍之考驗(ToTS)」的穿牆重點講解（人聲解說）" },
+          { id: "g8eqZ6LaK10", title: "番外23 - 在劍之試煉騎機車（Cycle Zero in ToTS）" },
+          { id: "QlJw8N7cMyo", title: "劍試07 - 劍之試煉 -「靜止衝撞法(Stasis Clipping)」（大師／一般模式皆通用．新方法請見敘述）" },
+          { id: "wPsT2Ienj9k", title: "劍試08 - 牆外路線(Oob Route)初級12F冰柱放置教學（中文解說）" },
+          { id: "OYu_vHdo2wo", title: "劍試09 - 劍之試煉OOB -「盾跳穿牆法（Shield Skew Clipping）」（示範影片）" },
+        ],
+      },
     ],
   },
 
@@ -1080,6 +1091,21 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-03": {
+    videoFolder: "totk-lynel",
+    methodsTitle: "攻擊模式",
+    principleTitle: "對應策略",
+    principle: "內容整理中，敬請期待。",
+    methods: [
+      {
+        tab: "共通",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+    ],
+    notes: [{ text: "內容整理中，敬請期待。" }],
+    videos: [],
+  },
+
+  "totk-04": {
     intro: "依主線進度整理的攻略影片集，涵蓋四座神殿的高效率破解流程，以及自製的沈浸式全主線劇情影片。若在特定神殿或劇情關卡卡關，找到對應的影片即可直接參考。",
     videos: [
       { id: "XQkeh2MbwUM", title: "高效率主線攻略01｜『風之神殿(Wind Temple)』- 利特村暴風雪的元兇原來是！？（無bug流程）" },
@@ -1092,7 +1118,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-04": {
+  "totk-05": {
     intro: "依地區分類的神廟特解集，不動腦、純靠玩家操作通過所有需要解謎的神廟。",
     videos: [
       { id: "nQVypHKJKGY", title: "神特01(新) -『格魯德峽谷』地區神廟特解（Shrine Strategies in Gerudo Canyon）" },
@@ -1112,7 +1138,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-05": {
+  "totk-06": {
     videoFolder: "totk-fuse mechanics",
     methods: [
       {
@@ -1196,7 +1222,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-06": {
+  "totk-07": {
     methods: [
       {
         tab: "FS",
@@ -1248,7 +1274,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-07": {
+  "totk-08": {
     methods: [
       {
         tab: "Portacull",
@@ -1257,7 +1283,7 @@ export const typeContent: Record<string, TypeContent> = {
             title: "閃藏（Portacull = Portable Cull）",
             tags: ["Ver.1.2.0+"],
             steps: [
-              "觸發[[纏桿|totk-06]]",
+              "觸發[[纏桿|totk-07]]",
               "將纏桿餘料在武器或是盾牌上",
               "丟棄纏桿裝備 → 裝備另一個同類型裝備，可以觸發林克的 4 幀隱藏",
             ],
@@ -1272,7 +1298,7 @@ export const typeContent: Record<string, TypeContent> = {
             title: "永久隱藏（Permacull = Permanent Cull）",
             tags: ["All Versions"],
             steps: [
-              "觸發[[纏桿|totk-06]]",
+              "觸發[[纏桿|totk-07]]",
               "將纏桿放在隱藏區，或是米涅魯身上",
               "離開隱藏區，或爬牆 / 在空中讓米涅魯消失不再出現",
               "林克會永久隱藏",
@@ -1308,7 +1334,7 @@ export const typeContent: Record<string, TypeContent> = {
             title: "Ver.1.2.0+ 流程",
             tags: ["Ver.1.2.0+"],
             steps: [
-              "觸發[[纏桿|totk-06]]，並將纏桿餘料在武器上",
+              "觸發[[纏桿|totk-07]]，並將纏桿餘料在武器上",
               "用纏桿武器米涅魯糾纏一個風扇，把風扇餘料在盾牌上",
               "對著隱藏區的牆壁按住 ZL 啟動風扇",
               "用纏桿武器 Invizuggle 或 Purgatorize 風扇盾來產生風場",
@@ -1414,7 +1440,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-08": {
+  "totk-09": {
     methodsTitle: "裝備狀態",
     notesTitle: "備註說明",
     methods: [
@@ -1431,7 +1457,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-09": {
+  "totk-10": {
     methods: [
       {
         tab: "Zuggle",
@@ -1523,7 +1549,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-11": {
+  "totk-12": {
     methods: [
       {
         tab: "MSD",
@@ -1700,7 +1726,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-12": {
+  "totk-13": {
     methods: [
       {
         tab: "SBR",
@@ -1732,7 +1758,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-13": {
+  "totk-14": {
     methods: [
       {
         tab: "Void Dip",
@@ -1809,7 +1835,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-14": {
+  "totk-15": {
     methods: [
       {
         tab: "西方高原",
@@ -1826,7 +1852,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-16": {
+  "totk-17": {
     methods: [
       {
         tab: "Prologue Escape",
@@ -1878,7 +1904,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-15": {
+  "totk-16": {
     methods: [
       {
         tab: "SLD",
