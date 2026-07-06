@@ -120,8 +120,9 @@ input::placeholder {
   background: conic-gradient(
     from var(--ring-angle),
     transparent 0%,
-    var(--accent) 8%,
-    transparent 22%,
+    var(--accent) 12%,
+    var(--accent) 38%,
+    transparent 58%,
     transparent 100%
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -137,6 +138,12 @@ input::placeholder {
 .ring-hover:focus-visible::before {
   opacity: 1;
   animation-play-state: running;
+}
+/* 啟動時隱藏原本的靜態邊框／box-shadow 假邊框，避免看起來有兩層 */
+.ring-hover:hover,
+.ring-hover:focus-visible {
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 @keyframes ring-hover-spin {
   to {

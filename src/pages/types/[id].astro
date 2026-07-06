@@ -544,7 +544,7 @@ function parseStep(text: string) {
     <div class={vidSectionClass}>
       <div class="mx-auto max-w-[1180px] px-8 pb-16 pt-10">
         {!videosOnly && (
-          <div class="mb-8">
+          <div class="mb-6">
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
               相關影片 · Videos
             </div>
@@ -553,13 +553,25 @@ function parseStep(text: string) {
             </h2>
           </div>
         )}
-        {content.videoGroups.map((vg: VideoGroup) => (
-          <div class="mb-12 last:mb-0">
-            <h2 class="mb-5 font-serif text-[22px] font-medium text-ink">{vg.title}</h2>
-            <div>
+        <div class="video-group-tabs">
+          <div role="tablist" class="mb-5 flex flex-wrap gap-2">
+            {content.videoGroups.map((vg: VideoGroup, i) => (
+              <button
+                type="button"
+                role="tab"
+                data-vg-tab={i}
+                aria-selected={i === 0 ? "true" : "false"}
+                class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
+              >
+                {vg.title}
+              </button>
+            ))}
+          </div>
+          {content.videoGroups.map((vg: VideoGroup, i) => (
+            <div class="video-group-panel" data-vg-panel={i} hidden={i !== 0}>
               {vg.videos.map((v) => (
                 <a
-                  href={ytWatch(v.id)}
+                  href={ytWatch(v.id, v.at)}
                   target="_blank"
                   rel="noopener"
                   class={`flex cursor-pointer items-center gap-4 border-b border-border-soft py-[14px] no-underline transition-colors ${vidRowHover}`}
@@ -589,8 +601,8 @@ function parseStep(text: string) {
                 </a>
               ))}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )}
@@ -1039,6 +1051,19 @@ function parseStep(text: string) {
         if (idx >= 0) select(idx);
       });
     });
+  });
+
+  // 相關影片分組（videoGroups）：分頁按鈕切換顯示對應分組
+  document.querySelectorAll<HTMLElement>(".video-group-tabs").forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-vg-tab]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-vg-panel]"));
+
+    function select(index: number) {
+      tabs.forEach((t, i) => t.setAttribute("aria-selected", String(i === index)));
+      panels.forEach((p, i) => (p.hidden = i !== index));
+    }
+
+    tabs.forEach((tab, i) => tab.addEventListener("click", () => select(i)));
   });
 
   // 相關影片分頁（每頁 10 部）
