@@ -7,6 +7,7 @@ export interface TypeMethodSection {
   title: string;      // 子章節標題，例："K+1 法（通用版）"
   tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["～Ver.1.1.2"]
   steps: TypeStep[];  // 該區塊的編號步驟
+  note?: string | string[]; // 該區塊步驟下方的灰色備註（可多行）
 }
 
 export interface TypeMethod {
@@ -1444,11 +1445,251 @@ export const typeContent: Record<string, TypeContent> = {
     methodsTitle: "裝備狀態",
     notesTitle: "備註說明",
     methods: [
-      { tab: "Smuggle" },
-      { tab: "Zuggle" },
-      { tab: "Wuggle" },
-      { tab: "Zoggle" },
+      {
+        tab: "Smuggle",
+        name: "黏手（Smuggle）",
+        steps: [
+          "在阿卡萊隱藏區，將武器 A 餘料糾纏到盾牌 B 上（盾牌糾纏到武器也可以）",
+          "將 B 留在隱藏區牆壁，裝備著 A 離開隱藏區",
+          "當 A 隱藏之後丟棄 A",
+          "再回到隱藏區內把 B 撿起來",
+          "此時 A 會黏在林克手上",
+        ],
+        note: "※ 時常伴隨著十字鍵鎖著的狀況（虛化裝備不會鎖住）",
+      },
+      {
+        tab: "Zuggle",
+        name: "並列（Zuggle = Zvleon's Smuggle）",
+        sections: [
+          {
+            title: "法一：地圖並列（Map Zuggle）",
+            tags: ["～Ver.1.1.1"],
+            steps: [
+              "背對牆壁，按住 L 選到地圖",
+              "放開 L 讓技能輪盤消失，打開地圖之前連打十字鍵打開武器(盾)的快速選單",
+              "丟棄裝備中的武器(盾)後，連打十字鍵再次打開快速選單",
+              "裝備另一把武器後，放開十字鍵讓地圖自動打開",
+              "按 + 號到背包丟棄裝備中的武器(盾)",
+              "退出暫停或讀檔",
+            ],
+            note: "※ Ver.1.1.1+ 的虛化裝備也可以用此方法",
+          },
+          {
+            title: "法二：米涅魯糾纏並列（Mineru Parented Zuggle）",
+            tags: ["Ver.1.2.0+"],
+            steps: [
+              "觸發纏桿，並將纏桿餘料在武器上裝備起來",
+              "騎上米涅魯，丟棄裝備中的目標盾牌",
+              "[[米涅魯糾纏|totk-06#FE]]步驟 2 的盾牌",
+              "空手將盾牌撿起來裝備，按住 L 打開技能輪盤選到地圖",
+              {
+                text: "放開 L 地圖打開之前，連打十字鍵◀︎(或▶︎)完成以下動作：",
+                sub: [
+                  "丟棄裝備中的盾牌",
+                  "裝備另一個盾牌",
+                  "丟棄步驟 1 裝備中的纏桿武器",
+                  "裝備另一把武器",
+                  "放開 L 打開地圖",
+                ],
+              },
+              "按 + 號打開背包，丟棄裝備中的盾牌",
+              "故意離開或按 L 啟動技能，讓米涅魯隱藏之後再次顯現",
+              "背上的盾牌顯示出來之後，騎上米涅魯",
+              "隨意餘料一個物品覆蓋掉步驟 2 在米涅魯身上的盾牌解纏（Detangle）",
+            ],
+            note: "※ 若要 Zuggle 武器，上述順序的武器和盾牌可以對調。",
+          },
+          {
+            title: "法三：再同步並列（Swap Resync Zuggle）",
+            tags: ["Ver.1.2.0+"],
+            steps: [
+              "觸發纏桿，並將纏桿餘料在武器上裝備起來",
+              "貼著牆壁，和牆壁的法向呈 90 度（非正對也非背對）",
+              {
+                text: "打開暫停，完成以下動作：",
+                sub: [
+                  "隨意丟棄一個武器 / 盾牌 / 弓箭",
+                  "丟棄裝備中的纏桿武器",
+                  "裝備另一把武器",
+                  "丟棄任意 2 把以上武器 / 盾牌 / 弓箭，或是[[米涅魯的手臂|totk-10#SFO]]",
+                  "丟棄裝備中的目標盾牌",
+                  "裝備另一個盾牌",
+                ],
+              },
+              "關閉暫停後瞬間打開暫停（Pause Buffer）",
+              "確認暫停背景的林克仍處於[[隱藏(Cull)|totk-08#Portacull]]狀態",
+              "卸掉或裝備任意套裝，或切換弓箭，重新同步林克的裝備狀態",
+              "丟棄裝備中的盾牌",
+              "左搖桿往遠離牆壁的方向推著，按下 B 關閉暫停",
+              "目標盾牌丟棄失敗後會呈現 Zuggled 的狀態",
+            ],
+            note: "※ 若要 Zuggle 武器，上述順序的武器和盾牌可以對調。",
+          },
+          {
+            title: "法四：米涅魯地圖並列（Mineru Map Zuggle）",
+            tags: ["All Versions"],
+            steps: [
+              "觸發纏桿，並將纏桿餘料在米涅魯上",
+              "找一個背對能夠讓米涅魯消失的牆壁，或丟出一個浮空石，啟動並轉 90 度背對浮空石",
+              "啟動究極手對準米涅魯讓米涅魯的魂回到林克身上",
+              "連打十字鍵打開快速選單",
+              "打開後的背景林克呈現顯示狀態時",
+              "按住 L 放開十字鍵",
+              "技能輪盤選到地圖",
+              {
+                text: "放開 L 連打十字鍵打開目標武器(盾牌)的快速選單，並執行以下作業：",
+                sub: [
+                  "丟棄裝備中的目標武器(盾牌)",
+                  "連打十字鍵裝備另一個武器(盾牌)",
+                  "放開十字鍵打開地圖",
+                ],
+              },
+              "按 + 號打開背包，丟棄裝備中的武器(盾牌)",
+            ],
+            note: "※ 若要 Zuggle 武器，上述順序的武器和盾牌可以對調。",
+          },
+        ],
+      },
+      {
+        tab: "Sluggle",
+        name: "Sluggle",
+        sections: [
+          {
+            title: "法一：吃掉瞬間撿起裝備",
+            tags: ["～Ver.1.2.0"],
+            steps: [
+              "讓 Like Like 準備吃掉一件目標裝備",
+              "在 Like Like 吃掉該裝備的同時，Link 也撿起該裝備",
+              "裝備被 Like Like 接管並隱藏(Cull)，但 Link 端仍取得裝備關係，形成 Sluggle",
+            ],
+          },
+          {
+            title: "法二：Drop Smuggle 後讓 Like Like 吃掉",
+            tags: ["～Ver.1.2.0"],
+            steps: [
+              "先將目標裝備做成 Drop Smuggle",
+              "讓 Like Like 吃掉該裝備",
+              "「正在被 Link 端保留的掉落裝備」被交給 Like Like 的吞食／隱藏(Cull)流程，形成 Sluggle",
+            ],
+          },
+          {
+            title: "法三：已有同類 Smuggle 時，讓 Like Like 偷走另一件同類裝備",
+            tags: ["All Versions"],
+            steps: [
+              "讓 Link 端已有一件同類裝備處於 Smuggle 狀態",
+              "讓 Like Like 偷走另一件同類裝備",
+              "同類裝備的 Smuggle 關係和 Like Like 的 eaten／隱藏(Cull)關係互相干擾，形成 Sluggle",
+            ],
+          },
+          {
+            title: "法四：Zuggle Overload 掉出裝備後讓 Like Like 吃掉",
+            tags: ["All Versions"],
+            steps: [
+              "進入 Zuggle Overload 狀態",
+              "讓裝備從 Link 身上異常掉到地上",
+              "讓 Like Like 吃掉該異常掉落的裝備，接上吞食流程形成 Sluggle",
+            ],
+          },
+          {
+            title: "法五：Recall Sluggle",
+            tags: ["～Ver.1.1.2"],
+            steps: [
+              "目標裝備原本未裝備，先丟在地上",
+              "開啟 Recall 的瞬間撿起該裝備",
+              {
+                text: "成功時會出現以下現象：",
+                sub: [
+                  "裝備看起來還在地上",
+                  "撿取音效播放",
+                  "選單裡卻已經顯示裝備",
+                ],
+              },
+              "在取消 Recall 前，該裝備會維持 Sluggled 狀態",
+            ],
+          },
+        ],
+      },
+      {
+        tab: "Wuggle",
+        name: "糾纏型並列（Wuggle = Weird Zuggle）",
+        sections: [
+          {
+            title: "法一：隱藏區（Cull Area Wuggle）",
+            tags: ["All Versions"],
+            steps: [
+              "先把目標武器餘料糾纏在盾牌上",
+              "把母件盾牌放在 Cull Area 裡",
+              "撿起子件武器站在能讓裝備快要[[隱藏(Cull)|totk-08#Portacull]]的邊界",
+              "離開隱藏區後再回到隱藏區",
+              "抓「裝備快要隱藏」的瞬間，在裝備即將隱藏前，打開快速選單，丟棄並切換武器",
+              "此時快速選單會被鎖住無法打開，但武器會黏在手上",
+            ],
+            note: "※ 若要 Wuggle 盾牌，上述順序的武器和盾牌可以對調。",
+          },
+          {
+            title: "法二：米涅魯隱藏（Mineru Cull Wuggle）",
+            tags: ["All Versions"],
+            steps: [
+              "先把目標武器餘料糾纏在米涅魯上",
+              "移動或按 L 啟動技能讓米涅魯的魂回到林克身上",
+              "目標武器隱藏前的瞬間，丟棄切換裝備中的目標武器",
+              "成功時快速選單會被鎖住無法打開，但武器會黏在手上",
+            ],
+            note: "※ 若要 Wuggle 盾牌，上述順序的武器和盾牌可以對調。",
+          },
+        ],
+      },
+      {
+        tab: "Zoggle",
+        name: "解纏型並列（Zoggle = Ock's Zuggle）",
+        tags: ["Ver.1.2.0+"],
+        steps: [
+          "完成武器的 Wuggle",
+          "搜集武器填滿背包，打開一個含有武器的寶箱",
+          "開寶箱的丟棄選單中丟棄裝備中的武器（解除快速選單鎖）",
+          "裝備火箭盾使用掉（若用米涅魯 Wuggle，直接餘料覆蓋掉米涅魯上的裝備）",
+        ],
+      },
     ],
+    principleSections: [
+      {
+        text: "裝備在被丟棄的時候，都會進入丟棄序列（Drop Queue），一度都會經過 Smuggle 的狀態。而《王國之淚》已經被發現的裝備狀態已經多達 20 幾種（Drop Zuggle, Dynamic Zuggle, Detached Zuggle, Enemy Pickpocketing 等等），而本站僅提出較為基礎、名稱容易搞混的五種：Smuggle、Zuggle、Sluggle、Wuggle、Zoggle。",
+      },
+      {
+        title: "Smuggle",
+        collapsible: true,
+        text: "裝備卡在「丟棄序列（Drop Queue）」遊戲同時誤判裝備「已經丟出去」又「還裝備在身上」的現象（2023/5 【Ame】、【LegendofLinkk】 相繼發現）。",
+      },
+      {
+        title: "Zuggle",
+        collapsible: true,
+        text: "裝備的丟棄程序已經完成(失敗)，但對林克的依賴並沒被刪除（2023/5/16 【Zvleon】 發現）。",
+      },
+      {
+        title: "Sluggle",
+        collapsible: true,
+        text: "裝備沒有正常存在於林克手上，但系統仍讓林克端持有 / 裝備它（2023/6/15 【Mozz】 與 Like Like 互動時發現）和 Overload Pickup、Enemy Pickpocketing 的效果非常接近。",
+      },
+      {
+        title: "Wuggle",
+        collapsible: true,
+        text: "是 Smuggle 的一種，特指在隱藏前瞬間丟切裝備，做出跟 Smuggle 相同的效果（2023/12/29 【Ock】、【ROBUXY2ND】 發現）。",
+      },
+      {
+        title: "Zoggle",
+        collapsible: true,
+        text: "是 Zuggle 的一種，特指將裝備 Wuggle 的狀態解除，從 Wuggle 轉變而成的 Zuggle（2024/1/4 【Ock】、【Ryan?】發現）。",
+      },
+    ],
+    notes: [
+      {
+        text: "Smuggle、Zuggle 的情形下丟棄裝備，該裝備會保持和林克有依賴關係的狀態，該狀態或裝備稱作 Zuggle Drop（從 Zuggle 被丟棄出來的狀態）",
+      },
+      {
+        text: "Zuggle 的數量太多，達到林克的裝備依賴上限，會造成 [[Zuggle Overload|totk-10#Zuggle]]。",
+      },
+    ],
+    faqLink: { label: "深入了解 Zuggle", path: "/types/totk-09-zuggle" },
     videos: [
       {
         id: "aELlly95zCk",
