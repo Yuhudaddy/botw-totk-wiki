@@ -1549,6 +1549,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
     ],
+    closing: "本頁說明為修改中，正式攻略步驟尚在整理中。",
   },
 
   "totk-09": {
@@ -2094,7 +2095,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     notes: [
-      { text: "以上內容整理自 Ultrabroken Archives 社群文檔，實際操作時機、幀數（frame-perfect）要求可能因版本略有差異，建議搭配原站點的影片或 Discord 對照練習。" },
+      { text: "修改中" },
     ],
     videos: [
       { id: "pmY_7ixbOjc", title: "1.1.2的複製挺像舊版的YB法 (Credit: Zas & BigDUCCO) #薩爾達傳說 #switch #王國之淚" },
