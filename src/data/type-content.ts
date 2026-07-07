@@ -1549,7 +1549,9 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
     ],
-    closing: "本頁說明為修改中，正式攻略步驟尚在整理中。",
+    notes: [
+      { text: "本頁說明為修改中，正式攻略步驟尚在整理中。" },
+    ],
   },
 
   "totk-09": {
