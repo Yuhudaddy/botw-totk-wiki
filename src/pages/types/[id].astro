@@ -226,6 +226,29 @@ function parseStep(text: string) {
                           );
                         })}
                       </ol>
+                      {sec.note && (
+                        Array.isArray(sec.note) ? (
+                          <div class="mt-4 space-y-1">
+                            {sec.note.map((n) => (
+                              <p class="text-[13px] leading-[1.7] text-muted">
+                                {parseStep(n).map((seg) =>
+                                  seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                    : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                    : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                                )}
+                              </p>
+                            ))}
+                          </div>
+                        ) : (
+                          <p class="mt-4 text-[13px] leading-[1.7] text-muted">
+                            {parseStep(sec.note).map((seg) =>
+                              seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                            )}
+                          </p>
+                        )
+                      )}
                     </div>
                   ))
                 ) : m.bullets ? (
@@ -272,16 +295,20 @@ function parseStep(text: string) {
                     <div class="mt-4 space-y-1">
                       {m.note.map((n) => (
                         <p class="text-[13px] leading-[1.7] text-muted">
-                          {parseAccent(n).map((seg) =>
-                            seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                          {parseStep(n).map((seg) =>
+                            seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                              : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                              : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                           )}
                         </p>
                       ))}
                     </div>
                   ) : (
                     <p class="mt-4 text-[13px] leading-[1.7] text-muted">
-                      {parseAccent(m.note).map((seg) =>
-                        seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                      {parseStep(m.note).map((seg) =>
+                        seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                          : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                       )}
                     </p>
                   )
@@ -444,15 +471,19 @@ function parseStep(text: string) {
         {content?.notes ? (
           content.notes.map((n) => (
             <li>
-              {parseAccent(n.text).map((seg) =>
-                seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+              {parseStep(n.text).map((seg) =>
+                seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                  : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                  : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
               )}
               {n.sub && n.sub.length > 0 && (
                 <ul class="note-sub">
                   {n.sub.map((s) => (
                     <li>
-                      {parseAccent(s).map((seg) =>
-                        seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                      {parseStep(s).map((seg) =>
+                        seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                          : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                       )}
                     </li>
                   ))}
@@ -800,7 +831,7 @@ function parseStep(text: string) {
   .prose-custom .principle-block + .principle-collapse,
   .prose-custom .principle-collapse + .principle-block,
   .prose-custom .principle-collapse + .principle-collapse {
-    margin-top: 2px;
+    margin-top: 1.2em;
   }
   .prose-custom .principle-block-title {
     font-size: 13px;
@@ -1041,7 +1072,14 @@ function parseStep(text: string) {
     }
 
     tabs.forEach((tab, i) => tab.addEventListener("click", () => select(i)));
-    select(0);
+
+    // 從網址 hash 深連結到指定分頁（例如 /types/totk-06#FE），供跨頁連結使用
+    const hashTab = decodeURIComponent(window.location.hash.slice(1));
+    const hashIndex = hashTab ? tabs.findIndex((t) => t.textContent?.trim() === hashTab) : -1;
+    select(hashIndex >= 0 ? hashIndex : 0);
+    if (hashIndex >= 0) {
+      root.scrollIntoView({ block: "start" });
+    }
 
     // 步驟中「跳到同頁其他分頁」的按鈕（[[文字|tab:分頁名]] 語法）
     root.querySelectorAll<HTMLButtonElement>(".jump-tab-btn").forEach((btn) => {
