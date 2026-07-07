@@ -1,0 +1,258 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { href } from "../../lib/url";
+---
+
+<BaseLayout
+  title="Zuggle 技術原理 · 王國之淚"
+  description="Zuggle（並列）的技術原理統整修正版，涵蓋核心定義、正常流程對照、mPendingDrop 行為與 Smuggle 的差異。"
+  active="types"
+>
+  {/* 麵包屑 + 標題 */}
+  <section class="border-b border-border-soft">
+    <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+      <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
+        <a href={href("/")} class="no-underline text-muted">首頁</a>
+        <span>/</span>
+        <a href={href("/types")} class="no-underline text-muted">主題解說</a>
+        <span>/</span>
+        <a href={href("/types/totk-09")} class="no-underline text-muted">黏手與並列</a>
+        <span>/</span>
+        <span class="text-ink">深入了解</span>
+      </div>
+      <div class="mb-2 flex items-center gap-2.5">
+        <span class="font-mono text-[13px] text-accent">Tears of the Kingdom · 09</span>
+      </div>
+      <h1 class="mb-[18px] font-serif text-[33px] sm:text-[46px] font-medium leading-[1.12] text-ink">
+        Zuggle 技術原理
+      </h1>
+      <p class="text-[17px] text-muted">統整修正版</p>
+    </div>
+  </section>
+
+  <article class="mx-auto max-w-[1180px] px-8 pb-20 pt-10">
+    <div class="prose-zuggle max-w-[760px]">
+      <h2>基本資訊</h2>
+      <ul>
+        <li><strong>發現者</strong>：Zvleon</li>
+        <li><strong>發現時間</strong>：2023 年 5 月 16 日</li>
+        <li><strong>主要效果</strong>：讓多件裝備的攻擊判定（hitbox）或裝備效果異常疊加在 Link 身上，藉此堆疊武器攻擊力、盾牌效果等。</li>
+      </ul>
+
+      <h2>核心定義</h2>
+      <blockquote>
+        <p>
+          Zuggle 是裝備 actor 的 <code>EquipmentUserComponent</code> 中 <code>ActorLink</code> 狀態與 actor 層 calculation dependency 狀態不同步的結果。裝備不再是正常裝備槽中的裝備，也不再處於「進行中的丟棄 / smuggle」狀態，但仍保留對 Link 的計算依賴，因此能以異常狀態附著、持續存在，並在讀檔或場景切換後依然保持。
+        </p>
+      </blockquote>
+      <p>
+        白話來說，遊戲原本要把「裝備某件武器」這件事同步記在兩個地方：
+      </p>
+      <ul>
+        <li><strong>Menu 端</strong>：選單、背包、目前裝備資料。</li>
+        <li><strong>World / actor 端</strong>：場景中的實體裝備 actor，以及它和 Link 之間的運算連結。</li>
+      </ul>
+      <p>正常丟棄、切換或解除裝備時，這兩邊應該一起更新並清理乾淨。Zuggle 發生時，這些資料沒有同步完成。</p>
+
+      <h2>正常流程 vs. Zuggle 流程</h2>
+      <p>正常裝備一件武器、弓或盾時，裝備會透過 <code>EquipmentUserComponent</code> 裡的 <code>ActorLink</code> 連到 Link 身上。</p>
+      <p>當裝備被丟棄、切換或解除裝備時，遊戲理論上要同步完成以下幾件事：</p>
+      <ol>
+        <li>更新背包資料（<code>GameData</code>）。</li>
+        <li>更新目前裝備槽狀態。</li>
+        <li>移除或替換舊裝備的 <code>ActorLink</code>。</li>
+        <li>解除裝備 actor 對 Link 的計算依賴（calculation dependency）。</li>
+      </ol>
+      <p>
+        Zuggle 發生時，前幾項在帳面上通常已被處理、覆蓋或跳過，但最後一項，也就是<strong>裝備 actor 對 Link 的 calculation dependency</strong>，沒有被同步清除。
+      </p>
+      <p>
+        這也是為什麼 Zuggle 不能簡單歸類為「背包錯位」或「卡在 drop 佇列裡」：真正讓 Zuggle 成立的關鍵，是帳面狀態已經改變，但 actor 層的依賴關係仍殘留。
+      </p>
+
+      <h2>四個系統各自的狀態</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>系統</th><th>Zuggle 發生時的狀態</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>GameData</code>（背包 / 選單）</td><td>認為裝備已被切換、丟棄，或不再是目前裝備</td></tr>
+            <tr><td><code>PouchMgr</code>（丟棄佇列處理）</td><td>丟棄請求已處理完畢，或判定失敗後已退回背包</td></tr>
+            <tr><td><code>EquipmentUserComponent</code></td><td>目前裝備槽的 <code>ActorLink</code> 已被移除、覆蓋，或改指向另一件裝備</td></tr>
+            <tr><td>actor 層 dependency</td><td>裝備 actor 對 Link 的 calculation dependency <strong>仍殘留，沒有同步解除</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2><code>mPendingDrop</code>：決定 Zuggle 表現形式的關鍵值</h2>
+      <p>
+        <code>dt-12345/zuggle</code> 的逆向工程說明指出，被 zuggle 的裝備身上，<code>DynamicEquipmentComponent</code> 裡有一個布林值，暫稱為 <code>mPendingDrop</code>。它用來標記「這件裝備目前是否還在等待被丟棄」，並會影響 Zuggle 之後呈現的型態。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th><code>mPendingDrop</code></th><th>裝備行為</th><th>型態</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>true</code></td><td>忽略幾乎所有外部狀態變更請求，<strong>只接受丟棄類指令</strong></td><td>Static Zuggle（標準型）</td></tr>
+            <tr><td><code>false</code></td><td><strong>拒絕丟棄請求</strong>，但仍接受其他裝備狀態變更</td><td>Dynamic Zuggle</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <blockquote><p>※ 訂正：先前整理曾把這兩種行為寫反；正確版本以此表為準。</p></blockquote>
+
+      <h2>Zuggle 與 Smuggle 的差異</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>狀態性質</th><th>一句話定義</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Smuggle</strong></td>
+              <td>丟棄 / 裝備處理仍在進行中</td>
+              <td>裝備仍保留 active drop / smuggle relation，系統還把它當成正在丟棄中的裝備</td>
+            </tr>
+            <tr>
+              <td><strong>Zuggle</strong></td>
+              <td>丟棄 / 裝備處理已被結案、覆蓋或遺忘，但依賴沒清</td>
+              <td>選單與裝備槽的帳面狀態已改變，但裝備 actor 對 Link 的 calculation dependency 沒有同步解除</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>簡單說：</p>
+      <blockquote>
+        <p><strong>Smuggle 抓的是「正在丟棄中」那個階段的矛盾；Zuggle 抓的是「丟棄 / 裝備流程已經跑完或被覆蓋」之後，依賴關係仍然殘留的落差。</strong></p>
+      </blockquote>
+      <p>※「active / 已結束」是整理時的歸納講法，方便理解，但不是原始資料中的正式術語。</p>
+
+      <h2>一句話總結</h2>
+      <p>Zuggle 的本質，是把「丟棄或切換裝備」這個看似單一的動作拆成兩條沒有同步完成的路徑：</p>
+      <ul>
+        <li><strong>Menu / GameData / PouchMgr</strong> 這條「帳面狀態」路徑。</li>
+        <li><strong>EquipmentUserComponent / actor dependency</strong> 這條「實體依賴」路徑。</li>
+      </ul>
+      <p>
+        當帳面狀態已經被處理、覆蓋或結案，但實體 actor 對 Link 的 calculation dependency 沒有同步解除時，系統就會留下一件「選單或裝備槽不再正常承認，但世界端仍異常依附 Link」的裝備。
+      </p>
+      <p>而 <code>mPendingDrop</code> 則決定這件殘留裝備之後更接近 Static Zuggle，還是 Dynamic Zuggle。</p>
+    </div>
+
+    <div class="mt-12 max-w-[760px] border-t border-border-soft pt-8">
+      <a href={href("/types/totk-09")} class="back-btn inline-flex items-center gap-2 no-underline">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        返回黏手與並列頁面
+      </a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .prose-zuggle h2 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-top: 2em;
+    margin-bottom: 0.7em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .prose-zuggle h2:first-child {
+    margin-top: 0;
+  }
+  .prose-zuggle p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 1.1em;
+  }
+  .prose-zuggle ul,
+  .prose-zuggle ol {
+    padding-left: 1.6em;
+    margin-bottom: 1.1em;
+  }
+  .prose-zuggle ol { list-style: decimal; }
+  .prose-zuggle ul { list-style: disc; }
+  .prose-zuggle li {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 0.5em;
+  }
+  .prose-zuggle li::marker { color: var(--accent); }
+  .prose-zuggle strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .prose-zuggle code {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--mono-bg);
+    color: var(--mono-text);
+    padding: 1px 7px;
+    border-radius: 5px;
+  }
+  .prose-zuggle blockquote {
+    margin: 0 0 1.1em;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+  }
+  .prose-zuggle blockquote p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    margin-bottom: 1.4em;
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+  }
+  .prose-zuggle table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .prose-zuggle th,
+  .prose-zuggle td {
+    padding: 10px 14px;
+    text-align: left;
+    line-height: 1.6;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .prose-zuggle th {
+    color: var(--accent);
+    font-weight: 600;
+    background: var(--surface);
+    white-space: nowrap;
+  }
+  .prose-zuggle td {
+    color: var(--text);
+  }
+  .prose-zuggle tr:last-child td {
+    border-bottom: none;
+  }
+
+  .back-btn {
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .back-btn:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+</style>
