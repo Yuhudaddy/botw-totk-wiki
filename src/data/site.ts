@@ -8,7 +8,7 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { label: "主題解說", path: "/types", match: "types" },
   { label: "影片索引", path: "/videos", match: "videos" },
-  { label: "關於 Yuda", path: "/about", match: "about" },
+  { label: "關於導師", path: "/about", match: "about" },
 ];
 
 export interface FeaturedItem {
@@ -77,7 +77,7 @@ export const filterChips: string[] = [
 
 export const SITE = {
   title: "曠野・王國攻略 Wiki",
-  shortTitle: "Yuda's Channel Guide",
+  shortTitle: "Dazotikuy Shrine",
   description:
     "薩爾達傳說 曠野之息(BotW) / 王國之淚(TotK) 技巧與 Glitch 攻略，整理自 Yuhudaddy 的 YouTube 頻道。",
   youtube: "https://www.youtube.com/@zb_yuhudaddy",
