@@ -3,6 +3,7 @@ export interface TypeItem {
   no: string;
   zh: string;
   en: string;
+  shortEn?: string; // 主題索引卡片用的短英文；未填則使用 en
   videosOnly?: boolean; // 詳細頁只顯示「相關影片」區（隱藏流程／原理／注意事項）
   termsOnly?: boolean;  // 詳細頁只顯示「名詞說明」＋「相關影片」（大亂鬥用）
   aliases?: string[]; // 影片索引搜尋用的別名／關鍵字（例：["IST", "背包", "格子"]）
@@ -58,7 +59,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "09", zh: "黏手與並列", en: "Smuggle & Zuggle" },
       { no: "10", zh: "過載", en: "Overload" },
       { no: "11", zh: "偷襲機制", en: "Sneakstrike" },
-      { no: "12", zh: "恆動裝置（GAS）", en: "Guard-less Active Shield" },
+      { no: "12", zh: "恆動裝置", en: "Guard-less Active Shield", shortEn: "GAS" },
       { no: "13", zh: "道具複製", en: "Item Duplication" },
       { no: "14", zh: "盾擋重置", en: "Shield Block Reset" },
       { no: "15", zh: "虛化裝備", en: "Void Dip & Despawn Interrupt" },

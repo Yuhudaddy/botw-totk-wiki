@@ -23,7 +23,7 @@ import { typeGroups } from "../data/types";
       <h1 class="r-types-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
         主題解說
       </h1>
-      <p class="max-w-[62ch] text-[16px] leading-[1.65] text-text">
+      <p class="r-types-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
         依系列瀏覽頻道內容——從風彈、轉存格到神廟特解與主線任務。各系列陸續補上對應的步驟說明與影片。
       </p>
     </div>
@@ -38,7 +38,7 @@ import { typeGroups } from "../data/types";
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
               {group.en}
             </div>
-            <h2 class="mt-2.5 font-serif text-[28px] font-medium text-ink">{group.label}</h2>
+            <h2 class="r-type-group-title mt-2.5 font-serif text-[28px] font-medium text-ink">{group.label}</h2>
           </div>
           <a
             href={href(`/videos?game=${group.game}`)}
@@ -58,7 +58,7 @@ import { typeGroups } from "../data/types";
                 <span class="flex-none font-mono text-[13px] text-accent">{item.no}</span>
                 <span class="truncate font-serif text-[18px] font-medium text-ink">{item.zh}</span>
               </div>
-              <div class="truncate text-[12px] text-muted">{item.en}</div>
+              <div class="truncate text-[12px] text-muted">{item.shortEn ?? item.en}</div>
             </a>
           ))}
         </div>
@@ -73,7 +73,13 @@ import { typeGroups } from "../data/types";
       padding-bottom: 24px;
     }
     .r-types-h1 {
-      font-size: 30px;
+      font-size: 26px;
+    }
+    .r-types-subtitle {
+      font-size: 12px;
+    }
+    .r-type-group-title {
+      font-size: 24px;
     }
     .r-type-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
