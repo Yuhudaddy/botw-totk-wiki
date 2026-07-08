@@ -20,10 +20,10 @@ import { typeGroups } from "../data/types";
       <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
         Browse by Series · 系列索引
       </div>
-      <h1 class="r-types-h1 mb-[18px] mt-3.5 font-serif text-[46px] font-medium leading-[1.14] text-ink">
+      <h1 class="r-types-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
         主題解說
       </h1>
-      <p class="max-w-[62ch] text-lg leading-[1.65] text-text">
+      <p class="max-w-[62ch] text-[16px] leading-[1.65] text-text">
         依系列瀏覽頻道內容——從風彈、轉存格到神廟特解與主線任務。各系列陸續補上對應的步驟說明與影片。
       </p>
     </div>
@@ -38,7 +38,7 @@ import { typeGroups } from "../data/types";
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
               {group.en}
             </div>
-            <h2 class="mt-2.5 font-serif text-[30px] font-medium text-ink">{group.label}</h2>
+            <h2 class="mt-2.5 font-serif text-[28px] font-medium text-ink">{group.label}</h2>
           </div>
           <a
             href={href(`/videos?game=${group.game}`)}
@@ -73,7 +73,7 @@ import { typeGroups } from "../data/types";
       padding-bottom: 24px;
     }
     .r-types-h1 {
-      font-size: 32px;
+      font-size: 30px;
     }
     .r-type-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -65,6 +65,7 @@ export interface TypeContent {
   principleSections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[]; // B 區依副標題分段（例："歷史"／"原理"），text 為段落、items 為條列（擇一）；collapsible 為 true 時該段落預設收合，點擊標題展開（同「轉存格 Q&A」的手風琴樣式）。有值則覆蓋 principle／principleItems
 
   principleNote?: string;     // B 區備註（灰色小字，顯示於 principle/principleItems 下方）
+  showEmptyMedia?: boolean;   // 沒有示意媒體時仍顯示「快速示意」空狀態（先開頁、後補內容用）
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
   notes?: TypeNote[];         // 注意事項
   closing?: string;           // 注意事項下方的結語
@@ -1927,6 +1928,20 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-12": {
+    showEmptyMedia: true,
+    methods: [
+      {
+        tab: "待補",
+        steps: ["流程整理中，敬請期待。"],
+      },
+    ],
+    principle: "原理說明整理中，敬請期待。",
+    notes: [
+      { text: "注意事項整理中，敬請期待。" },
+    ],
+  },
+
+  "totk-13": {
     methods: [
       {
         tab: "MSD",
@@ -2103,7 +2118,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-13": {
+  "totk-14": {
     methods: [
       {
         tab: "SBR",
@@ -2135,7 +2150,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-14": {
+  "totk-15": {
     methods: [
       {
         tab: "Void Dip",
@@ -2212,7 +2227,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-15": {
+  "totk-16": {
     methods: [
       {
         tab: "西方高原",
@@ -2229,7 +2244,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-17": {
+  "totk-18": {
     methods: [
       {
         tab: "Prologue Escape",
@@ -2281,7 +2296,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-16": {
+  "totk-17": {
     methods: [
       {
         tab: "SLD",
