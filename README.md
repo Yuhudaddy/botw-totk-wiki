@@ -1,69 +1,44 @@
 # 曠野・王國攻略 Wiki
 
-《薩爾達傳說：曠野之息 (BotW)》／《王國之淚 (TotK)》技巧與 Glitch 攻略，整理自 YouTube 頻道 [@zb_yuhudaddy](https://www.youtube.com/@zb_yuhudaddy)。
-
-- 技術：**Astro + Tailwind CSS v4 + Content Collections**
-- 語言：繁體中文（台灣）
-- 設計：Claude (Anthropic) 設計語言 — 羊皮紙底 + 赤陶強調，淺／深雙主題
-- 部署：GitHub Actions → GitHub Pages
+[繁體中文](#繁體中文) | [English](#english) | [日本語](#日本語)
 
 線上網址：<https://yuhudaddy.github.io/botw-totk-wiki/>
 
-## 本機預覽
+---
+
+## 繁體中文
+
+整理自 YouTube 頻道 [Yuda（@zb_yuhudaddy）](https://www.youtube.com/@zb_yuhudaddy)的《薩爾達傳說：曠野之息 (BotW)》／《王國之淚 (TotK)》技巧與 Glitch 攻略站，收錄影片中提到的機制原理、流程步驟與版本異動整理。
+
+以 Astro 打造的靜態網站。
 
 ```bash
 npm install
-npm run dev          # http://localhost:4321/botw-totk-wiki/
+npm run dev
 ```
 
-其他指令：
+---
+
+## English
+
+A guide site for *The Legend of Zelda: Breath of the Wild (BotW)* and *Tears of the Kingdom (TotK)* techniques and glitches, curated from the YouTube channel [Yuda（@zb_yuhudaddy）](https://www.youtube.com/@zb_yuhudaddy). Covers the mechanics, step-by-step procedures, and version changes featured in the videos.
+
+Built as a static site with Astro.
 
 ```bash
-npm run build        # 產生靜態站到 dist/
-npm run preview      # 本機預覽 build 結果
+npm install
+npm run dev
 ```
 
-## 新增一篇攻略
-
-在 `src/content/glitches/` 新增一個 `.md`，frontmatter 填 metadata、內文寫散文：
-
-```markdown
----
-title: 技巧名稱
-game: totk            # totk 或 botw
-category: 虛化類
-series: 番外21
-difficulty: 進階
-versions: ["1.2.1～"]
-videoId: YouTube_ID
-tags: ["王國之淚", "虛化類"]
 ---
 
-## 這是什麼
-...
+## 日本語
 
-## 常用步驟
-1. **步驟標題** — 說明
+YouTube チャンネル [Yuda（@zb_yuhudaddy）](https://www.youtube.com/@zb_yuhudaddy) の内容をまとめた『ゼルダの伝説 ブレス オブ ザ ワイルド (BotW)』／『ティアーズ オブ ザ キングダム (TotK)』のテクニック・グリッチ攻略サイトです。動画で紹介されている仕組みの原理、手順、バージョンごとの変更点を整理しています。
+
+Astro で構築した静的サイトです。
+
+```bash
+npm install
+npm run dev
 ```
-
-首頁、影片總覽、標籤頁、攻略頁會自動生成，不需手動同步。
-
-## 專案結構
-
-```
-src/
-├─ components/   # Header、Footer、VideoCard、CategoryCard、ArticleAside 等
-├─ content/
-│  └─ glitches/  # 每篇攻略一個 .md
-├─ data/         # 影片清單、分類定義、站台資料
-├─ layouts/      # BaseLayout
-├─ lib/          # url.ts（base path 連結工具）
-├─ pages/        # 路由：index、[game]、article/[...slug]、videos、tags、404
-└─ styles/       # global.css（雙主題 CSS 變數）
-astro.config.mjs # site / base path 設定
-```
-
-## 部署
-
-push 到 `main` → GitHub Actions（`.github/workflows/deploy.yml`）自動建置並部署。
-Repo **Settings → Pages → Source** 須設為「**GitHub Actions**」。
