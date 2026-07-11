@@ -1387,9 +1387,28 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-08": {
+    videoFolder: "totk-cull",
     methods: [
       {
+        tab: "Cull Storage",
+        video: "20260710_Cull Storage.mp4",
+        sections: [
+          {
+            title: "隱藏儲存（Cull Storage）",
+            tags: ["All Versions"],
+            steps: [
+              "在阿卡萊用餘料糾纏的方式準備[[纏桿|totk-07]]，將纏桿貼著隱藏區的牆壁",
+              "裝備著纏桿的母裝備離開隱藏區",
+              "對隱藏區內的纏桿__倒轉乾坤__，丟棄纏桿的母裝備後快速撿起來，並解除倒轉乾坤",
+              "下一次丟棄纏桿的母裝備時，20幀後會釋放一次隱藏（NS1為10幀）",
+            ],
+          },
+        ],
+        note: "※ 步驟 3 可改為舉著電池或龍頭等可舉物品，解除倒轉乾坤的部分可以改為快速進出隱藏區讓纏桿顯現。",
+      },
+      {
         tab: "Portacull",
+        video: "20260710_Portacull.mp4",
         sections: [
           {
             title: "閃藏（Portacull = Portable Cull）",
@@ -1405,9 +1424,10 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Permacull",
+        video: "20260710_Permacull.mp4",
         sections: [
           {
-            title: "永久隱藏（Permacull = Permanent Cull）",
+            title: "永久隱藏（Permacull = Permanent Cull = Pcull）",
             tags: ["All Versions"],
             steps: [
               "觸發[[纏桿|totk-07]]",
@@ -1417,10 +1437,31 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
         ],
-        note: "※ 隱藏區觸發的隱藏，觀看回憶可以一瞬間解除隱藏。",
+        note: [
+          "※ 上述步驟僅為其中一種方式，Permacull / Pcull 泛指所有永久隱藏的方法，如纏桿在米涅魯身上，但林克爬牆或在空中時米涅魯隱藏，這樣林克永久都不會顯示。",
+          "※ 隱藏區觸發的隱藏，觀看回憶可以一瞬間解除隱藏。",
+        ],
+      },
+      {
+        tab: "Pyrocull",
+        video: "20260709_Pyrocull.mp4",
+        sections: [
+          {
+            title: "焰止隱藏（Pyrocull = Pryo- + Cull）",
+            tags: ["All Versions"],
+            steps: [
+              "對目標物進行餘料糾纏",
+              "在阿卡萊將火把放置於隱藏區牆壁，並黏著目標物",
+              "製作一個間斷性噴火或吹冰工具對著火把和目標物",
+              "啟動工具之後離開隱藏區，目標物會間斷性隱藏",
+            ],
+          },
+        ],
+        note: "※ 目標物為纏桿，則林克會間斷性隱藏。",
       },
       {
         tab: "Aerocull",
+        video: "20260709_Aerocull.mp4",
         name: "氣流隱藏（Aerocull = Aero- + Cull）",
         sections: [
           {
@@ -1466,6 +1507,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Vortacull",
+        video: "20260709_Vortacull.mp4",
         sections: [
           {
             title: "渦流隱藏（Vortacull = Vortex + Cull）",
@@ -1867,9 +1909,33 @@ export const typeContent: Record<string, TypeContent> = {
         sections: [
           {
             title: "束制過載（Constraint Overload）",
-            tags: ["All Versions"],
-            steps: ["步驟整理中，敬請期待。"],
+            tags: ["Ver.1.2.0+"],
+            steps: [
+              "準備虛幽化武器 W1 盾牌 A1、B1，並 W1 觸發可調式過載（Zuggle Overload）",
+              "在阿卡萊隱藏區，丟切卸 Smuggle A1，餘料糾纏武器 A2 在 A1 上（Overload Drop 盾餘料到武器 → A2 餘料到盾）",
+              "卸掉盾牌再裝備（或切換），丟棄裝備中的盾牌，讓 A1 保持 Zuggle Dropped",
+              "丟切卸 Smuggle B1，裝備普通盾牌 B2，虛化感染一把武器 B3",
+              "空手撿起 B1 再正常丟棄，解除 B1 的 Zuggle Dropped",
+              "裝備 B2、丟切卸 Smuggle B3，過載撿拾 A2",
+              "將 A2 的劍柄黏在樁上",
+              "丟出大輪胎，對它餘料（第一次）",
+              "再餘料一次大輪胎，特效到一半丟切卸盾牌 B2 虛化感染大輪胎",
+              "重複 30次 步驟 8～10",
+              "卸掉武器 A2 破壞掉盾牌上的餘料",
+              "讀取阿卡萊存檔",
+              "重複步驟 2 ～ 12，做出 10 組 300 個虛化大輪胎",
+              "傳送並移動到「速射礦車遊戲」，利用 SDC 脫離小遊戲移動到要拆解的物件附近",
+              "站在原地過載掉落一面盾牌穿過地面",
+              "跳起來過載掉落一把武器，遠離一段距離背對牆壁，Fail Drop Cold Fuse 那把武器在盾牌上",
+              "丟出一個大輪胎，餘料到武器上，讓它餘料飛到地圖外（Out-of-Bound）",
+              "重複步驟 15 ～ 17 直到究極手操作上出現異常（卡住、無法沾黏物品，或已經黏在一起的物品可以再黏一次等等）",
+              "切換到「倒轉乾坤」移動到目標附近，目標解體之後倒轉乾坤，並黏上蘋果收進藍圖",
+            ],
           },
+        ],
+        note: [
+          "※ 以上流程待確認。",
+          "※「束制過載」本身全版本都能使用，上述流程僅說明 Ver.1.2.0+ 的步驟。",
         ],
         principle:
           "為了將兩個物理物件綁定在一起，遊戲會用一個「物理束制（Constraint）」來固定物件之間的互動關係。這包括連接兩個不同 Actor 的約束（如：究極手黏合膠），以及連接同一個 Actor 不同部分的約束（如：__彈簧的兩個部分__）。遊戲會在一個大小為 2560 的全域陣列中追蹤所有這些約束。當你填滿這個陣列時，遊戲會無法建立新的束制而解體。每隻馬在動畫處理上會使用 21 個束制。重複掃入一百餘隻__伊波娜馬__的 Amiibo 可以觸發該過載，即最早的「伊波娜過載（Epona Overload）」。若利用某些左納烏裝置（◯龍頭、◯輪胎）各會使用 4 個束制來成形，殘留 600 餘個就可以觸發束制過載。",
