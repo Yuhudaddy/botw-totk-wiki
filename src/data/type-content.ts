@@ -12,6 +12,7 @@ export interface TypeMethodSection {
 
 export interface TypeMethod {
   tab: string;        // 分頁名稱，例：前跳
+  group?: string;     // 分頁分組標籤（同組的分頁按鈕會排在同一行，並在最前面顯示此標籤），例："無過載（Overload-less）"
   tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["先圓後方"]
   name?: string;      // 方法中文全名（白色字，與 tags 擇一），例："轉存格（Inventory Slot Transfer）"
   intro?: string;     // 步驟上方的灰色說明句（選填），例："此方法需要配合...技巧："
@@ -2433,6 +2434,7 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "SLD",
+        group: "無過載（Overload-less）",
         tags: ["～Ver.1.1.1"],
         sections: [
           {
@@ -2465,6 +2467,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Zuggle near Ganondorf",
+        group: "有過載（Overloading）",
         tags: ["All Versions"],
         sections: [
           {
@@ -2521,6 +2524,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "SRZ",
+        group: "有過載（Overloading）",
         tags: ["Ver.1.2.0+"],
         sections: [
           {
@@ -2577,6 +2581,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Cull Storage",
+        group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
         sections: [
           {
@@ -2619,6 +2624,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Cull Detach",
+        group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
         sections: [
           {
