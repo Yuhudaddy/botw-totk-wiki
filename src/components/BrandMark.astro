@@ -5,9 +5,13 @@ interface Props {
 const { size = 28 } = Astro.props;
 ---
 
-<img
-  src="/botw-totk-wiki/logo/yuda-logo.png"
-  alt="Yuda"
-  style={`width:${size}px;height:${size}px;`}
-  class="rounded-lg"
-/>
+<picture>
+  <source srcset="/botw-totk-wiki/logo/yuda-logo.webp" type="image/webp" />
+  <img
+    src="/botw-totk-wiki/logo/yuda-logo.png"
+    alt="Yuda"
+    loading="lazy"
+    style={`width:${size}px;height:${size}px;`}
+    class="rounded-lg"
+  />
+</picture>
