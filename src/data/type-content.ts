@@ -1962,6 +1962,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-11": {
+    videoFolder: "totk-sneakstrike",
     methods: [
       {
         tab: "快速繞背",
@@ -1974,6 +1975,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "間接傷害",
+        video: "20260710_sneakstrike_totk.mp4",
         steps: [
           "在魔物尚未發現玩家的情況下，用__非林克本人造成的傷害__（如環境傷害、遠端引爆物等）攻擊魔物",
           "魔物只會記錄__當時傷害來源的座標__，而不是玩家的實際位置",
@@ -1995,11 +1997,13 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-12": {
+    videoFolder: "totk-gas",
     showEmptyMedia: true,
     methods: [
       {
         tab: "Cull Area",
         tags: ["All Versions"],
+        video: "20240818_cull area_gas.MP4",
         steps: [
           "將會耗電的左納烏裝置餘料糾纏在盾牌上",
           "將左納烏裝置餘料建造在武器上",
@@ -2418,6 +2422,19 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "eow-02": {
+    videoFolder: "eow-lynel",
+    methods: [
+      {
+        tab: "側身閃避",
+        video: "20260710_techniques.mp4",
+        steps: [],
+      },
+      {
+        tab: "高空傷害",
+        video: "20260710_breaking spam.mp4",
+        steps: [],
+      },
+    ],
     videos: [
       { id: "eWfciKd6-cc", title: "番外01 - 初學者適用！4種「1星借物」也能擊倒人馬的方法！" },
     ],
@@ -2848,10 +2865,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "ssbu-06": {
+    videoFolder: "ssbu-slingshot",
     methods: [
       {
         tab: "Slingshot",
         name: "彈弓（Slingshot）",
+        video: "20260709_Slingshot.mp4",
         steps: [
           "靜止狀態下快彈左搖桿執行__衝刺（Dash）__",
           "迅速將左搖桿撥向反方向的斜下或斜上",
