@@ -2872,7 +2872,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "Cull Retach (R)",
+        tab: "Cull Detach (R1)",
         group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
         sections: [
