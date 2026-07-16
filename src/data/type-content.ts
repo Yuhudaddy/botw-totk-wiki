@@ -72,7 +72,12 @@ export interface TypeContent {
 
   principleNote?: string;     // B 區備註（灰色小字，顯示於 principle/principleItems 下方）
   showEmptyMedia?: boolean;   // 沒有示意媒體時仍顯示「快速示意」空狀態（先開頁、後補內容用）
-  model3d?: { src: string; alt: string }; // C 區改放可拖曳旋轉的 3D 模型（取代快速示意），src 為 public/ 下的 .glb 路徑
+  model3d?: {
+    src: string;           // public/ 下的 .glb 路徑
+    alt: string;
+    cameraOrbit?: string;  // 初始視角 "方位角 仰角 距離"，例："15deg 45deg auto"
+    cameraTarget?: string; // 初始注視點 "Xm Ym Zm"（glTF 座標，Y 朝上）
+  }; // C 區改放可拖曳旋轉的 3D 模型（取代快速示意）
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
   notes?: TypeNote[];         // 注意事項
   closing?: string;           // 注意事項下方的結語
@@ -664,7 +669,14 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-08": {
-    model3d: { src: "/tots-model/model/tots-model.glb", alt: "劍之考驗地圖參照模型" },
+    model3d: {
+      src: "/tots-model/model/tots-model.glb",
+      alt: "劍之考驗地圖參照模型",
+      // 初始視角：從東南方 45° 俯視、注視高原房間群中心（glTF 座標，Blender (x,y,z) → glTF (x,z,-y)）。
+      // 仰角抬高到 45°，視線越過南側的導師之塔（塔頂約 576），避免預設視角房間群被塔擋住。
+      cameraOrbit: "15deg 45deg auto",
+      cameraTarget: "-430m 80m -330m",
+    },
     methods: [
       {
         tab: "Normal",

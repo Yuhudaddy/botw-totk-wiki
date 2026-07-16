@@ -14,11 +14,15 @@ interface Props {
   autoRotate?: boolean;  // 預設不自動旋轉，讓使用者主動操作
   minZoomDistance?: number;  // 最近可縮放距離（絕對數值，不受模型整體包圍盒大小影響），預設 60
   maxZoomDistance?: number;  // 最遠可縮放距離，預設 2500
+  cameraOrbit?: string;   // 初始視角 "方位角 仰角 距離"（例："15deg 45deg auto"）。
+                          // 不填則沿用 model-viewer 預設的自動取景。
+  cameraTarget?: string;  // 初始注視點 "Xm Ym Zm"（glTF 座標，Y 朝上）。不填＝自動置中。
 }
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const {
   src, alt, height, aspectRatio, mobileAspectRatio, autoRotate = false,
   minZoomDistance = 60, maxZoomDistance = 2500,
+  cameraOrbit, cameraTarget,
 } = Astro.props;
 const modelSrc = `${BASE}${src.startsWith("/") ? src : `/${src}`}`;
 // aspect-ratio 本身故意「不」放進 inline style：model-viewer 的 shadow DOM 內建
@@ -45,6 +49,8 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
     camera-controls
     touch-action="pan-y"
     interaction-prompt="none"
+    camera-orbit={cameraOrbit}
+    camera-target={cameraTarget}
     min-camera-orbit={minOrbit}
     max-camera-orbit={maxOrbit}
     shadow-intensity="0.6"
@@ -127,12 +133,15 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
       reveal();
     }, 100);
 
-    // 重置視角：把 camera-orbit/camera-target/field-of-view 都設回 "auto"，
-    // 讓 model-viewer 重新用預設方式自動置中、自動抓合適的初始視角。
+    // 重置視角：回到「初始設定的視角」——若元件有指定 camera-orbit/camera-target
+    // 就回到指定值，沒有指定則回到 "auto"（model-viewer 自動取景）。
+    // 初始值要在使用者操作之前先讀起來（操作後屬性值會被 model-viewer 更新）。
+    const initOrbit = mv.getAttribute("camera-orbit") || "auto auto auto";
+    const initTarget = mv.getAttribute("camera-target") || "auto auto auto";
     const resetBtn = wrap.querySelector<HTMLButtonElement>(".model3d-reset");
     resetBtn?.addEventListener("click", () => {
-      mv.cameraOrbit = "auto auto auto";
-      mv.cameraTarget = "auto auto auto";
+      mv.cameraOrbit = initOrbit;
+      mv.cameraTarget = initTarget;
       mv.fieldOfView = "auto";
     });
   });
