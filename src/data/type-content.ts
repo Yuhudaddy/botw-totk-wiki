@@ -877,6 +877,11 @@ export const typeContent: Record<string, TypeContent> = {
         principle: "高速移動讓門來不及加載，進而比門的出現更早進入門內。",
       },
     ],
+    notes: [
+      {
+        text: "NS1 和 NS2 Edition 版差異不大，NS2 版單純盾跳扭曲不易穿牆，必須藉由樹幹、靜止中的物體等等擠壓才能直接穿牆（如魔獸戰光牆旁的樹幹、依蓋隊後門的柱子、牆壁前面靜止一個物體等）。",
+      },
+    ],
   },
 
   "botw-10": {
