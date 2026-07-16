@@ -69,6 +69,7 @@ export interface TypeContent {
   principle?: string;         // B 區內文（段落式，與 principleItems 擇一）
   principleItems?: string[];  // B 區內文（條列式，有值則覆蓋 principle）
   principleSections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[]; // B 區依副標題分段（例："歷史"／"原理"），text 為段落、items 為條列（擇一）；collapsible 為 true 時該段落預設收合，點擊標題展開（同「轉存格 Q&A」的手風琴樣式）。有值則覆蓋 principle／principleItems
+  principleExtra?: { title?: string; text?: string; items?: TypeStep[] }[]; // B 區固定附加段落（例："延伸"），永遠顯示在 principle/principleItems/principleSections/methods[].principle 動態內容的下方，不會被其他 principle 系欄位覆蓋（給 totk-10 這種依分頁動態切換 principle 文字、但仍想固定附加一段延伸說明的頁面用）
 
   principleNote?: string;     // B 區備註（灰色小字，顯示於 principle/principleItems 下方）
   showEmptyMedia?: boolean;   // 沒有示意媒體時仍顯示「快速示意」空狀態（先開頁、後補內容用）
@@ -2193,6 +2194,17 @@ export const typeContent: Record<string, TypeContent> = {
           "為了將兩個物理物件綁定在一起，遊戲會用一個「物理束制（Constraint）」來固定物件之間的互動關係。這包括連接兩個不同 Actor 的約束（如：究極手黏合膠），以及連接同一個 Actor 不同部分的約束（如：__彈簧的兩個部分__）。遊戲會在一個大小為 2560 的全域陣列中追蹤所有這些約束。當你填滿這個陣列時，遊戲會無法建立新的束制而解體。每隻馬在動畫處理上會使用 21 個束制。重複掃入一百餘隻__伊波娜馬__的 Amiibo 可以觸發該過載，即最早的「伊波娜過載（Epona Overload）」。若利用某些左納烏裝置（◯龍頭、◯輪胎）各會使用 4 個束制來成形，殘留 600 餘個就可以觸發束制過載。",
       },
     ],
+    principleExtra: [
+      {
+        title: "延伸",
+        items: [
+          "Overload Drop（過載掉落）：林克身上的裝備依賴數 14 以上時切換裝備，該裝備會掉落在地上，但選單為裝備中。",
+          "Temporary Overload（臨時過載）：丟切裝備中的道具可以在關閉暫停的一瞬間，增加 1 的負載量，同種類型裝備的臨時過載只會 +1，故最多能 +3。",
+          "Overload Pickup（過載撿拾）：包含丟切裝備中的道具，林克身上的裝備依賴數 14 以上試圖空手撿裝備，會發現選單有撿起來並裝備，但是該裝備的模型仍在原地沒有被撿起。",
+          "Mitosis（過載分裂）：Overload Drop 盾牌(或武器) → 打開暫停丟切纏桿武器(或盾牌)並切換裝備另一個盾牌。",
+        ],
+      },
+    ],
     videos: [
       {
         id: "MWBVJsLTA0c",
@@ -2597,6 +2609,18 @@ export const typeContent: Record<string, TypeContent> = {
         title: "原理",
         text: "遊戲系統刪除物品的方式分為「瞬間刪除」（如撿起物品）與「淡出刪除」（如掉進深淵）。當裝備在執行「淡出刪除」的過程中，玩家若刻意利用系統機制「隱藏(cull)並解除隱藏(uncull)」該裝備，就能強行終止刪除流程。這會保留該裝備「已經死亡」的特性，使其卡在特殊狀態，也就是所謂的「虛化」。",
       },
+      {
+        title: "延伸",
+        items: [
+          "Smuggle：丟棄失敗 或 丟切卸 DI，即「丟棄 DI → 裝備其他同類型裝備並卸掉」",
+          "Zuggle：丟棄失敗 2 次，或 Map Zuggle",
+          "Dynamic Zuggle：Smuggle DI 武器 → 關閉暫停 → 裝備另一把 DI 武器 → 投擲瞬間打開背包丟棄裝備中的武器 → 裝備其他武器",
+          "Drop Smuggle：過載撿拾 DI → Smuggle → 空手撿起 DI",
+          "Drop Zuggle：Drop Smuggle → 丟切卸裝備中的 DI → 裝備其他同類型的裝備 → 丟棄",
+          "Drop Purgatorify：Drop Smuggle → 丟棄裝備中的 DI",
+          "Throw Purgatorify：Smuggle DI 武器 → 裝備其他武器 → 投擲",
+        ],
+      },
     ],
     notes: [
       { text: "吞噬刪除的優先度較高，因此裝備中的狀態下去撿吞噬虛化的裝備不會刪除該裝備，可以無限複製。" },
@@ -2869,15 +2893,15 @@ export const typeContent: Record<string, TypeContent> = {
             steps: [
               "準備好阿卡萊的手動存檔",
               "在沙漠區找拉吉克觸發一把虛化武器 W1，直接讀檔到阿卡萊",
-              "按照以下順序，虛幽化感染 1 把武器和 2 面盾牌（母裝備要解纏）：W1 → S1 → W2 → S2",
+              "按照以下順序，虛幽化感染 1 把武器和 2 面盾牌：W1 → S1 → W2 → S2，注意只把一般裝備用火箭載走，__虛化裝備間的連結不用解纏__",
               "用 W2 可調式過載，並把 W2 回收回來，把它丟在隱藏區內（__可調式過載中途要撿起 W1 避免地上武器過多而消失__）",
               "丟切卸 Smuggle S1，__過載掉落(Overload Drop)__一面盾牌餘料在武器上，丟出一個浮空石餘料在盾牌上，此時獲得「__浮空石(餘料糾纏) → S1__」，然後把 S1 正常丟在後面（不要 Zuggle Drop）",
               "隨意製作一個纏桿放在隱藏區外不會被餘料的位置，丟切卸 Smuggle W1，過載掉落一把武器，餘料在一般盾牌，再丟出一個盾牌 S3 餘料在武器上，丟棄盾牌把 S3 撿起來，餘料剛剛製作的纏桿 A1，切換武器並丟出，此時獲得「__纏桿盾 S3(餘料糾纏) → W1__」，然後先把它們放在隱藏區但不要靠牆",
               "丟切卸 Smuggle S2，過載掉落一面盾牌餘料在武器上，丟出另一個操縱桿 A2 放在隱藏區靠牆，在隱藏區內對它倒轉乾坤，走到隱藏區外將 A2 餘料在盾牌上，把 S2 正常丟棄在隱藏區內，此時獲得「__隱藏儲存的 A2(糾纏) → S2__」",
               "把浮空石拉到隱藏區內靠牆，將 A2 移到浮空石上面靠牆，靠牆黏一個蘋果在 A2 上離開隱藏區，確認是否只有蘋果被隱藏，有的話表示 A2 有成功儲存隱藏",
               "將 S3 靠牆黏在 A2 上（此時林克離開隱藏區會被隱藏）",
-              "Drop Smuggle S2：過載撿拾(Overload Pickup) S2 → 丟切卸 S2 → 切換盾牌任意盾牌",
-              "Drop Purgatorify W2：丟切卸 W2 → 裝備任意武器 → 投擲 → 丟棄裝備中的武器",
+              "Drop Smuggle S2：過載撿拾 S2 → 丟切卸 S2 → 空手撿起 S2 → 切換盾牌任意盾牌",
+              "Drop Purgatorify W2：過載撿拾 W2 → 丟切卸 W2 → 空手撿起 W2 → 丟棄 W2",
               "丟切卸 Smuggle W1，並且裝備任意武器",
               "倒轉乾坤浮空石，暫停丟棄裝備中的武器和盾牌之後讀檔到序章或是回到標題開始新遊戲",
             ],

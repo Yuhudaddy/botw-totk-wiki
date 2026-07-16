@@ -269,6 +269,33 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           {content?.principleNote && (
             <p class="mt-3 text-[13px] leading-[1.7] text-muted">{content.principleNote}</p>
           )}
+          {content?.principleExtra?.map((sec) => (
+            <div class="principle-block">
+              {sec.title && <div class="principle-block-title">{sec.title}</div>}
+              {sec.text && <p>{sec.text}</p>}
+              {sec.items && (
+                <ul>
+                  {sec.items.map((it) => {
+                    const { text, sub } = stepParts(it);
+                    return (
+                      <li>
+                        {parseStep(text).map((seg) =>
+                          seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                            : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                            : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                        )}
+                        {sub.length > 0 && (
+                          <ul class="step-sub">
+                            {sub.map((d) => <li>{d}</li>)}
+                          </ul>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          ))}
         </div>
 
         {/* C: 快速示意（影片或圖片，隨分頁切換） */}
@@ -312,7 +339,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     {/* 3D 模型參考：獨立全寬區塊（不塞進右欄，避免只有 C 欄寬度太窄），置於注意事項之上 */}
     {content?.model3d && (
       <div class="prose-custom mt-10 border-t border-border-soft pt-10">
-        <h2>模型參考</h2>
+        <h2>地圖模型</h2>
         <Model3DViewer
           src={content.model3d.src}
           alt={content.model3d.alt}

@@ -15,6 +15,12 @@ generate_tots_model.py 產出的 tots-model.blend 之後又累積了多筆「手
   D. 材質層次：房間／圓片「頂面 vs 側面」分兩種明度的材質；水面／寒冷屬性調低 roughness
      （全部走 Principled BSDF 基本欄位，glTF 匯出安全）
   E. 文字標籤：曲線解析度 3 → 4，加入極小 extrude 增加立體感
+  F. 中級盆地重塑：深度 12→18、坡度改為明確可見的 80°（維持高原邊緣開口位置不變，
+     內縮盆地底尺寸，讓斜坡在原本的凹陷範圍內容納下更深的落差）
+  G. 指北標示（箭頭＋"N"）顏色改白
+  H. 房間樓層文字標籤縮小 2 個單位（不影響圓形地標／指北標籤大小）
+  I. 無實體表面顏色改為更淡的淺綠色
+  J. 導師之間塔底盆地下沉極小量，避免與平原表面共面造成 z-fighting 閃爍
 
 用法（無頭執行，從 blender-tots/ 資料夾）：
   /Applications/Blender.app/Contents/MacOS/Blender -b tots-model.blend \
@@ -28,11 +34,12 @@ generate_tots_model.py 產出的 tots-model.blend 之後又累積了多筆「手
 """
 
 import bpy
+import bmesh
 import json
 import sys
 import os
-from math import radians
-from mathutils import Vector
+from math import radians, tan
+from mathutils import Vector, noise as bnoise
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT_DIR = os.path.abspath(argv[0]) if argv else os.path.dirname(os.path.abspath(__file__))
@@ -47,6 +54,28 @@ LABEL_EXTRUDE = 0.0        # 文字厚度：實測 0.1 就會讓 GLB 從 2.3MB �
                            # （每個 CJK 字形輪廓都要生成側壁＋背面），故維持 0 純平面
 ROCK_COLOR = (0.086, 0.062, 0.040, 1.0)  # 岩壁／岩芯顏色（linear，暗棕）
 ROCK_ROUGHNESS = 0.92
+
+BASIN_DEPTH_OLD = 12.0     # 生成腳本原始深度（BASIN_DEPTH）
+BASIN_DEPTH_NEW = 18.0     # 加深後的深度
+SLOPE_BASIN_DEG = 80.0     # 坡度（與生成腳本 SLOPE_BASIN_DEG 一致；不變，只是加深後水平投影
+                           # 變長，原本 12 深時的投影只有 2.1 個單位，貼著房間幾乎看不出斜面，
+                           # 這才是「看起來像 90°」的真正原因，並非角度本身錯誤）
+COMPASS_WHITE = (1.0, 1.0, 1.0, 1.0)   # 指北標示改為白色（linear 白＝sRGB 白，無需換算）
+LABEL_SIZE_SHRINK = 2.0    # 房間樓層文字標籤縮小量（世界單位）
+VOID_COLOR_NEW = "#e6f2da"  # 無實體表面新色：比原本 #a8d98a 更淡的淺綠
+MS_BASIN_Z_NUDGE = -0.06   # 導師之間塔底盆地下沉量，讓其開口邊緣的頂面完全沒入平原表面下方
+                           # （原本頂面 z=0 與平原表面 z=0 完全共面，才會 z-fighting 閃爍）
+
+def hex_rgba(h, a=1.0):
+    """sRGB hex → linear RGBA（與生成腳本的 hex_rgba 相同換算，供本腳本重新產生貼圖用）"""
+    h = h.lstrip("#")
+    s = [int(h[i:i+2], 16) / 255 for i in (0, 2, 4)]
+    lin = [c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in s]
+    return (*lin, a)
+
+def run_for(depth, angle_deg):
+    """給定高度差與坡度角，回傳水平延伸距離（與生成腳本同名函式一致）"""
+    return depth / tan(radians(angle_deg))
 
 # 屬性材質的 roughness 覆寫（D 項：讓水感/冰感與草地、岩石有差異）
 ROUGHNESS_TWEAK = {
@@ -135,6 +164,52 @@ def apply_bevel(obj, width, segments=BEVEL_SEGMENTS):
 def min_dimension(obj):
     d = obj.dimensions
     return min(d.x, d.y, d.z)
+
+def add_box_mat(name, x0, y0, x1, y1, z0, z1, mat, coll):
+    """世界座標軸對齊方塊（與生成腳本 add_box 相同幾何，改接受材質物件而非 key）"""
+    bpy.ops.mesh.primitive_cube_add(size=2)
+    o = bpy.context.active_object
+    o.name = name
+    o.scale = ((x1 - x0) / 2, (y1 - y0) / 2, (z1 - z0) / 2)
+    o.location = ((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2)
+    bpy.ops.object.transform_apply(scale=True)
+    o.data.materials.append(mat)
+    for c in o.users_collection:
+        c.objects.unlink(o)
+    coll.objects.link(o)
+    return o
+
+def add_wedge_mat(name, points, mat, coll):
+    """凸包楔形（與生成腳本 add_wedge 相同做法，供斜坡牆使用）"""
+    bm = bmesh.new()
+    for p in points:
+        bm.verts.new(p)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.001)
+    bmesh.ops.convex_hull(bm, input=bm.verts)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    o = bpy.data.objects.new(name, mesh)
+    o.data.materials.append(mat)
+    coll.objects.link(o)
+    return o
+
+def add_ramp_ns_mat(name, x0, x1, y_a, z_a, y_b, z_b, mat, coll):
+    z_floor = min(z_a, z_b) - 0.05
+    pts = [
+        (x0, y_a, z_a), (x1, y_a, z_a), (x0, y_b, z_b), (x1, y_b, z_b),
+        (x0, y_a, z_floor), (x1, y_a, z_floor), (x0, y_b, z_floor), (x1, y_b, z_floor),
+    ]
+    return add_wedge_mat(name, pts, mat, coll)
+
+def add_ramp_ew_mat(name, y0, y1, x_a, z_a, x_b, z_b, mat, coll):
+    z_floor = min(z_a, z_b) - 0.05
+    pts = [
+        (x_a, y0, z_a), (x_a, y1, z_a), (x_b, y0, z_b), (x_b, y1, z_b),
+        (x_a, y0, z_floor), (x_a, y1, z_floor), (x_b, y0, z_floor), (x_b, y1, z_floor),
+    ]
+    return add_wedge_mat(name, pts, mat, coll)
 
 # ── 開始 ─────────────────────────────────────────────────
 print(f"=== 視覺強化開始，輸出到 {OUT_DIR} ===")
@@ -241,10 +316,11 @@ def add_rock_box(name, x0, y0, x1, y1, z0, z1):
 # ※ 中級凹陷盆地（底 68、比高原面低 12）在高原範圍內，岩芯必須繞開，
 #   否則會把盆地凹陷整個填掉（Phase 1 曾發生：整塊岩芯頂到 78，盆地變淺）。
 #   作法：盆地四周四塊頂到高原面下方、盆地正下方一塊只頂到盆地底下方。
-BASIN_X0, BASIN_X1 = -557.0, -297.0   # 中級盆地世界座標（含先前的平移＋拓寬調整）
-BASIN_Y0, BASIN_Y1 = 355.0, 439.0
-BASIN_FLOOR = PLATEAU_TOP - 12.0      # 盆地底 z=68
-BM = 4.0                              # 盆地邊界的安全間隙（80° 斜壁水平投影約 2.1）
+BASIN_X0, BASIN_X1 = -557.0, -297.0   # 中級盆地「原始」floor 世界座標（加深前，含先前的
+BASIN_Y0, BASIN_Y1 = 355.0, 439.0     # 平移＋拓寬調整；下面 F 步驟會用這組舊值算出新 floor）
+BASIN_FLOOR = PLATEAU_TOP - BASIN_DEPTH_NEW  # 盆地底 z=62（原本 -12，這裡改用新深度 18）
+BM = 4.0                              # 盆地邊界的安全間隙（80° 斜壁水平投影約 2.1，小於此值
+                                      # 即可，深度改 18 後投影約 3.2，仍小於 BM，不須跟著調整）
 CORE_TOP = PLATEAU_TOP - SLAB_T
 add_rock_box("高原_岩芯_北", PX0 + 8, BASIN_Y1 + BM, PX1 - 8, PY1 - 8, VOID_Z, CORE_TOP)
 add_rock_box("高原_岩芯_南", PX0 + 8, PY0 + 8, PX1 - 8, BASIN_Y0 - BM, VOID_Z, CORE_TOP)
@@ -270,6 +346,86 @@ for obj in bpy.data.objects:
         obj.data.extrude = LABEL_EXTRUDE
         label_count += 1
 print(f"文字標籤品質調整：{label_count}")
+
+# F. 中級盆地重塑：加深至 18、坡度維持 80° 但改成真正看得出來的落差。
+# 原本 12 深時的斜坡水平投影只有 2.1 個單位（run_for(12,80)），緊貼房間幾乎看不出
+# 傾斜，視覺上讀成直上直下的 90°；加深到 18 後投影變成約 3.2 個單位，才會露出明顯
+# 的斜面。「高原邊緣」＝斜坡與高原面交會的開口位置，維持不動（BASIN_Y1+old_run 等
+# 原始值），改成往盆地內側縮：floor（盆地底）的尺寸內縮 (new_run-old_run)，讓斜坡
+# 在同一個開口範圍內走完更深的落差。
+old_run = run_for(BASIN_DEPTH_OLD, SLOPE_BASIN_DEG)
+new_run = run_for(BASIN_DEPTH_NEW, SLOPE_BASIN_DEG)
+_delta = new_run - old_run
+NEW_BASIN_X0 = BASIN_X0 + _delta
+NEW_BASIN_X1 = BASIN_X1 - _delta
+NEW_BASIN_Y0 = BASIN_Y0 + _delta
+NEW_BASIN_Y1 = BASIN_Y1 - _delta
+
+for _n in ("凹陷盆地_底", "凹陷盆地_北坡", "凹陷盆地_南坡", "凹陷盆地_東坡", "凹陷盆地_西坡"):
+    _o = bpy.data.objects.get(_n)
+    if _o:
+        _mesh = _o.data
+        bpy.data.objects.remove(_o, do_unlink=True)
+        bpy.data.meshes.remove(_mesh, do_unlink=True)
+
+basin_mat = bpy.data.materials["ToTS_surface_basin"]
+plateau_coll = colls["高原"]
+add_box_mat("凹陷盆地_底", NEW_BASIN_X0, NEW_BASIN_Y0, NEW_BASIN_X1, NEW_BASIN_Y1,
+            BASIN_FLOOR - SLAB_T, BASIN_FLOOR, basin_mat, plateau_coll)
+add_ramp_ns_mat("凹陷盆地_北坡", NEW_BASIN_X0, NEW_BASIN_X1, NEW_BASIN_Y1, BASIN_FLOOR,
+                BASIN_Y1 + old_run, PLATEAU_TOP, basin_mat, plateau_coll)
+add_ramp_ns_mat("凹陷盆地_南坡", NEW_BASIN_X0, NEW_BASIN_X1, NEW_BASIN_Y0, BASIN_FLOOR,
+                BASIN_Y0 - old_run, PLATEAU_TOP, basin_mat, plateau_coll)
+add_ramp_ew_mat("凹陷盆地_東坡", NEW_BASIN_Y0, NEW_BASIN_Y1, NEW_BASIN_X1, BASIN_FLOOR,
+                BASIN_X1 + old_run, PLATEAU_TOP, basin_mat, plateau_coll)
+add_ramp_ew_mat("凹陷盆地_西坡", NEW_BASIN_Y0, NEW_BASIN_Y1, NEW_BASIN_X0, BASIN_FLOOR,
+                BASIN_X0 - old_run, PLATEAU_TOP, basin_mat, plateau_coll)
+print(f"中級盆地重塑完成：深度 {BASIN_DEPTH_OLD:.0f}→{BASIN_DEPTH_NEW:.0f}，"
+      f"floor 內縮 {_delta:.2f}/邊，高原開口位置不變")
+
+# G. 指北標示改白（箭頭 + "N" 文字共用 ToTS_compass 材質）
+_compass_mat = bpy.data.materials.get("ToTS_compass")
+if _compass_mat:
+    _compass_mat.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = COMPASS_WHITE
+    print("指北標示顏色已改為白色")
+
+# H. 房間樓層文字標籤縮小（只動「房間」標籤，不動圓形地標／指北標籤）
+shrunk = 0
+for obj in room_coll.objects:
+    if obj.type != "MESH" or obj.name.endswith("_起點框"):
+        continue
+    lbl = bpy.data.objects.get(f"標籤_{obj.name.split('.')[0]}")
+    if lbl and lbl.type == "FONT":
+        lbl.data.size = max(1.0, lbl.data.size - LABEL_SIZE_SHRINK)
+        shrunk += 1
+print(f"房間樓層文字標籤縮小完成：{shrunk} 個")
+
+# I. 無實體表面改為更淡的淺綠色（重新產生貼圖：草地材質的顏色是烘進雜訊圖的像素，
+# 不是走 Base Color 欄位，必須重新產生同一張圖片的像素資料才會生效）
+_void_img = bpy.data.images.get("grass_surface_void")
+if _void_img:
+    w, h = _void_img.size
+    r, g, b, _a = hex_rgba(VOID_COLOR_NEW)
+    pixels = [0.0] * (w * h * 4)
+    for y in range(h):
+        for x in range(w):
+            n = bnoise.noise((x / w * 10.0, y / h * 10.0, 0.0))
+            factor = 1.0 + n * 0.18
+            i = (y * w + x) * 4
+            pixels[i] = max(0.0, r * factor)
+            pixels[i + 1] = max(0.0, g * factor)
+            pixels[i + 2] = max(0.0, b * factor)
+            pixels[i + 3] = 1.0
+    _void_img.pixels[:] = pixels
+    _void_img.pack()   # 圖片原本就是 packed 狀態，修改 pixels 後必須重新 pack 才會存進 .blend，
+                       # 否則存檔時仍會用「初次 pack 當下」的舊資料，改色不會生效
+    print(f"無實體表面顏色已改為 {VOID_COLOR_NEW}")
+
+# J. 導師之間塔底盆地下沉極小量，避免頂面與平原表面（同為 z=0）共面 z-fighting
+_ms_basin = bpy.data.objects.get("導師之間_塔底盆地")
+if _ms_basin:
+    _ms_basin.location.z += MS_BASIN_Z_NUDGE
+    print(f"導師之間塔底盆地下沉 {abs(MS_BASIN_Z_NUDGE)} 個單位，修正與平原表面共面閃爍")
 
 # ── 點擊互動用座標表（依 .blend 內物件「實際」世界座標輸出，
 #    包含所有手動調整；generate 腳本的 tots_layout.json 是生成當下的舊資料）──
