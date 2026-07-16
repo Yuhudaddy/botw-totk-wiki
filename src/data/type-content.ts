@@ -77,6 +77,7 @@ export interface TypeContent {
     alt: string;
     cameraOrbit?: string;  // 初始視角 "方位角 仰角 距離"，例："15deg 45deg auto"
     cameraTarget?: string; // 初始注視點 "Xm Ym Zm"（glTF 座標，Y 朝上）
+    legend?: { color: string; label: string }[]; // 色彩圖例（顯示於模型下方）
   }; // C 區改放可拖曳旋轉的 3D 模型（取代快速示意）
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
   notes?: TypeNote[];         // 注意事項
@@ -676,6 +677,21 @@ export const typeContent: Record<string, TypeContent> = {
       // 仰角抬高到 45°，視線越過南側的導師之塔（塔頂約 576），避免預設視角房間群被塔擋住。
       cameraOrbit: "15deg 45deg auto",
       cameraTarget: "-430m 80m -330m",
+      // 色彩圖例：對應 blender-tots/generate_tots_model.py 的 PALETTE 房間屬性色
+      legend: [
+        { color: "#d8d4c8", label: "一般房間" },
+        { color: "#46d2e0", label: "水域" },
+        { color: "#242a6e", label: "中級1-4F" },
+        { color: "#17161a", label: "黑暗（中級6-10F）" },
+        { color: "#f2d43d", label: "雷雨（頂級1-5F）" },
+        { color: "#f0801f", label: "火山（頂級7-11F）" },
+        { color: "#a8dde6", label: "寒冷（頂級13-17F）" },
+        { color: "#22c55e", label: "起點" },
+        { color: "#9fd6c8", label: "休息平台" },
+        { color: "#34b8a0", label: "綠洲" },
+        { color: "#b09a78", label: "盆地地標" },
+        { color: "#4a4d52", label: "導師之塔" },
+      ],
     },
     methods: [
       {

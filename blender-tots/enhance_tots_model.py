@@ -123,6 +123,23 @@ def min_dimension(obj):
 
 # ── 開始 ─────────────────────────────────────────────────
 print(f"=== 視覺強化開始，輸出到 {OUT_DIR} ===")
+
+# 字型路徑自我修復：.blend 內的字型是「相對路徑」（//../../..），只有當 .blend 位於
+# blender-tots/ 原位時才解析得到系統字型；從其他資料夾（備份、暫存）開啟會解析失敗，
+# CJK 字形會整批轉不出來（標籤只剩英數字）。這裡把失效的字型路徑重指到系統字型。
+FONT_CANDIDATES = ("/System/Library/Fonts/STHeiti Light.ttc",
+                   "/System/Library/Fonts/PingFang.ttc",
+                   "/System/Library/Fonts/Hiragino Sans GB.ttc")
+for f in bpy.data.fonts:
+    if f.filepath in ("", "<builtin>") or f.packed_file:
+        continue
+    if not os.path.exists(bpy.path.abspath(f.filepath)):
+        for cand in FONT_CANDIDATES:
+            if os.path.exists(cand):
+                print(f"字型路徑失效，重指：{f.name} → {cand}")
+                f.filepath = cand
+                break
+
 colls = {c.name: c for c in bpy.data.collections}
 
 # A＋D. 方塊試煉房：倒角 → 頂/側分材質
@@ -193,7 +210,20 @@ def add_rock_box(name, x0, y0, x1, y1, z0, z1):
 
 # 高原岩芯：藏在 85° 懸崖斜壁後面，堵住從低角度看進去的懸空縫隙。
 # 內縮 8 單位 > 懸崖斜壁的水平投影（80 / tan85° ≈ 7），保證不穿出斜壁。
-add_rock_box("高原_岩芯", PX0 + 8, PY0 + 8, PX1 - 8, PY1 - 8, VOID_Z, PLATEAU_TOP - SLAB_T)
+# ※ 中級凹陷盆地（底 68、比高原面低 12）在高原範圍內，岩芯必須繞開，
+#   否則會把盆地凹陷整個填掉（Phase 1 曾發生：整塊岩芯頂到 78，盆地變淺）。
+#   作法：盆地四周四塊頂到高原面下方、盆地正下方一塊只頂到盆地底下方。
+BASIN_X0, BASIN_X1 = -557.0, -297.0   # 中級盆地世界座標（含先前的平移＋拓寬調整）
+BASIN_Y0, BASIN_Y1 = 355.0, 439.0
+BASIN_FLOOR = PLATEAU_TOP - 12.0      # 盆地底 z=68
+BM = 4.0                              # 盆地邊界的安全間隙（80° 斜壁水平投影約 2.1）
+CORE_TOP = PLATEAU_TOP - SLAB_T
+add_rock_box("高原_岩芯_北", PX0 + 8, BASIN_Y1 + BM, PX1 - 8, PY1 - 8, VOID_Z, CORE_TOP)
+add_rock_box("高原_岩芯_南", PX0 + 8, PY0 + 8, PX1 - 8, BASIN_Y0 - BM, VOID_Z, CORE_TOP)
+add_rock_box("高原_岩芯_西", PX0 + 8, BASIN_Y0 - BM, BASIN_X0 - BM, BASIN_Y1 + BM, VOID_Z, CORE_TOP)
+add_rock_box("高原_岩芯_東", BASIN_X1 + BM, BASIN_Y0 - BM, PX1 - 8, BASIN_Y1 + BM, VOID_Z, CORE_TOP)
+add_rock_box("高原_岩芯_盆地下", BASIN_X0 - BM, BASIN_Y0 - BM, BASIN_X1 + BM, BASIN_Y1 + BM,
+             VOID_Z, BASIN_FLOOR - SLAB_T - 1.0)
 
 # 平原外緣岩壁裙板（厚 2，從無實體表面 -22 到平原面 0）：
 # 東緣（全段）、南緣（全段）、西緣（南側塊段）、北緣（東側帶段）
