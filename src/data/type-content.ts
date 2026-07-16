@@ -674,9 +674,15 @@ export const typeContent: Record<string, TypeContent> = {
     model3d: {
       src: "/tots-model/model/tots-model.glb",
       alt: "劍之考驗地圖參照模型",
-      // 初始視角：從東南方 45° 俯視、注視高原房間群中心（glTF 座標，Blender (x,y,z) → glTF (x,z,-y)）。
-      // 仰角抬高到 45°，視線越過南側的導師之塔（塔頂約 576），避免預設視角房間群被塔擋住。
-      cameraOrbit: "15deg 45deg auto",
+      // 初始視角：注視高原房間群中心（glTF 座標，Blender (x,y,z) → glTF (x,z,-y)）。
+      // 方位角 60°／極角 55°：極角 45° 時中級盆地的凹陷幾乎看不出深度（視角太接近正上方，
+      // 只剩地板顏色差異，看起來像被「填平」了），55° 才能露出盆地邊坡的落差；
+      // 方位角從 15° 轉到 60° 是為了閃開導師之塔——15° 時攝影機到房間群的視線幾乎與
+      // 塔正對，塔會直接擋在房間群前面，60° 時塔完全在畫面外。
+      // 距離必須明寫成 1400m，不能用 auto——auto 是依「整個場景」（含外圍很大一圈的海面）
+      // 自動抓縮放，算出來的距離會把整張地圖都塞進畫面，導致房間群變得很小、
+      // 塔反而在近景顯得巨大，等於白做了方位角閃塔的調整。
+      cameraOrbit: "60deg 55deg 1400m",
       cameraTarget: "-430m 80m -330m",
       layoutSrc: "/tots-model/model/tots-layout.json",
       // 色彩圖例：對應 blender-tots/generate_tots_model.py 的 PALETTE 房間屬性色
