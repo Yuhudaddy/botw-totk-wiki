@@ -14,14 +14,28 @@ const { method: m } = Astro.props;
 
 {m.name ? (
   <div class="mb-3 text-[15px] font-medium text-ink">{m.name}</div>
-) : m.tags && m.tags.length > 0 ? (
+) : (m.tags && m.tags.length > 0) || m.difficulty || m.timeCost ? (
   <div class="mb-3 flex flex-wrap items-center gap-2">
-    <span class="text-[13px] text-ink">適合</span>
-    {m.tags.map((tag) => (
+    {m.tags && m.tags.length > 0 && (
+      <>
+        <span class="text-[13px] text-ink">適合</span>
+        {m.tags.map((tag) => (
+          <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+            {tag}
+          </span>
+        ))}
+      </>
+    )}
+    {m.difficulty && (
       <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
-        {tag}
+        難易度：{m.difficulty}
       </span>
-    ))}
+    )}
+    {m.timeCost && (
+      <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+        耗時度：{m.timeCost}
+      </span>
+    )}
   </div>
 ) : null}
 {m.intro && (

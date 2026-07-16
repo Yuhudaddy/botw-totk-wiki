@@ -14,6 +14,8 @@ export interface TypeMethod {
   tab: string;        // 分頁名稱，例：前跳
   group?: string;     // 分頁分組標籤（同組的分頁按鈕會排在同一行，並在最前面顯示此標籤），例："無過載（Overload-less）"
   tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["先圓後方"]
+  difficulty?: string; // 難易度星等 badge（顯示在 tags 右側），例："★★★☆☆"
+  timeCost?: string;    // 耗時度星等 badge（顯示在 difficulty 右側），例："★★★☆☆"
   name?: string;      // 方法中文全名（白色字，與 tags 擇一），例："轉存格（Inventory Slot Transfer）"
   intro?: string;     // 步驟上方的灰色說明句（選填），例："此方法需要配合...技巧："
   steps?: TypeStep[]; // 單一編號步驟（與 sections / bullets 擇一）
@@ -2666,6 +2668,8 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "SLD",
         group: "無過載（Overload-less）",
         tags: ["～Ver.1.1.1"],
+        difficulty: "★☆☆☆☆",
+        timeCost: "★☆☆☆☆",
         sections: [
           {
             title: "前置準備",
@@ -2702,6 +2706,8 @@ export const typeContent: Record<string, TypeContent> = {
           {
             tab: "In Bound",
             tags: ["All Versions"],
+            difficulty: "★★☆☆☆",
+            timeCost: "★★★★★",
             sections: [
               {
                 title: "前置準備",
@@ -2758,6 +2764,8 @@ export const typeContent: Record<string, TypeContent> = {
           {
             tab: "Out of Bound",
             tags: ["Ver.1.2.0+"],
+            difficulty: "★★★★☆",
+            timeCost: "★★★★☆",
             sections: [
               {
                 title: "前置準備",
@@ -2814,9 +2822,11 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "Cull Retach (R0&R1)",
+        tab: "Cull Detach (R0&R1)",
         group: "有過載（Overloading）",
         tags: ["Ver.1.2.0+"],
+        difficulty: "★★★☆☆",
+        timeCost: "★★★★☆",
         sections: [
           {
             title: "前置作業",
@@ -2855,6 +2865,8 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "Cull Storage",
         group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
+        difficulty: "★★★★★",
+        timeCost: "★★☆☆☆",
         sections: [
           {
             title: "前置準備",
@@ -2898,6 +2910,8 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "Cull Detach (R1)",
         group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
+        difficulty: "★★★☆☆",
+        timeCost: "★★★☆☆",
         sections: [
           {
             title: "前置準備",
