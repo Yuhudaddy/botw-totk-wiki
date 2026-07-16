@@ -201,6 +201,7 @@ PALETTE = {
     "start":   hex_rgba("#22c55e"),
     "text":    hex_rgba("#202020"),
     "text_light": hex_rgba("#f2f2f2"),
+    "compass": hex_rgba("#d64545"),
 }
 
 DARK_TILES = {"dark", "void"}   # 這些屬性的地磚用淺色標籤
@@ -428,6 +429,20 @@ add_box("平原_南側塊", SX0, SY0, PX1, PY0, -SLAB_T, 0, "surface_plain", col
 run_plateau = run_for(PLATEAU_TOP, SLOPE_PLATEAU_DEG)
 add_ramp_ns("高原轉平原_南坡", PX0, PX1, PY0, zt, PY0 - run_plateau, 0, "surface_plateau", colls["高原"])
 add_ramp_ew("高原轉平原_東坡", PY0, PY1, PX1, zt, PX1 + run_plateau, 0, "surface_plateau", colls["高原"])
+
+# ── 指北標示：平原南側塊的西南角，離導師之塔與高原都有大段留白，不會被其他物件擋到 ──
+compass_x, compass_y = SX0 + 60 * SCALE, SY0 + 60 * SCALE
+compass_tip = (compass_x, compass_y + 25 * SCALE, 0)
+compass_base_l = (compass_x - 15 * SCALE, compass_y - 25 * SCALE, 0)
+compass_base_r = (compass_x + 15 * SCALE, compass_y - 25 * SCALE, 0)
+add_wedge("指北標示_箭頭", [
+    compass_tip, compass_base_l, compass_base_r,
+    (compass_tip[0], compass_tip[1], TILE_T),
+    (compass_base_l[0], compass_base_l[1], TILE_T),
+    (compass_base_r[0], compass_base_r[1], TILE_T),
+], "compass", colls["標記與標籤"])
+add_label("N", compass_x, compass_tip[1] + 18 * SCALE, TILE_T + 0.3, 18 * SCALE,
+          colls["標記與標籤"], mat_key="compass")
 
 # ── 地面：無實體表面（純視覺、只有貼圖沒有碰撞，高度比平原低）──────
 # 對照 PDF 精確量測：無實體只存在於固體地面「西、東」兩側，南北方向幾乎沒有
@@ -670,3 +685,4 @@ bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out_dir, "tots-model.blend"))
 bpy.ops.export_scene.gltf(filepath=os.path.join(out_dir, "tots-model.glb"),
                           export_format="GLB")
 print("=== ToTS 模型生成完成 ===")
+
