@@ -17,13 +17,18 @@ interface Props {
   cameraOrbit?: string;   // 初始視角 "方位角 仰角 距離"（例："15deg 45deg auto"）。
                           // 不填則沿用 model-viewer 預設的自動取景。
   cameraTarget?: string;  // 初始注視點 "Xm Ym Zm"（glTF 座標，Y 朝上）。不填＝自動置中。
+  layoutSrc?: string;     // 點擊互動用的座標表 JSON（相對於 BASE_URL；enhance 腳本輸出的
+                          // tots-layout.json 格式）。有給值時，點擊模型會顯示房間／地標名稱。
 }
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const {
   src, alt, height, aspectRatio, mobileAspectRatio, autoRotate = false,
   minZoomDistance = 60, maxZoomDistance = 2500,
-  cameraOrbit, cameraTarget,
+  cameraOrbit, cameraTarget, layoutSrc,
 } = Astro.props;
+const layoutUrl = layoutSrc
+  ? `${BASE}${layoutSrc.startsWith("/") ? layoutSrc : `/${layoutSrc}`}`
+  : undefined;
 const modelSrc = `${BASE}${src.startsWith("/") ? src : `/${src}`}`;
 // aspect-ratio 本身故意「不」放進 inline style：model-viewer 的 shadow DOM 內建
 // :host { height:150px }，一旦 height 是明確值 aspect-ratio 就不會再補算，所以這裡改成只丟兩個
@@ -42,7 +47,7 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
 
 <script is:inline src={`${BASE}/vendor/model-viewer.min.js`} type="module"></script>
 
-<div class="model3d-wrap">
+<div class="model3d-wrap" data-layout-src={layoutUrl}>
   <model-viewer
     src={modelSrc}
     alt={alt}
@@ -68,6 +73,11 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
       <path d="M3 4v5h5"></path>
     </svg>
   </button>
+  {layoutUrl && (
+    <div class="model3d-pick-info" data-hint="點擊模型中的房間或地標，可顯示名稱">
+      點擊模型中的房間或地標，可顯示名稱
+    </div>
+  )}
 </div>
 
 <style>
@@ -109,6 +119,15 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
     border-color: var(--brand);
     color: var(--brand);
   }
+  .model3d-pick-info {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .model3d-pick-info.is-picked {
+    color: var(--ink);
+  }
 </style>
 
 <script>
@@ -144,5 +163,51 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
       mv.cameraTarget = initTarget;
       mv.fieldOfView = "auto";
     });
+
+    // 點擊模型顯示房間／地標名稱：用 positionAndNormalFromPoint 取得點擊處的
+    // 3D 座標（glTF 空間，Y 朝上），轉回 Blender 座標（Bx=Gx, By=-Gz, Bz=Gy）後，
+    // 對照 enhance 腳本輸出的座標表（tots-layout.json，為 .blend 內物件實際位置）。
+    const layoutSrc = wrap.dataset.layoutSrc;
+    const infoEl = wrap.querySelector<HTMLElement>(".model3d-pick-info");
+    if (layoutSrc && infoEl) {
+      let layout: any = null;
+      fetch(layoutSrc)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => (layout = j))
+        .catch(() => {});
+
+      const hint = infoEl.dataset.hint ?? "";
+      mv.addEventListener("click", (ev: MouseEvent) => {
+        if (!layout) return;
+        const hit = mv.positionAndNormalFromPoint?.(ev.clientX, ev.clientY);
+        let text: string | null = null;
+        if (hit) {
+          const bx = hit.position.x;
+          const by = -hit.position.z;
+          const bz = hit.position.y;
+          const room = layout.rooms?.find((r: any) =>
+            bx >= r.x0 && bx <= r.x1 && by >= r.y0 && by <= r.y1 &&
+            bz >= r.z0 - 2 && bz <= r.z1 + 8
+          );
+          if (room) {
+            text = `${room.label}（${room.attr_label}）`;
+          } else {
+            const c = layout.circles?.find((c: any) =>
+              (bx - c.x) ** 2 + (by - c.y) ** 2 <= (c.r * 1.2) ** 2 &&
+              Math.abs(bz - c.z) < 8
+            );
+            if (c) {
+              // 「盆地／綠洲」這類標籤本身就是類型名，不重複加括號
+              text = c.kind_label.startsWith(c.label) ? c.label : `${c.label}（${c.kind_label}）`;
+            } else if (layout.tower) {
+              const t = layout.tower;
+              if ((bx - t.x) ** 2 + (by - t.y) ** 2 <= (t.r * 1.3) ** 2) text = t.label;
+            }
+          }
+        }
+        infoEl.textContent = text ? `選取：${text}` : hint;
+        infoEl.classList.toggle("is-picked", !!text);
+      });
+    }
   });
 </script>

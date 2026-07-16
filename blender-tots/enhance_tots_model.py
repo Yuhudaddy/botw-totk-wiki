@@ -28,6 +28,7 @@ generate_tots_model.py 產出的 tots-model.blend 之後又累積了多筆「手
 """
 
 import bpy
+import json
 import sys
 import os
 from math import radians
@@ -51,6 +52,20 @@ ROCK_ROUGHNESS = 0.92
 ROUGHNESS_TWEAK = {
     "ToTS_water": 0.30,
     "ToTS_frigid": 0.45,
+}
+
+# 屬性材質的微發光（Phase 3：火山＝暖橘微光、雷雨＝閃電黃微光；
+# 走 Principled 的 Emission 欄位，glTF 匯出成 emissiveFactor，安全）
+EMISSIVE_TWEAK = {
+    "ToTS_volcano": ((1.0, 0.35, 0.08, 1.0), 0.35),
+    "ToTS_storm":   ((1.0, 0.85, 0.25, 1.0), 0.25),
+}
+
+# 點擊互動用：屬性 key → 顯示名稱（寫進 tots-layout.json 供網頁端顯示）
+ATTR_LABELS = {
+    "normal": "一般房間", "water": "水域", "void": "奈落",
+    "dark": "黑暗", "storm": "雷雨", "volcano": "火山", "frigid": "寒冷",
+    "rest": "休息平台", "oasis": "綠洲", "basin": "盆地地標",
 }
 
 # 依生成腳本常數推得的地形邊界（世界座標；高原/平原自生成以來未被手動移動，
@@ -186,6 +201,19 @@ for mat_name, rough in ROUGHNESS_TWEAK.items():
             sm.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = rough
 print("材質 roughness 調整完成")
 
+# D+. 屬性材質微發光（火山／雷雨），側面變體同步
+for mat_name, (em_color, em_strength) in EMISSIVE_TWEAK.items():
+    for m in (bpy.data.materials.get(mat_name), _side_mats.get(mat_name)):
+        if not m:
+            continue
+        bsdf = m.node_tree.nodes["Principled BSDF"]
+        try:
+            bsdf.inputs["Emission Color"].default_value = em_color
+            bsdf.inputs["Emission Strength"].default_value = em_strength
+        except KeyError:
+            pass   # 舊版 Blender 欄位名不同時跳過，不影響其餘強化
+print("材質微發光調整完成")
+
 # C. 地形立體感：高原岩芯＋平原外緣岩壁裙板
 rock = bpy.data.materials.new("ToTS_rock")
 rock.use_nodes = True
@@ -243,8 +271,52 @@ for obj in bpy.data.objects:
         label_count += 1
 print(f"文字標籤品質調整：{label_count}")
 
+# ── 點擊互動用座標表（依 .blend 內物件「實際」世界座標輸出，
+#    包含所有手動調整；generate 腳本的 tots_layout.json 是生成當下的舊資料）──
+def world_bbox(o):
+    cs = [o.matrix_world @ Vector(c) for c in o.bound_box]
+    xs = [c.x for c in cs]; ys = [c.y for c in cs]; zs = [c.z for c in cs]
+    return min(xs), min(ys), min(zs), max(xs), max(ys), max(zs)
+
+pick_layout = {"rooms": [], "circles": [], "tower": None}
+for obj in room_coll.objects:
+    if obj.type != "MESH" or obj.name.endswith("_起點框"):
+        continue
+    mat0 = obj.data.materials[0].name if obj.data.materials else ""
+    attr = mat0.removeprefix("ToTS_").removesuffix("_side")
+    x0, y0, z0, x1, y1, z1 = world_bbox(obj)
+    pick_layout["rooms"].append({
+        "label": obj.name.split(".")[0],
+        "attr": attr, "attr_label": ATTR_LABELS.get(attr, attr),
+        "x0": round(x0, 1), "y0": round(y0, 1), "x1": round(x1, 1), "y1": round(y1, 1),
+        "z0": round(z0, 1), "z1": round(z1, 1),
+    })
+for obj in colls["休息與地形"].objects:
+    if obj.type != "MESH":
+        continue
+    mat0 = obj.data.materials[0].name if obj.data.materials else ""
+    if mat0 == "ToTS_rock":
+        continue   # 岩芯／岩壁不是可點擊地標
+    kind = mat0.removeprefix("ToTS_").removesuffix("_side")
+    x0, y0, z0, x1, y1, z1 = world_bbox(obj)
+    pick_layout["circles"].append({
+        "label": obj.name.split("_")[0],
+        "kind": kind, "kind_label": ATTR_LABELS.get(kind, kind),
+        "x": round((x0 + x1) / 2, 1), "y": round((y0 + y1) / 2, 1),
+        "r": round((x1 - x0) / 2, 1), "z": round(z1, 1),
+    })
+tower_obj = bpy.data.objects.get("導師之間_柱身")
+if tower_obj:
+    x0, y0, z0, x1, y1, z1 = world_bbox(tower_obj)
+    pick_layout["tower"] = {"label": "導師之間",
+                            "x": round((x0 + x1) / 2, 1), "y": round((y0 + y1) / 2, 1),
+                            "r": round((x1 - x0) / 2, 1)}
+print(f"點擊座標表：房間 {len(pick_layout['rooms'])}、圓形地標 {len(pick_layout['circles'])}")
+
 # ── 存檔＋匯出 ────────────────────────────────────────────
 os.makedirs(OUT_DIR, exist_ok=True)
+with open(os.path.join(OUT_DIR, "tots-layout.json"), "w", encoding="utf-8") as f:
+    json.dump(pick_layout, f, ensure_ascii=False, indent=1)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT_DIR, "tots-model.blend"))
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT_DIR, "tots-model.glb"),
                           export_format="GLB")
