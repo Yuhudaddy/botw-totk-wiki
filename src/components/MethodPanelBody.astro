@@ -1,0 +1,161 @@
+---
+// 單一分頁（或子分頁）的內容本體：適合標籤、intro、sections/bullets/steps、note。
+// 從 src/pages/types/[id].astro 抽出來，讓「合併分頁＋子分頁」（如 R0 Cull Zuggle 底下的
+// In Bound / Out of Bound）可以重複使用同一套渲染邏輯，不用整段複製。
+import { href } from "../lib/url";
+import type { TypeMethod } from "../data/type-content";
+import { parseAccent, parseStep, stepParts } from "../lib/method-format";
+
+interface Props {
+  method: TypeMethod;
+}
+const { method: m } = Astro.props;
+---
+
+{m.name ? (
+  <div class="mb-3 text-[15px] font-medium text-ink">{m.name}</div>
+) : m.tags && m.tags.length > 0 ? (
+  <div class="mb-3 flex flex-wrap items-center gap-2">
+    <span class="text-[13px] text-ink">適合</span>
+    {m.tags.map((tag) => (
+      <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+        {tag}
+      </span>
+    ))}
+  </div>
+) : null}
+{m.intro && (
+  <p class="mb-3 text-[13px] leading-[1.7] text-muted">{m.intro}</p>
+)}
+{m.sections ? (
+  m.sections.map((sec) => (
+    <div class="method-section">
+      <div class={m.sections!.length === 1 ? "method-section-title-single" : "method-section-title"}>
+        {parseAccent(sec.title).map((seg) =>
+          seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+        )}
+      </div>
+      {sec.tags && sec.tags.length > 0 && (
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          <span class="text-[13px] text-ink">適合</span>
+          {sec.tags.map((tag) => (
+            <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+      <ol>
+        {sec.steps.map((s) => {
+          const { text, sub } = stepParts(s);
+          return (
+            <li>
+              {parseStep(text).map((seg) =>
+                seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                  : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                  : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+              )}
+              {sub.length > 0 && (
+                <ul class="step-sub">
+                  {sub.map((d) => (
+                    <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
+                      {parseStep(d).map((seg) =>
+                        seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                          : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+      {sec.note && (
+        Array.isArray(sec.note) ? (
+          <div class="mt-4 space-y-1">
+            {sec.note.map((n) => (
+              <p class="text-[13px] leading-[1.7] text-muted">
+                {parseStep(n).map((seg) =>
+                  seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                    : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                    : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                )}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <p class="mt-4 text-[13px] leading-[1.7] text-muted">
+            {parseStep(sec.note).map((seg) =>
+              seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+            )}
+          </p>
+        )
+      )}
+    </div>
+  ))
+) : m.bullets ? (
+  <ul>
+    {m.bullets.map((b) => (
+      <li>
+        {parseAccent(b.replace(/^・\s*/, "")).map((seg) =>
+          seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+        )}
+      </li>
+    ))}
+  </ul>
+) : (
+  <ol>
+    {(m.steps ?? []).map((s) => {
+      const { text, sub } = stepParts(s);
+      return (
+        <li>
+          {parseStep(text).map((seg) =>
+            seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+              : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+              : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+          )}
+          {sub.length > 0 && (
+            <ul class="step-sub">
+              {sub.map((d) => (
+                <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
+                  {parseStep(d).map((seg) =>
+                    seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                      : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                      : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+)}
+{m.note && (
+  Array.isArray(m.note) ? (
+    <div class="mt-4 space-y-1">
+      {m.note.map((n) => (
+        <p class="text-[13px] leading-[1.7] text-muted">
+          {parseStep(n).map((seg) =>
+            seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+              : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+              : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+          )}
+        </p>
+      ))}
+    </div>
+  ) : (
+    <p class="mt-4 text-[13px] leading-[1.7] text-muted">
+      {parseStep(m.note).map((seg) =>
+        seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+          : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+      )}
+    </p>
+  )
+)}

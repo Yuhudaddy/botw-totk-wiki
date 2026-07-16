@@ -1,0 +1,139 @@
+---
+// 可拖曳旋轉／縮放的 3D 模型檢視器，包裝 Google 的 <model-viewer> web component。
+// 函式庫自行架設在 public/vendor/model-viewer.min.js（不依賴外部 CDN），
+// 模型檔（.glb）放在 public/ 下由呼叫端指定路徑。
+interface Props {
+  src: string;          // GLB 檔路徑（相對於 BASE_URL），例："/tots-model/model/tots-model.glb"
+  alt: string;
+  posterAlt?: string;
+  height?: string;             // 固定 CSS 高度（與 aspectRatio 擇一；三者皆未填則預設 480px）
+  aspectRatio?: string;        // 長寬比（例如 "1/1"、"2/1"），預設（桌機／未特別指定寬度時）使用
+  mobileAspectRatio?: string;  // 窄螢幕（≤767px，與版面切成單欄的中斷點一致）時改用的長寬比，
+                                // 沒填就沿用 aspectRatio——寬螢幕全寬時通常想要比較「扁」的比例，
+                                // 但同一個比例套到手機窄版會太矮，所以拆成兩個中斷點各自設定。
+  autoRotate?: boolean;  // 預設不自動旋轉，讓使用者主動操作
+  minZoomDistance?: number;  // 最近可縮放距離（絕對數值，不受模型整體包圍盒大小影響），預設 60
+  maxZoomDistance?: number;  // 最遠可縮放距離，預設 2500
+}
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const {
+  src, alt, height, aspectRatio, mobileAspectRatio, autoRotate = false,
+  minZoomDistance = 60, maxZoomDistance = 2500,
+} = Astro.props;
+const modelSrc = `${BASE}${src.startsWith("/") ? src : `/${src}`}`;
+// aspect-ratio 本身故意「不」放進 inline style：model-viewer 的 shadow DOM 內建
+// :host { height:150px }，一旦 height 是明確值 aspect-ratio 就不會再補算，所以這裡改成只丟兩個
+// CSS 變數進去，實際的 height/aspect-ratio 交給下面 <style> 裡的規則（含中斷點）統一決定，
+// 這樣媒體查詢才有辦法在窄螢幕時覆蓋成另一個比例（inline style 的優先權高於外部樣式規則，
+// 若把 aspect-ratio 直接寫進 inline style，媒體查詢就永遠蓋不掉它）。
+const sizeStyle = aspectRatio
+  ? `width:100%; height:auto; --mv-aspect:${aspectRatio}; --mv-aspect-mobile:${mobileAspectRatio ?? aspectRatio};`
+  : `width:100%; height:${height ?? "480px"};`;
+// min/max-camera-orbit 用「m」為單位的絕對距離，不用百分比——百分比是相對於場景包圍球
+// 自動計算的預設值，模型整體（例如海面範圍）變大時百分比對應的實際距離也會跟著變遠，
+// 縮放限制就形同虛設；寫死絕對距離才能保證不管場景多大，都能貼近到看清楚房間等級的細節。
+const minOrbit = `auto auto ${minZoomDistance}m`;
+const maxOrbit = `auto auto ${maxZoomDistance}m`;
+---
+
+<script is:inline src={`${BASE}/vendor/model-viewer.min.js`} type="module"></script>
+
+<div class="model3d-wrap">
+  <model-viewer
+    src={modelSrc}
+    alt={alt}
+    camera-controls
+    touch-action="pan-y"
+    interaction-prompt="none"
+    min-camera-orbit={minOrbit}
+    max-camera-orbit={maxOrbit}
+    shadow-intensity="0.6"
+    exposure="1.0"
+    autoplay={autoRotate}
+    auto-rotate={autoRotate}
+    style={`${sizeStyle} --poster-color: transparent;`}
+    class="model3d-viewer"
+  >
+    <div slot="progress-bar"></div>
+  </model-viewer>
+  <button type="button" class="model3d-reset" aria-label="重置視角" title="重置視角">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+      <path d="M3 4v5h5"></path>
+    </svg>
+  </button>
+</div>
+
+<style>
+  .model3d-wrap {
+    position: relative;
+  }
+  .model3d-viewer {
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: 0 0 0 1px var(--border-strong);
+  }
+  /* 沒有給 --mv-aspect 時 var() 會 fallback 成 auto，讓 inline 的固定 height 生效；
+     有給值時則由這裡（而非 inline style）決定 aspect-ratio，中斷點才有辦法覆蓋它。 */
+  .model3d-viewer {
+    aspect-ratio: var(--mv-aspect, auto);
+  }
+  @media (max-width: 767px) {
+    .model3d-viewer {
+      aspect-ratio: var(--mv-aspect-mobile, var(--mv-aspect, auto));
+    }
+  }
+  .model3d-reset {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .model3d-reset:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".model3d-wrap").forEach((wrap) => {
+    const mv = wrap.querySelector("model-viewer") as any;
+    if (!mv) return;
+
+    // 保險機制：<model-viewer> 的自動揭示（reveal）在部分情況下（load 事件與 loaded
+    // 屬性更新有時間差、IntersectionObserver 未即時觸發等）不會準時執行，導致模型明明
+    // 載入完成卻停留在黑色海報畫面。這裡在載入完成後主動呼叫 dismissPoster()，並在短時間內
+    // 反覆確認（modelIsVisible 為 false 就再呼叫一次），確保一定會顯示出來。
+    const reveal = () => mv.dismissPoster?.();
+    reveal();
+    mv.addEventListener("load", reveal);
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries += 1;
+      if (mv.modelIsVisible || tries > 30) {
+        clearInterval(timer);
+        return;
+      }
+      reveal();
+    }, 100);
+
+    // 重置視角：把 camera-orbit/camera-target/field-of-view 都設回 "auto"，
+    // 讓 model-viewer 重新用預設方式自動置中、自動抓合適的初始視角。
+    const resetBtn = wrap.querySelector<HTMLButtonElement>(".model3d-reset");
+    resetBtn?.addEventListener("click", () => {
+      mv.cameraOrbit = "auto auto auto";
+      mv.cameraTarget = "auto auto auto";
+      mv.fieldOfView = "auto";
+    });
+  });
+</script>

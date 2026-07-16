@@ -31,7 +31,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "05", zh: "過場必殺劍", en: "Cutscene OHO (DLC2)" },
       { no: "06", zh: "盾擋重置", en: "Shield Block Reset" },
       { no: "07", zh: "偷襲機制", en: "Sneakstrike" },
-      { no: "08", zh: "劍之考驗", en: "Trial of the Sword (DLC1)", videosOnly: true },
+      { no: "08", zh: "劍之考驗", en: "Trial of the Sword (DLC1)" },
       { no: "09", zh: "新手學習", en: "Beginners", videosOnly: true },
       { no: "10", zh: "神廟特解", en: "Shrine Strategies", videosOnly: true },
       { no: "11", zh: "技巧指法", en: "Inputs", videosOnly: true },
@@ -41,6 +41,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "15", zh: "不廢話系列", en: "Zero Fluff", videosOnly: true },
       { no: "16", zh: "合作戰鬥集", en: "Combat Montage", videosOnly: true },
       { no: "17", zh: "主動突擊", en: "Active Flurry Rush" },
+      { no: "18", zh: "穿牆", en: "Clipping" },
     ],
   },
   {
