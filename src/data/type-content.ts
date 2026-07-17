@@ -2124,13 +2124,13 @@ export const typeContent: Record<string, TypeContent> = {
           "※ 丟棄裝備中的武器(弓/盾) → 切換裝備另一個，可以觸發「__臨時過載（Temporary Overload）__」，在關閉選單的瞬間會暫時增加 1 的負載量。",
         ],
         principle:
-          "重複 Zuggle 或 Invizuggle，使 9 到 10 個（適用於 1.0.0 版本）或 13 到 14 個（適用於 1.1.0+）武器、盾牌或弓箭並列裝備在林克身上或是 Zuggle Drop 在地上，使其達到林克本身的依賴數上限，導致切換裝備會使裝備掉落在地上、讀檔林克身上頭髮或衣服會從林克身上脫離。",
+          "遊戲對林克身上的裝備依賴關係有一個總上限（33 個），其中林克自己本身部分模型（頭部、身體、腿部等）就佔用一部分且無法拆解。玩家只要再 Zuggle 或 Invizuggle 13 到 14 個（適用於 1.1.0+；1.0.0 版本為 9 到 10 個）武器、盾牌或弓箭裝備在林克身上、或 Zuggle Drop 在地上，就會把剩餘名額吃滿，進入「Zuggle Overload」的臨界狀態：此時只要切換裝備，系統偵測到依賴數超過上限，就會把優先度較低的裝備（相對於林克身體不可拆解的部位）與林克分離，選單雖然顯示裝備中，但該裝備會分離林克而掉落在地上，有時候甚至也無法操作操縱桿等執行結合互動的行為；讀檔或重新載入時，依照依賴的優先度，連帶讓林克身上的頭髮、衣服等外觀跟著分離。",
         principleExtra: {
           title: "延伸",
           items: [
-            "Overload Drop（過載掉落）：林克身上的裝備依賴數 14 以上時切換裝備，該裝備會掉落在地上，但選單為裝備中。",
+            "Overload Drop（過載掉落）：裝備依賴數超過遊戲上限時切換裝備，系統會把優先度較低、可被拆解的裝備（相對於林克本身的部分模型不可拆解）與林克分離，選單上顯示為裝備中，但該裝備實際上已經掉落在地上。",
             "Temporary Overload（臨時過載）：丟切裝備中的道具可以在關閉暫停的一瞬間，增加 1 的負載量，同種類型裝備的臨時過載只會 +1，故最多能 +3。",
-            "Overload Pickup（過載撿拾）：包含丟切裝備中的道具，林克身上的裝備依賴數 14 以上試圖空手撿裝備，會發現選單有撿起來並裝備，但是該裝備的模型仍在原地沒有被撿起。",
+            "Overload Pickup（過載撿拾）：包含丟切裝備中的道具，裝備依賴數已經超過上限時試圖空手撿裝備，會發現選單顯示撿起來並裝備，但是該裝備的模型仍在原地沒有被撿起。通常 13 個 Zuggle Overload 的情形下，為了 Overload Pickup 身上會解除一項裝備來過載撿拾，這時候會搭配 Temporary Overload 來補負載量以便成功 Overload Pickup。",
             "Mitosis（過載分裂）：Overload Drop 盾牌(或武器) → 打開暫停丟切纏桿武器(或盾牌)並切換裝備另一個盾牌。",
           ],
         },
@@ -2887,7 +2887,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "Cull Detach (R0&R1)",
         group: "有過載（Overloading）",
         tags: ["Ver.1.2.0+"],
-        difficulty: "★★★☆☆",
+        difficulty: "★★☆☆☆",
         timeCost: "★★★★☆",
         sections: [
           {
@@ -3029,11 +3029,11 @@ export const typeContent: Record<string, TypeContent> = {
       "2026/7 mulberry 從 1.1.2 版的流程發展出可以自由控制解除隱藏(Cull)的方法，配合過載的方式發展出不需要極快手速關開暫停的流程。Yuda 於 2026/7/13 將其微調改為無過載的流程。",
     ],
     videos: [
-      { id: "-oifw9PKeh4", title: "回應03 - 錯過就不再的實用道具？「不壞的序章大師劍」與「料理效果轉移」(1.1.1版以前限定)", desc: "最早也是最快的方法（限定Ver.1.1.1以前）" },
-      { id: "Gn90XQwp5zU", title: "番外16(1 - 舊) - 1.1.2版～1.2.1版通用流程「序章大師劍(MNF/MSG)」", desc: "Ver.1.1.1以後難度很高但是很快的方法（NS2此法已經較少用，但有很多程錯可以學）" },
-      { id: "siGVEF5-AZY", title: "番外16(2 - 舊) - 1.2.0版～1.2.1版獨有｜不在序章手動存檔之「序章大師劍(MNF/MSG)」流程", desc: "Ver.1.2.0～1.2.1最早被復刻的拿法（NS2此法已經較少用，但有很多程錯可以學）" },
-      { id: "qumkO3l09Kw", title: "番外16(3 - 舊) - 1.2.X版覺醒大師劍檔(AMS)專用｜失傳已久的過載法「序章大師劍(MNF/MSG)」繼承流程", desc: "Ver.1.2.0～1.2.1最早必須在AMS檔的做法（NS2此法已經較少用，但有很多程錯可以學）" },
-      { id: "HmocgDZFVdk", title: "番外16(NS2) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）" },
+      { id: "-oifw9PKeh4", title: "回應03 - 錯過就不再的實用道具？「不壞的序章大師劍」與「料理效果轉移」(1.1.1版以前限定)", desc: "～Ver.1.1.1版以前無過載 SLD 的流程" },
+      { id: "Gn90XQwp5zU", title: "番外16(1 - 舊) - 1.1.2版～1.2.1版通用流程「序章大師劍(MNF/MSG)」", desc: "1.1.2 版 Cull Storage 的舊流程（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "siGVEF5-AZY", title: "番外16(2 - 舊) - 1.2.0版～1.2.1版獨有｜不在序章手動存檔之「序章大師劍(MNF/MSG)」流程", desc: "無過載 R0 Cull Zuggle (In Bound) 的舊流程（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "qumkO3l09Kw", title: "番外16(3 - 舊) - 1.2.X版覺醒大師劍檔(AMS)專用｜失傳已久的過載法「序章大師劍(MNF/MSG)」繼承流程", desc: "有過載 R0 Cull Zuggle (In Bound) 的舊流程，可用在有觸發恆常覺醒大師劍的 AMS 檔（NS2此法已經較少用，但有很多程錯可以學）" },
+      { id: "HmocgDZFVdk", title: "番外16(NS2) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）", desc: "R0 Cull Zuggle (Out of Bound) 流程" },
     ],
   },
 
