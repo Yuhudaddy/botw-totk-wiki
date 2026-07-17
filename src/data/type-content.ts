@@ -80,8 +80,14 @@ export interface TypeContent {
   model3d?: {
     src: string;           // public/ 下的 .glb 路徑
     alt: string;
+    poster?: string;       // 低解析度封面圖路徑（public/ 下）
+    posterAlt?: string;
     cameraOrbit?: string;  // 初始視角 "方位角 仰角 距離"，例："15deg 45deg auto"
     cameraTarget?: string; // 初始注視點 "Xm Ym Zm"（glTF 座標，Y 朝上）
+    overviewOrbit?: string;  // 「總覽」按鈕視角／注視點（見 Model3DViewer 的 Props 註解）
+    overviewTarget?: string;
+    topOrbit?: string;       // 「俯視」按鈕視角；不給 topTarget 則沿用 overviewTarget
+    topTarget?: string;
     layoutSrc?: string;    // 點擊互動座標表 JSON 路徑（public/ 下），點擊房間顯示名稱
     legend?: { color: string; label: string }[]; // 色彩圖例（顯示於模型下方）
   }; // C 區改放可拖曳旋轉的 3D 模型（取代快速示意）
@@ -689,6 +695,15 @@ export const typeContent: Record<string, TypeContent> = {
       // 塔反而在近景顯得巨大，等於白做了方位角閃塔的調整。
       cameraOrbit: "60deg 55deg 1400m",
       cameraTarget: "-430m 80m -330m",
+      // 「總覽」：拉遠到同時看見高原、平原與導師之塔，注視點改用整個實體地形（不含外圍海面）
+      // 的重心，而不是房間群中心，距離／極角都要明寫（理由同上，auto 會把海面也框進去）。
+      overviewOrbit: "25deg 62deg 2200m",
+      overviewTarget: "-284m 60m 43m",
+      // 「俯視」：極角壓到接近 0（正上方往下看），方便看清楚房間排版；沿用總覽的注視點，
+      // 距離加大一點確保接近垂直俯視時仍能框住整個地形範圍。
+      topOrbit: "25deg 10deg 2400m",
+      poster: "/tots-model/model/poster.jpg",
+      posterAlt: "劍之考驗地圖模型載入中的預覽圖",
       layoutSrc: "/tots-model/model/tots-layout.json",
       // 色彩圖例：對應 blender-tots/generate_tots_model.py 的 PALETTE 房間屬性色
       legend: [

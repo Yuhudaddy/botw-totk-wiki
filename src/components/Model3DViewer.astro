@@ -5,6 +5,8 @@
 interface Props {
   src: string;          // GLB 檔路徑（相對於 BASE_URL），例："/tots-model/model/tots-model.glb"
   alt: string;
+  poster?: string;      // 低解析度封面圖路徑（相對於 BASE_URL）。不給值則沿用 model-viewer
+                        // 預設的純色封面（--poster-color 已設為透明）。
   posterAlt?: string;
   height?: string;             // 固定 CSS 高度（與 aspectRatio 擇一；三者皆未填則預設 480px）
   aspectRatio?: string;        // 長寬比（例如 "1/1"、"2/1"），預設（桌機／未特別指定寬度時）使用
@@ -19,17 +21,28 @@ interface Props {
   cameraTarget?: string;  // 初始注視點 "Xm Ym Zm"（glTF 座標，Y 朝上）。不填＝自動置中。
   layoutSrc?: string;     // 點擊互動用的座標表 JSON（相對於 BASE_URL；enhance 腳本輸出的
                           // tots-layout.json 格式）。有給值時，點擊模型會顯示房間／地標名稱。
+  overviewOrbit?: string;   // 「總覽」按鈕的視角／注視點：拉遠到看見整個地形（高原＋平原＋
+  overviewTarget?: string; // 導師之塔）。不給值則不顯示「總覽」按鈕（scene 含外圍海面，
+                          // 用 model-viewer 預設的 auto 自動取景會把整張地圖都塞進畫面，
+                          // 房間反而變得很小，所以固定給一組明確數值，跟 cameraOrbit 同理）。
+  topOrbit?: string;      // 「俯視」按鈕的視角：極角接近 0（正上方往下看），方便看清楚
+  topTarget?: string;     // 房間排版。不給 topTarget 則沿用 overviewTarget。同樣不給值則不顯示按鈕。
 }
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const {
-  src, alt, height, aspectRatio, mobileAspectRatio, autoRotate = false,
+  src, alt, poster, posterAlt, height, aspectRatio, mobileAspectRatio, autoRotate = false,
   minZoomDistance = 60, maxZoomDistance = 2500,
   cameraOrbit, cameraTarget, layoutSrc,
+  overviewOrbit, overviewTarget, topOrbit, topTarget,
 } = Astro.props;
+const resolvedTopTarget = topTarget ?? overviewTarget;
 const layoutUrl = layoutSrc
   ? `${BASE}${layoutSrc.startsWith("/") ? layoutSrc : `/${layoutSrc}`}`
   : undefined;
 const modelSrc = `${BASE}${src.startsWith("/") ? src : `/${src}`}`;
+const posterUrl = poster
+  ? `${BASE}${poster.startsWith("/") ? poster : `/${poster}`}`
+  : undefined;
 // aspect-ratio 本身故意「不」放進 inline style：model-viewer 的 shadow DOM 內建
 // :host { height:150px }，一旦 height 是明確值 aspect-ratio 就不會再補算，所以這裡改成只丟兩個
 // CSS 變數進去，實際的 height/aspect-ratio 交給下面 <style> 裡的規則（含中斷點）統一決定，
@@ -47,10 +60,21 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
 
 <script is:inline src={`${BASE}/vendor/model-viewer.min.js`} type="module"></script>
 
-<div class="model3d-wrap" data-layout-src={layoutUrl}>
+<div
+  class="model3d-wrap"
+  data-layout-src={layoutUrl}
+  data-overview-orbit={overviewOrbit}
+  data-overview-target={overviewTarget}
+  data-top-orbit={topOrbit}
+  data-top-target={resolvedTopTarget}
+>
+  <!-- model-viewer 的布林屬性不能輸出成 autoplay="false"／auto-rotate="false"：
+       HTML 只要看見屬性存在就會視為 true，導致閒置後自動旋轉。 -->
   <model-viewer
     src={modelSrc}
     alt={alt}
+    poster={posterUrl}
+    poster-alt={posterAlt}
     camera-controls
     touch-action="pan-y"
     interaction-prompt="none"
@@ -58,21 +82,39 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
     camera-target={cameraTarget}
     min-camera-orbit={minOrbit}
     max-camera-orbit={maxOrbit}
-    shadow-intensity="0.6"
+    shadow-intensity="0.35"
     exposure="1.0"
-    autoplay={autoRotate}
-    auto-rotate={autoRotate}
+    autoplay={autoRotate ? true : undefined}
+    auto-rotate={autoRotate ? true : undefined}
     style={`${sizeStyle} --poster-color: transparent;`}
     class="model3d-viewer"
   >
     <div slot="progress-bar"></div>
   </model-viewer>
-  <button type="button" class="model3d-reset" aria-label="重置視角" title="重置視角">
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M3 12a9 9 0 1 0 3-6.7"></path>
-      <path d="M3 4v5h5"></path>
-    </svg>
-  </button>
+  <div class="model3d-hint" data-hint-text="拖曳旋轉・雙指／滾輪縮放">拖曳旋轉・雙指／滾輪縮放</div>
+  <div class="model3d-controls">
+    {overviewOrbit && (
+      <button type="button" class="model3d-btn model3d-overview" aria-label="總覽" title="總覽">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path>
+        </svg>
+      </button>
+    )}
+    {topOrbit && (
+      <button type="button" class="model3d-btn model3d-top" aria-label="俯視" title="俯視">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <ellipse cx="12" cy="12" rx="9" ry="5"></ellipse>
+          <ellipse cx="12" cy="12" rx="3.4" ry="1.9"></ellipse>
+        </svg>
+      </button>
+    )}
+    <button type="button" class="model3d-btn model3d-reset" aria-label="重置視角" title="重置視角">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+        <path d="M3 4v5h5"></path>
+      </svg>
+    </button>
+  </div>
   {layoutUrl && (
     <div class="model3d-pick-info" data-hint="點擊模型中的房間或地標，可顯示名稱">
       點擊模型中的房間或地標，可顯示名稱
@@ -99,10 +141,14 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
       aspect-ratio: var(--mv-aspect-mobile, var(--mv-aspect, auto));
     }
   }
-  .model3d-reset {
+  .model3d-controls {
     position: absolute;
     top: 10px;
     right: 10px;
+    display: flex;
+    gap: 6px;
+  }
+  .model3d-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,9 +161,27 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
   }
-  .model3d-reset:hover {
+  .model3d-btn:hover {
     border-color: var(--brand);
     color: var(--brand);
+  }
+  .model3d-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%);
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 12.5px;
+    white-space: nowrap;
+    opacity: 0.9;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .model3d-hint.is-hidden {
+    opacity: 0;
   }
   .model3d-pick-info {
     margin-top: 8px;
@@ -163,6 +227,49 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
       mv.cameraTarget = initTarget;
       mv.fieldOfView = "auto";
     });
+
+    // 總覽／俯視：切到資料層指定的固定視角（見 Props 註解，不用 auto 是因為場景含外圍
+    // 海面，auto 會把整張地圖塞進畫面，反而看不清楚）。按鈕本身只在有給對應資料時才會渲染。
+    const overviewOrbit = wrap.dataset.overviewOrbit;
+    const overviewTarget = wrap.dataset.overviewTarget;
+    wrap.querySelector<HTMLButtonElement>(".model3d-overview")?.addEventListener("click", () => {
+      if (overviewOrbit) mv.cameraOrbit = overviewOrbit;
+      if (overviewTarget) mv.cameraTarget = overviewTarget;
+      mv.fieldOfView = "auto";
+    });
+    const topOrbit = wrap.dataset.topOrbit;
+    const topTarget = wrap.dataset.topTarget;
+    wrap.querySelector<HTMLButtonElement>(".model3d-top")?.addEventListener("click", () => {
+      if (topOrbit) mv.cameraOrbit = topOrbit;
+      if (topTarget) mv.cameraTarget = topTarget;
+      mv.fieldOfView = "auto";
+    });
+
+    // 首次操作提示：只在使用者「這一台裝置第一次看到這個模型」時顯示，拖曳／縮放一次或
+    // 5 秒後就淡出，之後用 sessionStorage 記住不再顯示（同一次瀏覽的其他頁籤／重整都算看過）。
+    const hintEl = wrap.querySelector<HTMLElement>(".model3d-hint");
+    if (hintEl) {
+      const hintKey = "model3d-hint-seen";
+      if (sessionStorage.getItem(hintKey)) {
+        hintEl.remove();
+      } else {
+        const dismiss = () => {
+          hintEl.classList.add("is-hidden");
+          sessionStorage.setItem(hintKey, "1");
+          setTimeout(() => hintEl.remove(), 500);
+        };
+        // camera-change 在程式化設定視角（例如載入時的初次取景）時也會觸發，detail.source
+        // 只有使用者實際拖曳／滾輪縮放時才是 "user-interaction"，藉此排除誤觸發。
+        const onCameraChange = (ev: any) => {
+          if (ev?.detail?.source === "user-interaction") {
+            mv.removeEventListener("camera-change", onCameraChange);
+            dismiss();
+          }
+        };
+        mv.addEventListener("camera-change", onCameraChange);
+        setTimeout(dismiss, 5000);
+      }
+    }
 
     // 點擊模型顯示房間／地標名稱：用 positionAndNormalFromPoint 取得點擊處的
     // 3D 座標（glTF 空間，Y 朝上），轉回 Blender 座標（Bx=Gx, By=-Gz, Bz=Gy）後，
