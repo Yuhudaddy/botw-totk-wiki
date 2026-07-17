@@ -25,6 +25,11 @@ export interface TypeMethod {
   image?: string;     // 快速示意圖片檔名（與 video 擇一），例："IST.png"
   note?: string | string[]; // 步驟下方的灰色備註（可多行）
   principle?: string;       // 此分頁的原理說明（覆蓋 TypeContent.principle）
+  principleExtra?: { title?: string; items: TypeStep[] };
+                            // 此分頁原理說明下方的固定附加小節（例："延伸"），只在切到這個分頁時顯示，
+                            // 切到其他分頁會跟著 principle 一起換掉（僅用於 hasDynamicPrinciple 的頁面，
+                            // 即 methods 有設定 principle 的頁面；一般走 content.principleSections 的頁面
+                            // 請直接把「延伸」加進 principleSections 陣列，不要用這個欄位）
   subTabs?: TypeMethod[];   // 子分頁（例：合併後的「R0 Cull Zuggle」底下的 In Bound／Out of Bound）。
                             // 有值時，此分頁本身不直接顯示 tags/sections/steps，改為顯示子分頁按鈕，
                             // 點擊後才顯示對應子分頁的內容（子分頁沿用同一套欄位，不支援巢狀 subTabs）。
@@ -69,7 +74,6 @@ export interface TypeContent {
   principle?: string;         // B 區內文（段落式，與 principleItems 擇一）
   principleItems?: string[];  // B 區內文（條列式，有值則覆蓋 principle）
   principleSections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[]; // B 區依副標題分段（例："歷史"／"原理"），text 為段落、items 為條列（擇一）；collapsible 為 true 時該段落預設收合，點擊標題展開（同「轉存格 Q&A」的手風琴樣式）。有值則覆蓋 principle／principleItems
-  principleExtra?: { title?: string; text?: string; items?: TypeStep[] }[]; // B 區固定附加段落（例："延伸"），永遠顯示在 principle/principleItems/principleSections/methods[].principle 動態內容的下方，不會被其他 principle 系欄位覆蓋（給 totk-10 這種依分頁動態切換 principle 文字、但仍想固定附加一段延伸說明的頁面用）
 
   principleNote?: string;     // B 區備註（灰色小字，顯示於 principle/principleItems 下方）
   showEmptyMedia?: boolean;   // 沒有示意媒體時仍顯示「快速示意」空狀態（先開頁、後補內容用）
@@ -2121,6 +2125,15 @@ export const typeContent: Record<string, TypeContent> = {
         ],
         principle:
           "重複 Zuggle 或 Invizuggle，使 9 到 10 個（適用於 1.0.0 版本）或 13 到 14 個（適用於 1.1.0+）武器、盾牌或弓箭並列裝備在林克身上或是 Zuggle Drop 在地上，使其達到林克本身的依賴數上限，導致切換裝備會使裝備掉落在地上、讀檔林克身上頭髮或衣服會從林克身上脫離。",
+        principleExtra: {
+          title: "延伸",
+          items: [
+            "Overload Drop（過載掉落）：林克身上的裝備依賴數 14 以上時切換裝備，該裝備會掉落在地上，但選單為裝備中。",
+            "Temporary Overload（臨時過載）：丟切裝備中的道具可以在關閉暫停的一瞬間，增加 1 的負載量，同種類型裝備的臨時過載只會 +1，故最多能 +3。",
+            "Overload Pickup（過載撿拾）：包含丟切裝備中的道具，林克身上的裝備依賴數 14 以上試圖空手撿裝備，會發現選單有撿起來並裝備，但是該裝備的模型仍在原地沒有被撿起。",
+            "Mitosis（過載分裂）：Overload Drop 盾牌(或武器) → 打開暫停丟切纏桿武器(或盾牌)並切換裝備另一個盾牌。",
+          ],
+        },
       },
       {
         tab: "Fuse",
@@ -2192,17 +2205,6 @@ export const typeContent: Record<string, TypeContent> = {
         ],
         principle:
           "為了將兩個物理物件綁定在一起，遊戲會用一個「物理束制（Constraint）」來固定物件之間的互動關係。這包括連接兩個不同 Actor 的約束（如：究極手黏合膠），以及連接同一個 Actor 不同部分的約束（如：__彈簧的兩個部分__）。遊戲會在一個大小為 2560 的全域陣列中追蹤所有這些約束。當你填滿這個陣列時，遊戲會無法建立新的束制而解體。每隻馬在動畫處理上會使用 21 個束制。重複掃入一百餘隻__伊波娜馬__的 Amiibo 可以觸發該過載，即最早的「伊波娜過載（Epona Overload）」。若利用某些左納烏裝置（◯龍頭、◯輪胎）各會使用 4 個束制來成形，殘留 600 餘個就可以觸發束制過載。",
-      },
-    ],
-    principleExtra: [
-      {
-        title: "延伸",
-        items: [
-          "Overload Drop（過載掉落）：林克身上的裝備依賴數 14 以上時切換裝備，該裝備會掉落在地上，但選單為裝備中。",
-          "Temporary Overload（臨時過載）：丟切裝備中的道具可以在關閉暫停的一瞬間，增加 1 的負載量，同種類型裝備的臨時過載只會 +1，故最多能 +3。",
-          "Overload Pickup（過載撿拾）：包含丟切裝備中的道具，林克身上的裝備依賴數 14 以上試圖空手撿裝備，會發現選單有撿起來並裝備，但是該裝備的模型仍在原地沒有被撿起。",
-          "Mitosis（過載分裂）：Overload Drop 盾牌(或武器) → 打開暫停丟切纏桿武器(或盾牌)並切換裝備另一個盾牌。",
-        ],
       },
     ],
     videos: [

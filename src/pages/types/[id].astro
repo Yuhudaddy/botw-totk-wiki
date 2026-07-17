@@ -5,7 +5,7 @@ import Model3DViewer from "../../components/Model3DViewer.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../../data/type-content";
-import { parseAccent, parseStep, stepParts, parseName, principleHtml } from "../../lib/method-format";
+import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml } from "../../lib/method-format";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -133,7 +133,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               ))}
             </div>
             {content.methods.map((m, i) => (
-              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} hidden={i !== 0}>
+              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
                 {m.subTabs ? (
                   <div class="subtab-group">
                     <div role="tablist" class="subtab-tabs mb-4 flex flex-wrap gap-2">
@@ -269,33 +269,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           {content?.principleNote && (
             <p class="mt-3 text-[13px] leading-[1.7] text-muted">{content.principleNote}</p>
           )}
-          {content?.principleExtra?.map((sec) => (
-            <div class="principle-block">
-              {sec.title && <div class="principle-block-title">{sec.title}</div>}
-              {sec.text && <p>{sec.text}</p>}
-              {sec.items && (
-                <ul>
-                  {sec.items.map((it) => {
-                    const { text, sub } = stepParts(it);
-                    return (
-                      <li>
-                        {parseStep(text).map((seg) =>
-                          seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                            : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
-                            : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
-                        )}
-                        {sub.length > 0 && (
-                          <ul class="step-sub">
-                            {sub.map((d) => <li>{d}</li>)}
-                          </ul>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          ))}
+          {hasDynamicPrinciple && (
+            <div id="principle-extra" set:html={principleExtraHtml(content?.methods?.[0]?.principleExtra)} />
+          )}
         </div>
 
         {/* C: 快速示意（影片或圖片，隨分頁切換） */}
@@ -989,6 +965,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     }
 
     const principleText = document.getElementById("principle-text");
+    const principleExtra = document.getElementById("principle-extra");
 
     function select(index: number) {
       tabs.forEach((t) => t.setAttribute("aria-selected", String(Number(t.dataset.tab) === index)));
@@ -996,6 +973,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       updateMedia(index);
       if (principleText) {
         principleText.innerHTML = panelByIndex.get(index)?.dataset.principle ?? "";
+      }
+      if (principleExtra) {
+        principleExtra.innerHTML = panelByIndex.get(index)?.dataset.principleExtra ?? "";
       }
     }
 

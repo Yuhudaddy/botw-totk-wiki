@@ -67,3 +67,26 @@ export function principleHtml(text: string) {
         ).join("")
   ).join("");
 }
+
+// 把單一分頁的 principleExtra（{title, items}）轉成 HTML 字串，供 data-principle-extra 使用。
+// 隨分頁切換一起換掉，因此和 principleHtml 一樣輸出純 HTML 字串而非 JSX；
+// 沒有 items 時回傳空字串（切到沒有 principleExtra 的分頁時，區塊自然清空/不顯示）。
+export function principleExtraHtml(extra?: { title?: string; items: TypeStep[] }) {
+  if (!extra || !extra.items?.length) return "";
+  const titleHtml = extra.title ? `<div class="principle-block-title">${escapeHtml(extra.title)}</div>` : "";
+  const itemsHtml = extra.items.map((it) => {
+    const { text, sub } = stepParts(it);
+    const mainHtml = parseStep(text).map((s) =>
+      s.href
+        ? `<a href="${PRINCIPLE_BASE}/types/${s.href}" class="accent-link">${escapeHtml(s.text)}</a>`
+        : s.accent
+          ? `<span class="accent-text">${escapeHtml(s.text)}</span>`
+          : escapeHtml(s.text)
+    ).join("");
+    const subHtml = sub.length
+      ? `<ul class="step-sub">${sub.map((d) => `<li>${escapeHtml(d)}</li>`).join("")}</ul>`
+      : "";
+    return `<li>${mainHtml}${subHtml}</li>`;
+  }).join("");
+  return `<div class="principle-block">${titleHtml}<ul>${itemsHtml}</ul></div>`;
+}
