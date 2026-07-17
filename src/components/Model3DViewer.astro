@@ -76,7 +76,7 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
     poster={posterUrl}
     poster-alt={posterAlt}
     camera-controls
-    touch-action="pan-y"
+    touch-action="none"
     interaction-prompt="none"
     camera-orbit={cameraOrbit}
     camera-target={cameraTarget}
@@ -91,7 +91,6 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
   >
     <div slot="progress-bar"></div>
   </model-viewer>
-  <div class="model3d-hint" data-hint-text="拖曳旋轉・雙指／滾輪縮放">拖曳旋轉・雙指／滾輪縮放</div>
   <div class="model3d-controls">
     {overviewOrbit && (
       <button type="button" class="model3d-btn model3d-overview" aria-label="總覽" title="總覽">

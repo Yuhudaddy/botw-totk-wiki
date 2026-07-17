@@ -701,7 +701,7 @@ export const typeContent: Record<string, TypeContent> = {
       overviewTarget: "-284m 60m 43m",
       // 「俯視」：極角壓到接近 0（正上方往下看），方便看清楚房間排版；沿用總覽的注視點，
       // 距離加大一點確保接近垂直俯視時仍能框住整個地形範圍。
-      topOrbit: "25deg 10deg 2400m",
+      topOrbit: "0deg 90deg 3200m",
       poster: "/tots-model/model/poster.jpg",
       posterAlt: "劍之考驗地圖模型載入中的預覽圖",
       layoutSrc: "/tots-model/model/tots-layout.json",
