@@ -74,7 +74,7 @@ export const typeGroups: TypeGroup[] = [
     label: "智慧的再現",
     en: "Echoes of Wisdom",
     items: [
-      { no: "01", zh: "大岩蛇", en: "Onix" },
+      { no: "01", zh: "選單儲存", en: "Menu Storage" },
       { no: "02", zh: "萊尼爾", en: "Lynel" },
       { no: "03", zh: "飛天技巧", en: "Skybound", videosOnly: true },
     ],

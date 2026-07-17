@@ -2693,6 +2693,30 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "eow-01": {
+    methods: [
+      {
+        tab: "錯誤傳送",
+        sections: [
+          {
+            title: "隨機錯傳（Random Wrong Warp）",
+            steps: ["步驟建置中"],
+          },
+          {
+            title: "指標錯傳（Index Wrong Warp）",
+            steps: ["步驟建置中"],
+          },
+        ],
+      },
+      {
+        tab: "序章林克繼承",
+        sections: [
+          {
+            title: "序章林克繼承（Prologue Link Transfer）",
+            steps: ["步驟建置中"],
+          },
+        ],
+      },
+    ],
     videos: [
       { id: "fsTX3L_vga8", title: "番外03 - 用大岩蛇就可以半小時就破關！「指標錯傳(Index Wrong Warp)」（適用：ver.1.0.1以下）" },
     ],
@@ -2704,12 +2728,17 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "側身閃避",
         video: "20260710_techniques.mp4",
-        steps: [],
+        bullets: [
+          "衝刺掃斬：正面對遠距離時人馬會衝過來揮砍，往人馬右側按 R 旋轉可迴避",
+          "迴旋斬：人馬停頓時靠近人馬後方會迴旋斬，不要太靠近",
+          "交叉斬：正面對近距離時人馬會使出交叉斬，不要太靠近",
+        ],
       },
       {
         tab: "高空傷害",
         video: "20260710_breaking spam.mp4",
-        steps: [],
+        intro: "在左側樹上堆疊兩層以上的高度人馬不易發覺，在高處丟會破碎的道具持續給予人馬傷害。",
+        note: "※ 注意有時人馬會跳到樹上來，發現薩爾達並觸發敵意後此方法就無法繼續使用。",
       },
     ],
     videos: [
@@ -2884,7 +2913,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "Cull Detach (R0&R1)",
+        tab: "Cull Detach Zuggle (R0&R1)",
         group: "有過載（Overloading）",
         tags: ["Ver.1.2.0+"],
         difficulty: "★★☆☆☆",
