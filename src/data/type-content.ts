@@ -2346,6 +2346,7 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "MSD",
+        name: "YB複製法（Midair Sort Duplication）",
         tags: ["～Ver.1.1.1"],
         steps: [
           "讓林克處於空中狀態（盾跳、滑翔翼，或站在米涅魯上）",
@@ -2361,6 +2362,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "ZSD",
+        name: "左納烏YB複製法（Zonai Sort Duplication）",
         tags: ["～Ver.1.1.1"],
         steps: [
           "讓林克面向牆壁或懸崖，站在一個不會太近、但又足夠靠近的距離",
@@ -2387,6 +2389,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "DS",
+        name: "扭蛋機儲存（Dispenser Storage）",
         tags: ["All Versions"],
         steps: [
           "把一個不太會滑動的重物放進左納烏裝置產生器（Dispenser）",
@@ -2405,6 +2408,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "HSD",
+        name: "持物儲存複製（Horse Storage Duplication）",
         tags: ["All Versions"],
         steps: [
           "在一匹馬身上啟動 Hold Storage",
