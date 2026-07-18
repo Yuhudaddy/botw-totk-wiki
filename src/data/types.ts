@@ -42,6 +42,8 @@ export const typeGroups: TypeGroup[] = [
       { no: "16", zh: "合作戰鬥集", en: "Combat Montage", videosOnly: true },
       { no: "17", zh: "主動突擊", en: "Active Flurry Rush" },
       { no: "18", zh: "穿牆", en: "Clipping" },
+      { no: "19", zh: "子時彈翔", en: "Bullet Time Bounce" },
+      { no: "20", zh: "天滑", en: "Bow Lift Smuggle Slide" },
     ],
   },
   {
