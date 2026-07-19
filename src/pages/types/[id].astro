@@ -113,6 +113,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <h2>{content?.methodsTitle ?? "流程步驟"}</h2>
         {content?.methods ? (
           <div class="method-tabs">
+            {/* 只有單一分頁時不顯示膠囊分頁按鈕列，內容改由 MethodPanelBody 的 m.name 顯示白色小標題 */}
+            {content.methods.length > 1 && (
             <div role="tablist" class="mb-5 flex flex-col gap-2">
               {methodGroups.map((g) => (
                 <div class="flex flex-wrap items-center gap-2">
@@ -132,6 +134,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 </div>
               ))}
             </div>
+            )}
             {content.methods.map((m, i) => (
               <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
                 {m.subTabs ? (

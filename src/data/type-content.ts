@@ -541,6 +541,7 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "步驟",
+        name: "過場必殺劍（Cutscene One-Hit Obliterator）",
         video: "過場必殺劍.mp4",
         steps: [
           "解完 3 個必殺之劍的神廟",
@@ -1331,6 +1332,7 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "BTB",
+        name: "子彈時間彈翔 / 踩怪飛（Bullet Time Bounce）",
         tags: ["All Versions"],
         steps: [
           "將三類小魔物（波克布林、蜥蜴戰士、莫力布林）結凍",
@@ -1377,7 +1379,9 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "BLSS",
+        name: "天滑（Bow Lift Smuggle Slide）",
         tags: ["～Ver.1.6.0"],
+        intro: "適合：～Ver.1.6.0",
         steps: [
           "裝備弓箭和盾牌，按住 ZL 舉盾",
           "移動到可以舉起（如：炸彈、石頭）的物品前，顯示「手持」判定",
