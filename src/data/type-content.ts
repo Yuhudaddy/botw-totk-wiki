@@ -1406,6 +1406,18 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "botw-21": {
+    principle: "內容整理中，敬請期待。",
+    methods: [
+      {
+        tab: "共通",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+    ],
+    notes: [{ text: "內容整理中，敬請期待。" }],
+    videos: [],
+  },
+
   "totk-01": {
     intro: "收錄《王國之淚》各種必備的小程錯，許多大型的程錯都是由這些小程錯拼湊而成的路線流程，從餘料糾纏、纏桿、隱藏，到並列裝備與各式繼承技術，每集針對單一技術做示範。每支影片標注適用版本，查詢前請確認你的遊戲版本。",
     videos: [
@@ -1581,7 +1593,7 @@ export const typeContent: Record<string, TypeContent> = {
             title: "過載餘料糾纏（Overload FE）",
             tags: ["All Versions"],
             steps: [
-              "觸發[[並列過載|totk-10#Zuggle]]",
+              "觸發[[並列過載|totk-11#Zuggle]]",
               "[[並列（Zuggle）|totk-09#Zuggle]]一個武器",
               "過載掉落一個武器，並把它餘料建造在盾牌上",
               "丟出要糾纏的目標道具，將它餘料建造在武器上",
@@ -1979,12 +1991,14 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-09": {
+    videoFolder: "totk-smuggle zuggle",
     methodsTitle: "裝備狀態",
     notesTitle: "備註說明",
     methods: [
       {
         tab: "Smuggle",
         name: "黏手（Smuggle）",
+        video: "Smuggle.mp4",
         steps: [
           "在阿卡萊隱藏區，將武器 A 餘料糾纏到盾牌 B 上（盾牌糾纏到武器也可以）",
           "將 B 留在隱藏區牆壁，裝備著 A 離開隱藏區",
@@ -1997,6 +2011,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Zuggle",
         name: "並列（Zuggle = Zvleon's Smuggle）",
+        video: "Zuggle.mp4",
         sections: [
           {
             title: "法一：地圖並列（Map Zuggle）",
@@ -2048,7 +2063,7 @@ export const typeContent: Record<string, TypeContent> = {
                   "隨意丟棄一個武器 / 盾牌 / 弓箭",
                   "丟棄裝備中的纏桿武器",
                   "裝備另一把武器",
-                  "丟棄任意 2 把以上武器 / 盾牌 / 弓箭，或是[[米涅魯的手臂|totk-10#SFO]]",
+                  "丟棄任意 2 把以上武器 / 盾牌 / 弓箭，或是[[米涅魯的手臂|totk-11#SFO]]",
                   "丟棄裝備中的目標盾牌",
                   "裝備另一個盾牌",
                 ],
@@ -2090,6 +2105,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Sluggle",
         name: "Sluggle",
+        video: "Sluggle.mp4",
         sections: [
           {
             title: "法一：吃掉瞬間撿起裝備",
@@ -2149,6 +2165,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Wuggle",
         name: "糾纏型並列（Wuggle = Weird Zuggle）",
+        video: "Wuggle.mp4",
         sections: [
           {
             title: "法一：隱藏區（Cull Area Wuggle）",
@@ -2186,6 +2203,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "Zoggle",
         name: "解纏型並列（Zoggle = Ock's Zuggle）",
         tags: ["Ver.1.2.0+"],
+        video: "Zoggle.mp4",
         steps: [
           "完成武器的 Wuggle",
           "搜集武器填滿背包，打開一個含有武器的寶箱",
@@ -2230,7 +2248,7 @@ export const typeContent: Record<string, TypeContent> = {
         text: "Smuggle、Zuggle 的情形下丟棄裝備，該裝備會保持和林克有依賴關係的狀態，該狀態或裝備稱作 Zuggle Drop（從 Zuggle 被丟棄出來的狀態）",
       },
       {
-        text: "Zuggle 的數量太多，達到林克的裝備依賴上限，會造成 [[Zuggle Overload|totk-10#Zuggle]]。",
+        text: "Zuggle 的數量太多，達到林克的裝備依賴上限，會造成 [[Zuggle Overload|totk-11#Zuggle]]。",
       },
     ],
     faqLink: { label: "深入了解 Zuggle", path: "/types/totk-09-zuggle" },
@@ -2243,9 +2261,36 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-10": {
+    videoFolder: "totk-transfer",
+    principle: "內容整理中，敬請期待。",
+    methods: [
+      {
+        tab: "SLD",
+        name: "存讀繼承（Save Load Duplication）",
+        video: "SLD.mp4",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "ZLOT",
+        name: "並列繼承（Zuggle Load Object Transfer）",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "PSLOT",
+        name: "永久繼承（Permanent Save Load Object Transfer）",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+    ],
+    notes: [{ text: "內容整理中，敬請期待。" }],
+    videos: [],
+  },
+
+  "totk-11": {
+    videoFolder: "totk-overload",
     methods: [
       {
         tab: "Zuggle",
+        video: "Zuggle Overload.mp4",
         sections: [
           {
             title: "地圖並列法（Map Zuggle）",
@@ -2278,6 +2323,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Fuse",
+        video: "Fuse Overload.mp4",
         sections: [
           {
             title: "餘料過載（Fuse Overload）",
@@ -2294,6 +2340,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "SFO",
+        video: "Super Fuse Overload.mp4",
         sections: [
           {
             title: "全域餘料過載（Super Fuse Overload）",
@@ -2372,7 +2419,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-11": {
+  "totk-12": {
     videoFolder: "totk-sneakstrike",
     methods: [
       {
@@ -2407,7 +2454,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-12": {
+  "totk-13": {
     videoFolder: "totk-gas",
     showEmptyMedia: true,
     methods: [
@@ -2429,6 +2476,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Mineru FE",
         tags: ["All Versions"],
+        video: "20260720_mineru fe_gas.mp4",
         steps: [
           "準備[[纏桿武器或盾牌|totk-08#Portacull]]",
           "騎上米涅魯啟動餘料對準會耗電的左納烏裝置",
@@ -2442,11 +2490,12 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Drop Swap",
         tags: ["Ver.1.2.0+"],
+        video: "20260720_drop swap_gas.mp4",
         steps: [
           "將會耗電的左納烏裝置餘料糾纏在盾牌上",
           "將左納烏裝置餘料建造在武器上",
           "往前衝刺，並在衝刺中按暫停",
-          "丟出4把以上裝備（武器 / 盾 / 弓），最近丟棄糾纏盾並裝備另一個盾牌觸發盾牌__丟切隱藏（Drop Swap Cull）__",
+          "丟出 4 把以上裝備（武器 / 盾 / 弓），最後丟棄糾纏盾並裝備另一個盾牌觸發盾牌__丟切隱藏（Drop Swap Cull）__",
           "推著方向鍵的同時，輸入「+ → Y → +」，快速關閉暫停之後衝刺攻擊，在盾牌掉出來之前再打開暫停。",
           "手持任意材料中止衝刺攻擊後關閉暫停",
         ],
@@ -2460,6 +2509,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Zuggle",
         tags: ["All Versions"],
+        video: "20260720_zuggle_gas.mp4",
         steps: [
           "Zuggle一個盾牌",
           "裝備同類型的盾牌",
@@ -2488,7 +2538,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-13": {
+  "totk-14": {
     methods: [
       {
         tab: "MSD",
@@ -2671,11 +2721,13 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-14": {
+  "totk-15": {
+    videoFolder: "totk-sbr",
     methods: [
       {
         tab: "SBR",
         name: "盾擋重置（Shield Block Reset）",
+        video: "SBR.mp4",
         steps: [
           "裝備耐久度夠高、不會因為格擋而損壞的盾牌",
           "按住 ZL 舉盾，「左搖桿 ←/↑/→ ＋ X」鎖定跳的同時在空中盾擋傷害",
@@ -2703,11 +2755,13 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-15": {
+  "totk-16": {
+    videoFolder: "totk-di",
     methods: [
       {
         tab: "Void Dip",
         name: "深淵虛化（Void Dip / Abyss DI）",
+        video: "Void Dip.mp4",
         steps: [
           "前往火之神殿入口左側有放水栓的岩漿河（尾端下方有深淵判定），關閉放水栓避免產生石板",
           "米涅魯糾纏想虛化的裝備（可在此時餘料材料，該材料虛化後可無限使用）",
@@ -2721,6 +2775,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "DI",
         name: "吞噬虛化（Eaten DI）",
         intro: "此方法需要配合「閃藏」與「氣球解纏」技巧：",
+        video: "DI.mp4",
         steps: [
           "前往西南方神廟尋找莫爾德拉吉克，並米涅魯糾纏想要虛化的裝備",
           "下去沙漠的地面，丟出一個操縱桿，將步驟 1 的裝備丟在操縱桿旁邊",
@@ -2732,6 +2787,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "DI Infection",
+        video: "DI Infection.mp4",
         sections: [
           {
             title: "虛幽化（Ghost DI）",
@@ -2748,6 +2804,7 @@ export const typeContent: Record<string, TypeContent> = {
               "撿起步驟 1 的裝備，重複步驟 2，隨意餘料建造一顆蘋果或左納烏道具，不需要暫停中斷",
               "丟棄裝備，虛幽化感染完成",
             ],
+            note: "※ 連續感染 13 次保持 Zuggle Drop，並把一般母物件用火箭送走可觸發可調式的 Zuggle Overload，只要將任意 Zuggle Drop 轉成 Normal Drop 就可脫離過載。",
           },
         ],
       },
@@ -2792,7 +2849,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-16": {
+  "totk-17": {
     methods: [
       {
         tab: "西方高原",
@@ -2809,7 +2866,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-18": {
+  "totk-19": {
     methods: [
       {
         tab: "Prologue Escape",
@@ -2840,6 +2897,20 @@ export const typeContent: Record<string, TypeContent> = {
         text: "解完 4 個神殿前往城堡內部的幻影加儂戰會影響重置覺醒大師劍的 flag，解完任務後會失去覺醒狀態。",
       },
     ],
+  },
+
+  "totk-20": {
+    videoFolder: "totk-endlag cancel",
+    principle: "內容整理中，敬請期待。",
+    methods: [
+      {
+        tab: "Hopback Cancel",
+        video: "Hopback Cancel.mp4",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+    ],
+    notes: [{ text: "內容整理中，敬請期待。" }],
+    videos: [],
   },
 
   "eow-01": {
@@ -2903,7 +2974,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
-  "totk-17": {
+  "totk-18": {
     methods: [
       {
         tab: "SLD",
