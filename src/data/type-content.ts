@@ -2010,7 +2010,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Zuggle",
-        name: "並列（Zuggle = Zvleon's Smuggle）",
+        name: "並列裝備 / 疊裝（Zuggle = Zvleon’s Smuggle）",
         video: "Zuggle.mp4",
         sections: [
           {
@@ -2104,7 +2104,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Sluggle",
-        name: "Sluggle",
+        name: "Sluggle = Smuggle-like Slug",
         video: "Sluggle.mp4",
         sections: [
           {
@@ -2278,6 +2278,11 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "PSLOT",
         name: "永久繼承（Permanent Save Load Object Transfer）",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "RL",
+        name: "乾坤鎖 / 倒轉固定（RL = Recall Lock）",
         steps: ["步驟整理中，敬請期待。"],
       },
     ],
