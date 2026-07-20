@@ -132,11 +132,11 @@ function sourceLabel(url: string): string {
     </div>
   </div>
 
-  {/* 搜尋 + 分類跳轉列 */}
+  {/* 搜尋 + 分類圖示列 */}
   <div class="r-res-toolbar border-b border-border-soft bg-bg">
-    <div class="mx-auto flex max-w-[1180px] flex-wrap items-center gap-3 px-8 py-3.5">
+    <div class="mx-auto flex max-w-[1180px] flex-col gap-3 px-8 py-3.5 sm:flex-row sm:items-center">
       <div
-        class="flex w-[260px] max-w-full items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand"
+        class="flex flex-1 items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand md:flex-none md:w-[260px]"
       >
         <svg
           class="ml-3 flex-none text-muted"
@@ -160,24 +160,80 @@ function sourceLabel(url: string): string {
         />
       </div>
       <div id="res-count" class="font-mono text-[12px] text-muted"></div>
-      {
-        resourceGames.map((g) => (
-          <nav
-            class="chipset ml-auto flex flex-wrap gap-1.5"
-            data-chips={g.game}
-            hidden={g.game !== "botw"}
-          >
-            {g.categories.map((c) => (
-              <a
-                href={`#${g.game}-${c.id}`}
-                class="chip rounded-full border border-border-strong px-3 py-[5px] text-[12.5px] text-text no-underline transition-colors hover:border-brand hover:text-accent"
-              >
-                {c.label}
-              </a>
-            ))}
-          </nav>
-        ))
-      }
+      <div class="ml-auto flex items-center gap-1.5">
+        <a
+          href="#"
+          title="互動地圖"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          data-kind="map"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            set:html={KIND_ICONS.map}
+          />
+        </a>
+        <a
+          href="#"
+          title="數據表格"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          data-kind="sheet"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            set:html={KIND_ICONS.sheet}
+          />
+        </a>
+        <a
+          href="#"
+          title="機制文件"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          data-kind="doc"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            set:html={KIND_ICONS.doc}
+          />
+        </a>
+        <a
+          href="#"
+          title="攻略網站"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          data-kind="site"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            set:html={KIND_ICONS.site}
+          />
+        </a>
+      </div>
     </div>
   </div>
 
@@ -230,7 +286,7 @@ function sourceLabel(url: string): string {
                     class="res group flex min-w-0 items-center gap-3.5 rounded-xl border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
                     data-search={`${item.title} ${item.note ?? ""} ${sourceLabel(item.url)}`.toLowerCase()}
                   >
-                  <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[10px] bg-sand text-muted transition-colors group-hover:text-accent">
+                  <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[10px] bg-sand text-muted transition-colors group-hover:text-accent" data-kind={item.kind}>
                     <svg
                       viewBox="0 0 24 24"
                       width="17"
@@ -394,13 +450,14 @@ function sourceLabel(url: string): string {
   <script>
     const portals = Array.from(document.querySelectorAll<HTMLButtonElement>(".portal"));
     const libs = Array.from(document.querySelectorAll<HTMLElement>(".lib"));
-    const chipsets = Array.from(document.querySelectorAll<HTMLElement>(".chipset"));
+    const filterBtns = Array.from(document.querySelectorAll<HTMLElement>(".res-filter"));
     const searchInput = document.getElementById("res-search") as HTMLInputElement | null;
     const countEl = document.getElementById("res-count");
 
     const gameOrder = portals.map((p) => p.dataset.game ?? "");
 
     let activeGame = "botw";
+    let activeKind: string | null = null;
 
     function applyFilter() {
       const q = (searchInput?.value ?? "").trim().toLowerCase();
@@ -413,7 +470,9 @@ function sourceLabel(url: string): string {
         const rows = Array.from(sec.querySelectorAll<HTMLElement>(".res"));
         let visible = 0;
         rows.forEach((row) => {
-          const hit = !q || (row.dataset.search ?? "").includes(q);
+          const matchesSearch = !q || (row.dataset.search ?? "").includes(q);
+          const matchesKind = !activeKind || row.querySelector("span[data-kind]")?.getAttribute("data-kind") === activeKind;
+          const hit = matchesSearch && matchesKind;
           row.hidden = !hit;
           if (hit) visible++;
         });
@@ -421,21 +480,17 @@ function sourceLabel(url: string): string {
         visibleTotal += visible;
         const badge = sec.querySelector(".sec-count");
         if (badge) badge.textContent = q ? `${visible}/${sec.dataset.total}` : `${sec.dataset.total}`;
-        // 對應的分類籌碼跟著變淡
-        const chip = document.querySelector(`.chipset[data-chips="${activeGame}"] a[href="#${sec.id}"]`);
-        chip?.classList.toggle("dim", visible === 0);
       });
 
       const empty = lib.querySelector<HTMLElement>(".res-empty");
       if (empty) empty.classList.toggle("hidden", visibleTotal > 0);
-      if (countEl) countEl.textContent = q ? `${visibleTotal} 筆符合` : "";
+      if (countEl) countEl.textContent = q || activeKind ? `${visibleTotal} 筆符合` : "";
     }
 
     function setGame(game: string, animate = true) {
       if (!libs.some((l) => l.dataset.lib === game)) return;
       activeGame = game;
       portals.forEach((p) => p.setAttribute("aria-pressed", String(p.dataset.game === game)));
-      chipsets.forEach((c) => (c.hidden = c.dataset.chips !== game));
       libs.forEach((l) => {
         const on = l.dataset.lib === game;
         l.hidden = !on;
@@ -452,6 +507,22 @@ function sourceLabel(url: string): string {
     portals.forEach((p) =>
       p.addEventListener("click", () => {
         if (p.dataset.game !== activeGame) setGame(p.dataset.game ?? "botw");
+      })
+    );
+
+    filterBtns.forEach((btn) =>
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const kind = btn.dataset.kind;
+        activeKind = activeKind === kind ? null : kind;
+        filterBtns.forEach((b) => {
+          const isActive = b.dataset.kind === activeKind;
+          b.classList.toggle("border-brand", isActive);
+          b.classList.toggle("text-accent", isActive);
+          b.classList.toggle("border-border-soft", !isActive);
+          b.classList.toggle("text-muted", !isActive);
+        });
+        applyFilter();
       })
     );
 
