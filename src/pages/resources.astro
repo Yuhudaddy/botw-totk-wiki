@@ -19,10 +19,13 @@ const KIND_ICONS: Record<ResourceKind, string> = {
   site: '<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 0 1 0 18 13.5 13.5 0 0 1 0-18z"/>',
 };
 
-// 兩個遊戲門扉的浮水印徽記：希卡之眼／左納烏漩渦
+// 四個遊戲門扉的浮水印徽記：希卡之眼／左納烏漩渦／回音方塊／大亂鬥星爆
 const GAME_MARKS: Record<string, string> = {
   botw: '<path d="M8 50 Q50 14 92 50 Q50 86 8 50 Z"/><circle cx="50" cy="50" r="15"/><circle cx="50" cy="50" r="5" fill="currentColor" stroke="none"/><line x1="50" y1="21" x2="50" y2="6"/><line x1="31" y1="26" x2="24" y2="13"/><line x1="69" y1="26" x2="76" y2="13"/><line x1="50" y1="68" x2="50" y2="86"/><circle cx="50" cy="90" r="3.5" fill="currentColor" stroke="none"/>',
   totk: '<path d="M22 22h56v56H36V36h28v28H50" fill="none"/>',
+  eow: '<rect x="22" y="22" width="42" height="42" rx="6"/><rect x="36" y="36" width="42" height="42" rx="6" opacity="0.55"/>',
+  ssbu:
+    '<polygon points="50,8 56.9,33.4 79.7,20.3 66.6,43.1 92,50 66.6,56.9 79.7,79.7 56.9,66.6 50,92 43.1,66.6 20.3,79.7 33.4,56.9 8,50 33.4,43.1 20.3,20.3 43.1,33.4"/><circle cx="50" cy="50" r="4" fill="currentColor" stroke="none"/>',
 };
 
 // 連結來源的顯示名稱
@@ -63,9 +66,6 @@ function sourceLabel(url: string): string {
     return "";
   }
 }
-
-const totalOf = (game: (typeof resourceGames)[number]) =>
-  game.categories.reduce((n, c) => n + c.items.length, 0);
 ---
 
 <BaseLayout
@@ -99,39 +99,31 @@ const totalOf = (game: (typeof resourceGames)[number]) =>
     </div>
   </section>
 
-  {/* 遊戲門扉切換 */}
+  {/* 遊戲分頁：文件頁籤樣式，桌面一排四個、手機 2x2 */}
   <div class="mx-auto max-w-[1180px] px-8 pt-10">
-    <div class="r-res-portals grid grid-cols-2 gap-[18px]">
+    <div class="r-game-tabs grid grid-cols-2 gap-3 md:grid-cols-4">
       {
         resourceGames.map((g) => (
           <button
             type="button"
-            class="portal ring-hover relative cursor-pointer overflow-hidden rounded-2xl border border-border-soft bg-surface px-7 py-6 text-left transition-colors"
+            class="portal ring-hover relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-border-soft bg-surface px-4 text-left transition-colors"
             data-game={g.game}
             aria-pressed={g.game === "botw" ? "true" : "false"}
           >
             <svg
-              class="portal-mark pointer-events-none absolute -right-4 -top-2 h-[150px] w-[150px] text-ink"
+              class="portal-mark pointer-events-none flex-none"
               viewBox="0 0 100 100"
               fill="none"
               stroke="currentColor"
-              stroke-width="3"
+              stroke-width="6"
               stroke-linecap="round"
               stroke-linejoin="round"
               set:html={GAME_MARKS[g.game]}
             />
-            <div class="relative">
-              <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{g.en}</div>
-              <div class="r-portal-title mt-2 font-serif text-[26px] font-medium leading-tight text-ink">
-                {g.label}
-              </div>
-              <div class="mt-2.5 flex flex-wrap items-center gap-2.5 text-[13px] text-muted">
-                <span class="font-mono">
-                  {totalOf(g)} 項資源 · {g.categories.length} 類
-                </span>
-                <span class="portal-pill whitespace-nowrap rounded-full bg-[rgba(201,100,66,0.13)] px-2.5 py-[3px] text-xs font-semibold text-accent">
-                  瀏覽中
-                </span>
+            <div class="min-w-0">
+              <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{g.en}</div>
+              <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
+                {g.shortLabel ?? g.label}
               </div>
             </div>
           </button>
@@ -197,10 +189,28 @@ const totalOf = (game: (typeof resourceGames)[number]) =>
         data-lib={g.game}
         hidden={g.game !== "botw"}
       >
+        {g.categories.length === 0 && (
+          <div class="flex flex-col items-center gap-3 py-24 text-center">
+            <svg
+              class="h-14 w-14 text-muted opacity-40"
+              viewBox="0 0 100 100"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              set:html={GAME_MARKS[g.game]}
+            />
+            <p class="font-serif text-xl font-medium text-ink">資源整理中</p>
+            <p class="text-sm text-muted">
+              {g.shortLabel ?? g.label}的地圖與資料連結還在蒐集彙整，敬請期待。
+            </p>
+          </div>
+        )}
         {g.categories.map((c, ci) => (
           <section
             id={`${g.game}-${c.id}`}
-            class="res-sec scroll-mt-32 pt-[46px]"
+            class={`res-sec scroll-mt-32 ${ci === 0 ? "pt-6" : "pt-[46px]"}`}
             style={`--i:${ci}`}
             data-total={c.items.length}
           >
@@ -262,35 +272,43 @@ const totalOf = (game: (typeof resourceGames)[number]) =>
             </div>
           </section>
         ))}
-        <p class="res-empty hidden pt-16 text-center text-[15px] text-muted">
-          沒有符合的資源，換個關鍵字試試。
-        </p>
+        {g.categories.length > 0 && (
+          <p class="res-empty hidden pt-16 text-center text-[15px] text-muted">
+            沒有符合的資源，換個關鍵字試試。
+          </p>
+        )}
       </div>
     ))
   }
 
   <style>
-    /* ── 門扉切換狀態 ── */
+    /* ── 文件頁籤：桌面一排四個、手機 2x2 ── */
+    .portal {
+      height: clamp(52px, 9vw, 64px);
+    }
     .portal-mark {
-      opacity: 0.07;
-      transition: opacity 0.3s ease, transform 0.45s ease;
+      width: clamp(24px, 6vw, 32px);
+      height: clamp(24px, 6vw, 32px);
+      color: var(--muted);
+      opacity: 0.55;
+      transition: opacity 0.25s ease, color 0.25s ease;
+    }
+    .r-portal-title {
+      font-size: clamp(14px, 3.4vw, 16px);
     }
     .portal:hover .portal-mark {
-      opacity: 0.14;
-      transform: rotate(-4deg) scale(1.04);
+      opacity: 0.8;
     }
     .portal[aria-pressed="true"] {
       border-color: var(--brand);
       background: color-mix(in srgb, var(--brand) 5%, var(--surface));
     }
     .portal[aria-pressed="true"] .portal-mark {
-      opacity: 0.13;
-    }
-    .portal[aria-pressed="false"] .portal-pill {
-      display: none;
+      color: var(--accent);
+      opacity: 0.9;
     }
     .portal[aria-pressed="false"] {
-      opacity: 0.78;
+      opacity: 0.75;
     }
     .portal[aria-pressed="false"]:hover {
       opacity: 1;
@@ -364,21 +382,6 @@ const totalOf = (game: (typeof resourceGames)[number]) =>
       .r-res-subtitle {
         font-size: 12px;
       }
-      .r-portal-title {
-        font-size: 19px;
-      }
-      .r-res-portals {
-        gap: 10px;
-      }
-      .portal {
-        padding: 16px 18px;
-      }
-      .portal-mark {
-        height: 96px;
-        width: 96px;
-        right: -18px;
-        top: -6px;
-      }
     }
   </style>
 
@@ -388,6 +391,8 @@ const totalOf = (game: (typeof resourceGames)[number]) =>
     const chipsets = Array.from(document.querySelectorAll<HTMLElement>(".chipset"));
     const searchInput = document.getElementById("res-search") as HTMLInputElement | null;
     const countEl = document.getElementById("res-count");
+
+    const gameOrder = portals.map((p) => p.dataset.game ?? "");
 
     let activeGame = "botw";
 
@@ -443,6 +448,7 @@ const totalOf = (game: (typeof resourceGames)[number]) =>
         if (p.dataset.game !== activeGame) setGame(p.dataset.game ?? "botw");
       })
     );
+
     searchInput?.addEventListener("input", applyFilter);
     searchInput?.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && searchInput.value) {
@@ -452,6 +458,6 @@ const totalOf = (game: (typeof resourceGames)[number]) =>
     });
 
     const initial = location.hash.replace("#", "");
-    if (initial === "totk" || initial === "botw") setGame(initial, false);
+    if (gameOrder.includes(initial)) setGame(initial, false);
   </script>
 </BaseLayout>

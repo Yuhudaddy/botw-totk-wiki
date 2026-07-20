@@ -27,10 +27,11 @@ export interface ResourceCategory {
 }
 
 export interface ResourceGame {
-  game: "botw" | "totk";
+  game: "botw" | "totk" | "eow" | "ssbu";
   label: string;
   en: string;
-  categories: ResourceCategory[];
+  shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
+  categories: ResourceCategory[]; // 空陣列 = 尚未整理，頁面顯示「整理中」
 }
 
 export const RESOURCES_CREDIT = {
@@ -42,7 +43,7 @@ export const resourceGames: ResourceGame[] = [
   {
     game: "botw",
     label: "曠野之息",
-    en: "Breath of the Wild",
+    en: "BoTW",
     categories: [
       {
         id: "zh-map",
@@ -266,7 +267,7 @@ export const resourceGames: ResourceGame[] = [
   {
     game: "totk",
     label: "王國之淚",
-    en: "Tears of the Kingdom",
+    en: "ToTK",
     categories: [
       {
         id: "zh-map",
@@ -657,5 +658,18 @@ export const resourceGames: ResourceGame[] = [
         ],
       },
     ],
+  },
+  {
+    game: "eow",
+    label: "智慧的再現",
+    en: "EoW",
+    categories: [], // 尚未整理，待補
+  },
+  {
+    game: "ssbu",
+    label: "任天堂明星大亂鬥特別版",
+    en: "SSBU",
+    shortLabel: "大亂鬥",
+    categories: [], // 尚未整理，待補
   },
 ];
