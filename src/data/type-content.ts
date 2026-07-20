@@ -2786,11 +2786,11 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "DI Infection",
-        video: "DI Infection.mp4",
+        tab: "GDI",
+        video: "GDI.mp4",
         sections: [
           {
-            title: "虛幽化（Ghost DI）",
+            title: "虛化感染（GDI, Ghost DI / Infection）",
             tags: ["Ver.1.2.0+"],
             steps: [
               "先將裝備吞噬虛化（Eaten DI）",
