@@ -8,6 +8,7 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { label: "主題解說", path: "/types", match: "types" },
   { label: "影片索引", path: "/videos", match: "videos" },
+  { label: "資料網站", path: "/resources", match: "resources" },
   { label: "關於神廟", path: "/about", match: "about" },
 ];
 

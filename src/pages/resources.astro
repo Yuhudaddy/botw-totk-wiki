@@ -1,0 +1,457 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { resourceGames, RESOURCES_CREDIT, type ResourceKind } from "../data/resources";
+
+// 各類型圖示（stroke 線稿，吃 currentColor）
+const KIND_ICONS: Record<ResourceKind, string> = {
+  sheet:
+    '<rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="10" x2="9" y2="20"/><line x1="15" y1="10" x2="15" y2="20"/>',
+  doc: '<path d="M6 2h8l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/>',
+  slides:
+    '<rect x="3" y="4" width="18" height="12" rx="2"/><line x1="12" y1="16" x2="12" y2="20"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="7" y1="8" x2="13" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/>',
+  map: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><line x1="9" y1="4" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="20"/>',
+  forum:
+    '<path d="M21 11.5a8.4 8.4 0 0 1-8.4 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 1 1 21 11.5z"/>',
+  video:
+    '<rect x="2" y="5" width="20" height="14" rx="3"/><polygon points="10,9.3 15,12 10,14.7" fill="currentColor" stroke="none"/>',
+  tool: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  site: '<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 0 1 0 18 13.5 13.5 0 0 1 0-18z"/>',
+};
+
+// 兩個遊戲門扉的浮水印徽記：希卡之眼／左納烏漩渦
+const GAME_MARKS: Record<string, string> = {
+  botw: '<path d="M8 50 Q50 14 92 50 Q50 86 8 50 Z"/><circle cx="50" cy="50" r="15"/><circle cx="50" cy="50" r="5" fill="currentColor" stroke="none"/><line x1="50" y1="21" x2="50" y2="6"/><line x1="31" y1="26" x2="24" y2="13"/><line x1="69" y1="26" x2="76" y2="13"/><line x1="50" y1="68" x2="50" y2="86"/><circle cx="50" cy="90" r="3.5" fill="currentColor" stroke="none"/>',
+  totk: '<path d="M22 22h56v56H36V36h28v28H50" fill="none"/>',
+};
+
+// 連結來源的顯示名稱
+function sourceLabel(url: string): string {
+  try {
+    const u = new URL(url);
+    const h = u.hostname.replace(/^www\./, "");
+    if (h === "docs.google.com") {
+      if (u.pathname.startsWith("/spreadsheets")) return "Google Sheets";
+      if (u.pathname.startsWith("/document")) return "Google Docs";
+      if (u.pathname.startsWith("/presentation")) return "Google Slides";
+    }
+    if (h === "google.com" && u.pathname.startsWith("/maps")) return "Google Maps";
+    const MAP: Record<string, string> = {
+      "forum.gamer.com.tw": "巴哈姆特",
+      "reddit.com": "Reddit",
+      "youtube.com": "YouTube",
+      "gamertw.com": "GamerTW",
+      "ign.com": "IGN",
+      "zeldadungeon.net": "Zelda Dungeon",
+      "gamefaqs.gamespot.com": "GameFAQs",
+      "mapgenie.io": "Map Genie",
+      "zeldamaps.com": "Zelda Maps",
+      "polygon.com": "Polygon",
+      "gamewith.jp": "GameWith",
+      "gamewith.net": "GameWith",
+      "haozzone.notion.site": "Notion",
+      "gist.github.com": "GitHub Gist",
+      "gosunoob.com": "GosuNoob",
+      "totkcookbook.com": "TotK Cookbook",
+      "zelda.recipes": "Zelda Recipes",
+      "zonai-fusion.link": "Zonai Fusion",
+    };
+    if (MAP[h]) return MAP[h];
+    if (h.endsWith(".zeldamods.org") || h === "zeldamods.org") return "ZeldaMods";
+    return h;
+  } catch {
+    return "";
+  }
+}
+
+const totalOf = (game: (typeof resourceGames)[number]) =>
+  game.categories.reduce((n, c) => n + c.items.length, 0);
+---
+
+<BaseLayout
+  title="資料網站"
+  description="曠野之息與王國之淚的地圖、數據表、文件與工具連結總整理。"
+  active="resources"
+>
+  {/* 標題 */}
+  <section class="border-b border-border-soft">
+    <div class="r-res-hero mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+      <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
+        <a href={href("/")} class="no-underline text-muted">首頁</a>
+        <span>/</span>
+        <span class="text-ink">資料網站</span>
+      </div>
+      <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+        Resource Library · 資料庫
+      </div>
+      <h1 class="r-res-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
+        資料網站
+      </h1>
+      <p class="r-res-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
+        兩款遊戲的互動地圖、數據表格、機制文件與實用工具連結總整理。 資料由神廟管理員
+        <a
+          href={RESOURCES_CREDIT.url}
+          target="_blank"
+          rel="noopener"
+          class="text-accent no-underline hover:underline">{RESOURCES_CREDIT.name}</a
+        > 蒐集彙整。
+      </p>
+    </div>
+  </section>
+
+  {/* 遊戲門扉切換 */}
+  <div class="mx-auto max-w-[1180px] px-8 pt-10">
+    <div class="r-res-portals grid grid-cols-2 gap-[18px]">
+      {
+        resourceGames.map((g) => (
+          <button
+            type="button"
+            class="portal ring-hover relative cursor-pointer overflow-hidden rounded-2xl border border-border-soft bg-surface px-7 py-6 text-left transition-colors"
+            data-game={g.game}
+            aria-pressed={g.game === "botw" ? "true" : "false"}
+          >
+            <svg
+              class="portal-mark pointer-events-none absolute -right-4 -top-2 h-[150px] w-[150px] text-ink"
+              viewBox="0 0 100 100"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              set:html={GAME_MARKS[g.game]}
+            />
+            <div class="relative">
+              <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{g.en}</div>
+              <div class="r-portal-title mt-2 font-serif text-[26px] font-medium leading-tight text-ink">
+                {g.label}
+              </div>
+              <div class="mt-2.5 flex flex-wrap items-center gap-2.5 text-[13px] text-muted">
+                <span class="font-mono">
+                  {totalOf(g)} 項資源 · {g.categories.length} 類
+                </span>
+                <span class="portal-pill whitespace-nowrap rounded-full bg-[rgba(201,100,66,0.13)] px-2.5 py-[3px] text-xs font-semibold text-accent">
+                  瀏覽中
+                </span>
+              </div>
+            </div>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* 搜尋 + 分類跳轉列 */}
+  <div class="r-res-toolbar border-b border-border-soft bg-bg">
+    <div class="mx-auto flex max-w-[1180px] flex-wrap items-center gap-3 px-8 py-3.5">
+      <div
+        class="flex w-[260px] max-w-full items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand"
+      >
+        <svg
+          class="ml-3 flex-none text-muted"
+          viewBox="0 0 24 24"
+          width="14"
+          height="14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          id="res-search"
+          type="text"
+          placeholder="搜尋資源…"
+          autocomplete="off"
+          class="w-full bg-transparent py-2 pl-2.5 pr-3 text-sm text-ink outline-none placeholder:text-muted"
+        />
+      </div>
+      <div id="res-count" class="font-mono text-[12px] text-muted"></div>
+      {
+        resourceGames.map((g) => (
+          <nav
+            class="chipset ml-auto flex flex-wrap gap-1.5"
+            data-chips={g.game}
+            hidden={g.game !== "botw"}
+          >
+            {g.categories.map((c) => (
+              <a
+                href={`#${g.game}-${c.id}`}
+                class="chip rounded-full border border-border-strong px-3 py-[5px] text-[12.5px] text-text no-underline transition-colors hover:border-brand hover:text-accent"
+              >
+                {c.label}
+              </a>
+            ))}
+          </nav>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* 資源清單 */}
+  {
+    resourceGames.map((g) => (
+      <div
+        class="lib mx-auto max-w-[1180px] px-8 pb-20"
+        data-lib={g.game}
+        hidden={g.game !== "botw"}
+      >
+        {g.categories.map((c, ci) => (
+          <section
+            id={`${g.game}-${c.id}`}
+            class="res-sec scroll-mt-32 pt-[46px]"
+            style={`--i:${ci}`}
+            data-total={c.items.length}
+          >
+            <div class="mb-4 flex items-end justify-between gap-5">
+              <div class="flex items-baseline gap-3">
+                <span class="font-mono text-[13px] text-accent">
+                  {String(ci + 1).padStart(2, "0")}
+                </span>
+                <h2 class="font-serif text-[24px] font-medium text-ink">{c.label}</h2>
+                <span class="hidden text-[11px] font-bold uppercase tracking-[2px] text-muted sm:inline">
+                  {c.en}
+                </span>
+              </div>
+              <span class="sec-count font-mono text-[12px] text-muted">{c.items.length}</span>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {c.items.map((item) => (
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener"
+                  class="res group flex min-w-0 items-center gap-3.5 rounded-xl border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
+                  data-search={`${item.title} ${item.note ?? ""} ${c.label} ${sourceLabel(item.url)}`.toLowerCase()}
+                >
+                  <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[10px] bg-sand text-muted transition-colors group-hover:text-accent">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="17"
+                      height="17"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      set:html={KIND_ICONS[item.kind]}
+                    />
+                  </span>
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate text-[15px] font-medium text-ink">
+                      {item.title}
+                    </span>
+                    {item.note && (
+                      <span class="block truncate text-[12px] leading-[1.5] text-muted">
+                        {item.note}
+                      </span>
+                    )}
+                  </span>
+                  <span class="flex flex-none items-center gap-2">
+                    <span class="hidden font-mono text-[11px] text-muted sm:inline">
+                      {sourceLabel(item.url)}
+                    </span>
+                    <span class="res-arrow text-accent" aria-hidden="true">
+                      ↗
+                    </span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))}
+        <p class="res-empty hidden pt-16 text-center text-[15px] text-muted">
+          沒有符合的資源，換個關鍵字試試。
+        </p>
+      </div>
+    ))
+  }
+
+  <style>
+    /* ── 門扉切換狀態 ── */
+    .portal-mark {
+      opacity: 0.07;
+      transition: opacity 0.3s ease, transform 0.45s ease;
+    }
+    .portal:hover .portal-mark {
+      opacity: 0.14;
+      transform: rotate(-4deg) scale(1.04);
+    }
+    .portal[aria-pressed="true"] {
+      border-color: var(--brand);
+      background: color-mix(in srgb, var(--brand) 5%, var(--surface));
+    }
+    .portal[aria-pressed="true"] .portal-mark {
+      opacity: 0.13;
+    }
+    .portal[aria-pressed="false"] .portal-pill {
+      display: none;
+    }
+    .portal[aria-pressed="false"] {
+      opacity: 0.78;
+    }
+    .portal[aria-pressed="false"]:hover {
+      opacity: 1;
+    }
+
+    /* ── 連結列的 ↗：hover 才浮現 ── */
+    .res-arrow {
+      opacity: 0;
+      transform: translate(-3px, 3px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .res:hover .res-arrow,
+    .res:focus-visible .res-arrow {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    /* ── 切換遊戲時的錯落浮現 ── */
+    @keyframes res-rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .lib.entering .res-sec {
+      animation: res-rise 0.45s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+      animation-delay: calc(var(--i) * 70ms);
+    }
+
+    /* ── 工具列：桌面版吸附在導覽列下方 ── */
+    @media (min-width: 821px) {
+      .r-res-toolbar {
+        position: sticky;
+        top: 64px;
+        z-index: 40;
+      }
+    }
+
+    /* ── 篩選時的隱藏 ── */
+    .res[hidden],
+    .res-sec[hidden] {
+      display: none;
+    }
+    .chip.dim {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lib.entering .res-sec {
+        animation: none;
+      }
+      .portal-mark,
+      .res-arrow {
+        transition: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .r-res-hero {
+        padding-top: 28px;
+        padding-bottom: 24px;
+      }
+      .r-res-h1 {
+        font-size: 26px;
+      }
+      .r-res-subtitle {
+        font-size: 12px;
+      }
+      .r-portal-title {
+        font-size: 19px;
+      }
+      .r-res-portals {
+        gap: 10px;
+      }
+      .portal {
+        padding: 16px 18px;
+      }
+      .portal-mark {
+        height: 96px;
+        width: 96px;
+        right: -18px;
+        top: -6px;
+      }
+    }
+  </style>
+
+  <script>
+    const portals = Array.from(document.querySelectorAll<HTMLButtonElement>(".portal"));
+    const libs = Array.from(document.querySelectorAll<HTMLElement>(".lib"));
+    const chipsets = Array.from(document.querySelectorAll<HTMLElement>(".chipset"));
+    const searchInput = document.getElementById("res-search") as HTMLInputElement | null;
+    const countEl = document.getElementById("res-count");
+
+    let activeGame = "botw";
+
+    function applyFilter() {
+      const q = (searchInput?.value ?? "").trim().toLowerCase();
+      const lib = libs.find((l) => l.dataset.lib === activeGame);
+      if (!lib) return;
+
+      let visibleTotal = 0;
+      const sections = Array.from(lib.querySelectorAll<HTMLElement>(".res-sec"));
+      sections.forEach((sec) => {
+        const rows = Array.from(sec.querySelectorAll<HTMLElement>(".res"));
+        let visible = 0;
+        rows.forEach((row) => {
+          const hit = !q || (row.dataset.search ?? "").includes(q);
+          row.hidden = !hit;
+          if (hit) visible++;
+        });
+        sec.hidden = visible === 0;
+        visibleTotal += visible;
+        const badge = sec.querySelector(".sec-count");
+        if (badge) badge.textContent = q ? `${visible}/${sec.dataset.total}` : `${sec.dataset.total}`;
+        // 對應的分類籌碼跟著變淡
+        const chip = document.querySelector(`.chipset[data-chips="${activeGame}"] a[href="#${sec.id}"]`);
+        chip?.classList.toggle("dim", visible === 0);
+      });
+
+      const empty = lib.querySelector<HTMLElement>(".res-empty");
+      if (empty) empty.classList.toggle("hidden", visibleTotal > 0);
+      if (countEl) countEl.textContent = q ? `${visibleTotal} 筆符合` : "";
+    }
+
+    function setGame(game: string, animate = true) {
+      if (!libs.some((l) => l.dataset.lib === game)) return;
+      activeGame = game;
+      portals.forEach((p) => p.setAttribute("aria-pressed", String(p.dataset.game === game)));
+      chipsets.forEach((c) => (c.hidden = c.dataset.chips !== game));
+      libs.forEach((l) => {
+        const on = l.dataset.lib === game;
+        l.hidden = !on;
+        l.classList.remove("entering");
+        if (on && animate) {
+          void l.offsetWidth;
+          l.classList.add("entering");
+        }
+      });
+      history.replaceState(null, "", `#${game}`);
+      applyFilter();
+    }
+
+    portals.forEach((p) =>
+      p.addEventListener("click", () => {
+        if (p.dataset.game !== activeGame) setGame(p.dataset.game ?? "botw");
+      })
+    );
+    searchInput?.addEventListener("input", applyFilter);
+    searchInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && searchInput.value) {
+        searchInput.value = "";
+        applyFilter();
+      }
+    });
+
+    const initial = location.hash.replace("#", "");
+    if (initial === "totk" || initial === "botw") setGame(initial, false);
+  </script>
+</BaseLayout>
