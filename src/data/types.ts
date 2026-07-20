@@ -12,7 +12,7 @@ export interface TypeItem {
 }
 
 export interface TypeGroup {
-  game: "botw" | "totk" | "eow" | "ssbu";
+  game: "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
   label: string;
   en: string;
   items: TypeItem[];
@@ -98,5 +98,17 @@ export const typeGroups: TypeGroup[] = [
       { no: "07", zh: "個別角色", en: "Character Guides", videosOnly: true },
       { no: "08", zh: "1分鐘快學", en: "1-Minute Tips", videosOnly: true },
     ],
+  },
+  {
+    game: "aoc",
+    label: "災厄啟示錄",
+    en: "Age of Calamity",
+    items: [], // 尚未整理，待補
+  },
+  {
+    game: "aoi",
+    label: "封印戰記",
+    en: "Age of Imprisonment",
+    items: [], // 尚未整理，待補
   },
 ];
