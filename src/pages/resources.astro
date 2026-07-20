@@ -244,29 +244,27 @@ function sourceLabel(url: string): string {
                     />
                   </span>
                   <span class="min-w-0 flex-1">
-                    <div class="mb-1 flex items-baseline gap-2">
-                      <span class="block flex-1 truncate text-[15px] font-medium text-ink">
-                        {item.title}
-                      </span>
-                      <span
-                        class={`flex-none whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                          item.lang === "zh"
-                            ? "bg-sand text-accent"
-                            : item.lang === "ja"
-                              ? "bg-sand text-accent opacity-75"
-                              : "bg-sand text-muted"
-                        }`}
-                      >
-                        {item.lang === "zh" ? "中文" : item.lang === "ja" ? "日文" : "英文"}
-                      </span>
-                    </div>
+                    <span class="block truncate text-[15px] font-medium text-ink">
+                      {item.title}
+                    </span>
                     {item.note && (
                       <span class="block truncate text-[12px] leading-[1.5] text-muted">
                         {item.note}
                       </span>
                     )}
                   </span>
-                  <span class="flex flex-none items-center gap-2">
+                  <span class="flex flex-none flex-col items-end justify-center gap-1">
+                    <span
+                      class={`whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                        item.lang === "zh"
+                          ? "bg-sand text-accent"
+                          : item.lang === "ja"
+                            ? "bg-sand text-accent opacity-75"
+                            : "bg-sand text-muted"
+                      }`}
+                    >
+                      {item.lang === "zh" ? "中文" : item.lang === "ja" ? "日文" : "英文"}
+                    </span>
                     <span class="hidden font-mono text-[11px] text-muted sm:inline">
                       {sourceLabel(item.url)}
                     </span>
