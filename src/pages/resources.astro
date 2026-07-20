@@ -207,35 +207,29 @@ function sourceLabel(url: string): string {
             </p>
           </div>
         )}
-        {g.categories.map((c, ci) => (
-          <section
-            id={`${g.game}-${c.id}`}
-            class={`res-sec scroll-mt-32 ${ci === 0 ? "pt-6" : "pt-[46px]"}`}
-            style={`--i:${ci}`}
-            data-total={c.items.length}
-          >
-            <div class="mb-4 flex items-end justify-between gap-5">
-              <div class="flex items-baseline gap-3">
-                <span class="font-mono text-[13px] text-accent">
-                  {String(ci + 1).padStart(2, "0")}
-                </span>
-                <h2 class="font-serif text-[24px] font-medium text-ink">{c.label}</h2>
-                <span class="hidden text-[11px] font-bold uppercase tracking-[2px] text-muted sm:inline">
-                  {c.en}
-                </span>
-              </div>
-              <span class="sec-count font-mono text-[12px] text-muted">{c.items.length}</span>
-            </div>
-
-            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {c.items.map((item) => (
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener"
-                  class="res group flex min-w-0 items-center gap-3.5 rounded-xl border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
-                  data-search={`${item.title} ${item.note ?? ""} ${c.label} ${sourceLabel(item.url)}`.toLowerCase()}
-                >
+        {(() => {
+          // 扁平化所有分類的 items，保留語言標籤
+          const allItems = g.categories.flatMap((c) =>
+            c.items.map((item) => {
+              // 根據分類名稱推斷語言
+              let lang = "en";
+              if (c.label.includes("中文") || c.id.includes("zh")) lang = "zh";
+              else if (c.label.includes("日文") || c.id.includes("ja") || c.en.includes("日本語"))
+                lang = "ja";
+              return { ...item, lang };
+            })
+          );
+          return (
+            <section id={`${g.game}-resources`} class="res-sec scroll-mt-32 pt-6">
+              <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {allItems.map((item) => (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener"
+                    class="res group flex min-w-0 items-center gap-3.5 rounded-xl border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
+                    data-search={`${item.title} ${item.note ?? ""} ${sourceLabel(item.url)}`.toLowerCase()}
+                  >
                   <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[10px] bg-sand text-muted transition-colors group-hover:text-accent">
                     <svg
                       viewBox="0 0 24 24"
@@ -250,9 +244,22 @@ function sourceLabel(url: string): string {
                     />
                   </span>
                   <span class="min-w-0 flex-1">
-                    <span class="block truncate text-[15px] font-medium text-ink">
-                      {item.title}
-                    </span>
+                    <div class="mb-1 flex items-baseline gap-2">
+                      <span class="block flex-1 truncate text-[15px] font-medium text-ink">
+                        {item.title}
+                      </span>
+                      <span
+                        class={`flex-none whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                          item.lang === "zh"
+                            ? "bg-sand text-accent"
+                            : item.lang === "ja"
+                              ? "bg-sand text-accent opacity-75"
+                              : "bg-sand text-muted"
+                        }`}
+                      >
+                        {item.lang === "zh" ? "中文" : item.lang === "ja" ? "日文" : "英文"}
+                      </span>
+                    </div>
                     {item.note && (
                       <span class="block truncate text-[12px] leading-[1.5] text-muted">
                         {item.note}
@@ -267,16 +274,17 @@ function sourceLabel(url: string): string {
                       ↗
                     </span>
                   </span>
-                </a>
-              ))}
-            </div>
-          </section>
-        ))}
-        {g.categories.length > 0 && (
-          <p class="res-empty hidden pt-16 text-center text-[15px] text-muted">
-            沒有符合的資源，換個關鍵字試試。
-          </p>
-        )}
+                  </a>
+                ))}
+              </div>
+              {g.categories.length === 0 && (
+                <p class="res-empty hidden pt-16 text-center text-[15px] text-muted">
+                  沒有符合的資源，換個關鍵字試試。
+                </p>
+              )}
+            </section>
+          );
+        })()}
       </div>
     ))
   }

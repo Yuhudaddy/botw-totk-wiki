@@ -1,5 +1,5 @@
-// 「資料網站」頁的資料：由神廟管理員（Hsin-Po）整理的外部資源連結，
-// 來源：https://www.symbol.codes/game/BotW 與 /game/TotK。
+// 「資料網站」頁的資料：由本神廟 Discord 管理員（Hsin-Po）協助整理外部資源連結，
+// 來源：https://www.symbol.codes。
 // kind 決定連結列前的類型圖示。
 
 export type ResourceKind =
@@ -21,7 +21,7 @@ export interface ResourceItem {
 
 export interface ResourceCategory {
   id: string; // 錨點用
-  label: string;
+  label: string; // 分類名稱（含語言標記，用於推斷語言）
   en: string;
   items: ResourceItem[];
 }
@@ -36,7 +36,7 @@ export interface ResourceGame {
 
 export const RESOURCES_CREDIT = {
   name: "Hsin-Po",
-  url: "https://www.symbol.codes/game/BotW",
+  url: "https://www.symbol.codes",
 };
 
 export const resourceGames: ResourceGame[] = [
