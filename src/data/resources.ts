@@ -17,6 +17,7 @@ export interface ResourceItem {
   url: string;
   kind: ResourceKind;
   note?: string; // 補充說明或作者署名
+  recommended?: boolean; // 站長本人推薦且常用，star 篩選會用到
 }
 
 export interface ResourceCategory {
@@ -27,7 +28,7 @@ export interface ResourceCategory {
 }
 
 export interface ResourceGame {
-  game: "botw" | "totk" | "eow" | "ssbu";
+  game: "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
   label: string;
   en: string;
   shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
@@ -671,5 +672,17 @@ export const resourceGames: ResourceGame[] = [
     en: "SSBU",
     shortLabel: "大亂鬥",
     categories: [], // 尚未整理，待補
+  },
+  {
+    game: "aoc",
+    label: "災厄啟示錄",
+    en: "AoC",
+    categories: [], // 尚未整理，待補（連結稍後補上）
+  },
+  {
+    game: "aoi",
+    label: "封印戰記",
+    en: "AoI",
+    categories: [], // 尚未整理，待補（連結稍後補上）
   },
 ];

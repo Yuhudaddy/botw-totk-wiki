@@ -19,13 +19,19 @@ const KIND_ICONS: Record<ResourceKind, string> = {
   site: '<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 0 1 0 18 13.5 13.5 0 0 1 0-18z"/>',
 };
 
-// 四個遊戲門扉的浮水印徽記：希卡之眼／左納烏漩渦／回音方塊／大亂鬥星爆
+// 星星篩選圖示：站長本人推薦且常用
+const STAR_ICON =
+  '<polygon points="12 2 14.9 8.6 22 9.3 16.8 13.9 18.2 21 12 17.3 5.8 21 7.2 13.9 2 9.3 9.1 8.6"/>';
+
+// 六個遊戲門扉的浮水印徽記：希卡之眼／左納烏漩渦／回音方塊／大亂鬥星爆／交叉雙刃／封印之鎖
 const GAME_MARKS: Record<string, string> = {
   botw: '<path d="M8 50 Q50 14 92 50 Q50 86 8 50 Z"/><circle cx="50" cy="50" r="15"/><circle cx="50" cy="50" r="5" fill="currentColor" stroke="none"/><line x1="50" y1="21" x2="50" y2="6"/><line x1="31" y1="26" x2="24" y2="13"/><line x1="69" y1="26" x2="76" y2="13"/><line x1="50" y1="68" x2="50" y2="86"/><circle cx="50" cy="90" r="3.5" fill="currentColor" stroke="none"/>',
   totk: '<path d="M22 22h56v56H36V36h28v28H50" fill="none"/>',
   eow: '<rect x="22" y="22" width="42" height="42" rx="6"/><rect x="36" y="36" width="42" height="42" rx="6" opacity="0.55"/>',
   ssbu:
     '<polygon points="50,8 56.9,33.4 79.7,20.3 66.6,43.1 92,50 66.6,56.9 79.7,79.7 56.9,66.6 50,92 43.1,66.6 20.3,79.7 33.4,56.9 8,50 33.4,43.1 20.3,20.3 43.1,33.4"/><circle cx="50" cy="50" r="4" fill="currentColor" stroke="none"/>',
+  aoc: '<line x1="20" y1="80" x2="80" y2="20"/><line x1="20" y1="20" x2="80" y2="80"/><circle cx="50" cy="50" r="9"/>',
+  aoi: '<rect x="30" y="46" width="40" height="34" rx="6"/><path d="M38 46V33a12 12 0 0 1 24 0v13" fill="none"/><circle cx="50" cy="63" r="4.5" fill="currentColor" stroke="none"/>',
 };
 
 // 連結來源的顯示名稱
@@ -58,6 +64,7 @@ function sourceLabel(url: string): string {
       "totkcookbook.com": "TotK Cookbook",
       "zelda.recipes": "Zelda Recipes",
       "zonai-fusion.link": "Zonai Fusion",
+      "symbol.codes": "Hsin-Po",
     };
     if (MAP[h]) return MAP[h];
     if (h.endsWith(".zeldamods.org") || h === "zeldamods.org") return "ZeldaMods";
@@ -88,20 +95,14 @@ function sourceLabel(url: string): string {
         資料網站
       </h1>
       <p class="r-res-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
-        兩款遊戲的互動地圖、數據表格、機制文件與實用工具連結總整理。 資料由神廟管理員
-        <a
-          href={RESOURCES_CREDIT.url}
-          target="_blank"
-          rel="noopener"
-          class="text-accent no-underline hover:underline">{RESOURCES_CREDIT.name}</a
-        > 蒐集彙整。
+        最完整的遊戲資料庫
       </p>
     </div>
   </section>
 
   {/* 遊戲分頁：文件頁籤樣式，桌面一排四個、手機 2x2 */}
   <div class="mx-auto max-w-[1180px] px-8 pt-10">
-    <div class="r-game-tabs grid grid-cols-2 gap-3 md:grid-cols-4">
+    <div class="r-game-tabs grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
       {
         resourceGames.map((g) => (
           <button
@@ -161,6 +162,24 @@ function sourceLabel(url: string): string {
       </div>
       <div id="res-count" class="font-mono text-[12px] text-muted"></div>
       <div class="ml-auto flex items-center gap-1.5">
+        <a
+          href="#"
+          title="站長推薦"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          data-kind="star"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            set:html={STAR_ICON}
+          />
+        </a>
         <a
           href="#"
           title="互動地圖"
@@ -275,6 +294,16 @@ function sourceLabel(url: string): string {
               return { ...item, lang };
             })
           );
+          // 每個遊戲的清單最後補上 Hsin-Po 的個人網站
+          if (allItems.length > 0) {
+            allItems.push({
+              title: "個人網站",
+              url: RESOURCES_CREDIT.url,
+              kind: "site",
+              lang: "zh",
+              recommended: true,
+            });
+          }
           return (
             <section id={`${g.game}-resources`} class="res-sec scroll-mt-32 pt-6">
               <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -285,6 +314,7 @@ function sourceLabel(url: string): string {
                     rel="noopener"
                     class="res group flex min-w-0 items-center gap-3.5 rounded-xl border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
                     data-search={`${item.title} ${item.note ?? ""} ${sourceLabel(item.url)}`.toLowerCase()}
+                    data-recommended={item.recommended ? "true" : "false"}
                   >
                   <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[10px] bg-sand text-muted transition-colors group-hover:text-accent" data-kind={item.kind}>
                     <svg
@@ -471,7 +501,11 @@ function sourceLabel(url: string): string {
         let visible = 0;
         rows.forEach((row) => {
           const matchesSearch = !q || (row.dataset.search ?? "").includes(q);
-          const matchesKind = !activeKind || row.querySelector("span[data-kind]")?.getAttribute("data-kind") === activeKind;
+          const matchesKind = !activeKind
+            ? true
+            : activeKind === "star"
+              ? row.dataset.recommended === "true"
+              : row.querySelector("span[data-kind]")?.getAttribute("data-kind") === activeKind;
           const hit = matchesSearch && matchesKind;
           row.hidden = !hit;
           if (hit) visible++;
