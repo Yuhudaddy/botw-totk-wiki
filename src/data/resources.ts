@@ -617,14 +617,87 @@ export const resourceGames: ResourceGame[] = [
     label: "智慧的再現",
     en: "Echoes of Wisdom",
     shortEn: "Zelda EoW",
-    categories: [], // 尚未整理，待補
+    categories: [
+      {
+        id: "en",
+        label: "英文資料",
+        en: "English",
+        items: [
+          {
+            title: "互動地圖",
+            url: "https://www.zeldadungeon.net/echoes-of-wisdom-interactive-map/",
+            kind: "map",
+            note: "Hosted by Zelda Dungeon",
+          },
+        ],
+      },
+      {
+        id: "ja",
+        label: "日文資料",
+        en: "Japanese",
+        items: [
+          {
+            title: "攻略網站",
+            url: "https://gamewith.jp/zelda-eow/",
+            kind: "site",
+            note: "Hosted by gamewith",
+          },
+        ],
+      },
+    ],
   },
   {
     game: "ssbu",
     label: "任天堂明星大亂鬥特別版",
     en: "SSB Ultimate",
     shortLabel: "大亂鬥",
-    categories: [], // 尚未整理，待補
+    categories: [
+      {
+        id: "en",
+        label: "英文資料",
+        en: "English",
+        items: [
+          {
+            title: "幀數表",
+            url: "https://docs.google.com/spreadsheets/d/16fmsoqDoQaR1eteVk2uuzIH2DB4iQHVrqiG8VRbRA7Q/edit?gid=123650910#gid=123650910",
+            kind: "sheet",
+          },
+          {
+            title: "UFA 動作幀數展示",
+            url: "https://ultimateframedata.com/smash",
+            kind: "tool",
+          },
+          {
+            title: "參與作品表",
+            url: "https://docs.google.com/spreadsheets/d/1e_Ry9n6MxGZNWcrvQRcuM499kxf3o2CXZnWuQS7P8ZU/edit?gid=1823573343#gid=1823573343",
+            kind: "sheet",
+          },
+        ],
+      },
+      {
+        id: "ja",
+        label: "日文資料",
+        en: "Japanese",
+        items: [
+          {
+            title: "幀數表",
+            url: "https://docs.google.com/spreadsheets/d/15SClMwvDIqovtO3DJnf1GGIteH35UX3IM7-mnbdG6eE/edit?gid=849055518#gid=849055518",
+            kind: "sheet",
+            note: "Created by Meshima et al.",
+          },
+          {
+            title: "遊戲系統與進階技巧",
+            url: "https://w.atwiki.jp/smashsp_kensyou/",
+            kind: "site",
+          },
+          {
+            title: "遊戲系統與進階技巧",
+            url: "https://www.ssbwiki.com/Super_Smash_Bros._Ultimate",
+            kind: "site",
+          },
+        ],
+      },
+    ],
   },
   {
     game: "aoc",
