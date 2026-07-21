@@ -17,6 +17,7 @@ export type ResourceKind =
 export interface ResourceItem {
   title: string;
   url: string;
+  externalUrl?: string; // 本站有教學頁時，保留原始外部工具網址供來源標示與頁內 CTA 使用
   kind: ResourceKind;
   note?: string; // 資源卡副標題：優先標示製作者，其次標示整理來源或補充說明
   recommended?: boolean; // 站長本人推薦且常用，star 篩選會用到
@@ -154,7 +155,8 @@ export const resourceGames: ResourceGame[] = [
           },
           {
             title: "Léo 曠野物件地圖",
-            url: "https://objmap.zeldamods.org/",
+            url: "/resources/object-map/botw",
+            externalUrl: "https://objmap.zeldamods.org/",
             kind: "map",
             note: "Created by Léo Lam / 最全面的物件地圖",
             recommended: true,
@@ -605,6 +607,23 @@ export const resourceGames: ResourceGame[] = [
             url: "https://nan-gogh.github.io/ultrabroken-documentation/wiki/",
             kind: "site",
             note: "Created by NaN Gogh",
+          },
+          {
+            title: "海拉魯地圖邊界研究",
+            url: "https://docs.google.com/document/d/1j54FyJALmyr6fjpUTHq5W3jwRn0JKoXtZGyO7xO4_PQ/",
+            kind: "doc",
+            note: "Created by Echocolat",
+          },
+          {
+            title: "Prologue map logic",
+            url: "https://docs.google.com/document/d/1m8apRyZP1mfdj9G-Yk2RIypVn-qwjY1Wg2gyMyA0TpE/",
+            kind: "doc",
+          },
+          {
+            title: "Tech Reference For Current Patch Bingo",
+            url: "https://docs.google.com/document/d/1xyZICi_SK_JewNILi0myHjy4-5F7GmmIMIi3JtHcllk/",
+            kind: "doc",
+            note: "Created by Armindo",
           },
         ],
       },

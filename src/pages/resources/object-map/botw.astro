@@ -1,0 +1,1531 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { href } from "../../../lib/url";
+import { GAME_LOGOS } from "../../../data/gameLogos";
+
+const MAP_URL = "https://objmap.zeldamods.org/";
+
+const queryExamples = [
+  {
+    label: "基本名稱",
+    query: "Bokoblin",
+    description: "同時搜尋顯示名稱與遊戲內部資料。",
+  },
+  {
+    label: "完整片語",
+    query: '"Blue Bokoblin"',
+    description: "用引號包住完整名稱，避免拆成多個關鍵字。",
+  },
+  {
+    label: "同時符合",
+    query: 'Lizalfos "Royal Bow"',
+    description: "空格等同 AND，只留下同時符合兩個條件的結果。",
+  },
+  {
+    label: "排除結果",
+    query: 'Lynel NOT "Lynel Bow"',
+    description: "保留萊尼爾，但排除含有 Lynel Bow 的項目。",
+  },
+  {
+    label: "萬用字元",
+    query: "TBox_* hard:0",
+    description: "搜尋一般模式中的 TBox 系列寶箱物件。",
+  },
+];
+
+const fieldFilters = [
+  { field: "map", value: "MainField/E-4", use: "限定地圖或地圖單位" },
+  { field: "static", value: "1", use: "1 為 Static，0 為 Dynamic" },
+  { field: "actor", value: "Weapon_Sword_001", use: "依遊戲內部 Actor 名稱搜尋" },
+  { field: "name", value: '"Traveler\'s Sword"', use: "依玩家看見的物件名稱搜尋" },
+  { field: "data", value: "IsGet_", use: "搜尋物件內部資料" },
+  { field: "drop", value: "Arrow", use: "搜尋掉落物或寶箱內容" },
+  { field: "equip", value: "Bow", use: "搜尋敵人持有的裝備" },
+  { field: "onehit", value: "1", use: "限定一擊必殺之劍挑戰物件" },
+  { field: "lastboss", value: "1", use: "限定進入城堡主殿後的物件" },
+  { field: "hard", value: "0", use: "排除大師模式專屬物件" },
+  { field: "no_rankup", value: "1", use: "不會隨世界等級升級" },
+  { field: "scale", value: "0", use: "不會隨世界等級變化" },
+  { field: "bonus", value: "2", use: "指定最低附加效果等級" },
+];
+
+const mapTools = [
+  {
+    no: "01",
+    title: "Add to map",
+    text: "搜尋完成後，把整組結果加入地圖。不同搜尋可以保留為不同顏色的群組。",
+  },
+  {
+    no: "02",
+    title: "Filter",
+    text: "控制地名、神廟、塔、商店、克洛格與可見地圖區域，降低畫面上的資訊量。",
+  },
+  {
+    no: "03",
+    title: "Go to coordinates",
+    text: "輸入座標直接前往目標位置，適合搭配遊戲內座標或研究資料使用。",
+  },
+  {
+    no: "04",
+    title: "Object Display",
+    text: "可切換內部 Actor 名稱、Hash ID、高度、位置與物件卸載範圍等進階資訊。",
+  },
+];
+---
+
+<BaseLayout
+  title="Léo 曠野物件地圖使用指南"
+  description="BotW Object Map 搜尋語法、欄位篩選與地圖工具使用指南。"
+  active="resources"
+>
+  <main class="obj-guide">
+    <section class="obj-hero" aria-labelledby="guide-title">
+      <img
+        class="obj-hero-map"
+        src={href("/resource-guides/botw-object-map.jpg")}
+        alt="Léo 曠野物件地圖顯示海拉魯各地物件標記的介面"
+        width="960"
+        height="332"
+        fetchpriority="high"
+      />
+      <div class="obj-hero-shade" aria-hidden="true"></div>
+      <div class="obj-scan" aria-hidden="true">
+        <span class="obj-scan-ring obj-scan-ring-a"></span>
+        <span class="obj-scan-ring obj-scan-ring-b"></span>
+        <span class="obj-scan-cross obj-scan-cross-x"></span>
+        <span class="obj-scan-cross obj-scan-cross-y"></span>
+        <span class="obj-scan-dot"></span>
+      </div>
+
+      <div class="obj-hero-inner">
+        <nav class="obj-breadcrumb" aria-label="麵包屑">
+          <a href={href("/")}>首頁</a>
+          <span>/</span>
+          <a href={href("/resources#botw")}>資料網站</a>
+          <span>/</span>
+          <span aria-current="page">物件地圖</span>
+        </nav>
+
+        <div class="obj-hero-content">
+          <div class="obj-kicker">
+            <svg viewBox={GAME_LOGOS.botw.viewBox} aria-hidden="true" set:html={GAME_LOGOS.botw.svg} />
+            <span>Breath of the Wild · Object Map Guide</span>
+          </div>
+          <h1 id="guide-title">Léo 曠野物件地圖</h1>
+          <p>不只搜尋名稱。用欄位、條件與布林語法，把海拉魯縮小成你真正需要的答案。</p>
+
+          <div class="obj-hero-meta">
+            <span>Created by Léo Lam</span>
+            <span>English interface</span>
+            <span>Advanced object data</span>
+          </div>
+
+          <div class="obj-hero-actions">
+            <a class="obj-primary-action" href={MAP_URL} target="_blank" rel="noopener">
+              <span>開啟曠野物件地圖</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+              </svg>
+            </a>
+            <a class="obj-secondary-action" href={href("/resources#botw")}>回到資料網站</a>
+          </div>
+        </div>
+
+        <div class="obj-coordinate" aria-hidden="true">
+          <span>SCAN AREA</span>
+          <strong>MAIN FIELD</strong>
+          <span>X 0000 · Z 0000</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="obj-section-nav" aria-label="本頁章節">
+      <div class="obj-section-nav-inner">
+        <span class="obj-section-nav-label">GUIDE / 01</span>
+        <a href="#start">快速開始</a>
+        <a href="#syntax">搜尋語法</a>
+        <a href="#filters">欄位篩選</a>
+        <a href="#tools">地圖工具</a>
+        <a href="#notes">注意事項</a>
+      </div>
+    </nav>
+
+    <section id="start" class="obj-section obj-section-intro obj-reveal">
+      <div class="obj-wrap">
+        <div class="obj-section-heading">
+          <span>START HERE · 快速開始</span>
+          <h2>先會三件事，就能開始查。</h2>
+        </div>
+
+        <div class="obj-start-grid">
+          <article>
+            <span class="obj-step-no">01</span>
+            <h3>輸入名稱</h3>
+            <p>可輸入英文顯示名稱，也可以直接輸入遊戲內部 Actor 名稱。</p>
+            <code>Bokoblin</code>
+          </article>
+          <article>
+            <span class="obj-step-no">02</span>
+            <h3>加入條件</h3>
+            <p>使用 <code>欄位:內容</code>，把結果限定在地圖、模式或物件屬性。</p>
+            <code>scale:0</code>
+          </article>
+          <article>
+            <span class="obj-step-no">03</span>
+            <h3>放上地圖</h3>
+            <p>確認搜尋結果後按下 Add to map，標記才會固定顯示在地圖上。</p>
+            <code>Add to map</code>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="syntax" class="obj-section obj-section-lab obj-reveal">
+      <div class="obj-wrap obj-lab-layout">
+        <div class="obj-lab-copy">
+          <div class="obj-section-heading">
+            <span>QUERY LAB · 搜尋式組合器</span>
+            <h2>搜尋不是猜字，是組條件。</h2>
+          </div>
+          <p>
+            以 <code>Lynel</code> 為起點，切換右側條件看看搜尋式如何變化。空格代表 AND，
+            <code>NOT</code> 會排除符合的結果。
+          </p>
+
+          <div class="obj-query-output" aria-live="polite">
+            <span>SEARCH QUERY</span>
+            <code id="query-output">Lynel</code>
+            <button id="copy-query" type="button" data-copy-target="query-output">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+              </svg>
+              <span>複製搜尋式</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="obj-query-controls" aria-label="搜尋條件">
+          <div>
+            <span class="obj-control-label">基本關鍵字</span>
+            <code>Lynel</code>
+          </div>
+          <button type="button" class="obj-token" data-query-token={'NOT "Lynel Bow"'} aria-pressed="false">
+            <span>排除弓箭結果</span>
+            <code>NOT "Lynel Bow"</code>
+          </button>
+          <button type="button" class="obj-token" data-query-token="scale:0" aria-pressed="false">
+            <span>不隨世界等級變化</span>
+            <code>scale:0</code>
+          </button>
+          <button type="button" class="obj-token" data-query-token="hard:0" aria-pressed="false">
+            <span>排除大師模式專屬</span>
+            <code>hard:0</code>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="obj-section obj-reveal" aria-labelledby="recipes-title">
+      <div class="obj-wrap">
+        <div class="obj-section-heading obj-heading-row">
+          <div>
+            <span>SEARCH RECIPES · 常用查詢</span>
+            <h2 id="recipes-title">先從可直接使用的語法開始。</h2>
+          </div>
+          <p>點擊每列右側圖示即可複製，再貼進物件地圖的搜尋框。</p>
+        </div>
+
+        <div class="obj-recipe-list">
+          {queryExamples.map((item, index) => (
+            <article class="obj-recipe" style={`--i:${index}`}>
+              <span class="obj-recipe-label">{item.label}</span>
+              <code>{item.query}</code>
+              <p>{item.description}</p>
+              <button type="button" class="obj-copy-icon" data-copy={item.query} aria-label={`複製「${item.query}」`} title="複製搜尋式">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                </svg>
+              </button>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="filters" class="obj-section obj-section-filters obj-reveal">
+      <div class="obj-wrap obj-filter-layout">
+        <div class="obj-section-heading obj-filter-intro">
+          <span>COLUMN FILTERS · 欄位篩選</span>
+          <h2>把「找得到」變成「只剩要找的」。</h2>
+          <p>
+            欄位語法固定使用 <code>COLUMN:QUERY</code>。不同欄位可以放在同一條搜尋式中，逐步縮小結果。
+          </p>
+          <div class="obj-filter-formula">
+            <code>^Bokoblin scale:0 hard:0</code>
+            <span>名稱開頭符合 + 不升級 + 一般模式</span>
+          </div>
+        </div>
+
+        <div class="obj-filter-list">
+          {fieldFilters.map((item) => (
+            <details>
+              <summary>
+                <code>{item.field}:</code>
+                <span>{item.use}</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div>
+                <span>範例</span>
+                <code>{item.field}:{item.value}</code>
+                <button type="button" data-copy={`${item.field}:${item.value}`}>複製</button>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="obj-section obj-reveal">
+      <div class="obj-wrap">
+        <div class="obj-section-heading">
+          <span>MAP WORKFLOW · 地圖工具</span>
+          <h2>搜尋完成後，才是地圖工作的開始。</h2>
+        </div>
+
+        <div class="obj-tools-list">
+          {mapTools.map((tool) => (
+            <article>
+              <span>{tool.no}</span>
+              <h3>{tool.title}</h3>
+              <p>{tool.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="notes" class="obj-section obj-section-notes obj-reveal">
+      <div class="obj-wrap obj-notes-layout">
+        <div>
+          <span class="obj-note-mark">FIELD NOTES</span>
+          <h2>使用前注意</h2>
+        </div>
+        <ul>
+          <li>物件地圖會顯示未探索地區、內部名稱與任務物件，可能包含劇情或探索上的雷。</li>
+          <li>搜尋結果預設有顯示數量上限；條件太寬時，請加入欄位或關鍵字再搜尋。</li>
+          <li>名稱中含有單引號時，請用雙引號包住整個名稱，例如 <code>"Traveler's Shield"</code>。</li>
+          <li>Master Mode、LastBoss Mode 等顯示設定不一定會改變搜尋結果，仍應在搜尋式中加入對應欄位。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="obj-final-cta obj-reveal">
+      <div class="obj-wrap">
+        <span>READY TO SEARCH</span>
+        <h2>帶著搜尋式，回到海拉魯。</h2>
+        <a href={MAP_URL} target="_blank" rel="noopener">
+          開啟曠野物件地圖
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+          </svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .obj-guide {
+      --guide-line: color-mix(in srgb, var(--accent) 42%, var(--border-strong));
+      overflow: clip;
+    }
+
+    .obj-wrap,
+    .obj-hero-inner,
+    .obj-section-nav-inner {
+      width: min(1180px, calc(100% - 64px));
+      margin-inline: auto;
+    }
+
+    .obj-hero {
+      position: relative;
+      height: min(620px, calc(100svh - 120px));
+      min-height: 480px;
+      overflow: hidden;
+      background: #171713;
+      color: #faf9f5;
+      isolation: isolate;
+    }
+
+    .obj-hero-map,
+    .obj-hero-shade {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .obj-hero-map {
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(0.72) contrast(1.08) brightness(0.72);
+      transform: scale(1.035);
+      animation: obj-map-settle 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .obj-hero-shade {
+      background: color-mix(in srgb, #141413 74%, transparent);
+      z-index: 1;
+    }
+
+    .obj-hero::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(250, 249, 245, 0.18);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .obj-hero-inner {
+      position: relative;
+      z-index: 4;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding-block: 28px 42px;
+    }
+
+    .obj-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 12px;
+      color: rgba(250, 249, 245, 0.64);
+    }
+
+    .obj-breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .obj-breadcrumb a:hover {
+      color: #faf9f5;
+    }
+
+    .obj-hero-content {
+      max-width: 720px;
+      margin-block: auto;
+      padding-block: 24px;
+    }
+
+    .obj-kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: #ef9779;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .obj-kicker svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .obj-hero h1 {
+      max-width: 12ch;
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 54px;
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: 0;
+      text-wrap: balance;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: obj-rise 0.72s 0.12s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .obj-hero-content > p {
+      max-width: 41rem;
+      margin: 22px 0 0;
+      color: rgba(250, 249, 245, 0.82);
+      font-size: 17px;
+      line-height: 1.85;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: obj-rise 0.68s 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .obj-hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 22px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(250, 249, 245, 0.56);
+      text-transform: uppercase;
+    }
+
+    .obj-hero-meta span + span::before {
+      content: "/";
+      margin-right: 18px;
+      color: #d97757;
+    }
+
+    .obj-hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px 22px;
+      margin-top: 30px;
+    }
+
+    .obj-primary-action,
+    .obj-final-cta a {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 20px;
+      background: #c96442;
+      color: #faf9f5;
+      border: 1px solid #d97757;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 180ms, border-color 180ms, transform 120ms;
+    }
+
+    .obj-primary-action svg,
+    .obj-final-cta svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .obj-primary-action:hover,
+    .obj-final-cta a:hover {
+      background: #d97757;
+      border-color: #ef9779;
+    }
+
+    .obj-primary-action:active,
+    .obj-final-cta a:active {
+      transform: translateY(1px);
+    }
+
+    .obj-secondary-action {
+      padding-block: 12px;
+      color: rgba(250, 249, 245, 0.78);
+      font-size: 14px;
+      text-underline-offset: 4px;
+    }
+
+    .obj-coordinate {
+      position: absolute;
+      right: 0;
+      bottom: 42px;
+      display: grid;
+      gap: 3px;
+      min-width: 158px;
+      padding-left: 16px;
+      border-left: 1px solid rgba(250, 249, 245, 0.24);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: rgba(250, 249, 245, 0.48);
+      text-align: left;
+    }
+
+    .obj-coordinate strong {
+      color: #ef9779;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .obj-scan {
+      position: absolute;
+      top: 50%;
+      right: 17%;
+      width: 260px;
+      height: 260px;
+      transform: translate(50%, -50%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .obj-scan-ring,
+    .obj-scan-cross,
+    .obj-scan-dot {
+      position: absolute;
+      display: block;
+    }
+
+    .obj-scan-ring {
+      inset: 0;
+      border: 1px solid rgba(239, 151, 121, 0.42);
+      border-radius: 50%;
+      animation: obj-scan-pulse 3.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    .obj-scan-ring-b {
+      inset: 52px;
+      animation-delay: 0.9s;
+    }
+
+    .obj-scan-cross-x {
+      top: 50%;
+      left: -32px;
+      width: calc(100% + 64px);
+      height: 1px;
+      background: rgba(239, 151, 121, 0.32);
+    }
+
+    .obj-scan-cross-y {
+      left: 50%;
+      top: -32px;
+      width: 1px;
+      height: calc(100% + 64px);
+      background: rgba(239, 151, 121, 0.32);
+    }
+
+    .obj-scan-dot {
+      left: 50%;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ef9779;
+      box-shadow: 0 0 0 5px rgba(201, 100, 66, 0.18);
+      transform: translate(-50%, -50%);
+    }
+
+    .obj-section-nav {
+      position: sticky;
+      top: 64px;
+      z-index: 30;
+      border-bottom: 1px solid var(--border-strong);
+      background: var(--bg);
+    }
+
+    .obj-section-nav-inner {
+      display: flex;
+      min-height: 54px;
+      align-items: center;
+      gap: 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .obj-section-nav-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .obj-section-nav-label {
+      margin-right: auto;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1.3px;
+      white-space: nowrap;
+    }
+
+    .obj-section-nav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 160ms;
+    }
+
+    .obj-section-nav a:hover,
+    .obj-section-nav a:focus-visible {
+      color: var(--ink);
+    }
+
+    .obj-section {
+      padding-block: 88px;
+      scroll-margin-top: 118px;
+    }
+
+    .obj-section + .obj-section {
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .obj-section-heading > span,
+    .obj-note-mark,
+    .obj-final-cta > .obj-wrap > span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .obj-section-heading h2,
+    .obj-section-notes h2,
+    .obj-final-cta h2 {
+      margin: 12px 0 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 34px;
+      font-weight: 500;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    .obj-start-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 48px;
+      border-block: 1px solid var(--border-strong);
+    }
+
+    .obj-start-grid article {
+      position: relative;
+      min-width: 0;
+      padding: 32px 36px 34px 0;
+    }
+
+    .obj-start-grid article + article {
+      padding-left: 36px;
+      border-left: 1px solid var(--border-strong);
+    }
+
+    .obj-step-no {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .obj-start-grid h3,
+    .obj-tools-list h3 {
+      margin: 13px 0 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .obj-start-grid p,
+    .obj-tools-list p {
+      margin: 10px 0 18px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-variant-ligatures: none;
+    }
+
+    .obj-start-grid > article > code,
+    .obj-filter-formula code {
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .obj-section-lab {
+      background: var(--surface);
+    }
+
+    .obj-lab-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+      gap: 72px;
+      align-items: center;
+    }
+
+    .obj-lab-copy > p,
+    .obj-filter-intro > p {
+      max-width: 58ch;
+      margin: 22px 0 0;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.85;
+    }
+
+    .obj-lab-copy p code,
+    .obj-section-notes code {
+      color: var(--accent);
+      font-size: 0.9em;
+    }
+
+    .obj-query-output {
+      position: relative;
+      margin-top: 32px;
+      min-height: 146px;
+      padding: 22px 24px 20px;
+      border: 1px solid var(--guide-line);
+      background: var(--mono-bg);
+      border-radius: 6px;
+    }
+
+    .obj-query-output::before,
+    .obj-query-output::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: var(--accent);
+      pointer-events: none;
+    }
+
+    .obj-query-output::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid;
+      border-left: 2px solid;
+    }
+
+    .obj-query-output::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+
+    .obj-query-output > span,
+    .obj-control-label {
+      display: block;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 1.2px;
+    }
+
+    .obj-query-output > code {
+      display: block;
+      min-height: 38px;
+      margin-top: 11px;
+      color: var(--mono-text);
+      font-size: 18px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .obj-query-output button {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 0 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 160ms, color 160ms;
+    }
+
+    .obj-query-output button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .obj-query-output button svg,
+    .obj-copy-icon svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+    }
+
+    .obj-query-controls {
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .obj-query-controls > div,
+    .obj-token {
+      width: 100%;
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 4px;
+      border: 0;
+      border-bottom: 1px solid var(--border-strong);
+      background: transparent;
+      text-align: left;
+    }
+
+    .obj-token {
+      color: var(--text);
+      cursor: pointer;
+      transition: color 160ms, padding-left 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .obj-token:hover,
+    .obj-token[aria-pressed="true"] {
+      color: var(--ink);
+      padding-left: 10px;
+    }
+
+    .obj-token[aria-pressed="true"] {
+      box-shadow: inset 3px 0 var(--accent);
+    }
+
+    .obj-query-controls code {
+      flex: none;
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    .obj-token span {
+      font-size: 13px;
+    }
+
+    .obj-heading-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .obj-heading-row > p {
+      max-width: 31ch;
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .obj-recipe-list {
+      margin-top: 46px;
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .obj-recipe {
+      display: grid;
+      grid-template-columns: 120px minmax(210px, 0.8fr) minmax(0, 1.2fr) 44px;
+      gap: 24px;
+      align-items: center;
+      min-height: 76px;
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .obj-recipe-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .obj-recipe > code {
+      color: var(--ink);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .obj-recipe > p {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .obj-copy-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 160ms, background-color 160ms;
+    }
+
+    .obj-copy-icon:hover,
+    .obj-copy-icon[data-copied="true"] {
+      color: var(--accent);
+      background: var(--sand);
+    }
+
+    .obj-section-filters {
+      background: var(--surface);
+    }
+
+    .obj-filter-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.78fr) minmax(420px, 1.22fr);
+      gap: 84px;
+      align-items: start;
+    }
+
+    .obj-filter-intro {
+      position: sticky;
+      top: 150px;
+    }
+
+    .obj-filter-formula {
+      display: grid;
+      gap: 8px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .obj-filter-formula span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .obj-filter-list {
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .obj-filter-list details {
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .obj-filter-list summary {
+      min-height: 60px;
+      display: grid;
+      grid-template-columns: 90px 1fr 20px;
+      gap: 18px;
+      align-items: center;
+      padding-inline: 4px;
+      list-style: none;
+      cursor: pointer;
+    }
+
+    .obj-filter-list summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .obj-filter-list summary code {
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .obj-filter-list summary span {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .obj-filter-list summary svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 1.8;
+      transition: transform 200ms cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .obj-filter-list details[open] summary svg {
+      transform: rotate(180deg);
+    }
+
+    .obj-filter-list details > div {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 0 4px 18px;
+    }
+
+    .obj-filter-list details > div span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .obj-filter-list details > div code {
+      color: var(--ink);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .obj-filter-list details > div button {
+      min-width: 56px;
+      min-height: 38px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .obj-filter-list details > div button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .obj-tools-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: 48px;
+      border-block: 1px solid var(--border-strong);
+    }
+
+    .obj-tools-list article {
+      display: grid;
+      grid-template-columns: 54px 130px 1fr;
+      gap: 20px;
+      align-items: start;
+      padding: 30px 28px 30px 0;
+    }
+
+    .obj-tools-list article:nth-child(even) {
+      padding-left: 28px;
+      border-left: 1px solid var(--border-strong);
+    }
+
+    .obj-tools-list article:nth-child(n + 3) {
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .obj-tools-list article > span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .obj-tools-list h3,
+    .obj-tools-list p {
+      margin: 0;
+    }
+
+    .obj-section-notes {
+      background: var(--mono-bg);
+    }
+
+    .obj-notes-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
+      gap: 80px;
+    }
+
+    .obj-section-notes ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .obj-section-notes li {
+      position: relative;
+      padding: 17px 8px 17px 28px;
+      border-bottom: 1px solid var(--border-strong);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .obj-section-notes li::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 25px;
+      width: 7px;
+      height: 7px;
+      border: 1px solid var(--accent);
+      transform: rotate(45deg);
+    }
+
+    .obj-final-cta {
+      padding-block: 86px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .obj-final-cta .obj-wrap {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 12px 48px;
+    }
+
+    .obj-final-cta > .obj-wrap > span {
+      grid-column: 1;
+    }
+
+    .obj-final-cta h2 {
+      grid-column: 1;
+      margin-top: 0;
+    }
+
+    .obj-final-cta a {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+
+    .obj-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 620ms cubic-bezier(0.16, 1, 0.3, 1), transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .obj-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .obj-guide :is(a, button, summary):focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    @keyframes obj-map-settle {
+      from { opacity: 0; transform: scale(1.09); }
+      to { opacity: 1; transform: scale(1.035); }
+    }
+
+    @keyframes obj-rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes obj-scan-pulse {
+      0% { opacity: 0; transform: scale(0.58); }
+      42% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
+    @media (max-width: 960px) {
+      .obj-scan {
+        right: 8%;
+        opacity: 0.62;
+      }
+
+      .obj-lab-layout,
+      .obj-filter-layout {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .obj-filter-intro {
+        position: static;
+      }
+
+      .obj-tools-list article {
+        grid-template-columns: 40px 112px 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .obj-wrap,
+      .obj-hero-inner,
+      .obj-section-nav-inner {
+        width: min(100% - 40px, 1180px);
+      }
+
+      .obj-hero {
+        height: min(560px, calc(100svh - 116px));
+        min-height: 470px;
+      }
+
+      .obj-hero::after {
+        inset: 10px;
+      }
+
+      .obj-hero-inner {
+        padding-block: 20px 30px;
+      }
+
+      .obj-hero-content {
+        padding-top: 52px;
+      }
+
+      .obj-hero h1 {
+        max-width: 10ch;
+        font-size: 34px;
+      }
+
+      .obj-hero-content > p {
+        max-width: 30ch;
+        margin-top: 16px;
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      .obj-hero-meta,
+      .obj-coordinate {
+        display: none;
+      }
+
+      .obj-hero-actions {
+        margin-top: 22px;
+      }
+
+      .obj-primary-action {
+        min-height: 46px;
+        padding-inline: 16px;
+      }
+
+      .obj-scan {
+        top: 28%;
+        right: -34px;
+        width: 190px;
+        height: 190px;
+      }
+
+      .obj-section-nav {
+        top: 58px;
+      }
+
+      .obj-section-nav-label {
+        display: none;
+      }
+
+      .obj-section-nav-inner {
+        gap: 22px;
+      }
+
+      .obj-section {
+        padding-block: 62px;
+        scroll-margin-top: 112px;
+      }
+
+      .obj-section-heading h2,
+      .obj-section-notes h2,
+      .obj-final-cta h2 {
+        font-size: 26px;
+      }
+
+      .obj-start-grid {
+        grid-template-columns: 1fr;
+        margin-top: 34px;
+      }
+
+      .obj-start-grid article,
+      .obj-start-grid article + article {
+        padding: 26px 0;
+        border-left: 0;
+      }
+
+      .obj-start-grid article + article {
+        border-top: 1px solid var(--border-strong);
+      }
+
+      .obj-heading-row {
+        align-items: start;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .obj-recipe {
+        grid-template-columns: minmax(0, 1fr) 44px;
+        gap: 8px 12px;
+        padding-block: 18px;
+      }
+
+      .obj-recipe-label,
+      .obj-recipe > code,
+      .obj-recipe > p {
+        grid-column: 1;
+      }
+
+      .obj-recipe-label {
+        font-size: 10px;
+      }
+
+      .obj-copy-icon {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+      }
+
+      .obj-filter-list summary {
+        grid-template-columns: 72px 1fr 20px;
+        gap: 10px;
+      }
+
+      .obj-filter-list details > div {
+        grid-template-columns: 1fr auto;
+        gap: 8px 12px;
+      }
+
+      .obj-filter-list details > div span {
+        grid-column: 1 / -1;
+      }
+
+      .obj-tools-list {
+        grid-template-columns: 1fr;
+      }
+
+      .obj-tools-list article,
+      .obj-tools-list article:nth-child(even) {
+        grid-template-columns: 36px 1fr;
+        gap: 8px 14px;
+        padding: 25px 0;
+        border-left: 0;
+      }
+
+      .obj-tools-list article + article {
+        border-top: 1px solid var(--border-strong);
+      }
+
+      .obj-tools-list article > span {
+        grid-row: 1 / span 2;
+      }
+
+      .obj-tools-list h3,
+      .obj-tools-list p {
+        grid-column: 2;
+      }
+
+      .obj-notes-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .obj-final-cta {
+        padding-block: 64px;
+      }
+
+      .obj-final-cta .obj-wrap {
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: 14px;
+      }
+
+      .obj-final-cta > .obj-wrap > span,
+      .obj-final-cta h2,
+      .obj-final-cta a {
+        grid-column: 1;
+        grid-row: auto;
+      }
+
+      .obj-final-cta a {
+        margin-top: 10px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .obj-wrap,
+      .obj-hero-inner,
+      .obj-section-nav-inner {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .obj-kicker {
+        font-size: 9px;
+        letter-spacing: 0.9px;
+      }
+
+      .obj-hero h1 {
+        font-size: 30px;
+      }
+
+      .obj-secondary-action {
+        width: 100%;
+      }
+
+      .obj-query-output > code {
+        font-size: 15px;
+      }
+
+      .obj-query-controls > div,
+      .obj-token {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .obj-hero-map,
+      .obj-hero h1,
+      .obj-hero-content > p,
+      .obj-scan-ring {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+
+      .obj-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+  </style>
+
+  <script>
+    const tokenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".obj-token"));
+    const queryOutput = document.getElementById("query-output");
+
+    function updateQuery() {
+      const tokens = tokenButtons
+        .filter((button) => button.getAttribute("aria-pressed") === "true")
+        .map((button) => button.dataset.queryToken)
+        .filter(Boolean);
+      if (queryOutput) queryOutput.textContent = ["Lynel", ...tokens].join(" ");
+    }
+
+    tokenButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const active = button.getAttribute("aria-pressed") === "true";
+        button.setAttribute("aria-pressed", String(!active));
+        updateQuery();
+      });
+    });
+
+    async function copyText(text: string, button: HTMLElement) {
+      try {
+        await navigator.clipboard.writeText(text);
+        button.dataset.copied = "true";
+        const label = button.querySelector("span");
+        const previous = label?.textContent;
+        if (label) label.textContent = "已複製";
+        window.setTimeout(() => {
+          delete button.dataset.copied;
+          if (label && previous) label.textContent = previous;
+        }, 1600);
+      } catch {
+        button.dataset.copied = "false";
+      }
+    }
+
+    document.querySelectorAll<HTMLElement>("[data-copy]").forEach((button) => {
+      button.addEventListener("click", () => copyText(button.dataset.copy ?? "", button));
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-copy-target]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = document.getElementById(button.dataset.copyTarget ?? "");
+        if (target?.textContent) copyText(target.textContent, button);
+      });
+    });
+
+    const revealItems = document.querySelectorAll<HTMLElement>(".obj-reveal");
+    if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.12 }
+      );
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("is-visible"));
+    }
+  </script>
+</BaseLayout>
