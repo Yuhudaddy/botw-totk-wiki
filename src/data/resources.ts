@@ -311,7 +311,8 @@ export const resourceGames: ResourceGame[] = [
           },
           {
             title: "Léo 王淚物件地圖",
-            url: "https://objmap-totk.zeldamods.org/",
+            url: "/resources/object-map/totk",
+            externalUrl: "https://objmap-totk.zeldamods.org/",
             kind: "map",
             note: "Created by Léo Lam / 最全面的物件地圖",
             recommended: true,
