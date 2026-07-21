@@ -15,6 +15,7 @@ export interface TypeGroup {
   game: "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
   label: string;
   en: string;
+  shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
   items: TypeItem[];
 }
 
@@ -87,7 +88,8 @@ export const typeGroups: TypeGroup[] = [
   {
     game: "ssbu",
     label: "任天堂明星大亂鬥特別版",
-    en: "Super Smash Bros. Ultimate",
+    en: "SSB Ultimate",
+    shortLabel: "大亂鬥",
     items: [
       { no: "01", zh: "入門篇", en: "Beginner's Guide", termsOnly: true },
       { no: "02", zh: "初級篇", en: "Elementary Guide", termsOnly: true },

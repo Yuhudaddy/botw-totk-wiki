@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { href } from "../lib/url";
 import { typeGroups } from "../data/types";
+import { GAME_LOGOS } from "../data/gameLogos";
 ---
 
 <BaseLayout
@@ -29,16 +30,61 @@ import { typeGroups } from "../data/types";
     </div>
   </section>
 
-  {/* 兩個遊戲分組 */}
+  {/* 遊戲門扉：桌面一排六個、手機 2x3 */}
+  <div class="mx-auto max-w-[1180px] px-8 pt-10">
+    <div class="r-game-tabs grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+      {
+        typeGroups.map((group) => (
+          <button
+            type="button"
+            class="portal ring-hover relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-border-soft bg-surface px-4 text-left transition-colors"
+            data-game={group.game}
+            aria-pressed={group.game === "botw" ? "true" : "false"}
+          >
+            <svg
+              class="portal-mark pointer-events-none flex-none"
+              viewBox={GAME_LOGOS[group.game].viewBox}
+              fill="currentColor"
+              stroke="none"
+              set:html={GAME_LOGOS[group.game].svg}
+            />
+            <div class="min-w-0">
+              <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{group.en}</div>
+              <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
+                {group.shortLabel ?? group.label}
+              </div>
+            </div>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* 各遊戲分組：一次只顯示一組 */}
   {
     typeGroups.map((group) => (
-      <section id={group.game} class="mx-auto max-w-[1180px] px-8 pb-4 pt-[52px] last:pb-20">
+      <section
+        class="lib mx-auto max-w-[1180px] px-8 pb-20 pt-[52px]"
+        data-lib={group.game}
+        hidden={group.game !== "botw"}
+      >
         <div class="mb-[22px] flex items-end justify-between gap-5">
-          <div>
-            <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
-              {group.en}
+          <div class="flex min-w-0 items-center gap-3.5">
+            <svg
+              class="h-9 w-9 flex-none text-accent"
+              viewBox={GAME_LOGOS[group.game].viewBox}
+              fill="currentColor"
+              stroke="none"
+              set:html={GAME_LOGOS[group.game].svg}
+            />
+            <div class="min-w-0">
+              <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+                {group.en}
+              </div>
+              <h2 class="r-type-group-title mt-1 truncate font-serif text-[28px] font-medium text-ink">
+                {group.label}
+              </h2>
             </div>
-            <h2 class="r-type-group-title mt-2.5 font-serif text-[28px] font-medium text-ink">{group.label}</h2>
           </div>
           <a
             href={href(`/videos?game=${group.game}`)}
@@ -64,15 +110,81 @@ import { typeGroups } from "../data/types";
             ))}
           </div>
         ) : (
-          <p class="rounded-2xl border border-dashed border-border-soft px-4 py-6 text-center text-sm text-muted">
-            內容整理中，敬請期待。
-          </p>
+          <div class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border-soft py-20 text-center">
+            <svg
+              class="h-14 w-14 text-muted opacity-40"
+              viewBox={GAME_LOGOS[group.game].viewBox}
+              fill="currentColor"
+              stroke="none"
+              set:html={GAME_LOGOS[group.game].svg}
+            />
+            <p class="font-serif text-xl font-medium text-ink">內容整理中</p>
+            <p class="text-sm text-muted">
+              {group.shortLabel ?? group.label}的主題解說還在整理，敬請期待。
+            </p>
+          </div>
         )}
       </section>
     ))
   }
 
 <style>
+  /* ── 文件頁籤：桌面一排六個、手機 2x3（沿用資料網站的樣式） ── */
+  .portal {
+    height: clamp(52px, 9vw, 64px);
+  }
+  .portal-mark {
+    width: clamp(24px, 6vw, 32px);
+    height: clamp(24px, 6vw, 32px);
+    color: var(--muted);
+    opacity: 0.55;
+    transition: opacity 0.25s ease, color 0.25s ease;
+  }
+  .r-portal-title {
+    font-size: clamp(14px, 3.4vw, 16px);
+  }
+  .portal:hover .portal-mark {
+    opacity: 0.8;
+  }
+  .portal[aria-pressed="true"] {
+    border-color: var(--brand);
+    background: color-mix(in srgb, var(--brand) 5%, var(--surface));
+  }
+  .portal[aria-pressed="true"] .portal-mark {
+    color: var(--accent);
+    opacity: 0.9;
+  }
+  .portal[aria-pressed="false"] {
+    opacity: 0.75;
+  }
+  .portal[aria-pressed="false"]:hover {
+    opacity: 1;
+  }
+
+  /* ── 切換遊戲時的浮現動畫 ── */
+  @keyframes types-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .lib.entering {
+    animation: types-rise 0.45s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lib.entering {
+      animation: none;
+    }
+    .portal-mark {
+      transition: none;
+    }
+  }
+
   @media (max-width: 600px) {
     .r-types-hero {
       padding-top: 28px;
@@ -93,4 +205,34 @@ import { typeGroups } from "../data/types";
     }
   }
 </style>
+
+  <script>
+    const portals = Array.from(document.querySelectorAll<HTMLButtonElement>(".portal"));
+    const libs = Array.from(document.querySelectorAll<HTMLElement>(".lib"));
+    const gameOrder = portals.map((p) => p.dataset.game ?? "");
+
+    function setGame(game: string, animate = true) {
+      if (!libs.some((l) => l.dataset.lib === game)) return;
+      portals.forEach((p) => p.setAttribute("aria-pressed", String(p.dataset.game === game)));
+      libs.forEach((l) => {
+        const on = l.dataset.lib === game;
+        l.hidden = !on;
+        l.classList.remove("entering");
+        if (on && animate) {
+          void l.offsetWidth;
+          l.classList.add("entering");
+        }
+      });
+      history.replaceState(null, "", `#${game}`);
+    }
+
+    portals.forEach((p) =>
+      p.addEventListener("click", () => {
+        if (p.getAttribute("aria-pressed") !== "true") setGame(p.dataset.game ?? "botw");
+      })
+    );
+
+    const initial = location.hash.replace("#", "");
+    if (gameOrder.includes(initial)) setGame(initial, false);
+  </script>
 </BaseLayout>

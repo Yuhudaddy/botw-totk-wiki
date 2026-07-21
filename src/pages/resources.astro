@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { href } from "../lib/url";
 import { resourceGames, RESOURCES_CREDIT, type ResourceKind } from "../data/resources";
+import { GAME_LOGOS } from "../data/gameLogos";
 
 // 各類型圖示（stroke 線稿，吃 currentColor）
 const KIND_ICONS: Record<ResourceKind, string> = {
@@ -22,17 +23,6 @@ const KIND_ICONS: Record<ResourceKind, string> = {
 // 星星篩選圖示：站長本人推薦且常用
 const STAR_ICON =
   '<polygon points="12 2 14.9 8.6 22 9.3 16.8 13.9 18.2 21 12 17.3 5.8 21 7.2 13.9 2 9.3 9.1 8.6"/>';
-
-// 六個遊戲門扉的浮水印徽記：希卡之眼／左納烏漩渦／回音方塊／大亂鬥星爆／交叉雙刃／封印之鎖
-const GAME_MARKS: Record<string, string> = {
-  botw: '<path d="M8 50 Q50 14 92 50 Q50 86 8 50 Z"/><circle cx="50" cy="50" r="15"/><circle cx="50" cy="50" r="5" fill="currentColor" stroke="none"/><line x1="50" y1="21" x2="50" y2="6"/><line x1="31" y1="26" x2="24" y2="13"/><line x1="69" y1="26" x2="76" y2="13"/><line x1="50" y1="68" x2="50" y2="86"/><circle cx="50" cy="90" r="3.5" fill="currentColor" stroke="none"/>',
-  totk: '<path d="M22 22h56v56H36V36h28v28H50" fill="none"/>',
-  eow: '<rect x="22" y="22" width="42" height="42" rx="6"/><rect x="36" y="36" width="42" height="42" rx="6" opacity="0.55"/>',
-  ssbu:
-    '<polygon points="50,8 56.9,33.4 79.7,20.3 66.6,43.1 92,50 66.6,56.9 79.7,79.7 56.9,66.6 50,92 43.1,66.6 20.3,79.7 33.4,56.9 8,50 33.4,43.1 20.3,20.3 43.1,33.4"/><circle cx="50" cy="50" r="4" fill="currentColor" stroke="none"/>',
-  aoc: '<line x1="20" y1="80" x2="80" y2="20"/><line x1="20" y1="20" x2="80" y2="80"/><circle cx="50" cy="50" r="9"/>',
-  aoi: '<rect x="30" y="46" width="40" height="34" rx="6"/><path d="M38 46V33a12 12 0 0 1 24 0v13" fill="none"/><circle cx="50" cy="63" r="4.5" fill="currentColor" stroke="none"/>',
-};
 
 // 連結來源的顯示名稱
 function sourceLabel(url: string): string {
@@ -113,16 +103,13 @@ function sourceLabel(url: string): string {
           >
             <svg
               class="portal-mark pointer-events-none flex-none"
-              viewBox="0 0 100 100"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              set:html={GAME_MARKS[g.game]}
+              viewBox={GAME_LOGOS[g.game].viewBox}
+              fill="currentColor"
+              stroke="none"
+              set:html={GAME_LOGOS[g.game].svg}
             />
             <div class="min-w-0">
-              <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{g.en}</div>
+              <div class="truncate text-[10px] font-bold tracking-[1.5px] text-accent">{g.en}</div>
               <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
                 {g.shortLabel ?? g.label}
               </div>
@@ -268,13 +255,10 @@ function sourceLabel(url: string): string {
           <div class="flex flex-col items-center gap-3 py-24 text-center">
             <svg
               class="h-14 w-14 text-muted opacity-40"
-              viewBox="0 0 100 100"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="4"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              set:html={GAME_MARKS[g.game]}
+              viewBox={GAME_LOGOS[g.game].viewBox}
+              fill="currentColor"
+              stroke="none"
+              set:html={GAME_LOGOS[g.game].svg}
             />
             <p class="font-serif text-xl font-medium text-ink">資源整理中</p>
             <p class="text-sm text-muted">
@@ -346,7 +330,7 @@ function sourceLabel(url: string): string {
                           ? "bg-sand text-accent"
                           : item.lang === "ja"
                             ? "bg-sand text-accent opacity-75"
-                            : "bg-sand text-muted"
+                            : "bg-sand text-lang-tag"
                       }`}
                     >
                       {item.lang === "zh" ? "中文" : item.lang === "ja" ? "日文" : "英文"}

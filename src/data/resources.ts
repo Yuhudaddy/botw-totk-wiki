@@ -44,7 +44,7 @@ export const resourceGames: ResourceGame[] = [
   {
     game: "botw",
     label: "曠野之息",
-    en: "BoTW",
+    en: "Breath of the Wild",
     categories: [
       {
         id: "zh-map",
@@ -279,7 +279,7 @@ export const resourceGames: ResourceGame[] = [
   {
     game: "totk",
     label: "王國之淚",
-    en: "ToTK",
+    en: "Tears of the Kingdom",
     categories: [
       {
         id: "zh-map",
@@ -687,26 +687,26 @@ export const resourceGames: ResourceGame[] = [
   {
     game: "eow",
     label: "智慧的再現",
-    en: "EoW",
+    en: "Echoes of Wisdom",
     categories: [], // 尚未整理，待補
   },
   {
     game: "ssbu",
     label: "任天堂明星大亂鬥特別版",
-    en: "SSBU",
+    en: "SSB Ultimate",
     shortLabel: "大亂鬥",
     categories: [], // 尚未整理，待補
   },
   {
     game: "aoc",
     label: "災厄啟示錄",
-    en: "AoC",
+    en: "Age of Calamity",
     categories: [], // 尚未整理，待補（連結稍後補上）
   },
   {
     game: "aoi",
     label: "封印戰記",
-    en: "AoI",
+    en: "Age of Imprisonment",
     categories: [], // 尚未整理，待補（連結稍後補上）
   },
 ];

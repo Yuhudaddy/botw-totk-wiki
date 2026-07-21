@@ -25,3 +25,22 @@ Thumbs.db
 
 # Claude Code 本機工作階段
 .claude/
+
+# 各編碼工具本機 skill 設定（與網站程式碼無關）
+.agent/
+.codebuddy/
+.codex/
+.continue/
+.cursor/
+.gemini/
+.kiro/
+.opencode/
+.qoder/
+.roo/
+.trae/
+.windsurf/
+.github/prompts/
+
+# Blender 備份／自動存檔
+blender-tots/_backup_phase3/
+*.blend1
