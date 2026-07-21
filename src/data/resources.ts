@@ -595,6 +595,11 @@ export const resourceGames: ResourceGame[] = [
             kind: "video",
             note: "Series by GameSpot / Rin",
           },
+          {
+            title: "Zuggle 逐幀行為表",
+            url: "https://docs.google.com/spreadsheets/d/1eD4geEEY4_j9eusHRFb5gXQczxdB96WpHVmBK_AhRCI/edit?gid=1250540160#gid=1250540160",
+            kind: "sheet",
+          },
         ],
       },
       {
@@ -628,6 +633,12 @@ export const resourceGames: ResourceGame[] = [
             url: "https://www.zeldadungeon.net/echoes-of-wisdom-interactive-map/",
             kind: "map",
             note: "Hosted by Zelda Dungeon",
+          },
+          {
+            title: "傳送陣列表",
+            url: "https://docs.google.com/spreadsheets/d/1OjJFfFTbPNdCyE1Oc_4EuCoICoYhultK_tGXKwkST_8/edit?gid=2008720173#gid=2008720173",
+            kind: "sheet",
+            note: "Created by Echocolat et al.",
           },
         ],
       },

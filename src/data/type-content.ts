@@ -2275,6 +2275,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-09": {
+    intro: "[[dt13269|https://github.com/dt-12345/zuggle]] 玩家對於 Zuggle 的說明",
     videoFolder: "totk-smuggle zuggle",
     methodsTitle: "裝備狀態",
     notesTitle: "備註說明",
@@ -2534,6 +2535,9 @@ export const typeContent: Record<string, TypeContent> = {
       {
         text: "Zuggle 的數量太多，達到林克的裝備依賴上限，會造成 [[Zuggle Overload|totk-11#Zuggle]]。",
       },
+      {
+        text: "Ver.1.1.2 以下的 SLD 達成的 Zuggle 操作，在 Ver.1.2.0+ 會變成 Invizuggle，因此通常適用 SLD 或 配合「[[再同步（Resync）|totk-09#Resync]]」讓 Invizuggle 變回 Zuggle（Invizuggle = Cull + Zuggle，被隱藏的 Zuggle 狀態）。",
+      },
     ],
     faqLink: { label: "深入了解 Zuggle", path: "/types/totk-09-zuggle" },
     videos: [
@@ -2571,7 +2575,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     notes: [
-      { text: "若 ZLOT 或 PSLOT 糾纏的物體是__Invizuggle（無形並列）__、__Ghost（幽體）__、__Persistent Purgatory（持續型懲戒）__這種直到關閉遊戲都會永久存在的母物件，才會永久繼承。SLD 本身通常是糾纏於非持續型無隱藏的懲戒裝備（Unculled Purgatory），這種只要離開一段距離或是傳送後懲戒狀態就會消失，與之糾纏的子物件又不會永久繼承。" },
+      { text: "若 ZLOT 或 PSLOT 糾纏的物體是 __Invizuggle（無形並列）__、__Ghost（幽體）__、__Persistent Purgatory（持續型懲戒）__這種直到關閉遊戲都會永久存在的母物件，才會永久繼承。SLOT 本身通常是糾纏於非持續型無隱藏的懲戒裝備（Unculled Purgatory），這種只要離開一段距離或是傳送後懲戒狀態就會消失，與之糾纏的子物件又不會永久繼承。" },
     ],
     videos: [],
   },
@@ -3221,15 +3225,48 @@ export const typeContent: Record<string, TypeContent> = {
   "eow-01": {
     methods: [
       {
+        tab: "選單儲存",
+        sections: [
+          {
+            title: "選單儲存（Menu Storage）",
+            steps: [
+              "在白霧或高空雲層會觸發__虛反（Void out）__的邊界附近放置一個告示牌（例如遠古森林大樹下，或利用大岩蛇高塔）",
+              "按住 ZL 鎖定告示牌，將林克往白霧邊界推動，同時按 A 讀取告示牌",
+              "看到畫面周圍的白霧稍微閃滅時，按 B 取消對話",
+              "對話框完全消失後等一拍，快速依序按 +、- 開啟選單與地圖",
+              "若畫面暫停或地圖上同時看見人物血量與右下角小地圖，即表示選單儲存成功",
+            ],
+            note: "※ 要在地圖與暫停選單間切換，可按住 L 再按 -；也可快速按十字鍵右，再按 + 或 -。",
+          },
+        ],
+      },
+      {
         tab: "錯誤傳送",
         sections: [
           {
-            title: "隨機錯傳（Random Wrong Warp）",
-            steps: ["步驟建置中"],
+            title: "隨機錯傳（Random Wrong Warp, RWW）",
+            intro: "利用游標離開傳送點後會被轉換成無效資料的特性，隨機傳送到其他區域。",
+            steps: [
+              "在選單儲存的狀態下按 - 開啟地圖，這張地圖稱為__第一地圖__",
+              "將游標移到任意傳送點，按 A 開啟「是否要傳送？」確認視窗；此時不要再次按 A",
+              "保持確認視窗開啟，再按 - 開啟__第二地圖__",
+              "在第二地圖將游標移到任何不是傳送點的空白位置，或停在原地的非傳送點處",
+              "直接按 A 執行傳送，讓遊戲將無效游標資料讀成隨機位置",
+            ],
+            note: "※ 傳送結果具有隨機性，可能沒有反應、報錯或閃退。",
           },
           {
-            title: "指標錯傳（Index Wrong Warp）",
-            steps: ["步驟建置中"],
+            title: "指標錯傳（Index Wrong Warp, IWW）",
+            intro: "利用不同世界中相同的傳送點陣列編號，在游標被清除前快速切換地圖完成跨世界傳送。",
+            steps: [
+              "維持選單儲存狀態，先進入目標世界（例如米諾米諾森林的無質世界），再按 - 開啟__第一地圖__",
+              "按十字鍵左切換到主世界地圖，將游標移到任意傳送點，按 A 開啟確認視窗；此時不要按 A 傳送",
+              "保持確認視窗開啟，再按 - 開啟__第二地圖__",
+              "按十字鍵左回到主世界地圖，將游標停在與目標傳送點相同陣列編號的傳送點上",
+              "依序快速按十字鍵右切回目標世界地圖，再緊接按 A 確認傳送",
+              "若輸入時機正確，角色會依相同的陣列編號跨界傳送到目標世界的對應位置",
+            ],
+            note: "※ 例如目標是邊界陣列第 32 號的傳送點，就要在主世界選擇同為第 32 號的傳送點。",
           },
         ],
       },
@@ -3241,6 +3278,23 @@ export const typeContent: Record<string, TypeContent> = {
             steps: ["步驟建置中"],
           },
         ],
+      },
+    ],
+    principleSections: [
+      {
+        title: "選單儲存（Menu Storage）",
+        collapsible: true,
+        text: "選單儲存利用林克在__虛反（Void out）__邊界讀取告示牌的時機差，將暫停選單與地圖的狀態卡在可切換的狀態。成功後，可以在暫停選單與地圖之間切換，並以此作為隨機錯傳與指標錯傳等操作的前置狀態。",
+      },
+      {
+        title: "隨機錯傳（Random Wrong Warp, RWW）",
+        collapsible: true,
+        text: "第一地圖先建立一個有效的傳送確認視窗；再次開啟第二地圖後，游標卻能離開傳送點。當玩家把游標停在非傳送點並按 A，系統仍會嘗試讀取傳送位置，但此時讀到的是無效的__垃圾資料__，可能被當成其他地圖位置的陣列編號，因此產生隨機錯誤傳送。",
+      },
+      {
+        title: "指標錯傳（Index Wrong Warp, IWW）",
+        collapsible: true,
+        text: "指標錯傳利用不同世界中傳送點共用的__MLocation Index__。開啟傳送確認視窗後，游標在被轉換成無效資料前存在一段很短的時間差；玩家在這段時間切換到另一個世界的地圖並立即按 A，就能讓系統沿用原本的陣列編號。只要目標世界存在相同編號的傳送點，角色就會被傳送到該位置。",
       },
     ],
     videos: [
