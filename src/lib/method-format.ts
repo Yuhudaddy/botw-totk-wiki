@@ -68,6 +68,33 @@ export function principleHtml(text: string) {
   ).join("");
 }
 
+// 把分頁專屬的原理小節轉成 HTML，供流程分頁切換時更新右欄內容。
+export function principleSectionsHtml(
+  sections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[],
+) {
+  if (!sections?.length) return "";
+  return sections.map((sec) => {
+    const title = sec.title ? escapeHtml(sec.title) : "";
+    const body = [
+      sec.text ? `<p>${principleHtml(sec.text)}</p>` : "",
+      sec.items?.length
+        ? `<ul>${sec.items.map((item) => {
+            const { text, sub } = stepParts(item);
+            const subHtml = sub.length
+              ? `<ul class="step-sub">${sub.map((detail) => `<li>${principleHtml(detail)}</li>`).join("")}</ul>`
+              : "";
+            return `<li>${principleHtml(text)}${subHtml}</li>`;
+          }).join("")}</ul>`
+        : "",
+    ].join("");
+
+    if (sec.collapsible) {
+      return `<details class="principle-collapse"><summary class="principle-collapse-summary"><span class="principle-block-title principle-collapse-title">${title}</span><svg class="principle-collapse-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><div class="principle-collapse-body">${body}</div></details>`;
+    }
+    return `<div class="principle-block">${title ? `<div class="principle-block-title">${title}</div>` : ""}${body}</div>`;
+  }).join("");
+}
+
 // 把單一分頁的 principleExtra（{title, items}）轉成 HTML 字串，供 data-principle-extra 使用。
 // 隨分頁切換一起換掉，因此和 principleHtml 一樣輸出純 HTML 字串而非 JSX；
 // 沒有 items 時回傳空字串（切到沒有 principleExtra 的分頁時，區塊自然清空/不顯示）。

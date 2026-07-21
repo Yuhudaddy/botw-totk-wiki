@@ -64,11 +64,30 @@ import { href } from "../../lib/url";
         <li>解除裝備 actor 對 Link 的計算依賴（calculation dependency）。</li>
       </ol>
       <p>
-        Zuggle 發生時，前幾項在帳面上通常已被處理、覆蓋或跳過，但最後一項，也就是<strong>裝備 actor 對 Link 的 calculation dependency</strong>，沒有被同步清除。
+        Zuggle 發生時，<code>ActorLink</code>、裝備狀態與丟棄佇列的更新時序彼此錯開；即使其中一部分資料已經被移除、覆蓋或判定完成，<strong>裝備 actor 對 Link 的 calculation dependency</strong> 仍可能殘留。
       </p>
       <p>
         這也是為什麼 Zuggle 不能簡單歸類為「背包錯位」或「卡在 drop 佇列裡」：真正讓 Zuggle 成立的關鍵，是帳面狀態已經改變，但 actor 層的依賴關係仍殘留。
       </p>
+
+      <h2>Map Zuggle 的形成時序</h2>
+      <p>
+        以下以 Map Zuggle 作為說明範例。裝備被丟棄時，不會立即解除與 Link 的連結，而是先進入 <code>PouchMgr</code> 的丟棄佇列，並暫存被丟棄裝備的連結。
+      </p>
+      <ol>
+        <li>在地圖開啟前，從快速選單丟棄目前裝備。</li>
+        <li>快速重新開啟選單，切換到另一件裝備。</li>
+        <li>關閉選單，讓地圖開啟，使換裝與丟棄請求在不同時間點被處理。</li>
+        <li>再從背包丟棄目前裝備，讓兩次丟棄請求進入後續處理。</li>
+      </ol>
+      <p>
+        這個過程會讓背包資料、目前裝備狀態，以及 <code>PouchMgr</code> 暫存的裝備連結發生不同步。當後續丟棄流程判定暫存裝備與目前裝備為同一件時，遊戲可能跳過正常的解除或刪除流程。
+      </p>
+      <blockquote>
+        <p>
+          最後形成「多件裝備仍保留對 Link 的 <code>calculation dependency</code>，但 <code>EquipmentUserComponent</code> 只剩一個有效 <code>ActorLink</code>」的狀態，這就是 Map Zuggle。
+        </p>
+      </blockquote>
 
       <h2>四個系統各自的狀態</h2>
       <div class="table-wrap">

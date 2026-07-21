@@ -25,6 +25,8 @@ export interface TypeMethod {
   image?: string;     // 快速示意圖片檔名（與 video 擇一），例："IST.png"
   note?: string | string[]; // 步驟下方的灰色備註（可多行）
   principle?: string;       // 此分頁的原理說明（覆蓋 TypeContent.principle）
+  principleSections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[];
+                            // 此分頁的原理說明分段；可隨流程分頁切換，並支援可收合小節
   principleExtra?: { title?: string; items: TypeStep[] };
                             // 此分頁原理說明下方的固定附加小節（例："延伸"），只在切到這個分頁時顯示，
                             // 切到其他分頁會跟著 principle 一起換掉（僅用於 hasDynamicPrinciple 的頁面，
@@ -3226,6 +3228,14 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "選單儲存",
+        tags: ["～Ver.1.0.1"],
+        principleSections: [
+          {
+            title: "選單儲存（Menu Storage）",
+            collapsible: true,
+            text: "選單儲存利用林克在__虛反（Void out）__邊界讀取告示牌的時機差，將暫停選單與地圖的狀態卡在可切換的狀態。成功後，可以在暫停選單與地圖之間切換，並以此作為錯誤傳送與序章林克繼承等操作的前置狀態。",
+          },
+        ],
         sections: [
           {
             title: "選單儲存（Menu Storage）",
@@ -3242,6 +3252,19 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "錯誤傳送",
+        tags: ["～Ver.1.0.1"],
+        principleSections: [
+          {
+            title: "隨機錯傳（Random Wrong Warp, RWW）",
+            collapsible: true,
+            text: "第一地圖先建立一個有效的傳送確認視窗；再次開啟第二地圖後，游標卻能離開傳送點。當玩家把游標停在非傳送點並按 A，系統仍會嘗試讀取傳送位置，但此時讀到的是無效的__垃圾資料__，可能被當成其他地圖位置的陣列編號，因此產生隨機錯誤傳送。",
+          },
+          {
+            title: "指標錯傳（Index Wrong Warp, IWW）",
+            collapsible: true,
+            text: "指標錯傳利用不同世界中傳送點共用的__MLocation Index__。開啟傳送確認視窗後，游標在被轉換成無效資料前存在一段很短的時間差；玩家在這段時間切換到另一個世界的地圖並立即按 A，就能讓系統沿用原本的陣列編號。只要目標世界存在相同編號的傳送點，角色就會被傳送到該位置。",
+          },
+        ],
         sections: [
           {
             title: "隨機錯傳（Random Wrong Warp, RWW）",
@@ -3272,29 +3295,60 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "序章林克繼承",
+        tags: ["～Ver.1.0.1"],
+        intro: "先保留序章林克的手動存檔，再利用選單儲存讓讀檔清單與 Game Over 選單短暫重疊。",
         sections: [
           {
             title: "序章林克繼承（Prologue Link Transfer）",
-            steps: ["步驟建置中"],
+            steps: [
+              "開啟新進度，在序章一開始可以操控林克時，立刻進行一次手動存檔。這是本流程唯一的手動存檔；後續逃離城牢與解開第一座神殿前，只能使用自動存檔，絕對不要覆蓋這個序章林克存檔。",
+              "將進度推進到可以觸發選單儲存的區域（例如遠古森林邊界）。準備觸發前，先打開暫停選單，把頁籤停在「存讀檔（系統）」介面。",
+              "利用白霧邊界與告示牌，或利用大岩蛇高塔，成功觸發選單儲存。成功後保持選單儲存狀態，不要按 B 或 +/- 取消。",
+              "操控薩爾達尋找附近的敵方怪物，讓她持續受到攻擊直到血量歸零。",
+              "在 Game Over 文字與畫面出現前的瞬間，操作背景中的選單游標移到「讀取」，按 A 開啟存檔列表。",
+              "等待 Game Over 顯示「重新開始／退出」介面。此時畫面會同時疊加存檔讀取列表與 Game Over 選單，使用十字鍵上下調整，讓游標同時停在「重新開始（Retry）」與序章林克的手動存檔上。",
+              "游標對齊後，極快依序按下 A → 十字鍵上 → A：先選擇重新開始，再將讀檔游標移到序章林克存檔，最後確認讀取。",
+              "若時機正確，畫面黑屏讀取後會看到序章林克出現在主世界地圖中，即表示繼承成功。",
+            ],
+            note: "※ 選單儲存成功後，按 B 或 +/- 都會取消狀態，因此「存讀檔（系統）」頁籤必須在觸發前先選好。",
+          },
+        ],
+        principleSections: [
+          {
+            title: "選單儲存是前置狀態",
+            collapsible: true,
+            text: "選單儲存利用薩爾達在__虛反（Void out）__邊界讀取告示牌的時機差，將暫停選單與地圖卡在可切換的狀態。序章林克繼承不直接利用這個狀態傳送，而是先把讀檔列表藏在背景，等待 Game Over 選單出現。",
+          },
+          {
+            title: "Game Over 與讀檔列表重疊",
+            collapsible: true,
+            text: "薩爾達血量歸零後，遊戲準備顯示 Game Over 的「重新開始／退出」介面；如果在此之前已從背景選單開啟讀檔列表，兩個選單就會同時存在。它們各自保留游標位置，形成可以分別接收輸入的狀態。",
+          },
+          {
+            title: "A → 上 → A 的輸入時序",
+            collapsible: true,
+            text: "兩個選單重疊後，先用第一個 A 讓 Game Over 選擇「重新開始」，再用十字鍵上把讀檔游標移到序章林克的手動存檔，最後用第二個 A 確認讀取。遊戲因此同時處理重新開始的世界狀態與手動存檔中的角色資料。",
+          },
+          {
+            title: "繼承結果",
+            collapsible: true,
+            text: "重新開始提供目前的地圖與進度環境，讀檔則帶入序章手動存檔中的林克資料；兩者在同一次讀取中錯開套用，就能讓序章林克出現在主世界地圖，完成 Prologue Link Transfer。",
           },
         ],
       },
     ],
-    principleSections: [
+    notes: [
       {
-        title: "選單儲存（Menu Storage）",
-        collapsible: true,
-        text: "選單儲存利用林克在__虛反（Void out）__邊界讀取告示牌的時機差，將暫停選單與地圖的狀態卡在可切換的狀態。成功後，可以在暫停選單與地圖之間切換，並以此作為隨機錯傳與指標錯傳等操作的前置狀態。",
+        text: "序章林克的手動存檔是唯一的安全備份，後續流程只能依賴自動存檔；請確認不要手動覆蓋或刪除它。",
       },
       {
-        title: "隨機錯傳（Random Wrong Warp, RWW）",
-        collapsible: true,
-        text: "第一地圖先建立一個有效的傳送確認視窗；再次開啟第二地圖後，游標卻能離開傳送點。當玩家把游標停在非傳送點並按 A，系統仍會嘗試讀取傳送位置，但此時讀到的是無效的__垃圾資料__，可能被當成其他地圖位置的陣列編號，因此產生隨機錯誤傳送。",
+        text: "選單儲存成功後，按 B 或 +/- 會取消狀態；「存讀檔（系統）」頁籤必須在觸發選單儲存前先停好。",
       },
       {
-        title: "指標錯傳（Index Wrong Warp, IWW）",
-        collapsible: true,
-        text: "指標錯傳利用不同世界中傳送點共用的__MLocation Index__。開啟傳送確認視窗後，游標在被轉換成無效資料前存在一段很短的時間差；玩家在這段時間切換到另一個世界的地圖並立即按 A，就能讓系統沿用原本的陣列編號。只要目標世界存在相同編號的傳送點，角色就會被傳送到該位置。",
+        text: "薩爾達必須在選單儲存狀態仍存在時被敵人擊倒；開啟讀檔列表與等待 Game Over 的時機需要精準，失敗時請重新讀取自動存檔再嘗試。",
+      },
+      {
+        text: "A → 上 → A 必須快速連續輸入；若先完整操作其中一個選單，兩個游標的重疊狀態可能會消失。",
       },
     ],
     videos: [

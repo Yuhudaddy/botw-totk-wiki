@@ -6,7 +6,7 @@ import LaunchFamilyNav from "../../components/LaunchFamilyNav.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../../data/type-content";
-import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml } from "../../lib/method-format";
+import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml, principleSectionsHtml } from "../../lib/method-format";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -57,7 +57,7 @@ const vidRowHover = isSimpleLayout ? "hover:bg-surface" : "hover:bg-bg";
 const vidBtnBg = isSimpleLayout ? "bg-surface" : "bg-bg";
 
 const VIDEOS_PER_PAGE = 10;
-const hasDynamicPrinciple = content?.methods?.some((m) => m.principle != null) ?? false;
+const hasDynamicPrinciple = content?.methods?.some((m) => m.principle != null || m.principleSections?.length) ?? false;
 
 // 分頁按鈕分組：同 group 的方法會排在同一行，並在最前面顯示分組標籤；
 // 沒有設定 group 的方法全部落在同一個（無標籤）分組，維持原本單行排列。
@@ -156,7 +156,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             </div>
             )}
             {content.methods.map((m, i) => (
-              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
+              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
                 {m.subTabs ? (
                   <div class="subtab-group">
                     <div role="tablist" class="subtab-tabs mb-4 flex flex-wrap gap-2">
@@ -201,7 +201,13 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         {/* B: 原理說明 */}
         <div class="prose-custom">
           <h2>{content?.principleTitle ?? "原理說明"}</h2>
-          {content?.principleSections ? (
+          {hasDynamicPrinciple ? (
+            content?.methods?.[0]?.principleSections ? (
+              <div id="principle-sections" set:html={principleSectionsHtml(content.methods[0].principleSections)} />
+            ) : (
+              <p id="principle-text" set:html={principleHtml(content?.methods?.[0]?.principle ?? "")} />
+            )
+          ) : content?.principleSections ? (
             content.principleSections.map((sec) => {
               const body = (
                 <>
@@ -272,8 +278,6 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 </li>
               ))}
             </ul>
-          ) : hasDynamicPrinciple ? (
-            <p id="principle-text" set:html={principleHtml(content?.methods?.[0]?.principle ?? "")} />
           ) : (
             <p>
               {content?.principle ? (
@@ -1011,6 +1015,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     }
 
     const principleText = document.getElementById("principle-text");
+    const principleSections = document.getElementById("principle-sections");
     const principleExtra = document.getElementById("principle-extra");
 
     function select(index: number) {
@@ -1019,6 +1024,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       updateMedia(index);
       if (principleText) {
         principleText.innerHTML = panelByIndex.get(index)?.dataset.principle ?? "";
+      }
+      if (principleSections) {
+        principleSections.innerHTML = panelByIndex.get(index)?.dataset.principleSections ?? "";
       }
       if (principleExtra) {
         principleExtra.innerHTML = panelByIndex.get(index)?.dataset.principleExtra ?? "";
