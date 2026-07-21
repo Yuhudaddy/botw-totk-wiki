@@ -1,6 +1,6 @@
 ---
 // 技巧家族切換帶（方案 A：彈道切換帶）。同 family 的技巧各自是獨立頁面，
-// 這裡只負責在頁首下方畫出橫向卡片＋裝飾性彈道虛線，讓使用者知道彼此是同一家族的變體。
+// 這裡只負責在頁首下方畫出橫向卡片，讓使用者知道彼此是同一家族的變體。
 // 目前只有「擊飛」家族（風彈／靜止擊飛／擊飛加速）在用，圖示暫時就地維護；
 // 若之後家族數量變多，再考慮抽成獨立資料檔。
 import { href } from "../lib/url";
@@ -24,9 +24,6 @@ const GLYPHS: Record<string, string> = {
 ---
 
 <div class="launch-band relative">
-  <svg class="launch-arc pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 300 40" preserveAspectRatio="none" fill="none">
-    <path d="M10 34 Q 75 -8 150 18 T 290 8" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
-  </svg>
   <div class="relative grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-3">
     {
       members.map((m) => {
@@ -62,17 +59,7 @@ const GLYPHS: Record<string, string> = {
 </div>
 
 <style>
-  .launch-arc {
-    z-index: 0;
-    display: none;
-  }
   .launch-card {
     z-index: 1;
-  }
-  /* 卡片橫向排列時才顯示裝飾彈道虛線；手機單欄堆疊時拉伸會變形，故隱藏 */
-  @media (min-width: 640px) {
-    .launch-arc {
-      display: block;
-    }
   }
 </style>
