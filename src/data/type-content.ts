@@ -1557,7 +1557,7 @@ export const typeContent: Record<string, TypeContent> = {
             title: "環境過載（Environment Overload）",
             tags: ["All Versions"],
             steps: [
-              "利用__選單過載__讓武器裝備不同步，重複投擲武器（或將電擊陷阱放置手持武器魔物的重生預設座標，重複消磨時間讓魔物回到原點電掉手上的武器）",
+              "利用[[選單過載|tab:Menu]]讓武器裝備不同步，重複投擲武器（或將電擊陷阱放置手持武器魔物的重生預設座標，重複消磨時間讓魔物回到原點電掉手上的武器）",
               "重複步驟 1 直到林克原地跳起來按 ZR 就能進入子彈時間",
             ],
             note: "※ 傷害判定、游泳判定都會消失，跳起來拉弓就能進入子彈時間。",
@@ -1597,7 +1597,7 @@ export const typeContent: Record<string, TypeContent> = {
             title: "迴力鏢災禍（Boomerang Curse）",
             tags: ["All Versions"],
             steps: [
-              "利用__選單過載__重複投擲武器（建議雷屬性武器丟到水裡），直到發生__環境過載__",
+              "利用[[選單過載|tab:Menu]]重複投擲武器（建議雷屬性武器丟到水裡），直到發生[[環境過載|tab:Environment]]",
               "武器切換成迴力鏢，走到水裡面投擲迴力鏢，讓迴力鏢接觸附近牆壁",
             ],
             note: [
@@ -1630,8 +1630,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     videos: [
       { id: "4gEYuQ5uQLk", title: "番外13.5+29.5 - 解DLC必殺之劍不用1滴血？強制丟棄大師劍？「半過載狀態拿必殺之劍（Pick up OhO in Semi-Overload State）」！" },
-      { id: "8jtyFMT_USQ", title: "單發弓的複製法（留言提問回覆，手機上傳→本短片明天再編輯www）" },
-      { id: "n4895SGurGs", title: "「雙弓過載法」- 2把多發弓就能複製武器！？（Only on Switch 1, Duplicate Weapons with Only 2 Multi-Shot Bows!?）" },
+      { id: "n4895SGurGs", title: "「雙弓過載法」- 2把多發弓就能複製武器！？（Only on Switch 1, Duplicate Weapons with Only 2 Multi-Shot Bows!?）", desc: "Nintendo Switch 2 Edition 版效能提升，不太容易成功。" },
       { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製／耐久移植和維修！「落弓過載法（Multi-Shot Bow Method）」（最新1.9.0版適用）" },
       { id: "2t_0T05rlKk", title: "26秒示範「耐久度移植」流程（Short Tutorial about Durability Transfer）" },
       { id: "_oWY1m696h0", title: "28秒增殖武器流程簡易示範（BoTW: Short Tutorial about Weapon Duplication in 28 seconds）" },
@@ -1645,12 +1644,26 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "共通",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: [
+          "站在神廟電梯入口圓盤上面向外面按住 R",
+          "左搖桿往左按 X 向左跳",
+          "接觸牆壁的瞬間執行「__蹬牆跳（Fall Damage Cancel / 落下傷害取消）__」的操作，即__放開 R，投擲出去之前切換盾牌或武器__",
+          "在一瞬間的落地判定按住 ZL 左搖桿往前按 X 向前鎖定跳",
+          "依照以下方式離開神廟平台",
+          "⋆ 連打 L 自炸把林克炸出平台",
+          "⋆ 按住 ZL 在空中按 A 踩盾跳出去落地卸盾讓林克跌出平台",
+          "⋆ 按住 ZL 在空中按 A 踩盾跳出去落地前按 X 再次跳起來開傘離開平台",
+          "移動到另一個神廟的判定範圍後觸發電梯動畫",
+        ],
+        note: [
+          "※ 步驟 1 ～ 5 在不穩定的地面上觸發電梯判定後用上升氣流也能離開平台。",
+          "※ 若兩神廟判定範圍沒有重疊，必須按照節奏打開快速選單來避免選單查詢林克的真實座標（Pause Buffer），讓系統誤以為林克在神廟 B 時，人還在神廟 A 的電梯動畫判定範圍內，才有辦法重新觸發動畫。",
+        ],
       },
     ],
     principleSections: [
       {
-        text: "SCW 利用儲存「進入神廟的過場動畫」，當林克離開原本神廟 A，並於另一座神廟 B的進入判定範圍內落地，重新觸發原本儲存的過場動畫，藉著 A 的過場動畫進入 B 神廟的程錯。",
+        text: "SCW 利用儲存「進入神廟的過場動畫」，當林克離開原本神廟 A，並於另一座神廟 B 的進入判定範圍內落地，重新觸發原本儲存的過場動畫，藉著 A 的過場動畫進入 B 神廟的程錯。",
       },
       {
         title: "過場動畫的釋放條件",
@@ -1678,9 +1691,9 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     notes: [
-      { text: "離開原本神廟的物理卸載範圍後，應避免在途中觸地，否則可能重新滿足過場釋放條件。" },
-      { text: "跨越山地或長距離移動時，需要在空中使用[[空中風彈|botw-01]]維持高度。" },
-      { text: "接近目標神廟時，可利用選單緩衝逐幀調整林克的位置與慣性。" },
+      { text: "離開原本神廟的物理非讀取(Unload)範圍後，應避免在途中觸地，否則可能重新滿足過場釋放條件。" },
+      { text: "跨越山地或長距離移動時，需要在空中使用[[空中風彈|botw-01#空中]]維持高度。" },
+      { text: "接近目標神廟時，可利用選單緩衝逐幀調整林克的位置（Pause Buffering）與慣性。" },
       { text: "最後必須讓林克在落地瞬間位於目標神廟的進入判定範圍內。" },
       { text: "落地時，遊戲會依照林克目前所在的位置重新判定神廟，讓原本儲存的過場動畫在目標神廟執行，形成 SCW。" },
     ],
