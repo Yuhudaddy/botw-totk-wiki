@@ -2,8 +2,9 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import MethodPanelBody from "../../components/MethodPanelBody.astro";
 import Model3DViewer from "../../components/Model3DViewer.astro";
+import LaunchFamilyNav from "../../components/LaunchFamilyNav.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
-import { typeGroups, type TypeItem, type TypeGroup } from "../../data/types";
+import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../../data/type-content";
 import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml } from "../../lib/method-format";
 
@@ -32,6 +33,8 @@ const gameLabelMap: Record<string, string> = {
 };
 const gameLabel = gameLabelMap[group.game] ?? group.label;
 const content = typeContent[id];
+const family = item.family ? typeFamilies[item.family] : null;
+const familyMembers = item.family ? group.items.filter((i) => i.family === item.family) : [];
 
 const videoBase = content?.videoFolder
   ? `${BASE}/type-videos/${content.videoFolder}`
@@ -83,6 +86,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <a href={href("/")} class="no-underline text-muted">首頁</a>
         <span>/</span>
         <a href={href("/types")} class="no-underline text-muted">主題解說</a>
+        {family && (
+          <>
+            <span>/</span>
+            <span>{family.zh}</span>
+          </>
+        )}
         <span>/</span>
         <span class="text-ink">{item.zh}</span>
       </div>
@@ -103,6 +112,17 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       <p class="text-[13px] sm:text-[17px] text-muted">{item.en}</p>
     </div>
   </section>
+
+  {familyMembers.length > 1 && (
+    <section class="border-b border-border-soft bg-surface">
+      <div class="mx-auto max-w-[1180px] px-8 py-8">
+        <div class="mb-3 font-mono text-[11px] font-bold uppercase tracking-[2px] text-muted">
+          {family?.en} · {family?.zh}系列
+        </div>
+        <LaunchFamilyNav game={group.game} members={familyMembers} currentNo={item.no} />
+      </div>
+    </section>
+  )}
 
   {/* 主體：流程步驟（左）／原理說明＋快速示意（右）＋ 注意事項（下）。videosOnly / termsOnly 分類不顯示 */}
   {!videosOnly && !termsOnly && (

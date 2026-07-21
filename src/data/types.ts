@@ -3,12 +3,15 @@ export interface TypeItem {
   no: string;
   zh: string;
   en: string;
+  shortZh?: string; // 主題索引卡片用的短中文（例：家族旗艦頁在外面列表用家族名顯示）；未填則使用 zh
   shortEn?: string; // 主題索引卡片用的短英文；未填則使用 en
   videosOnly?: boolean; // 詳細頁只顯示「相關影片」區（隱藏流程／原理／注意事項）
   termsOnly?: boolean;  // 詳細頁只顯示「名詞說明」＋「相關影片」（大亂鬥用）
   aliases?: string[]; // 影片索引搜尋用的別名／關鍵字（例：["IST", "背包", "格子"]）
   playlist?: string;  // YouTube 播放清單連結（待補）
   videos?: string[];  // 詳細頁底部顯示的 YouTube 影片 ID（待補）
+  family?: string;       // 技巧家族 id（同家族的項目在詳細頁會顯示彈道切換帶，例："launch"）
+  hideFromGrid?: boolean; // 家族內非代表項目：不在主題解說列表顯示，只能透過切換帶進入
 }
 
 export interface TypeGroup {
@@ -19,13 +22,20 @@ export interface TypeGroup {
   items: TypeItem[];
 }
 
+// 技巧家族的顯示名稱：詳細頁麵包屑與切換帶標頭用（成員各自的 zh/en 維持自己的頁面身分不變）
+export const typeFamilies: Record<string, { zh: string; en: string }> = {
+  launch: { zh: "擊飛", en: "Launch" },
+};
+
 export const typeGroups: TypeGroup[] = [
   {
     game: "botw",
     label: "曠野之息",
     en: "Breath of the Wild",
     items: [
-      { no: "01", zh: "風彈", en: "Windbomb" },
+      { no: "01", zh: "風彈", en: "Windbomb", shortZh: "擊飛", shortEn: "Launch", family: "launch" },
+      { no: "01-stasis", zh: "靜止擊飛", en: "Stasis Launch", family: "launch", hideFromGrid: true },
+      { no: "01-super", zh: "擊飛加速", en: "Super Launch", family: "launch", hideFromGrid: true },
       { no: "02", zh: "轉存格", en: "Inventory Slot Transfer" },
       { no: "03", zh: "萊尼爾", en: "Lynels" },
       { no: "04", zh: "月步", en: "Moonjump" },
@@ -47,6 +57,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "20", zh: "天滑", en: "Bow Lift Smuggle Slide" },
       { no: "21", zh: "硬直取消", en: "Endlag Cancel" },
       { no: "22", zh: "過載與災禍", en: "Overload & Curse" },
+      { no: "23", zh: "近廟入侵", en: "Shrine Coordinate Warp" },
     ],
   },
   {
@@ -106,12 +117,17 @@ export const typeGroups: TypeGroup[] = [
     game: "aoc",
     label: "災厄啟示錄",
     en: "Age of Calamity",
-    items: [], // 尚未整理，待補
+    items: [
+      { no: "01", zh: "主線攻略", en: "Main Story Walkthrough", videosOnly: true },
+      { no: "02", zh: "進階技巧", en: "Advanced Techniques", videosOnly: true },
+    ],
   },
   {
     game: "aoi",
     label: "封印戰記",
     en: "Age of Imprisonment",
-    items: [], // 尚未整理，待補
+    items: [
+      { no: "01", zh: "攻略技巧", en: "Guide & Techniques", videosOnly: true },
+    ],
   },
 ];

@@ -117,6 +117,11 @@ export const typeContent: Record<string, TypeContent> = {
         collapsible: true,
         text: "那就要看你對 Bug 的定義是什麼。對本站導師而言，只要是非原創團隊的原意，且不影響遊戲劇情和遊玩正常運行，都屬於良性的程序錯誤（簡稱「程錯（Glitch）」）。風彈本身能成功的原因，是由炸彈波長時間差與子彈時間的引擎演算達成的物理效果，就此觀點來說風彈是一種遊戲「技巧」並非一種 Bug；但就這樣的演算引擎，原設計是希望第二顆會被第一顆引爆的，本身不該存在於原設計的觀點來看，屬於一種 Glitch。",
       },
+      {
+        title: "風彈有時候會停下來的原因是？",
+        collapsible: true,
+        text: "林克在高速的布偶狀態（__Ragdoll State__），演算模型碰撞和位置的「靈魂(Soul)」和模型本身的「身體(Body)」會分離，當兩者的距離超過遊戲能夠穩定處理的範圍，系統會優先將兩者重新同步。畫面上看起來，就像林克在空中突然失去所有動量並停下來。會造成這種現象的角度就稱為風彈的「擊停角（Dead Angle）」。「擊停」不一定是因為風彈碰到了固定的速度上限，而可能是高速位移造成身體與靈魂的距離過大。特定方向、角度，以及遊戲發生短暫卡頓或物理更新不同步時，都可能讓這個現象更容易發生。",
+      },
     ],
     methods: [
       {
@@ -205,6 +210,108 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "dOVAzYGLwoU", title: "不廢話！畫面暫停一下快速檢查「空中風彈」失敗的原因！" },
     ],
 
+  },
+
+  "botw-01-stasis": {
+    methods: [
+      {
+        tab: "撞擊飛",
+        name: "撞擊飛（Impact Launch）",
+        sections: [
+          {
+            title: "靜止擊飛（Stasis Launch）",
+            tags: ["All Versions"],
+            steps: [
+              "靜止要擊飛的物體（箱子、樹等）",
+              "將其打至需要的動量（橙色、紅色等）",
+              "攀爬至物體上方",
+              "在靜止器要結束前往前跳，受到物體撞擊而擊飛",
+            ],
+            note: "※ 必要時可在步驟 2 用弓箭調整擊飛方向。",
+          },
+          {
+            title: "木箱擊飛（Kibako Launch）",
+            tags: ["Nintendo Switch 1"],
+            steps: [
+              "將方形炸彈放在木箱前方貼緊木箱",
+              "爬到木箱按住 ZL 貼近炸彈另一端的邊緣",
+              "按下 L 引爆炸彈把林克擊飛",
+            ],
+          },
+        ],
+      },
+      {
+        tab: "隨物飛",
+        sections: [
+          {
+            title: "隨物飛（Attaching Launch）",
+            tags: ["All Versions"],
+            steps: [
+              "靜止要擊飛的物體（箱子、樹等）",
+              "將其打至需要的動量（橙色、紅色等）",
+              "站在物體上，或是攀爬在物體上",
+              "靜止器結束後隨物體一起移動（攀爬時可在目的地按 B 取消攀爬）",
+            ],
+          },
+        ],
+      },
+    ],
+    principle: "被大動量的物體（靜止後累積到紅色、炸彈）擊中，或是隨著物體移動，可讓林克高速在空中移動。",
+    notes: [{ text: "攀爬飛的時候在攀爬物體上移動時容易解除攀爬而墜落。" }],
+    videos: [
+      { id: "dgcopMBlrhk", title: "番外42 - 靜止擊飛過時了？「木箱擊飛(Kibako Launch)」與「爆風炸彈(Windbomb)」（中文解說）" },
+      { id: "iCRbLZKrgrI", title: "技巧32 - 再也不想走路！「擊飛技巧(Launches)」全攻略" },
+      { id: "8V4Nz71HUVs", title: "番外34 - 忽視導師的考驗！「炸彈彈射(Bomb Launch)」", desc: "風彈出現後較為少用" },
+      { id: "8biCvDxKw1o", title: "54秒教你怎麼「逆攀擊飛(Instant Climb Launch)」（不廢話系列）" },
+    ],
+  },
+
+  "botw-01-super": {
+    methods: [
+      {
+        tab: "共通",
+        sections: [
+          {
+            title: "擊飛加速（Super Launch）",
+            tags: ["Nintendo Switch 1"],
+            steps: [
+              "以「擊飛」的技巧讓林克呈現在空中癱軟的__布偶狀態（Ragdoll）__",
+              "擊飛拋物線快達頂點時點擊一下快速選單，放開後快速按 + 打開暫停保留延遲幀",
+              "關閉暫停之後再打開暫停確認有延遲",
+              "輸入 B → X，關閉暫停後瞬間在延遲幀上開滑翔翼",
+            ],
+          },
+        ],
+      },
+    ],
+    principleSections: [
+      {
+        text: "無論是風彈或是靜止擊飛，造成高速布偶狀態的擊飛都能觸發加速。",
+      },
+      {
+        title: "身體與靈魂的分離",
+        collapsible: true,
+        text: "林克呈__布偶狀態（Ragdoll State）__高速飛行時，暫時會出現「身體」與「靈魂」不同步的狀態。身體是實際會被物理力推動的角色模型；靈魂則是負責位置、碰撞與遊戲邏輯的不可見判定核心。兩者平時會維持在相近位置。",
+      },
+      {
+        title: "開傘如何轉換成額外速度",
+        collapsible: true,
+        text: "開啟滑翔傘時會解除布偶狀態，並重新校正身體與靈魂的位置。若兩者原本相距很遠，靈魂在重新同步時就必須快速移動較長的距離。這段重新同步產生的位移，會轉換成林克的額外的水平動量，畫面延遲時身體與靈魂分離得越遠，開傘時可能產生的回彈效果就越明顯。",
+      },
+      {
+        title: "延遲與第一個影格",
+        collapsible: true,
+        text: "玩家可以透過快速開關選單製造短暫的延遲（Lag），使遊戲的畫面更新、物理運算與角色狀態更新出現時間差。當延遲結束時，遊戲通常會準備重新處理林克的速度與減速。如果玩家在恢復運算後、系統開始施加減速的第一個影格（第一幀）開啟滑翔傘，開傘所觸發的身體與靈魂重新同步，可能會先於減速指令生效。結果就是保留原本極高的速度，並繼續滑翔前進。",
+      },
+      {
+        text: "風彈的「擊停」是__重新同步阻止了高速移動__；「擊飛加速」則是__在正確的時機利用重新同步來取得額外加速__。",
+      },
+    ],
+    notes: [
+      { text: "只有從「布偶狀態」→「打開滑翔翼」的流程加速效果。" },
+      { text: "Switch 2 Edition 版效能提升，幾乎無法產生延遲。" },
+    ],
+    videos: [],
   },
 
   "botw-02": {
@@ -896,7 +1003,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
         ],
-        principle: "扭曲恢復時會有短暫的無碰撞判定，藉此穿過牆面。",
+        principle: "踩盾跳本身是一個讓遊戲能夠讓演算碰撞和座標的「靈魂」和實際模型的「身體」能夠稍微脫離的動作。而盾跳在斜面上儲存的__扭曲(Skew)__，會暫時讓遊戲誤解林克的位置，再次「踩盾跳」時會將林克的座標計算到上一個儲存的相對位置，因而與模型本身產生分離，也就是「扭曲（Skew）」，並且靈魂會在空中試圖重新同步和模型的位置，當靈魂和身體分離得夠遠，重新同步時就有機會穿到牆壁裡面，而成功再次完成「踩盾跳」後，模型和靈魂就會再次同步。若在空中卸盾讓踩盾跳不完整，就可以重複使用上一次儲存的扭曲，不過重複使用座標仍然會漸漸同步位置，扭曲會越來越小。",
       },
       {
         tab: "Horse Jump",
@@ -933,7 +1040,7 @@ export const typeContent: Record<string, TypeContent> = {
             note: "※ 通常用在低角度、兩向牆壁夾在一起的角落，如復甦神廟希卡石的房間右上角。",
           },
         ],
-        principle: "啟動相機或望遠鏡時會改變林克的站位，而開啟相機或望遠鏡時被設定會卡在高低差的邊緣，若林克能夠站立的空間不多，啟動相機或望遠鏡時會被邊緣推回來，進而將林克錯位進到牆內。",
+        principle: "這是所謂的「錯位視角（Camera Displacement）」產生的問題。啟動相機或望遠鏡時會改變林克的站位，而開啟相機或望遠鏡時被設定會卡在高低差的邊緣，若林克能夠站立的空間不多，啟動相機或望遠鏡時會被邊緣推回來，當遊戲試圖重新同步林克的位置時就可以將林克錯位同步到牆內達到穿牆的效果。",
       },
       {
         tab: "Unload",
@@ -951,7 +1058,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     notes: [
       {
-        text: "NS1 和 NS2 Edition 版差異不大，NS2 版單純盾跳扭曲不易穿牆，必須藉由樹幹、靜止中的物體等等擠壓才能直接穿牆（如魔獸戰光牆旁的樹幹、依蓋隊後門的柱子、牆壁前面靜止一個物體等）。",
+        text: "由於 Nintendo Switch 2 Edition 版效能提升，扭曲產生的身體與靈魂不同步的時間變短，導致重新同步位置時林克的模型尚未進入牆內就被同步座標了，因此必須藉由地圖物件，讓靈魂先撞到地圖物件，反作用力加速推進牆內的速度，此時同步座標才有辦法穿進牆內。",
       },
     ],
     videos: [
@@ -1352,6 +1459,7 @@ export const typeContent: Record<string, TypeContent> = {
     videos: [
       { id: "BdhXkiT6ri8", title: "技巧33 -「子時彈翔(BTB)」與「子時動量增幅(BTMA)」" },
       { id: "O-dCDmzOPk0", title: "回應10 -「BTB好難，到底該怎麼飛？」5分鐘學會BTB" },
+      { id: "z_3QuSgUc1g", title: "只要有水有機車就能飛！冰柱機車擊飛（Cryonis Master-Cycle Launch, 不廢話系列）", desc: "Switch 2 Edition 版效能提升的關係無法使用。" },
     ],
   },
 
@@ -1516,8 +1624,69 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     principle:
       "最早由 Reddit 上的玩家 【versat13】 在地圖最西南端的魔物基地，將多發弓給會射電箭的魔物後，當他們同時射出電箭時，過多的電箭讓畫面產生過多特效進而觸發選單的過載現象。2019/11/27 【Kleric】 玩家則是利用重複電擊手持法杖的魔物，地圖出現 25 把以上的火杖也能觸發選單過載。2019/12/5 【のほほほほ】 等玩家於 日本 Discord 提出裝備電箭丟出多把多發弓亦可觸發選單過載，也是目前為止最方便的選單過載法。",
-    notes: [{ text: "內容整理中，敬請期待。" }],
-    videos: [],
+    notes: [
+      { text: "選單過載（Menu Overload）有分做「淺過載」與「深過載」，明顯的差異是「淺過載(半過載)」第一次切換裝備會不同步，但是第二次後會成功同步；「深過載(全過載)」則是無論怎麼切換都無法同步。" },
+      { text: "超級環境過載（SEO）要注意不能超過 700 件武器，遊戲容易無法負荷而當機。" },
+    ],
+    videos: [
+      { id: "4gEYuQ5uQLk", title: "番外13.5+29.5 - 解DLC必殺之劍不用1滴血？強制丟棄大師劍？「半過載狀態拿必殺之劍（Pick up OhO in Semi-Overload State）」！" },
+      { id: "8jtyFMT_USQ", title: "單發弓的複製法（留言提問回覆，手機上傳→本短片明天再編輯www）" },
+      { id: "n4895SGurGs", title: "「雙弓過載法」- 2把多發弓就能複製武器！？（Only on Switch 1, Duplicate Weapons with Only 2 Multi-Shot Bows!?）" },
+      { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製／耐久移植和維修！「落弓過載法（Multi-Shot Bow Method）」（最新1.9.0版適用）" },
+      { id: "2t_0T05rlKk", title: "26秒示範「耐久度移植」流程（Short Tutorial about Durability Transfer）" },
+      { id: "_oWY1m696h0", title: "28秒增殖武器流程簡易示範（BoTW: Short Tutorial about Weapon Duplication in 28 seconds）" },
+      { id: "Cg4lFjZSCvw", title: "番外43 - 捨不得打加儂？試試「過載世界（Overloaded World）」吧！" },
+      { id: "_TM2MjbcEPI", title: "西諾克斯災禍（Hinox's Curse）與奇行種林克" },
+      { id: "95ZeIyckScw", title: "回應06(new)－22 個冷知識與小技巧" },
+    ],
+  },
+
+  "botw-23": {
+    methods: [
+      {
+        tab: "共通",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+    ],
+    principleSections: [
+      {
+        text: "SCW 利用儲存「進入神廟的過場動畫」，當林克離開原本神廟 A，並於另一座神廟 B的進入判定範圍內落地，重新觸發原本儲存的過場動畫，藉著 A 的過場動畫進入 B 神廟的程錯。",
+      },
+      {
+        title: "過場動畫的釋放條件",
+        collapsible: true,
+        items: [
+          {
+            text: "已儲存的神廟過場動畫，不會單純因為林克碰到地面就播放。必須同時滿足兩個條件：",
+            sub: [
+              "(1) 林克處於接地狀態",
+              "(2) 原本神廟電梯的物理模型仍處於載入狀態",
+            ],
+          },
+          "當兩個條件同時成立時，系統才會釋放並播放儲存中的神廟過場動畫。",
+        ],
+      },
+      {
+        title: "為什麼上升氣流會讓過場立即觸發？",
+        collapsible: true,
+        text: "營火或炸彈產生的上升氣流，會持續與附近的神廟電梯產生物理互動，使電梯的物理模型維持在載入狀態。因此，使用上升氣流儲存後，只要林克一落地，就同時滿足「接地」與「電梯物理模型已載入」這兩個條件，過場動畫便可能立即觸發。若用炸彈破壞營火、停止上升氣流，電梯與氣流之間的物理互動也會停止，電梯物理模型便可能卸載。此時即使林克在地面上移動，也不會立即釋放儲存的過場動畫。不過，轉動鏡頭直視原本的神廟電梯，或讓箭矢、武器、炸彈等物件持續與電梯產生碰撞，也可能重新讓電梯的物理模型載入，意外觸發過場。",
+      },
+      {
+        title: "盾滑儲存與上升氣流儲存",
+        collapsible: true,
+        text: "盾滑與上升氣流只是建立過場動畫儲存的不同操作方式，並不是兩種不同的儲存狀態。著地後是否立即觸發，關鍵在於原本神廟電梯的物理模型是否仍被載入。上升氣流會透過持續的物理互動維持電梯載入，因此較容易在落地時立即觸發；盾滑儲存則可能因為物理模型已卸載，而暫時保留儲存狀態，讓林克可以離開原本神廟後再執行遠距離 SCW。",
+      },
+    ],
+    notes: [
+      { text: "離開原本神廟的物理卸載範圍後，應避免在途中觸地，否則可能重新滿足過場釋放條件。" },
+      { text: "跨越山地或長距離移動時，需要在空中使用[[空中風彈|botw-01]]維持高度。" },
+      { text: "接近目標神廟時，可利用選單緩衝逐幀調整林克的位置與慣性。" },
+      { text: "最後必須讓林克在落地瞬間位於目標神廟的進入判定範圍內。" },
+      { text: "落地時，遊戲會依照林克目前所在的位置重新判定神廟，讓原本儲存的過場動畫在目標神廟執行，形成 SCW。" },
+    ],
+    videos: [
+      { id: "yJtjmIrvTvo", title: "番外46 - 無視任務闖入神廟！「近廟入侵(Shrine Coordinate Warp)」" },
+    ],
   },
 
   "totk-01": {
@@ -2388,7 +2557,9 @@ export const typeContent: Record<string, TypeContent> = {
         steps: ["步驟整理中，敬請期待。"],
       },
     ],
-    notes: [{ text: "內容整理中，敬請期待。" }],
+    notes: [
+      { text: "若 ZLOT 或 PSLOT 糾纏的物體是__Invizuggle（無形並列）__、__Ghost（幽體）__、__Persistent Purgatory（持續型懲戒）__這種直到關閉遊戲都會永久存在的母物件，才會永久繼承。SLD 本身通常是糾纏於非持續型無隱藏的懲戒裝備（Unculled Purgatory），這種只要離開一段距離或是傳送後懲戒狀態就會消失，與之糾纏的子物件又不會永久繼承。" },
+    ],
     videos: [],
   },
 
@@ -3631,6 +3802,36 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "lwA9PBSnJaQ", title: "超夢的「踩頭定身」原來這麼簡單？", desc: "踩頭定身 / Footstool Disable" },
       { id: "LYfd9GlG_SE", title: "皮丘也有反擊技？「反擊打雷」", desc: "反擊打雷 / Thunder Counter" },
       { id: "TUH5ZJIecRo", title: "法爾科的「貼地幻影」是這樣按的！？", desc: "貼地幻影 / Low Phantasm、小跳必殺 / Short Hop Special" },
+    ],
+  },
+
+  "aoc-01": {
+    intro: "收錄《災厄啟示錄》主線流程攻略與戰鬥挑戰影片，包含各章節的過場動畫、克洛格果實位置，以及非常困難（Very Hard）難度的戰鬥挑戰示範。",
+    videos: [
+      { id: "azFNNzQyl8Q", title: "攻略01（體驗版）- 13個克洛格果實的位置" },
+      { id: "XNviEYJ-Qgg", title: "戰鬥挑戰Lv.1~10《小心易爆（Handle with Care）》｜非常困難（Very Hard）" },
+      { id: "zFlZmmbYdLo", title: "戰鬥挑戰Lv.1~10《丟出去再引爆（Mastering Remote Bombs）》｜非常困難（Very Hard）" },
+      { id: "hXmTDQYeo5w", title: "戰鬥挑戰Lv.1~10《被奪走的土地（Lizalfos Infestation）》｜非常困難（Very Hard）" },
+      { id: "2D7tYXbWrVA", title: "流程01：第一章《海拉魯平原戰》- 含克洛格位置、過場動畫｜非常困難（Very Hard）" },
+      { id: "hHbUjBuRXAQ", title: "流程02：第一章《前往王室古代研究所》- 含克洛格位置、過場動畫｜非常困難（Very Hard）" },
+      { id: "wy7ZHdSPkSg", title: "Yu-Da戰鬥中的手部特寫鏡頭2（Yu-Da's Combat Handcam in Hyrule Warriors: Age of Calamity）" },
+    ],
+  },
+
+  "aoc-02": {
+    intro: "整理新手上手須知、基本操作解說，以及進階戰鬥技巧與連段知識，幫助玩家從入門邁向精通《災厄啟示錄》的戰鬥系統。",
+    videos: [
+      { id: "j22wcT5GDrU", title: "攻略02（體驗版）- 13個對新手們一定有幫助的事情" },
+      { id: "urR9Kt2TBGA", title: "攻略03 - 基本操作解說（直述版｜以「林克」示範）" },
+      { id: "hv3IuZATeOg", title: "攻略04 - 16個進階技巧與戰鬥知識(Advanced Techniques)" },
+      { id: "s6aHyijl1tI", title: "攻略05(含DLC1內容) - 學會4招輕鬆打「啟示錄」等級！(4 High-Damage Techniques in Age of Calamity)" },
+    ],
+  },
+
+  "aoi-01": {
+    intro: "分享《封印戰記》的心得與購買建議，並穿插部分戰鬥技巧的說明與示範。",
+    videos: [
+      { id: "RbPA0zL0GHY", title: "真正的「薩爾達」無雙！曠野王淚合計5000小時的玩家告訴你該不該買！", desc: "含一些戰鬥技巧的說明和分享" },
     ],
   },
 };

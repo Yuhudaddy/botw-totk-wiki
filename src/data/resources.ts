@@ -1,6 +1,8 @@
 // 「資料網站」頁的資料：由本神廟 Discord 管理員（Hsin-Po）協助整理外部資源連結，
 // 來源：https://www.symbol.codes。
-// kind 決定連結列前的類型圖示。
+// kind 決定連結列前的類型圖示；分類（category）只負責語言分組，
+// 每個遊戲固定分「中文資料／英文資料／日文資料」三類（無該語言資料則省略），
+// 資源類型已經由 kind 圖示區分，分類不需要重複再切一次。
 
 export type ResourceKind =
   | "sheet" // Google 試算表
@@ -21,8 +23,8 @@ export interface ResourceItem {
 }
 
 export interface ResourceCategory {
-  id: string; // 錨點用
-  label: string; // 分類名稱（含語言標記，用於推斷語言）
+  id: "zh" | "en" | "ja"; // 語言代碼，用於推斷語言標籤
+  label: string; // 分類名稱（中文資料／英文資料／日文資料）
   en: string;
   items: ResourceItem[];
 }
@@ -47,104 +49,90 @@ export const resourceGames: ResourceGame[] = [
     en: "Breath of the Wild",
     categories: [
       {
-        id: "zh-map",
-        label: "中文地圖",
-        en: "Maps · 中文",
+        id: "zh",
+        label: "中文資料",
+        en: "Chinese",
         items: [
           {
-            title: "互動地圖",
+            title: "曠野之息中文地圖",
             url: "https://www.gamertw.com/zelda/botw-map",
             kind: "map",
-            note: "Created by 巴哈/scps940208",
+            note: "Hosted by gamertw",
           },
-        ],
-      },
-      {
-        id: "zh-sheets",
-        label: "中文表格",
-        en: "Spreadsheets · 中文",
-        items: [
           {
-            title: "中英名詞對照",
+            title: "曠野之息物件中英名詞對照",
             url: "https://docs.google.com/spreadsheets/d/1wLoabOgGwh6ST23-lgQG8O6oKdKwwAyb75fzwH5FYpE/",
             kind: "sheet",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
             title: "怪物掉寶率",
             url: "https://docs.google.com/spreadsheets/d/1Au2aXlddhSV7dSmkv3KhmTiviNCNUjHZD3-DApC2Ev8/",
             kind: "sheet",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
             title: "Amiibo 掉寶率",
             url: "https://docs.google.com/spreadsheets/d/1WugDkmQcloO6SDkVyaaLO6Uu1EIerqMnAf0hR9QnCqU/",
             kind: "sheet",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
             title: "料理數學",
             url: "https://docs.google.com/spreadsheets/d/1WVlrlhM3gDOdSi-hvmbUFkFuBHWnOOWhohhVk1uSunw/",
             kind: "sheet",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
             title: "武器數值",
             url: "https://docs.google.com/spreadsheets/d/1DB_Z_dQrlv5x5S3hRlQPgVpIr9HnS1NkFh3aJKa2iaQ/",
             kind: "sheet",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
             title: "經驗值",
             url: "https://docs.google.com/spreadsheets/d/1WFJRuQtGTUIOKV_UKetkbYHea_FjLiatYPKfGTNvIsw/",
             kind: "sheet",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
             title: "隱藏數據",
             url: "https://docs.google.com/spreadsheets/d/1yi99TOn-kWSfSSRRIKeAR_1ZTntbzmrvJ79MsMSoP9Q/",
             kind: "sheet",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
-            title: "巴哈/UC2010 的表格",
+            title: "曠野之息資料彙整",
             url: "https://docs.google.com/spreadsheets/d/1wlOXEwHS29v9BT0772HEaf5UbV_8N9LY8olRmKz75bA/",
             kind: "sheet",
-            note: "Curated by Hsin-Po · 神廟寶箱、任務、商店、染劑、裝備升級、料理、Amiibo、萊尼爾位置等總表",
+            note: "Curated by Hsin-Po",
           },
-        ],
-      },
-      {
-        id: "zh-more",
-        label: "更多中文資料",
-        en: "More · 中文",
-        items: [
           {
             title: "定位月步傳送",
             url: "https://docs.google.com/presentation/d/1vq6iNPsOQmgh8Z2rSqnK7arqhTwO42rmtAJc8M6wEpQ/",
             kind: "slides",
-            note: "Curated by Hsin-Po",
+            note: "Explained by Hsin-Po",
           },
           {
             title: "Amiibo 掉寶保底",
             url: "https://docs.google.com/presentation/d/1WSLUUipMFUV08WIyTX89icfF3VsQIXHW4mTLKFD80Xo/",
             kind: "slides",
-            note: "Curated by Hsin-Po",
+            note: "Explained by Hsin-Po",
           },
           {
             title: "ZeldaMods：遊戲機制",
             url: "https://zeldamods.org/wiki/Category:Game_mechanics/zh",
             kind: "site",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
             title: "物理機制",
             url: "https://docs.google.com/document/d/1HdIff0N22_VC7YKEfpAEil0RTT6AKk-tkVDn17GTROk/",
             kind: "doc",
-            note: "Curated by Hsin-Po",
+            note: "Translated by Hsin-Po",
           },
           {
-            title: "遊戲內文字",
+            title: "希卡古文、海利亞文、格魯德文解析",
             url: "https://forum.gamer.com.tw/C.php?bsn=1689&snA=8640",
             kind: "forum",
             note: "Created by 巴哈/yuki5566",
@@ -152,60 +140,43 @@ export const resourceGames: ResourceGame[] = [
         ],
       },
       {
-        id: "en-map",
-        label: "英文地圖",
-        en: "Maps · English",
+        id: "en",
+        label: "英文資料",
+        en: "English",
         items: [
           {
-            title: "舊版物件地圖",
+            title: "MrCheeze Actor物件地圖",
             url: "https://objmap-legacy.zeldamods.org/",
             kind: "map",
-            note: "Created by MrCheeze · 縮小時顯示總數",
+            note: "Created by MrCheeze",
           },
           {
-            title: "新版物件地圖",
+            title: "Léo 曠野物件地圖",
             url: "https://objmap.zeldamods.org/",
             kind: "map",
-            note: "Created by leoetlino · 強大的搜尋功能",
+            note: "Created by Léo Lam / 最全面的物件地圖",
+            recommended: true,
           },
           {
-            title: "神廟列表 · 含寶箱",
-            url: "https://www.ign.com/wikis/the-legend-of-zelda-breath-of-the-wild/Shrines",
-            kind: "map",
-            note: "Hosted by IGN",
-          },
-          {
-            title: "神廟列表 · 含地點提示",
-            url: "https://www.gosunoob.com/zelda-breath-of-wild/shrines-where-to-find-how-to-complete/",
-            kind: "map",
-            note: "Hosted by GosuNoob",
-          },
-          {
-            title: "神廟列表 · 力之考驗",
-            url: "https://gamefaqs.gamespot.com/boards/189707-the-legend-of-zelda-breath-of-the-wild/75183722",
-            kind: "forum",
-            note: "Created by Sailor_Razor · 含武器",
-          },
-          {
-            title: "克洛格地圖 · 按任務分類",
-            url: "https://lepelog.github.io/korokmap/",
-            kind: "map",
-            note: "Created by lepelog",
-          },
-          {
-            title: "克洛格地圖 · 含截圖",
-            url: "https://www.zeldadungeon.net/breath-of-the-wild-interactive-map/",
-            kind: "map",
-            note: "Hosted by Zelda Dungeon",
-          },
-          {
-            title: "克洛格地圖 · 含截圖",
+            title: "IGN 曠野之息地圖",
             url: "https://www.ign.com/maps/the-legend-of-zelda-breath-of-the-wild/hyrule",
             kind: "map",
             note: "Hosted by IGN",
           },
           {
-            title: "100% 需拜訪地點",
+            title: "克洛格地圖（按任務分類）",
+            url: "https://lepelog.github.io/korokmap/",
+            kind: "map",
+            note: "Created by lepelog",
+          },
+          {
+            title: "曠野之息互動地圖",
+            url: "https://www.zeldadungeon.net/breath-of-the-wild-interactive-map/",
+            kind: "map",
+            note: "Hosted by Zelda Dungeon",
+          },
+          {
+            title: "進度 100% 需拜訪地點",
             url: "https://mrcheeze.github.io/botw-waypoint-map/",
             kind: "map",
             note: "Created by MrCheeze",
@@ -214,23 +185,22 @@ export const resourceGames: ResourceGame[] = [
             title: "萊尼爾地圖",
             url: "https://www.reddit.com/r/Breath_of_the_Wild/comments/87num5/lynel_map/",
             kind: "map",
-            note: "Created by PlasmaSlaya · 含武器及箭種",
+            note: "Created by PlasmaSlaya",
           },
           {
-            title: "野馬地點",
+            title: "野馬地點（含抓馬建議與說明）",
             url: "https://gamefaqs.gamespot.com/wii-u/632936-the-legend-of-zelda-breath-of-the-wild/faqs/74764/normal-horses",
             kind: "map",
-            note: "Created by HylianAngel · 含血速魔",
+            note: "Created by HylianAngel",
           },
-        ],
-      },
-      {
-        id: "foreign",
-        label: "外文資料",
-        en: "Data · Foreign",
-        items: [
           {
-            title: "訛植料理",
+            title: "事件流程表",
+            url: "https://eventviewer.zeldamods.org/",
+            kind: "tool",
+            note: "Created by MrCheeze et al.",
+          },
+          {
+            title: "WMC 料理詞綴料理",
             url: "https://docs.google.com/spreadsheets/d/1efenvai4JJM9iPGziHvvef6jSWvNeUGrx-WV9eWlR3g/",
             kind: "sheet",
             note: "Created collectively by Glitch Hunter Channel players",
@@ -242,35 +212,40 @@ export const resourceGames: ResourceGame[] = [
             note: "Created by Nebulaara",
           },
           {
-            title: "一般情報",
-            url: "https://docs.google.com/spreadsheets/d/1lCFAZIlSgVV4HiCd2gDhHX5o08Smtgval7svBhZbtn4/edit",
-            kind: "sheet",
-            note: "Created by 萱草プレリアル",
-          },
-          {
-            title: "戰鬥技巧合集",
+            title: "Rin 的戰鬥技巧教學",
             url: "https://docs.google.com/document/d/1qtYT06sxweRW3tRnovcCc-f4xIOGFNsD02pG1TzloHc/",
             kind: "doc",
-            note: "Created by Rin",
+            note: "Created by RinHara5aki",
           },
           {
-            title: "神廟技巧性速通總表",
+            title: "神廟速通表（無瞬間移動程錯）",
             url: "https://docs.google.com/spreadsheets/d/1n82Emcn8qfcYG2zd9fn7cDPzj-RedgHkFDyNM7FnRUs/",
             kind: "sheet",
-            note: "Created by Komali · 禁止風彈月步錯傳馬滑",
+            note: "Created by Komali",
           },
-        ],
-      },
-      {
-        id: "gallery",
-        label: "藝廊",
-        en: "Gallery",
-        items: [
+          {
+            title: "程錯表",
+            url: "https://docs.google.com/spreadsheets/d/15DYWr2WHUI3pxxjgeEaZ7MHoo19rmBTIE7koJ7L1-eM/",
+            kind: "sheet",
+          },
           {
             title: "More things you still didn't know",
             url: "https://www.youtube.com/watch?v=7ZbcmPrPtII&list=PLpg6WLs8kxGO0sUCxow2TVQfHW1s7wBbY",
             kind: "video",
             note: "Series by GameSpot / Rin",
+          },
+        ],
+      },
+      {
+        id: "ja",
+        label: "日文資料",
+        en: "Japanese",
+        items: [
+          {
+            title: "曠野之息攻略網站",
+            url: "https://gamewith.jp/zeldabotw/",
+            kind: "site",
+            note: "Hosted by gamewith",
           },
         ],
       },
@@ -282,52 +257,33 @@ export const resourceGames: ResourceGame[] = [
     en: "Tears of the Kingdom",
     categories: [
       {
-        id: "zh-map",
-        label: "中文地圖",
-        en: "Maps · 中文",
+        id: "zh",
+        label: "中文資料",
+        en: "Chinese",
         items: [
           {
-            title: "互動地圖",
-            url: "https://www.gamertw.com/zelda/totk/map",
+            title: "王國之淚攻略網站（含地圖）",
+            url: "https://www.gamertw.com",
             kind: "map",
-            note: "Created by 巴哈/scps940208",
+            note: "Created by gamertw",
           },
           {
-            title: "素材效果與位置",
-            url: "https://www.gamertw.com/zelda/totk/material",
-            kind: "map",
-            note: "Created by 巴哈/scps940208",
-          },
-          {
-            title: "防具位置與升級素材",
-            url: "https://www.gamertw.com/zelda/totk/armor",
-            kind: "map",
-            note: "Created by 巴哈/scps940208",
-          },
-        ],
-      },
-      {
-        id: "zh-more",
-        label: "更多中文資料",
-        en: "More · 中文",
-        items: [
-          {
-            title: "中文雜表",
+            title: "王國之淚資料彙整",
             url: "https://docs.google.com/spreadsheets/d/1-QiEisDV4v-nOZ4xeYdnYFbYBfL-Q4f4M3g1TLFarJY/",
             kind: "sheet",
-            note: "Curated by Hsin-Po · 防具、武器、材料、食物、左納烏裝置、藍圖、圖鑑、商店、轉蛋機等",
+            note: "Curated by Hsin-Po",
           },
           {
-            title: "特殊建材",
+            title: "特殊組合建材（不含 CO 拆下來的）",
             url: "https://forum.gamer.com.tw/C.php?bsn=1689&snA=11715",
             kind: "forum",
             note: "Created by 巴哈/z59922395525",
           },
           {
-            title: "100%／全要素",
+            title: "進度 100%／全要素",
             url: "https://forum.gamer.com.tw/C.php?bsn=1689&snA=11607",
             kind: "forum",
-            note: "Created by 巴哈/a255010 · 神廟、破魔之根、魔猶伊、圖鑑、克洛格、勳章等",
+            note: "Created by 巴哈/a255010",
           },
           {
             title: "料理指南",
@@ -338,87 +294,99 @@ export const resourceGames: ResourceGame[] = [
         ],
       },
       {
-        id: "en-map",
-        label: "英文地圖",
-        en: "Maps · English",
+        id: "en",
+        label: "英文資料",
+        en: "English",
         items: [
           {
-            title: "物件地圖 · 顯示總數",
+            title: "ToTK Actor Map",
             url: "https://vetyst.github.io/TotK-Object-Map/",
             kind: "map",
-            note: "Created by Danny Janse · 縮小時顯示總數",
+            note: "Created by Danny Janse",
           },
           {
-            title: "物件地圖 · 完整搜尋",
+            title: "Léo 王淚物件地圖",
             url: "https://objmap-totk.zeldamods.org/",
             kind: "map",
-            note: "Created by Léo Lam",
+            note: "Created by Léo Lam / 最全面的物件地圖",
+            recommended: true,
+          },
+          {
+            title: "Savage 地圖攻略",
+            url: "https://restite.org/",
+            kind: "tool",
+            note: "Created by savage13",
+          },
+          {
+            title: "GameWith 的王國之淚攻略（英文版）",
+            url: "https://gamewith.net/zelda-totk/",
+            kind: "site",
+            note: "Curated by Hsin-Po",
           },
           {
             title: "進度追蹤地圖",
             url: "https://totk.aeonsake.com/",
             kind: "map",
-            note: "Created by AEON · 可開塔、含神殿",
+            note: "Created by Aeon",
           },
           {
-            title: "互動地圖",
+            title: "Zelda Dungeon 互動地圖",
             url: "https://www.zeldadungeon.net/tears-of-the-kingdom-interactive-map/",
             kind: "map",
             note: "Hosted by Zelda Dungeon",
           },
           {
-            title: "互動地圖",
+            title: "Zelda Maps 互動地圖",
             url: "https://zeldamaps.com/?game=TotK",
             kind: "map",
             note: "Hosted by Zelda Maps",
           },
           {
-            title: "互動地圖",
+            title: "Map Genie 互動地圖",
             url: "https://mapgenie.io/zelda-tears-of-the-kingdom/maps/hyrule",
             kind: "map",
             note: "Hosted by Map Genie",
           },
           {
-            title: "互動地圖",
+            title: "IGN 互動地圖",
             url: "https://www.ign.com/maps/the-legend-of-zelda-tears-of-the-kingdom/hyrule",
             kind: "map",
             note: "Hosted by IGN",
           },
           {
-            title: "附攻略連結的地圖",
+            title: "Polygon 攻略連結地圖",
             url: "https://www.polygon.com/c/zelda-tears-of-the-kingdom-guide/23718210/zelda-tears-of-the-kingdom-map-hyrule-depths-sky",
             kind: "map",
             note: "Hosted by Polygon",
           },
-        ],
-      },
-      {
-        id: "en-data",
-        label: "英文資料",
-        en: "Data · English",
-        items: [
           {
-            title: "List of Glitches",
+            title: "事件流程表",
+            url: "https://restite.org/eventviewer-totk/",
+            kind: "tool",
+            note: "Created by MrCheeze et al.",
+          },
+          {
+            title: "程錯表",
             url: "https://docs.google.com/spreadsheets/d/1xNB1gOLZRSF9yp1mHUsS9ymogRJa1Wz8rTliTXezeRM/",
             kind: "sheet",
           },
           {
-            title: "Data Spreadsheet",
+            title: "資料彙整",
             url: "https://docs.google.com/spreadsheets/d/1fBvQ17WHP3ASgtO8ode_rf1g4DfEHErMrHwwLppNTJM/",
             kind: "sheet",
-            note: "Created by Phil（with help from Aeon and SuperSpazzy）",
+            note: "Created by Phil et al.",
           },
           {
-            title: "Interactable Objects",
+            title: "可互動物件表",
             url: "https://docs.google.com/spreadsheets/d/1eHHFwGDsI3sHTOLaawlxKgxbiLG8ceHUHpbpC2Bj57k/",
             kind: "sheet",
-            note: "Created by Phil and Jay · 可互動之物品",
+            note: "Created by Phil et al.",
           },
           {
-            title: "Text Dump",
+            title: "文字語庫",
             url: "https://docs.google.com/spreadsheets/d/11S_vD-kUTwG58qnhtchB12humhFOOK0qzRRilrA_hek/",
             kind: "sheet",
-            note: "Created by Phil and Aeon · 多語言文字對照",
+            note: "Created by Phil and Aeon",
           },
           {
             title: "防具升級素材計算器",
@@ -433,10 +401,10 @@ export const resourceGames: ResourceGame[] = [
             note: "Created by Phil",
           },
           {
-            title: "Raw Param",
+            title: "原始參數",
             url: "https://docs.google.com/spreadsheets/d/1YkGXGsYIr91d00Lri2cTXYtorRfoMkZNbS1I_4mZLGc/",
             kind: "sheet",
-            note: "Created by Phil · 原始參數",
+            note: "Created by Phil",
           },
           {
             title: "解釋賢者攻擊力",
@@ -463,185 +431,64 @@ export const resourceGames: ResourceGame[] = [
             note: "Created by DT12345",
           },
           {
-            title: "Drop Tables",
+            title: "掉寶率",
             url: "https://docs.google.com/spreadsheets/d/1PhKeLdLqjLTLxRqsd3ZvzpUpU8RBSD6zXFgzmxIRSbM/edit#gid=21404910",
             kind: "sheet",
-            note: "Created by DT12345 · 掉寶表",
+            note: "Created by DT12345",
           },
           {
-            title: "AttackParam（清理版）",
+            title: "AttackParam",
             url: "https://docs.google.com/spreadsheets/d/1UQG0W2RkYq_HyMhK0ZB9cqDeKxa4TcI_y6nynz6fbAc/",
             kind: "sheet",
-            note: "Created by DT12345 · 已移除未使用項目",
-          },
-          {
-            title: "Data Sheet v5",
-            url: "https://docs.google.com/spreadsheets/d/18pNtDx3z-8CwGJRmlW574xbQ6VphQOkvpZhClpOEVDA/",
-            kind: "sheet",
-            note: "Created by Echocolat et al.（已停止更新）",
+            note: "Created by DT12345",
           },
           {
             title: "餘料武器攻擊計算",
             url: "https://docs.google.com/spreadsheets/d/1LPhUKU479MtmxFd5V7EXdIAurIGR6pxOG3FYjuZw8NM/",
             kind: "sheet",
-            note: "Created by Echocolat et al. · 餘料武器攻擊計算",
+            note: "Created by Echocolat et al.",
           },
           {
-            title: "FUSION",
+            title: "餘料組合總表",
             url: "https://docs.google.com/spreadsheets/d/1D8FpE5meHxblv62VbI70g_eRBd3b2Xphz7wM69stG5E/",
             kind: "sheet",
-            note: "Created by Echocolat et al. · 所有餘料組合總表",
+            note: "Created by Echocolat et al.",
           },
           {
-            title: "Attack Params",
+            title: "動物與怪物的攻擊力",
             url: "https://docs.google.com/spreadsheets/d/1HvVT5MWV0tr7ZiioW8MndsQGtG7S-g4AtWF2NFi-5qQ/",
             kind: "sheet",
-            note: "Created by Echocolat et al. · 動物與怪物的攻擊力",
+            note: "Created by Echocolat et al.",
           },
           {
-            title: "XP System",
+            title: "經驗值系統",
             url: "https://docs.google.com/spreadsheets/d/1VyzoV6YrTkJHUjqBcgaflPLRDNPvFEhaStJMuOahfAY/",
             kind: "sheet",
-            note: "Created by Echocolat et al. · 經驗值系統",
+            note: "Created by Echocolat et al.",
           },
           {
-            title: "Fuse Names",
+            title: "餘料建造命名法",
             url: "https://docs.google.com/spreadsheets/d/1wQDX1RJIRRbRBhujk-XA8TqxJU_WjvR_LBC1ZGtRuM4/",
             kind: "sheet",
-            note: "Created by Echocolat et al. · 餘料武器命名法",
+            note: "Created by Echocolat et al.",
           },
           {
             title: "解釋武器攻擊力",
             url: "https://www.reddit.com/r/tearsofthekingdom/comments/13wrp2g/a_mostly_complete_post_about_how_the_weapon/",
             kind: "forum",
-            note: "Created by Echocolat et al. · Reddit 貼文",
+            note: "Created by Echocolat et al.",
           },
           {
             title: "解釋未腐朽武器",
             url: "https://www.reddit.com/r/tearsofthekingdom/comments/13uqo9h/everything_you_need_to_know_about_nondecayed/",
             kind: "forum",
-            note: "Created by Echocolat et al. · Reddit 貼文",
+            note: "Created by Echocolat et al.",
           },
           {
             title: "解釋經驗值系統",
             url: "https://www.reddit.com/r/tearsofthekingdom/comments/1496az3/explaining_level_scaling_in_totk/",
             kind: "forum",
-            note: "Created by Echocolat et al. · Reddit 貼文",
-          },
-          {
-            title: "猜測參數的含義",
-            url: "https://docs.google.com/spreadsheets/d/1_wiJD0WQ2uEqOEdgBCg8bTuF35pFTU9rengRp6GE--w/",
-            kind: "sheet",
-            note: "Curated by Hsin-Po",
-          },
-          {
-            title: "餘料建造模擬器",
-            url: "https://zonai-fusion.link",
-            kind: "tool",
-            note: "Created by Track-tor",
-          },
-          {
-            title: "3D 模型檢視 · bleh",
-            url: "http://dev.ssmvc.org:8080/bleh.html?actor=Obj_SpikeBall_B",
-            kind: "tool",
-            note: "Created by SuperSpazzy",
-          },
-          {
-            title: "3D 模型檢視 · wip",
-            url: "http://dev.ssmvc.org:8080/wip.html?actor=Obj_SpikeBall_B",
-            kind: "tool",
-            note: "Created by SuperSpazzy",
-          },
-          {
-            title: "食材簡表",
-            url: "https://www.reddit.com/r/tearsofthekingdom/comments/144ss8t/cooking_cheat_sheet_version_03_with_ingredient/",
-            kind: "forum",
-            note: "Created by HylianExplorer",
-          },
-          {
-            title: "料理模擬器 · Zelda Recipes",
-            url: "https://www.zelda.recipes/",
-            kind: "tool",
-            note: "Created by jamie",
-          },
-          {
-            title: "料理模擬器 · TotK Cookbook",
-            url: "https://www.totkcookbook.com/",
-            kind: "tool",
-            note: "Created by Ghastly64",
-          },
-          {
-            title: "龍的預報",
-            url: "https://restite.org/dragons/",
-            kind: "tool",
-            note: "Created by savage13",
-          },
-          {
-            title: "Stream Dump",
-            url: "https://docs.google.com/spreadsheets/d/1EulzqfIHFt5g7ElGktMRRMyXvvC9sY170P1M8yAjUPs/",
-            kind: "sheet",
-            note: "Curated by Hsin-Po · 音樂與音效",
-          },
-          {
-            title: "Physics",
-            url: "https://docs.google.com/document/d/1BrjXWYnciYpL76hLmQ8KQfZeWYtdDhyNDjPlGNh515o/",
-            kind: "doc",
-            note: "Curated by Hsin-Po · 物理引擎",
-          },
-          {
-            title: "Damage Calculations",
-            url: "https://docs.google.com/document/d/1K5hLcxfnvSnY-nsIP-n8Ew7rm9EkqHtnn6iJqOnxlng/",
-            kind: "doc",
-            note: "Curated by Hsin-Po · 攻擊力計算",
-          },
-          {
-            title: "Gloom Mechanics",
-            url: "https://docs.google.com/document/d/1jGe6vV1-xgw6UbTiD39kUwd8No6zC4vSbhccfG9Flxo/",
-            kind: "doc",
-            note: "Curated by Hsin-Po · 瘴氣機制",
-          },
-          {
-            title: "Amiibo 掉寶",
-            url: "https://gist.github.com/jordanbtucker/a950e3a041b95867bc123b71c4cf7f28",
-            kind: "site",
-            note: "Curated by Hsin-Po",
-          },
-          {
-            title: "Special Objects for Building",
-            url: "https://docs.google.com/spreadsheets/d/1NkURUErF1Jpoemkr4rLQjrcMO-XibsMykpFEGj0uHVU/",
-            kind: "sheet",
-            note: "Curated by Hsin-Po · 特殊建材",
-          },
-          {
-            title: "The Construct Head",
-            url: "https://docs.google.com/document/d/1_SQPZ3IN_Dk1tGbcj2Wbze01Evusfrcrncc1rW8PsAc/",
-            kind: "doc",
-            note: "Curated by Hsin-Po · 魔像頭",
-          },
-          {
-            title: "進階戰鬥術語表",
-            url: "https://docs.google.com/document/d/1z0qViEN9cl7dTpTb2LP2vlUVp9qiFMu2QJS8KDFx-cM/",
-            kind: "doc",
-            note: "Created by Rin",
-          },
-        ],
-      },
-      {
-        id: "ja-data",
-        label: "日文資料",
-        en: "Data · 日本語",
-        items: [
-          {
-            title: "GameWith 的攻略",
-            url: "https://gamewith.jp/zelda-totk/",
-            kind: "site",
-            note: "Curated by Hsin-Po",
-          },
-          {
-            title: "GameWith 的攻略（英文版）",
-            url: "https://gamewith.net/zelda-totk/",
-            kind: "site",
-            note: "Curated by Hsin-Po",
+            note: "Created by Echocolat et al.",
           },
           {
             title: "NPC 命名來源",
@@ -661,13 +508,78 @@ export const resourceGames: ResourceGame[] = [
             kind: "map",
             note: "Curated by Hsin-Po",
           },
-        ],
-      },
-      {
-        id: "gallery",
-        label: "藝廊",
-        en: "Gallery",
-        items: [
+          {
+            title: "猜測參數的含義",
+            url: "https://docs.google.com/spreadsheets/d/1_wiJD0WQ2uEqOEdgBCg8bTuF35pFTU9rengRp6GE--w/",
+            kind: "sheet",
+            note: "Curated by Hsin-Po",
+          },
+          {
+            title: "餘料建造模擬器",
+            url: "https://zonai-fusion.link",
+            kind: "tool",
+            note: "Created by Track-tor",
+          },
+          {
+            title: "餘料建造組合分享網",
+            url: "https://www.hyruleworks.com",
+            kind: "tool",
+            note: "Created by HyruleWorks",
+          },
+          {
+            title: "食材簡表",
+            url: "https://www.reddit.com/r/tearsofthekingdom/comments/144ss8t/cooking_cheat_sheet_version_03_with_ingredient/",
+            kind: "forum",
+            note: "Created by HylianExplorer",
+          },
+          {
+            title: "料理模擬器（Zelda Recipes）",
+            url: "https://www.zelda.recipes/",
+            kind: "tool",
+            note: "Created by jamie",
+          },
+          {
+            title: "料理模擬器（TotK Cookbook）",
+            url: "https://www.totkcookbook.com/",
+            kind: "tool",
+            note: "Created by Ghastly64",
+          },
+          {
+            title: "音樂與音效",
+            url: "https://docs.google.com/spreadsheets/d/1EulzqfIHFt5g7ElGktMRRMyXvvC9sY170P1M8yAjUPs/",
+            kind: "sheet",
+            note: "Curated by Hsin-Po",
+          },
+          {
+            title: "物理引擎",
+            url: "https://docs.google.com/document/d/1BrjXWYnciYpL76hLmQ8KQfZeWYtdDhyNDjPlGNh515o/",
+            kind: "doc",
+            note: "Curated by Hsin-Po",
+          },
+          {
+            title: "攻擊力計算",
+            url: "https://docs.google.com/document/d/1K5hLcxfnvSnY-nsIP-n8Ew7rm9EkqHtnn6iJqOnxlng/",
+            kind: "doc",
+            note: "Curated by Hsin-Po",
+          },
+          {
+            title: "Amiibo 掉寶率",
+            url: "https://gist.github.com/jordanbtucker/a950e3a041b95867bc123b71c4cf7f28",
+            kind: "site",
+            note: "Curated by Hsin-Po",
+          },
+          {
+            title: "魔像頭",
+            url: "https://docs.google.com/document/d/1_SQPZ3IN_Dk1tGbcj2Wbze01Evusfrcrncc1rW8PsAc/",
+            kind: "doc",
+            note: "Curated by Hsin-Po",
+          },
+          {
+            title: "Rin 的戰鬥技巧教學",
+            url: "https://docs.google.com/document/d/1z0qViEN9cl7dTpTb2LP2vlUVp9qiFMu2QJS8KDFx-cM/",
+            kind: "doc",
+            note: "Created by RinHara5aki",
+          },
           {
             title: "左納烏機械",
             url: "https://www.youtube.com/playlist?list=PLAp_O-WDBQLDk0owRTliK7G7FUrKuFS6q",
@@ -679,6 +591,19 @@ export const resourceGames: ResourceGame[] = [
             url: "https://www.youtube.com/playlist?list=PLpg6WLs8kxGMPX8cYED64m1Kgq3Rnnp_W",
             kind: "video",
             note: "Series by GameSpot / Rin",
+          },
+        ],
+      },
+      {
+        id: "ja",
+        label: "日文資料",
+        en: "Japanese",
+        items: [
+          {
+            title: "GameWith 的王國之淚攻略",
+            url: "https://gamewith.jp/zelda-totk/",
+            kind: "site",
+            note: "Curated by Hsin-Po",
           },
         ],
       },
@@ -701,12 +626,40 @@ export const resourceGames: ResourceGame[] = [
     game: "aoc",
     label: "災厄啟示錄",
     en: "Age of Calamity",
-    categories: [], // 尚未整理，待補（連結稍後補上）
+    categories: [
+      {
+        id: "zh",
+        label: "中文資料",
+        en: "Chinese",
+        items: [
+          {
+            title: "災厄啟示錄資料庫",
+            url: "https://docs.google.com/spreadsheets/d/1YUwOkL_HBp6YADsAm60UxfkO-qn713GPLNKzayjq46o/",
+            kind: "sheet",
+            note: "Curated by Hsin-Po",
+          },
+        ],
+      },
+    ],
   },
   {
     game: "aoi",
     label: "封印戰記",
     en: "Age of Imprisonment",
-    categories: [], // 尚未整理，待補（連結稍後補上）
+    categories: [
+      {
+        id: "zh",
+        label: "中文資料",
+        en: "Chinese",
+        items: [
+          {
+            title: "封印戰記資料庫",
+            url: "https://docs.google.com/spreadsheets/d/1gETsarMsqRHYQYDLAyHzOmZl70hY1waqaQmd726pSdE/",
+            kind: "sheet",
+            note: "Curated by Hsin-Po",
+          },
+        ],
+      },
+    ],
   },
 ];

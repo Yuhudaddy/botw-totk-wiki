@@ -281,7 +281,7 @@ function sourceLabel(url: string): string {
           // 每個遊戲的清單最後補上 Hsin-Po 的個人網站
           if (allItems.length > 0) {
             allItems.push({
-              title: "個人網站",
+              title: "Hsin-Po 的個人網站",
               url: RESOURCES_CREDIT.url,
               kind: "site",
               lang: "zh",
@@ -329,7 +329,7 @@ function sourceLabel(url: string): string {
                         item.lang === "zh"
                           ? "bg-sand text-accent"
                           : item.lang === "ja"
-                            ? "bg-sand text-accent opacity-75"
+                            ? "bg-sand text-lang-tag-ja"
                             : "bg-sand text-lang-tag"
                       }`}
                     >
