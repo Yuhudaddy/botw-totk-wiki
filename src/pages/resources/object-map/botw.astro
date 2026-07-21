@@ -79,16 +79,20 @@ const mapTools = [
   active="resources"
 >
   <main class="obj-guide">
+    <div class="obj-hero-shell">
+      <div class="obj-hero-canvas" aria-hidden="true">
+        <img
+          class="obj-hero-map"
+          src={href("/resource-guides/botw-object-map.jpg")}
+          alt=""
+          width="960"
+          height="332"
+          fetchpriority="high"
+        />
+        <div class="obj-hero-shade"></div>
+      </div>
+
     <section class="obj-hero" aria-labelledby="guide-title">
-      <img
-        class="obj-hero-map"
-        src={href("/resource-guides/botw-object-map.jpg")}
-        alt="Léo 曠野物件地圖顯示海拉魯各地物件標記的介面"
-        width="960"
-        height="332"
-        fetchpriority="high"
-      />
-      <div class="obj-hero-shade" aria-hidden="true"></div>
       <div class="obj-scan" aria-hidden="true">
         <span class="obj-scan-ring obj-scan-ring-a"></span>
         <span class="obj-scan-ring obj-scan-ring-b"></span>
@@ -149,6 +153,7 @@ const mapTools = [
         <a href="#notes">注意事項</a>
       </div>
     </nav>
+    </div>
 
     <section id="start" class="obj-section obj-section-intro obj-reveal">
       <div class="obj-wrap">
@@ -338,7 +343,49 @@ const mapTools = [
   <style>
     .obj-guide {
       --guide-line: color-mix(in srgb, var(--accent) 42%, var(--border-strong));
+      --hero-base: var(--surface);
+      --hero-ink: var(--ink);
+      --hero-ink-soft: color-mix(in srgb, var(--ink) 80%, transparent);
+      --hero-ink-muted: color-mix(in srgb, var(--ink) 56%, transparent);
+      --hero-accent: var(--brand);
+      --hero-frame: color-mix(in srgb, var(--ink) 12%, transparent);
+      --hero-overlay:
+        linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--surface) 96%, transparent) 0%,
+          color-mix(in srgb, var(--surface) 68%, transparent) 16%,
+          color-mix(in srgb, var(--bg) 12%, transparent) 46%,
+          color-mix(in srgb, var(--bg) 54%, transparent) 78%,
+          var(--bg) 100%
+        ),
+        linear-gradient(
+          90deg,
+          color-mix(in srgb, var(--surface) 88%, transparent) 0%,
+          color-mix(in srgb, var(--surface) 62%, transparent) 44%,
+          color-mix(in srgb, var(--surface) 20%, transparent) 100%
+        );
+      --hero-map-opacity: 0.6;
+      --hero-map-filter: saturate(0.42) contrast(0.96) brightness(1.12);
+      --hero-canvas-height: calc(min(620px, calc(100svh - 120px)) + 55px);
+      --hero-nav-bg: linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--bg) 78%, transparent),
+        var(--bg)
+      );
       overflow: clip;
+    }
+
+    :global([data-theme="dark"]) .obj-guide {
+      --hero-base: #171713;
+      --hero-ink: #faf9f5;
+      --hero-ink-soft: rgba(250, 249, 245, 0.82);
+      --hero-ink-muted: rgba(250, 249, 245, 0.56);
+      --hero-accent: #ef9779;
+      --hero-frame: rgba(250, 249, 245, 0.18);
+      --hero-overlay: color-mix(in srgb, #141413 74%, transparent);
+      --hero-map-opacity: 1;
+      --hero-map-filter: saturate(0.72) contrast(1.08) brightness(0.72);
+      --hero-nav-bg: var(--bg);
     }
 
     .obj-wrap,
@@ -348,14 +395,41 @@ const mapTools = [
       margin-inline: auto;
     }
 
+    .obj-hero-shell {
+      position: relative;
+      isolation: isolate;
+      overflow: clip;
+    }
+
+    .obj-hero-shell::after {
+      content: "";
+      position: absolute;
+      inset: 18px 18px 0;
+      border: 1px solid var(--hero-frame);
+      border-bottom: 0;
+      pointer-events: none;
+      z-index: 31;
+    }
+
+    .obj-hero-canvas {
+      position: absolute;
+      inset: 0 0 auto;
+      z-index: 0;
+      height: var(--hero-canvas-height);
+      overflow: hidden;
+      pointer-events: none;
+      background: var(--hero-base);
+    }
+
     .obj-hero {
       position: relative;
       height: min(620px, calc(100svh - 120px));
       min-height: 480px;
       overflow: hidden;
-      background: #171713;
-      color: #faf9f5;
+      background: transparent;
+      color: var(--hero-ink);
       isolation: isolate;
+      transition: color 240ms ease;
     }
 
     .obj-hero-map,
@@ -369,23 +443,15 @@ const mapTools = [
     .obj-hero-map {
       object-fit: cover;
       object-position: center;
-      filter: saturate(0.72) contrast(1.08) brightness(0.72);
+      filter: var(--hero-map-filter);
+      opacity: var(--hero-map-opacity);
       transform: scale(1.035);
       animation: obj-map-settle 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     .obj-hero-shade {
-      background: color-mix(in srgb, #141413 74%, transparent);
+      background: var(--hero-overlay);
       z-index: 1;
-    }
-
-    .obj-hero::after {
-      content: "";
-      position: absolute;
-      inset: 18px;
-      border: 1px solid rgba(250, 249, 245, 0.18);
-      pointer-events: none;
-      z-index: 2;
     }
 
     .obj-hero-inner {
@@ -402,7 +468,7 @@ const mapTools = [
       align-items: center;
       gap: 9px;
       font-size: 12px;
-      color: rgba(250, 249, 245, 0.64);
+      color: var(--hero-ink-muted);
     }
 
     .obj-breadcrumb a {
@@ -411,7 +477,7 @@ const mapTools = [
     }
 
     .obj-breadcrumb a:hover {
-      color: #faf9f5;
+      color: var(--hero-ink);
     }
 
     .obj-hero-content {
@@ -456,7 +522,7 @@ const mapTools = [
     .obj-hero-content > p {
       max-width: 41rem;
       margin: 22px 0 0;
-      color: rgba(250, 249, 245, 0.82);
+      color: var(--hero-ink-soft);
       font-size: 17px;
       line-height: 1.85;
       opacity: 0;
@@ -471,14 +537,14 @@ const mapTools = [
       margin-top: 22px;
       font-family: var(--font-mono);
       font-size: 10px;
-      color: rgba(250, 249, 245, 0.56);
+      color: var(--hero-ink-muted);
       text-transform: uppercase;
     }
 
     .obj-hero-meta span + span::before {
       content: "/";
       margin-right: 18px;
-      color: #d97757;
+      color: var(--hero-accent);
     }
 
     .obj-hero-actions {
@@ -531,7 +597,7 @@ const mapTools = [
 
     .obj-secondary-action {
       padding-block: 12px;
-      color: rgba(250, 249, 245, 0.78);
+      color: var(--hero-ink-soft);
       font-size: 14px;
       text-underline-offset: 4px;
     }
@@ -544,16 +610,16 @@ const mapTools = [
       gap: 3px;
       min-width: 158px;
       padding-left: 16px;
-      border-left: 1px solid rgba(250, 249, 245, 0.24);
+      border-left: 1px solid color-mix(in srgb, var(--hero-ink) 24%, transparent);
       font-family: var(--font-mono);
       font-size: 9px;
       letter-spacing: 1px;
-      color: rgba(250, 249, 245, 0.48);
+      color: var(--hero-ink-muted);
       text-align: left;
     }
 
     .obj-coordinate strong {
-      color: #ef9779;
+      color: var(--hero-accent);
       font-size: 11px;
       font-weight: 500;
     }
@@ -578,7 +644,7 @@ const mapTools = [
 
     .obj-scan-ring {
       inset: 0;
-      border: 1px solid rgba(239, 151, 121, 0.42);
+      border: 1px solid color-mix(in srgb, var(--hero-accent) 42%, transparent);
       border-radius: 50%;
       animation: obj-scan-pulse 3.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
     }
@@ -593,7 +659,7 @@ const mapTools = [
       left: -32px;
       width: calc(100% + 64px);
       height: 1px;
-      background: rgba(239, 151, 121, 0.32);
+      background: color-mix(in srgb, var(--hero-accent) 32%, transparent);
     }
 
     .obj-scan-cross-y {
@@ -601,7 +667,7 @@ const mapTools = [
       top: -32px;
       width: 1px;
       height: calc(100% + 64px);
-      background: rgba(239, 151, 121, 0.32);
+      background: color-mix(in srgb, var(--hero-accent) 32%, transparent);
     }
 
     .obj-scan-dot {
@@ -610,8 +676,8 @@ const mapTools = [
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: #ef9779;
-      box-shadow: 0 0 0 5px rgba(201, 100, 66, 0.18);
+      background: var(--hero-accent);
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--hero-accent) 18%, transparent);
       transform: translate(-50%, -50%);
     }
 
@@ -620,7 +686,7 @@ const mapTools = [
       top: 64px;
       z-index: 30;
       border-bottom: 1px solid var(--border-strong);
-      background: var(--bg);
+      background: var(--hero-nav-bg);
     }
 
     .obj-section-nav-inner {
@@ -1227,6 +1293,10 @@ const mapTools = [
     }
 
     @media (max-width: 760px) {
+      .obj-guide {
+        --hero-canvas-height: calc(min(560px, calc(100svh - 116px)) + 55px);
+      }
+
       .obj-wrap,
       .obj-hero-inner,
       .obj-section-nav-inner {
@@ -1238,8 +1308,8 @@ const mapTools = [
         min-height: 470px;
       }
 
-      .obj-hero::after {
-        inset: 10px;
+      .obj-hero-shell::after {
+        inset: 10px 10px 0;
       }
 
       .obj-hero-inner {
