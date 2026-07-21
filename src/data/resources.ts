@@ -600,6 +600,12 @@ export const resourceGames: ResourceGame[] = [
             url: "https://docs.google.com/spreadsheets/d/1eD4geEEY4_j9eusHRFb5gXQczxdB96WpHVmBK_AhRCI/edit?gid=1250540160#gid=1250540160",
             kind: "sheet",
           },
+          {
+            title: "Glitch Encyclopedia",
+            url: "https://nan-gogh.github.io/ultrabroken-documentation/wiki/",
+            kind: "site",
+            note: "Created by NaN Gogh",
+          },
         ],
       },
       {
