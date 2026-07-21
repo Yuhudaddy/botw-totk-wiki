@@ -46,6 +46,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "19", zh: "子時彈翔", en: "Bullet Time Bounce" },
       { no: "20", zh: "天滑", en: "Bow Lift Smuggle Slide" },
       { no: "21", zh: "硬直取消", en: "Endlag Cancel" },
+      { no: "22", zh: "過載與災禍", en: "Overload & Curse" },
     ],
   },
   {
