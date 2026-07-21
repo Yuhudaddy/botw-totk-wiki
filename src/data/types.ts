@@ -19,6 +19,7 @@ export interface TypeGroup {
   label: string;
   en: string;
   shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
+  shortEn?: string; // 門扉卡片空間有限時使用的英文縮寫（未填則用 en）
   items: TypeItem[];
 }
 
@@ -32,6 +33,7 @@ export const typeGroups: TypeGroup[] = [
     game: "botw",
     label: "曠野之息",
     en: "Breath of the Wild",
+    shortEn: "Zelda BoTW",
     items: [
       { no: "01", zh: "風彈", en: "Windbomb", shortZh: "擊飛", shortEn: "Launch", family: "launch" },
       { no: "01-stasis", zh: "靜止擊飛", en: "Stasis Launch", family: "launch", hideFromGrid: true },
@@ -64,6 +66,7 @@ export const typeGroups: TypeGroup[] = [
     game: "totk",
     label: "王國之淚",
     en: "Tears of the Kingdom",
+    shortEn: "Zelda ToTK",
     items: [
       { no: "01", zh: "基礎小程錯", en: "Basic Glitches", videosOnly: true },
       { no: "02", zh: "進階技巧", en: "Advanced Techniques", videosOnly: true },
@@ -91,6 +94,7 @@ export const typeGroups: TypeGroup[] = [
     game: "eow",
     label: "智慧的再現",
     en: "Echoes of Wisdom",
+    shortEn: "Zelda EoW",
     items: [
       { no: "01", zh: "選單儲存", en: "Menu Storage" },
       { no: "02", zh: "萊尼爾", en: "Lynel" },
@@ -117,6 +121,7 @@ export const typeGroups: TypeGroup[] = [
     game: "aoc",
     label: "災厄啟示錄",
     en: "Age of Calamity",
+    shortEn: "Zelda AoC",
     items: [
       { no: "01", zh: "主線攻略", en: "Main Story Walkthrough", videosOnly: true },
       { no: "02", zh: "進階技巧", en: "Advanced Techniques", videosOnly: true },
@@ -126,6 +131,7 @@ export const typeGroups: TypeGroup[] = [
     game: "aoi",
     label: "封印戰記",
     en: "Age of Imprisonment",
+    shortEn: "Zelda AoI",
     items: [
       { no: "01", zh: "攻略技巧", en: "Guide & Techniques", videosOnly: true },
     ],

@@ -109,7 +109,7 @@ function sourceLabel(url: string): string {
               set:html={GAME_LOGOS[g.game].svg}
             />
             <div class="min-w-0">
-              <div class="truncate text-[10px] font-bold tracking-[1.5px] text-accent">{g.en}</div>
+              <div class="truncate text-[10px] font-bold tracking-[1.5px] text-accent">{g.shortEn ?? g.en}</div>
               <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
                 {g.shortLabel ?? g.label}
               </div>

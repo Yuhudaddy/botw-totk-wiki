@@ -49,7 +49,7 @@ import { GAME_LOGOS } from "../data/gameLogos";
               set:html={GAME_LOGOS[group.game].svg}
             />
             <div class="min-w-0">
-              <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{group.en}</div>
+              <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{group.shortEn ?? group.en}</div>
               <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
                 {group.shortLabel ?? group.label}
               </div>

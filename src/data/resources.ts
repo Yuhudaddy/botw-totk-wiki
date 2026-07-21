@@ -34,6 +34,7 @@ export interface ResourceGame {
   label: string;
   en: string;
   shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
+  shortEn?: string; // 門扉卡片空間有限時使用的英文縮寫（未填則用 en）
   categories: ResourceCategory[]; // 空陣列 = 尚未整理，頁面顯示「整理中」
 }
 
@@ -47,6 +48,7 @@ export const resourceGames: ResourceGame[] = [
     game: "botw",
     label: "曠野之息",
     en: "Breath of the Wild",
+    shortEn: "Zelda BoTW",
     categories: [
       {
         id: "zh",
@@ -255,6 +257,7 @@ export const resourceGames: ResourceGame[] = [
     game: "totk",
     label: "王國之淚",
     en: "Tears of the Kingdom",
+    shortEn: "Zelda ToTK",
     categories: [
       {
         id: "zh",
@@ -613,6 +616,7 @@ export const resourceGames: ResourceGame[] = [
     game: "eow",
     label: "智慧的再現",
     en: "Echoes of Wisdom",
+    shortEn: "Zelda EoW",
     categories: [], // 尚未整理，待補
   },
   {
@@ -626,6 +630,7 @@ export const resourceGames: ResourceGame[] = [
     game: "aoc",
     label: "災厄啟示錄",
     en: "Age of Calamity",
+    shortEn: "Zelda AoC",
     categories: [
       {
         id: "zh",
@@ -646,6 +651,7 @@ export const resourceGames: ResourceGame[] = [
     game: "aoi",
     label: "封印戰記",
     en: "Age of Imprisonment",
+    shortEn: "Zelda AoI",
     categories: [
       {
         id: "zh",
