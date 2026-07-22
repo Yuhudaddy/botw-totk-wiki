@@ -866,6 +866,40 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   .method-section-title-single .accent-strong {
     color: var(--accent);
   }
+  .method-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 0.75em;
+  }
+  .method-section-head .method-section-title,
+  .method-section-head .method-section-title-single {
+    margin-bottom: 0;
+  }
+  /* 小節專屬教學影片連結：與相關影片列表沿用同一個播放三角形圖示 */
+  .section-video-link {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color 160ms, background-color 160ms;
+  }
+  .section-video-link:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .section-video-link svg {
+    flex: none;
+  }
 
   /* Q&A 按鈕 */
   .faq-btn {

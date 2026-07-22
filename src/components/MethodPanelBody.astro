@@ -44,9 +44,19 @@ const { method: m } = Astro.props;
 {m.sections ? (
   m.sections.map((sec) => (
     <div class="method-section">
-      <div class={m.sections!.length === 1 ? "method-section-title-single" : "method-section-title"}>
-        {parseAccent(sec.title).map((seg) =>
-          seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+      <div class="method-section-head">
+        <div class={m.sections!.length === 1 ? "method-section-title-single" : "method-section-title"}>
+          {parseAccent(sec.title).map((seg) =>
+            seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+          )}
+        </div>
+        {sec.videoUrl && (
+          <a class="section-video-link" href={sec.videoUrl} target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+              <polygon points="6,4 20,12 6,20"></polygon>
+            </svg>
+            <span>教學影片</span>
+          </a>
         )}
       </div>
       {sec.tags && sec.tags.length > 0 && (

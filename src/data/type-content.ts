@@ -8,6 +8,7 @@ export interface TypeMethodSection {
   tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["～Ver.1.1.2"]
   steps: TypeStep[];  // 該區塊的編號步驟
   note?: string | string[]; // 該區塊步驟下方的灰色備註（可多行）
+  videoUrl?: string;  // 該區塊專屬的外部教學影片連結（YouTube 等），顯示於標題列右側
 }
 
 export interface TypeMethod {
@@ -3108,6 +3109,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Batch DI",
         name: "批次虛化（Batch Despawn Interrupt）",
+        video: "Torch Batch DI.mp4",
         sections: [
           {
             title: "魔物批次虛化（Enemy BDI）",
@@ -3120,7 +3122,7 @@ export const typeContent: Record<string, TypeContent> = {
               "搜集武器填滿欄位",
               "究極手拉其他物品 P 黏著 W2，究極手拖動 P 移動到魔物附近，晃掉 W2 讓魔物撿",
               "在 W2 前有撿拾判定時，魔物撿起的瞬間按 A 撿拾，若魔物手上的武器仍有撿拾判定表示成功「__魔物扒竊（Enemy Pickpocket）__」，此時把魔物冰凍起來避免作業中的時候他攻擊過來",
-              "裝備任意武器把它按 R 投擲，並撿起魔物手上的 W2",
+              "裝備任意武器按 R 投擲丟掉，並撿起魔物手上的 W2",
               "將要批次虛化的目標裝備餘料建造在武器上，目標會飛到魔物手上的 W2",
               "再次餘料 W2，餘料到一半暫停丟→切→卸",
               "重複步驟 9 ～ 11，直到虛化完所有目標",
@@ -3131,6 +3133,7 @@ export const typeContent: Record<string, TypeContent> = {
               "※ 用究極手直接去拖拉 W2，Zuggle Drop 會被解除。",
               "※ W2 是否是 Zuggle Dropped，可以倒轉 W2 後通天術，若倒轉被解開表示 W2 是 Zuggle Dropped。",
             ],
+            videoUrl: "https://youtu.be/719HZdJmPAw",
           },
           {
             title: "過載批次虛化（Overload BDI）",
@@ -3151,6 +3154,23 @@ export const typeContent: Record<string, TypeContent> = {
               "想結束批次虛化時，背對牆壁丟棄裝備中的武器讓 W4 回到林克身上，丟棄武器就可以撿 W4 上的虛化裝備",
             ],
             note: "※ 步驟 1 ～ 11 武器和盾牌可以交換。",
+            videoUrl: "https://youtu.be/8llO2ESRO78",
+          },
+          {
+            title: "火把批次虛化（Torch Batch DI）",
+            steps: [
+              "準備一個虛化盾牌 S1，丟→切→卸 Smuggle S1，裝備任意盾牌 S2",
+              "感染一個虛幽化武器 W1，觸發[[可調式並列過載（Zuggle Overload）|totk-11#Zuggle]]，解纏 S1",
+              "裝備 W1 並丟→切→卸 Smuggle W1，究極手把 S2 放到隱藏區靠牆",
+              "丟一個火把靠近隱藏區牆壁並和 S2 黏合",
+              "丟出火龍頭對準火把端部",
+              "過載掉落武器 W2，餘料在盾牌上",
+              "將要批次虛化的目標丟地上，啟動火龍頭點燃火把",
+              "餘料目標到武器上（第一次只是飛過來）",
+              "按住 L 切換到倒轉乾坤並啟動",
+              "在倒轉乾坤啟動時再按住 L 切換到餘料建造，輪盤消失的瞬間、火把隱藏前點擊 Y [[假餘料(PF)|totk-06#PF]]到武器上（第二次）",
+              "重複步驟 8 ～ 10 即可批次虛化",
+            ],
           },
         ],
       },
