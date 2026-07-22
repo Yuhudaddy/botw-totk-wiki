@@ -2397,7 +2397,7 @@ export const typeContent: Record<string, TypeContent> = {
         video: "Zuggle Drop.mp4",
         sections: [
           {
-            title: "並列丟棄（Zuggle Dropped）",
+            title: "",
             tags: ["All Versions"],
             steps: [
               "將目標裝備 Smuggle 或 Zuggle",
