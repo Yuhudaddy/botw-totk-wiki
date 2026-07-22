@@ -12,7 +12,7 @@ import { GAME_LOGOS } from "../data/gameLogos";
 >
   {/* 標題 */}
   <section class="border-b border-border-soft">
-    <div class="r-types-hero mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+    <div class="r-types-hero mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
         <a href={href("/")} class="no-underline text-muted">首頁</a>
         <span>/</span>
@@ -31,7 +31,7 @@ import { GAME_LOGOS } from "../data/gameLogos";
   </section>
 
   {/* 遊戲門扉：桌面一排六個、手機 2x3 */}
-  <div class="mx-auto max-w-[1180px] px-8 pt-10">
+  <div class="mx-auto max-w-[1244px] px-8 pt-10">
     <div class="r-game-tabs grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
       {
         typeGroups.map((group) => (
@@ -64,7 +64,7 @@ import { GAME_LOGOS } from "../data/gameLogos";
   {
     typeGroups.map((group) => (
       <section
-        class="lib mx-auto max-w-[1180px] px-8 pb-20 pt-[52px]"
+        class="lib mx-auto max-w-[1244px] px-8 pb-20 pt-[52px]"
         data-lib={group.game}
         hidden={group.game !== "botw"}
       >
