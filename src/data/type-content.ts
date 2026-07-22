@@ -2392,6 +2392,33 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
+        tab: "Zuggle Drop",
+        name: "並列丟棄（Zuggle Dropped）",
+        video: "Zuggle Drop.mp4",
+        sections: [
+          {
+            title: "並列丟棄（Zuggle Dropped）",
+            tags: ["All Versions"],
+            steps: [
+              "將目標裝備 Smuggle 或 Zuggle",
+              "隨意裝備相同類型的裝備",
+              "丟棄該類型的裝備，步驟 1 的裝備會變成 Zuggle Dropped",
+            ],
+          },
+          {
+            title: "效果",
+            steps: [
+              "該裝備會保留與林克的連結，可用於[[Batch DI|totk-16#Batch DI]]",
+              "Zuggle Dropped 的 ??? 裝備無法空手撿拾",
+              "倒轉乾坤該裝備時使用通天術，倒轉乾坤會被取消",
+              "掉落時與火堆、人物對話的時候不會停下來，和它黏合的東西也會隨著它繼續墜落",
+              "用究極手或撿起來就會取消 Zuggle Dropped 的狀態",
+              "會算入並列負載的數量，即 14 個 Zuggle Drop 也會過載",
+            ],
+          },
+        ],
+      },
+      {
         tab: "Sluggle",
         name: "Sluggle = Smuggle-like Slug",
         video: "Sluggle.mp4",
@@ -2533,9 +2560,6 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     notes: [
-      {
-        text: "Smuggle、Zuggle 的情形下丟棄裝備，該裝備會保持和林克有依賴關係的狀態，該狀態或裝備稱作 Zuggle Drop（從 Zuggle 被丟棄出來的狀態）",
-      },
       {
         text: "Zuggle 的數量太多，達到林克的裝備依賴上限，會造成 [[Zuggle Overload|totk-11#Zuggle]]。",
       },
