@@ -6,6 +6,7 @@ export type TypeStep = string | { text: string; sub: string[] };
 export interface TypeMethodSection {
   title: string;      // 子章節標題，例："K+1 法（通用版）"
   tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["～Ver.1.1.2"]
+  intro?: string;     // 該區塊步驟上方的灰色說明句（選填）
   steps: TypeStep[];  // 該區塊的編號步驟
   note?: string | string[]; // 該區塊步驟下方的灰色備註（可多行）
   videoUrl?: string;  // 該區塊專屬的外部教學影片連結（YouTube 等），顯示於標題列右側

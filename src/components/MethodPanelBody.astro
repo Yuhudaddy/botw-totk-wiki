@@ -59,6 +59,9 @@ const { method: m } = Astro.props;
           </a>
         )}
       </div>
+      {sec.intro && (
+        <p class="mb-3 text-[13px] leading-[1.7] text-muted">{sec.intro}</p>
+      )}
       {sec.tags && sec.tags.length > 0 && (
         <div class="mb-3 flex flex-wrap items-center gap-2">
           <span class="text-[13px] text-ink">適合</span>
