@@ -393,6 +393,7 @@ const featured = youtubeData.featured;
       z-index: 1;
       display: block;
       max-width: none;
+      width: auto;
       height: auto;
       pointer-events: none;
       user-select: none;
@@ -401,10 +402,13 @@ const featured = youtubeData.featured;
     }
 
     .home-link-wide {
-      right: -29%;
-      bottom: -10%;
-      width: min(1120px, 165%);
-      opacity: 0.68;
+      top: 50%;
+      right: -344px;
+      bottom: auto;
+      transform: translateY(-49%);
+      width: auto;
+      height: 528px;
+      opacity: 0.62;
     }
 
     .home-link-tall {
@@ -711,9 +715,10 @@ const featured = youtubeData.featured;
       }
 
       .home-link-wide {
-        right: -32%;
-        bottom: -13%;
-        width: min(1020px, 180%);
+        right: -344px;
+        top: 50%;
+        bottom: auto;
+        height: 528px;
       }
 
       .home-explore > div {
@@ -740,9 +745,11 @@ const featured = youtubeData.featured;
       }
 
       .home-link-wide {
-        right: -22%;
-        bottom: -18%;
-        width: min(940px, 145%);
+        right: -260px;
+        top: 54%;
+        bottom: auto;
+        transform: translateY(-50%);
+        height: 427px;
       }
 
       .home-latest {
@@ -864,9 +871,11 @@ const featured = youtubeData.featured;
 
       .home-link-tall {
         display: block;
-        top: -42px;
-        right: -96px;
-        width: 390px;
+        right: -88px;
+        bottom: -10px;
+        transform: none;
+        width: auto;
+        height: 348px;
         opacity: 0.58;
       }
 
