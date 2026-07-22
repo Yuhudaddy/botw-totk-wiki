@@ -1,0 +1,542 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { href } from "../../lib/url";
+import { GAME_LOGOS } from "../../data/gameLogos";
+
+interface Schematic {
+  id: string;
+  title: string;
+  qrImage: string;
+  function: string;
+  author: string;
+}
+
+const schematics: Schematic[] = [];
+---
+
+<BaseLayout
+  title="實用藍圖"
+  description="《薩爾達傳說 王國之淚》實用藍圖 QR Code 收藏，依功能與作者整理。"
+  active="resources"
+>
+  <main class="schematics-page">
+    <section class="schematics-hero" aria-labelledby="schematics-title">
+      <div class="schematics-hero-inner">
+        <nav class="schematics-breadcrumb" aria-label="麵包屑">
+          <a href={href("/")}>首頁</a>
+          <span>/</span>
+          <a href={href("/resources#totk")}>資料網站</a>
+          <span>/</span>
+          <span aria-current="page">實用藍圖</span>
+        </nav>
+
+        <div class="schematics-hero-grid">
+          <div class="schematics-copy">
+            <div class="schematics-kicker">
+              <svg viewBox={GAME_LOGOS.totk.viewBox} aria-hidden="true" set:html={GAME_LOGOS.totk.svg} />
+              <span>Tears of the Kingdom · Practical Schematics</span>
+            </div>
+            <h1 id="schematics-title">實用藍圖</h1>
+            <p>把值得留下的建造收進同一座資料庫。每張藍圖保留 QR Code、用途與作者，查找時不必再翻遍散落的圖片。</p>
+            <div class="schematics-meta" aria-label="藍圖資料欄位">
+              <span>QR Code</span>
+              <span>功能</span>
+              <span>作者</span>
+            </div>
+          </div>
+
+          <div class="schematics-scanner" aria-hidden="true">
+            <div class="schematics-grid"></div>
+            <span class="finder finder-a"></span>
+            <span class="finder finder-b"></span>
+            <span class="finder finder-c"></span>
+            <span class="scan-line"></span>
+            <div class="scanner-label">
+              <span>SCHEMATIC ARCHIVE</span>
+              <strong>READY TO INDEX</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="schematics-index-bar">
+      <div>
+        <span>ARCHIVE / TOTK</span>
+        <strong>{String(schematics.length).padStart(2, "0")} BLUEPRINTS</strong>
+      </div>
+      <a href={href("/resources#totk")}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+        回到王國之淚資料
+      </a>
+    </div>
+
+    <section class="schematics-library" aria-labelledby="library-title">
+      <header class="schematics-library-heading">
+        <div>
+          <span>QR BLUEPRINT LIBRARY</span>
+          <h2 id="library-title">藍圖收藏</h2>
+        </div>
+        <p>所有藍圖都會以相同欄位整理，方便快速比較用途並保留原作者資訊。</p>
+      </header>
+
+      {
+        schematics.length > 0 ? (
+          <div class="schematics-list">
+            {schematics.map((item, index) => (
+              <article class="schematic-card">
+                <div class="schematic-card-head">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{item.title}</h3>
+                </div>
+                <div class="schematic-qr">
+                  <img src={href(item.qrImage)} alt={`${item.title} QR Code`} loading="lazy" />
+                  <span aria-hidden="true"></span>
+                </div>
+                <dl>
+                  <div>
+                    <dt>功能</dt>
+                    <dd>{item.function}</dd>
+                  </div>
+                  <div>
+                    <dt>作者</dt>
+                    <dd>{item.author}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="schematics-empty">
+            <div class="empty-mark" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div>
+              <span>ARCHIVE IS OPEN</span>
+              <h3>藍圖準備中</h3>
+              <p>第一批 QR Code 加入後，會在這裡依序顯示功能與作者。</p>
+            </div>
+          </div>
+        )
+      }
+    </section>
+  </main>
+
+  <style>
+    .schematics-page {
+      --schematic-green: #4f826f;
+      --schematic-green-soft: #dce8df;
+      --schematic-line: color-mix(in srgb, var(--schematic-green) 30%, var(--border-soft));
+      color: var(--text);
+    }
+
+    [data-theme="dark"] .schematics-page {
+      --schematic-green: #7ba994;
+      --schematic-green-soft: #24372f;
+      --schematic-line: color-mix(in srgb, var(--schematic-green) 28%, var(--border-soft));
+    }
+
+    .schematics-hero {
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-soft);
+      background:
+        linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 96%, transparent) 46%, color-mix(in srgb, var(--schematic-green-soft) 70%, var(--bg)) 100%);
+    }
+
+    .schematics-hero-inner,
+    .schematics-index-bar,
+    .schematics-library {
+      width: min(calc(100% - 64px), 1180px);
+      margin-inline: auto;
+    }
+
+    .schematics-hero-inner {
+      min-height: 540px;
+      padding-block: 28px 50px;
+    }
+
+    .schematics-breadcrumb {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .schematics-breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .schematics-breadcrumb a:hover,
+    .schematics-breadcrumb a:focus-visible {
+      color: var(--ink);
+    }
+
+    .schematics-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+      gap: 72px;
+      align-items: center;
+      min-height: 450px;
+    }
+
+    .schematics-kicker {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .schematics-kicker svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .schematics-copy h1 {
+      margin: 16px 0 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: clamp(34px, 4vw, 48px);
+      font-weight: 500;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .schematics-copy > p {
+      max-width: 36rem;
+      margin: 22px 0 0;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.85;
+    }
+
+    .schematics-meta {
+      display: flex;
+      gap: 0;
+      margin-top: 30px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .schematics-meta span + span::before {
+      content: "/";
+      margin-inline: 16px;
+      color: var(--accent);
+    }
+
+    .schematics-scanner {
+      position: relative;
+      justify-self: end;
+      width: min(100%, 390px);
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 1px solid var(--schematic-line);
+      background: color-mix(in srgb, var(--surface) 68%, transparent);
+    }
+
+    .schematics-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.55;
+      background-image:
+        linear-gradient(var(--schematic-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--schematic-line) 1px, transparent 1px);
+      background-size: 24px 24px;
+      -webkit-mask-image: linear-gradient(to bottom right, #000 25%, transparent 88%);
+      mask-image: linear-gradient(to bottom right, #000 25%, transparent 88%);
+    }
+
+    .finder {
+      position: absolute;
+      width: 76px;
+      height: 76px;
+      border: 11px solid var(--ink);
+      box-shadow: inset 0 0 0 8px var(--surface), inset 0 0 0 17px var(--ink);
+      opacity: 0.82;
+    }
+
+    .finder-a { top: 42px; left: 42px; }
+    .finder-b { top: 42px; right: 42px; }
+    .finder-c { bottom: 42px; left: 42px; }
+
+    .scan-line {
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      top: 50%;
+      height: 1px;
+      background: var(--accent);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 54%, transparent);
+      animation: schematic-scan 3.6s ease-in-out infinite;
+    }
+
+    .scanner-label {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      display: grid;
+      gap: 3px;
+      padding-left: 12px;
+      border-left: 1px solid var(--accent);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-align: right;
+      color: var(--muted);
+    }
+
+    .scanner-label strong {
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .schematics-index-bar {
+      display: flex;
+      min-height: 68px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .schematics-index-bar > div {
+      display: flex;
+      align-items: baseline;
+      gap: 15px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    .schematics-index-bar > div span { color: var(--accent); }
+    .schematics-index-bar > div strong { color: var(--muted); font-weight: 500; }
+
+    .schematics-index-bar a {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      gap: 7px;
+      color: var(--text);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .schematics-index-bar a:hover,
+    .schematics-index-bar a:focus-visible { color: var(--accent); }
+
+    .schematics-index-bar svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .schematics-library { padding-block: 82px 110px; }
+
+    .schematics-library-heading {
+      display: grid;
+      grid-template-columns: 1fr minmax(260px, 0.72fr);
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 42px;
+    }
+
+    .schematics-library-heading span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+    }
+
+    .schematics-library-heading h2 {
+      margin: 11px 0 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .schematics-library-heading p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .schematics-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .schematic-card {
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .schematic-card-head {
+      display: flex;
+      min-height: 58px;
+      align-items: center;
+      gap: 13px;
+      padding-inline: 17px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .schematic-card-head > span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .schematic-card h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .schematic-qr {
+      position: relative;
+      aspect-ratio: 1;
+      margin: 17px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .schematic-qr img { width: 100%; height: 100%; object-fit: contain; }
+
+    .schematic-qr > span {
+      position: absolute;
+      inset: 8px;
+      border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+      pointer-events: none;
+    }
+
+    .schematic-card dl { margin: 0; border-top: 1px solid var(--border-soft); }
+
+    .schematic-card dl > div {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 12px;
+      padding: 13px 17px;
+    }
+
+    .schematic-card dl > div + div { border-top: 1px solid var(--border-soft); }
+    .schematic-card dt { color: var(--accent); font-size: 11px; font-weight: 500; }
+    .schematic-card dd { margin: 0; color: var(--text); font-size: 12px; line-height: 1.6; }
+
+    .schematics-empty {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      min-height: 270px;
+      align-items: center;
+      gap: 48px;
+      padding: 38px 9%;
+      border: 1px solid var(--border-strong);
+      background: color-mix(in srgb, var(--surface) 74%, var(--schematic-green-soft));
+    }
+
+    .empty-mark {
+      position: relative;
+      width: 160px;
+      aspect-ratio: 1;
+      border: 1px solid var(--schematic-line);
+      background-image:
+        linear-gradient(var(--schematic-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--schematic-line) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .empty-mark span {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border: 6px solid var(--muted);
+      opacity: 0.45;
+    }
+
+    .empty-mark span:nth-child(1) { top: 18px; left: 18px; }
+    .empty-mark span:nth-child(2) { top: 18px; right: 18px; }
+    .empty-mark span:nth-child(3) { bottom: 18px; left: 18px; }
+
+    .schematics-empty > div:last-child > span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+    }
+
+    .schematics-empty h3 {
+      margin: 10px 0 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .schematics-empty p { margin: 12px 0 0; font-size: 13px; line-height: 1.75; }
+
+    .schematics-page :is(a, button):focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    @keyframes schematic-scan {
+      0%, 100% { transform: translateY(-108px); opacity: 0; }
+      18%, 82% { opacity: 0.9; }
+      50% { transform: translateY(108px); opacity: 0.9; }
+    }
+
+    @media (max-width: 900px) {
+      .schematics-hero-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 34px; }
+      .schematics-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      .schematics-hero-inner,
+      .schematics-index-bar,
+      .schematics-library { width: min(calc(100% - 40px), 1180px); }
+
+      .schematics-hero-inner { min-height: auto; padding-block: 20px 40px; }
+      .schematics-hero-grid { grid-template-columns: 1fr; gap: 36px; min-height: 0; padding-top: 68px; }
+      .schematics-copy h1 { font-size: 32px; }
+      .schematics-copy > p { margin-top: 18px; font-size: 13px; }
+      .schematics-scanner { justify-self: start; width: min(76vw, 300px); }
+      .finder { width: 58px; height: 58px; border-width: 8px; box-shadow: inset 0 0 0 6px var(--surface), inset 0 0 0 13px var(--ink); }
+      .finder-a { top: 30px; left: 30px; }
+      .finder-b { top: 30px; right: 30px; }
+      .finder-c { bottom: 30px; left: 30px; }
+      .schematics-index-bar { min-height: 62px; }
+      .schematics-index-bar > div strong { display: none; }
+      .schematics-index-bar a { font-size: 11px; }
+      .schematics-library { padding-block: 62px 82px; }
+      .schematics-library-heading { grid-template-columns: 1fr; gap: 18px; margin-bottom: 30px; }
+      .schematics-library-heading h2 { font-size: 24px; }
+      .schematics-list { grid-template-columns: 1fr; }
+      .schematics-empty { grid-template-columns: 1fr; gap: 26px; padding: 30px; }
+      .empty-mark { width: 128px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scan-line { animation: none; transform: none; }
+    }
+  </style>
+</BaseLayout>

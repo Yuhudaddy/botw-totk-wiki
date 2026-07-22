@@ -5,6 +5,7 @@
 // 資源類型已經由 kind 圖示區分，分類不需要重複再切一次。
 
 export type ResourceKind =
+  | "blueprint" // QR Code 藍圖收藏
   | "sheet" // Google 試算表
   | "doc" // Google 文件
   | "slides" // Google 簡報
@@ -266,6 +267,13 @@ export const resourceGames: ResourceGame[] = [
         label: "中文資料",
         en: "Chinese",
         items: [
+          {
+            title: "實用藍圖",
+            url: "/resources/practical-schematics",
+            kind: "blueprint",
+            note: "Practical Schematics",
+            recommended: true,
+          },
           {
             title: "王國之淚攻略網站（含地圖）",
             url: "https://www.gamertw.com",

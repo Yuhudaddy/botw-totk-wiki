@@ -506,14 +506,14 @@ const mapTools = [
     }
 
     .obj-hero h1 {
-      max-width: 12ch;
+      max-width: none;
       margin: 0;
       font-family: var(--font-serif);
-      font-size: 54px;
+      font-size: 44px;
       font-weight: 500;
       line-height: 1.08;
       letter-spacing: 0;
-      text-wrap: balance;
+      white-space: nowrap;
       opacity: 0;
       transform: translateY(18px);
       animation: obj-rise 0.72s 0.12s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -1321,8 +1321,9 @@ const mapTools = [
       }
 
       .obj-hero h1 {
-        max-width: 10ch;
-        font-size: 34px;
+        max-width: none;
+        font-size: clamp(23px, 7vw, 34px);
+        white-space: nowrap;
       }
 
       .obj-hero-content > p {
@@ -1497,7 +1498,7 @@ const mapTools = [
       }
 
       .obj-hero h1 {
-        font-size: 30px;
+        font-size: 24px;
       }
 
       .obj-secondary-action {
