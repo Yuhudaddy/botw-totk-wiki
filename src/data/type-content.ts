@@ -2584,7 +2584,38 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "SLD",
         name: "存讀繼承（Save Load Duplication）",
         video: "SLD.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        principleSections: [
+          {
+            text: "2023/5/16 由 【ZombieBoy225】、【ness】、【ElDuende】 發現。SLD 指的是任何已經不在「已裝備（Equipped）」或「正在丟棄（Dropping）」欄位中，但尚未被允許清除其「駐留實體狀態（Resident Actor State）」的道具。此狀態適用於那些不應該因為地圖傳送（Warping）或讀檔而卸載的實體（Actors）。林克所有已裝備的道具都會被賦予這個狀態，而 Smuggles 和 Zuggles 也會保留它。在讀取存檔時，系統會明確檢查「裝備（Equip）」欄位中的道具並將其清除，而「正在丟棄（Dropping）」欄位則會在傳送和讀檔時同時進行清除。由於在第二次丟棄後沒有取消暫停，該狀態便永遠不會被清除，因此 Zuggle Drop 便能滿足 SLD 的所有條件。",
+          },
+          {
+            text: "然而，如果在此之後觀看回憶，遊戲會在回憶結束後強制取消暫停 1 影格（1 frame），這段時間就足以清除該駐留狀態（resident state）了。",
+          },
+        ],
+        sections: [
+          {
+            title: "存讀繼承（SLD, Save Load Dupe）",
+            tags: ["～Ver.1.1.1"],
+            steps: [
+              "裝備想要繼承的道具",
+              "暫停丟棄 → 切換另一個同類型裝備",
+              "快速關開暫停，背景上一個丟棄的裝備尚未掉出來",
+              "丟棄裝備中的同類型裝備後讀取在作業區附近的存檔",
+            ],
+            note: "※ Ver.1.1.2 有 Throw SLD。",
+          },
+          {
+            title: "隱藏存讀繼承（Culling SLD）",
+            tags: ["All Versions"],
+            steps: [
+              "準備好任何隱藏的手段，包含 [[Cull Area|totk-08#Permacull]]、[[Cull Storage|totk-08#Cull Storage]]、[[Portacull|totk-08#Portacull]]",
+              "在隱藏觸發的前 1 幀暫停，丟 → 切目標裝備",
+              "快速關開暫停，背景上一個丟棄的裝備尚未掉出來、林克也是隱藏的",
+              "丟棄裝備中的同類型裝備後讀取在作業區附近的存檔",
+            ],
+          },
+        ],
+        note: "※ 利用「地圖緩衝（Map Buffering, 按 L 選地圖後開啟快選）」丟棄道具並觀看冒險回憶的第一幀，或者是「林克被電擊而掉落道具」的第一幀。此外，投擲武器並在武器離開林克的第一幀暫停，接著讀檔也能達到相同的效果（此方法被稱為「Throw SLD」，適用於 1.1.2 版本），這種繼承方式沒有觸發 Zuggle，故不屬於 Zuggle Drop（Ver.1.2.0+ 以上為 Zuggle Drop）。",
       },
       {
         tab: "ZLOT",
