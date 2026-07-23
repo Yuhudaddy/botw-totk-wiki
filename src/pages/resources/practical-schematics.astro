@@ -2,21 +2,87 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href } from "../../lib/url";
 import { GAME_LOGOS } from "../../data/gameLogos";
+import { existsSync, readdirSync } from "node:fs";
+import { extname, join, parse } from "node:path";
 
 interface Schematic {
   id: string;
   title: string;
   qrImage: string;
-  function: string;
+  description: string;
   author: string;
 }
 
-const schematics: Schematic[] = [];
+interface SchematicCategory {
+  id: string;
+  label: string;
+  en: string;
+  folderNames: string[];
+  items: Schematic[];
+}
+
+const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
+const qrRoot = join(process.cwd(), "public", "totk-qrcode");
+
+const categoryConfig = [
+  {
+    id: "practical",
+    label: "實用",
+    en: "Practical",
+    folderNames: ["Pratical", "Practical"],
+  },
+  {
+    id: "playful",
+    label: "有趣",
+    en: "Playful",
+    folderNames: ["Playful"],
+  },
+];
+
+function titleAndAuthorFromFile(fileName: string) {
+  const baseName = parse(fileName).name;
+  const splitAt = baseName.lastIndexOf("_");
+
+  if (splitAt === -1) {
+    return { title: baseName, author: "製作者待補" };
+  }
+
+  return {
+    title: baseName.slice(0, splitAt),
+    author: baseName.slice(splitAt + 1),
+  };
+}
+
+function readCategoryItems(category: (typeof categoryConfig)[number]): Schematic[] {
+  const folderName = category.folderNames.find((name) => existsSync(join(qrRoot, name)));
+  if (!folderName) return [];
+
+  return readdirSync(join(qrRoot, folderName))
+    .filter((fileName) => imageExtensions.has(extname(fileName).toLowerCase()))
+    .sort((a, b) => a.localeCompare(b, "zh-Hant"))
+    .map((fileName, index) => {
+      const { title, author } = titleAndAuthorFromFile(fileName);
+      return {
+        id: `${category.id}-${index + 1}`,
+        title,
+        description: title,
+        author,
+        qrImage: `/totk-qrcode/${folderName}/${encodeURIComponent(fileName)}`,
+      };
+    });
+}
+
+const categories: SchematicCategory[] = categoryConfig.map((category) => ({
+  ...category,
+  items: readCategoryItems(category),
+}));
+
+const schematicCount = categories.reduce((total, category) => total + category.items.length, 0);
 ---
 
 <BaseLayout
-  title="實用藍圖"
-  description="《薩爾達傳說 王國之淚》實用藍圖 QR Code 收藏，依功能與作者整理。"
+  title="藍圖分享"
+  description="《薩爾達傳說 王國之淚》藍圖 QR Code 分享庫，依實用與有趣分類整理。"
   active="resources"
 >
   <main class="schematics-page">
@@ -27,21 +93,21 @@ const schematics: Schematic[] = [];
           <span>/</span>
           <a href={href("/resources#totk")}>資料網站</a>
           <span>/</span>
-          <span aria-current="page">實用藍圖</span>
+          <span aria-current="page">藍圖分享</span>
         </nav>
 
         <div class="schematics-hero-grid">
           <div class="schematics-copy">
             <div class="schematics-kicker">
               <svg viewBox={GAME_LOGOS.totk.viewBox} aria-hidden="true" set:html={GAME_LOGOS.totk.svg} />
-              <span>Tears of the Kingdom · Practical Schematics</span>
+              <span>Tears of the Kingdom · Blueprint Gallery</span>
             </div>
-            <h1 id="schematics-title">實用藍圖</h1>
-            <p>把值得留下的建造收進同一座資料庫。每張藍圖保留 QR Code、用途與作者，查找時不必再翻遍散落的圖片。</p>
+            <h1 id="schematics-title">藍圖分享</h1>
+            <p>把值得留下的建造收進同一座資料庫。每張藍圖保留 QR Code、名稱與製作者，查找時不必再翻遍散落的圖片。</p>
             <div class="schematics-meta" aria-label="藍圖資料欄位">
               <span>QR Code</span>
-              <span>功能</span>
-              <span>作者</span>
+              <span>敘述</span>
+              <span>製作者</span>
             </div>
           </div>
 
@@ -63,7 +129,7 @@ const schematics: Schematic[] = [];
     <div class="schematics-index-bar">
       <div>
         <span>ARCHIVE / TOTK</span>
-        <strong>{String(schematics.length).padStart(2, "0")} BLUEPRINTS</strong>
+        <strong>{String(schematicCount).padStart(2, "0")} BLUEPRINTS</strong>
       </div>
       <a href={href("/resources#totk")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
@@ -71,55 +137,128 @@ const schematics: Schematic[] = [];
       </a>
     </div>
 
-    <section class="schematics-library" aria-labelledby="library-title">
+    <section class="schematics-library" aria-labelledby="library-title" data-view="grid">
       <header class="schematics-library-heading">
         <div>
           <span>QR BLUEPRINT LIBRARY</span>
-          <h2 id="library-title">藍圖收藏</h2>
+          <h2 id="library-title">藍圖分享庫</h2>
         </div>
-        <p>所有藍圖都會以相同欄位整理，方便快速比較用途並保留原作者資訊。</p>
+        <p>依「實用」與「有趣」分開整理，保留 QR Code、藍圖名稱與製作者，之後新增圖片時也會沿用同一套欄位。</p>
       </header>
 
+      <div class="schematics-toolbar">
+        <div class="schematics-tabs" role="tablist" aria-label="藍圖分類">
+          {
+            categories.map((category, index) => (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={index === 0 ? "true" : "false"}
+                aria-controls={`schematics-panel-${category.id}`}
+                id={`schematics-tab-${category.id}`}
+                data-schematics-tab={category.id}
+              >
+                <span>{category.label}</span>
+                <strong>{category.en}</strong>
+                <em>{String(category.items.length).padStart(2, "0")}</em>
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="schematics-view-toggle" aria-label="圖片展示方式">
+          <button type="button" aria-pressed="true" data-schematics-view="grid" aria-label="圖塊展示">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />
+            </svg>
+          </button>
+          <button type="button" aria-pressed="false" data-schematics-view="list" aria-label="列表展示">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h5v5H4zM4 14h5v5H4zM12 7h8M12 16h8" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
       {
-        schematics.length > 0 ? (
-          <div class="schematics-list">
-            {schematics.map((item, index) => (
-              <article class="schematic-card">
-                <div class="schematic-card-head">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <h3>{item.title}</h3>
+        categories.map((category, categoryIndex) => (
+          <div
+            class="schematics-panel"
+            id={`schematics-panel-${category.id}`}
+            role="tabpanel"
+            aria-labelledby={`schematics-tab-${category.id}`}
+            data-schematics-panel={category.id}
+            hidden={categoryIndex !== 0}
+          >
+            {
+              category.items.length > 0 ? (
+                <div class="schematics-list">
+                  {category.items.map((item, index) => (
+                    <article class="schematic-card">
+                      <div class="schematic-card-head">
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <h3>{item.title}</h3>
+                      </div>
+                      <button
+                        type="button"
+                        class="schematic-qr"
+                        data-preview-src={href(item.qrImage)}
+                        data-preview-title={item.title}
+                        aria-label={`放大預覽 ${item.title} QR Code`}
+                      >
+                        <img src={href(item.qrImage)} alt={`${item.title} QR Code`} loading="lazy" />
+                        <span aria-hidden="true"></span>
+                      </button>
+                      <dl>
+                        <div>
+                          <dt>敘述</dt>
+                          <dd>{item.description}</dd>
+                        </div>
+                        <div>
+                          <dt>製作者</dt>
+                          <dd>{item.author}</dd>
+                        </div>
+                      </dl>
+                    </article>
+                  ))}
                 </div>
-                <div class="schematic-qr">
-                  <img src={href(item.qrImage)} alt={`${item.title} QR Code`} loading="lazy" />
-                  <span aria-hidden="true"></span>
-                </div>
-                <dl>
-                  <div>
-                    <dt>功能</dt>
-                    <dd>{item.function}</dd>
+              ) : (
+                <div class="schematics-empty">
+                  <div class="empty-mark" aria-hidden="true">
+                    <span></span><span></span><span></span>
                   </div>
                   <div>
-                    <dt>作者</dt>
-                    <dd>{item.author}</dd>
+                    <span>{category.en.toUpperCase()}</span>
+                    <h3>藍圖準備中</h3>
+                    <p>這個分類加入 QR Code 後，會在這裡依序顯示名稱與製作者。</p>
                   </div>
-                </dl>
-              </article>
-            ))}
+                </div>
+              )
+            }
           </div>
-        ) : (
-          <div class="schematics-empty">
-            <div class="empty-mark" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
-            <div>
-              <span>ARCHIVE IS OPEN</span>
-              <h3>藍圖準備中</h3>
-              <p>第一批 QR Code 加入後，會在這裡依序顯示功能與作者。</p>
-            </div>
-          </div>
-        )
+        ))
       }
     </section>
+
+    <div class="schematic-lightbox" data-schematic-lightbox hidden>
+      <button class="lightbox-backdrop" type="button" data-lightbox-close aria-label="關閉預覽"></button>
+      <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+        <div class="lightbox-head">
+          <div>
+            <span>QR PREVIEW</span>
+            <h2 id="lightbox-title">藍圖預覽</h2>
+          </div>
+          <button type="button" data-lightbox-close aria-label="關閉預覽">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="lightbox-image">
+          <img src="" alt="" data-lightbox-image />
+        </div>
+      </div>
+    </div>
   </main>
 
   <style>
@@ -377,6 +516,126 @@ const schematics: Schematic[] = [];
       line-height: 1.75;
     }
 
+    .schematics-toolbar {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .schematics-tabs {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(150px, 1fr));
+      gap: 0;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+    }
+
+    .schematics-tabs button {
+      position: relative;
+      display: grid;
+      min-height: 64px;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px 16px;
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .schematics-tabs button + button {
+      border-left: 1px solid var(--border-soft);
+    }
+
+    .schematics-tabs button[aria-selected="true"] {
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 76%),
+        color-mix(in srgb, var(--surface) 86%, var(--schematic-green-soft));
+      color: var(--ink);
+    }
+
+    .schematics-tabs button[aria-selected="true"]::before {
+      content: "";
+      position: absolute;
+      inset: -1px auto -1px -1px;
+      width: 3px;
+      background: var(--accent);
+    }
+
+    .schematics-tabs span {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .schematics-tabs strong,
+    .schematics-tabs em {
+      font-family: var(--font-mono);
+      font-style: normal;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .schematics-tabs strong {
+      grid-column: 1;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .schematics-tabs em {
+      grid-row: 1 / span 2;
+      grid-column: 2;
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    .schematics-panel[hidden] {
+      display: none;
+    }
+
+    .schematics-view-toggle {
+      display: inline-flex;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+    }
+
+    .schematics-view-toggle button {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .schematics-view-toggle button + button {
+      border-left: 1px solid var(--border-soft);
+    }
+
+    .schematics-view-toggle button[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--accent) 11%, transparent);
+      color: var(--accent);
+    }
+
+    .schematics-view-toggle svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .schematics-list {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -392,10 +651,10 @@ const schematics: Schematic[] = [];
 
     .schematic-card-head {
       display: flex;
-      min-height: 58px;
+      min-height: 50px;
       align-items: center;
-      gap: 13px;
-      padding-inline: 17px;
+      gap: 11px;
+      padding-inline: 14px;
       border-bottom: 1px solid var(--border-soft);
     }
 
@@ -411,17 +670,29 @@ const schematics: Schematic[] = [];
       font-family: var(--font-serif);
       font-size: 16px;
       font-weight: 500;
+      line-height: 1.35;
     }
 
     .schematic-qr {
       position: relative;
-      aspect-ratio: 1;
-      margin: 17px;
+      display: block;
+      width: calc(100% - 28px);
+      aspect-ratio: 3 / 4;
+      margin: 14px;
+      padding: 0;
       overflow: hidden;
+      border: 0;
+      border-radius: 0;
       background: #fff;
+      cursor: zoom-in;
     }
 
-    .schematic-qr img { width: 100%; height: 100%; object-fit: contain; }
+    .schematic-qr img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
 
     .schematic-qr > span {
       position: absolute;
@@ -435,13 +706,64 @@ const schematics: Schematic[] = [];
     .schematic-card dl > div {
       display: grid;
       grid-template-columns: 54px 1fr;
-      gap: 12px;
-      padding: 13px 17px;
+      gap: 10px;
+      padding: 10px 14px;
     }
 
     .schematic-card dl > div + div { border-top: 1px solid var(--border-soft); }
     .schematic-card dt { color: var(--accent); font-size: 11px; font-weight: 500; }
     .schematic-card dd { margin: 0; color: var(--text); font-size: 12px; line-height: 1.6; }
+
+    .schematics-library[data-view="list"] .schematics-list {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .schematics-library[data-view="list"] .schematic-card {
+      display: grid;
+      grid-template-columns: 118px minmax(180px, 0.8fr) 1fr;
+      align-items: stretch;
+    }
+
+    .schematics-library[data-view="list"] .schematic-card-head {
+      min-height: 0;
+      border-right: 1px solid var(--border-soft);
+      border-bottom: 0;
+    }
+
+    .schematics-library[data-view="list"] .schematic-qr {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      width: 100%;
+      height: 96px;
+      aspect-ratio: auto;
+      margin: 0;
+    }
+
+    .schematics-library[data-view="list"] .schematic-qr img {
+      object-fit: cover;
+      object-position: center 32%;
+    }
+
+    .schematics-library[data-view="list"] .schematic-qr > span {
+      inset: 5px;
+    }
+
+    .schematics-library[data-view="list"] .schematic-card dl {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: 0;
+    }
+
+    .schematics-library[data-view="list"] .schematic-card dl > div {
+      align-content: center;
+      border-left: 1px solid var(--border-soft);
+      padding-block: 8px;
+    }
+
+    .schematics-library[data-view="list"] .schematic-card dl > div + div {
+      border-top: 0;
+    }
 
     .schematics-empty {
       display: grid;
@@ -494,6 +816,100 @@ const schematics: Schematic[] = [];
 
     .schematics-empty p { margin: 12px 0 0; font-size: 13px; line-height: 1.75; }
 
+    .schematic-lightbox[hidden] {
+      display: none;
+    }
+
+    .schematic-lightbox {
+      position: fixed;
+      z-index: 80;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: color-mix(in srgb, var(--bg) 74%, #000);
+      opacity: 0.92;
+      cursor: zoom-out;
+    }
+
+    .lightbox-dialog {
+      position: relative;
+      z-index: 1;
+      width: min(92vw, 620px, calc((88vh - 68px) * 0.75));
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 24px 70px color-mix(in srgb, #000 32%, transparent);
+    }
+
+    .lightbox-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .lightbox-head span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 1.4px;
+    }
+
+    .lightbox-head h2 {
+      margin: 4px 0 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .lightbox-head button {
+      display: grid;
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .lightbox-head svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+    }
+
+    .lightbox-image {
+      display: grid;
+      aspect-ratio: 3 / 4;
+      place-items: center;
+      background: #fff;
+    }
+
+    .lightbox-image img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
     .schematics-page :is(a, button):focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 3px;
@@ -530,13 +946,126 @@ const schematics: Schematic[] = [];
       .schematics-library { padding-block: 62px 82px; }
       .schematics-library-heading { grid-template-columns: 1fr; gap: 18px; margin-bottom: 30px; }
       .schematics-library-heading h2 { font-size: 24px; }
+      .schematics-toolbar { display: grid; }
+      .schematics-tabs {
+        width: 100%;
+        grid-template-columns: 1fr;
+      }
+      .schematics-tabs button + button {
+        border-top: 1px solid var(--border-soft);
+        border-left: 0;
+      }
+      .schematics-view-toggle { justify-self: end; }
       .schematics-list { grid-template-columns: 1fr; }
+      .schematics-library[data-view="list"] .schematic-card {
+        grid-template-columns: 96px 1fr;
+      }
+      .schematics-library[data-view="list"] .schematic-card dl {
+        grid-column: 2;
+        grid-template-columns: 1fr;
+        border-top: 1px solid var(--border-soft);
+      }
+      .schematics-library[data-view="list"] .schematic-card dl > div {
+        border-left: 0;
+      }
+      .schematics-library[data-view="list"] .schematic-qr {
+        height: 100%;
+        min-height: 116px;
+      }
       .schematics-empty { grid-template-columns: 1fr; gap: 26px; padding: 30px; }
       .empty-mark { width: 128px; }
+    }
+
+    @media (max-width: 430px) {
+      .schematics-library[data-view="list"] .schematic-card {
+        grid-template-columns: 86px 1fr;
+      }
+
+      .schematics-library[data-view="list"] .schematic-card-head {
+        padding-inline: 12px;
+      }
+
+      .schematic-lightbox {
+        padding: 14px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .scan-line { animation: none; transform: none; }
     }
   </style>
+
+  <script>
+    const schematicTabs = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-schematics-tab]"));
+    const schematicPanels = Array.from(document.querySelectorAll<HTMLElement>("[data-schematics-panel]"));
+    const schematicsLibrary = document.querySelector<HTMLElement>(".schematics-library");
+    const viewButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-schematics-view]"));
+    const previewButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-preview-src]"));
+    const lightbox = document.querySelector<HTMLElement>("[data-schematic-lightbox]");
+    const lightboxImage = document.querySelector<HTMLImageElement>("[data-lightbox-image]");
+    const lightboxTitle = document.getElementById("lightbox-title");
+    const closeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-lightbox-close]"));
+    let lastPreviewButton: HTMLButtonElement | null = null;
+
+    schematicTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.schematicsTab;
+
+        schematicTabs.forEach((button) => {
+          button.setAttribute("aria-selected", String(button.dataset.schematicsTab === target));
+        });
+
+        schematicPanels.forEach((panel) => {
+          panel.hidden = panel.dataset.schematicsPanel !== target;
+        });
+      });
+    });
+
+    viewButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const view = button.dataset.schematicsView ?? "grid";
+        if (schematicsLibrary) schematicsLibrary.dataset.view = view;
+
+        viewButtons.forEach((viewButton) => {
+          viewButton.setAttribute("aria-pressed", String(viewButton.dataset.schematicsView === view));
+        });
+      });
+    });
+
+    function closeLightbox() {
+      if (!lightbox || !lightboxImage) return;
+
+      lightbox.hidden = true;
+      lightboxImage.src = "";
+      lightboxImage.alt = "";
+      document.documentElement.style.overflow = "";
+      lastPreviewButton?.focus();
+    }
+
+    previewButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!lightbox || !lightboxImage || !lightboxTitle) return;
+
+        const title = button.dataset.previewTitle ?? "藍圖預覽";
+        const src = button.dataset.previewSrc ?? "";
+        lastPreviewButton = button;
+        lightboxTitle.textContent = title;
+        lightboxImage.src = src;
+        lightboxImage.alt = `${title} QR Code`;
+        lightbox.hidden = false;
+        document.documentElement.style.overflow = "hidden";
+        closeButtons.find((closeButton) => closeButton.offsetParent !== null)?.focus();
+      });
+    });
+
+    closeButtons.forEach((button) => {
+      button.addEventListener("click", closeLightbox);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && lightbox && !lightbox.hidden) {
+        closeLightbox();
+      }
+    });
+  </script>
 </BaseLayout>

@@ -268,10 +268,10 @@ export const resourceGames: ResourceGame[] = [
         en: "Chinese",
         items: [
           {
-            title: "實用藍圖",
+            title: "藍圖分享",
             url: "/resources/practical-schematics",
             kind: "blueprint",
-            note: "Practical Schematics",
+            note: "Blueprint Gallery",
             recommended: true,
           },
           {
