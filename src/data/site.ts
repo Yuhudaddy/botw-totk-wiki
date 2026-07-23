@@ -56,8 +56,8 @@ export const quickNav: QuickNavItem[] = [
     series: "物件地圖",
     title: "東西在哪呢？",
     links: [
-      { label: "Leo 曠野物件地圖", path: "/resources/object-map/botw" },
-      { label: "Leo 王淚物件地圖", path: "/resources/object-map/totk" },
+      { label: "Léo 曠野物件地圖", path: "/resources/object-map/botw" },
+      { label: "Léo 王淚物件地圖", path: "/resources/object-map/totk" },
     ],
   },
   { no: "06", series: "藍圖分享", title: "有好用藍圖嗎？", path: "/resources/practical-schematics" },
