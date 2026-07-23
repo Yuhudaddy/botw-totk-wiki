@@ -501,13 +501,18 @@ const commandGroups = [
 
   <style>
     .ist-guide {
-      --ist-cyan: #71e2df;
-      --ist-cyan-soft: color-mix(in srgb, var(--ist-cyan) 16%, transparent);
-      --ist-amber: #f4ad42;
-      --ist-night: #1d1c29;
-      --ist-panel: #242331;
-      --ist-panel-2: #2d2c3c;
-      --ist-code: #eeedf5;
+      --ist-cyan: #78d6c8;
+      --ist-amber: #e8a244;
+      --ist-night: #171311;
+      --ist-panel: #211915;
+      --ist-panel-2: #2a211c;
+      --ist-line: #4a332a;
+      --ist-line-soft: #382720;
+      --ist-code: #f3eee8;
+      --ist-code-muted: #cfc4bb;
+      --ist-code-dim: #867469;
+      --ist-code-faint: #a79a91;
+      --ist-code-hover: rgba(217, 119, 87, 0.08);
       overflow: clip;
     }
 
@@ -554,8 +559,8 @@ const commandGroups = [
       z-index: 2;
       opacity: 0.28;
       background-image:
-        linear-gradient(rgba(113, 226, 223, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(113, 226, 223, 0.08) 1px, transparent 1px);
+        linear-gradient(rgba(217, 119, 87, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(217, 119, 87, 0.1) 1px, transparent 1px);
       background-size: 42px 42px;
       mask-image: linear-gradient(90deg, #000, transparent 65%);
     }
@@ -608,16 +613,16 @@ const commandGroups = [
       display: flex;
       align-items: center;
       gap: 10px;
-      color: var(--ist-cyan);
+      color: var(--accent);
       font-size: 11px;
     }
 
     .ist-status-dot {
       width: 7px;
       height: 7px;
-      border: 1px solid var(--ist-cyan);
-      background: var(--ist-cyan);
-      box-shadow: 0 0 0 5px rgba(113, 226, 223, 0.12);
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 16%, transparent);
     }
 
     .ist-hero h1 {
@@ -633,7 +638,7 @@ const commandGroups = [
     }
 
     .ist-hero h1 span {
-      color: var(--ist-cyan);
+      color: var(--accent);
     }
 
     .ist-hero-content > p {
@@ -659,7 +664,7 @@ const commandGroups = [
     .ist-hero-meta span + span::before {
       content: "/";
       margin-right: 18px;
-      color: var(--ist-cyan);
+      color: var(--accent);
     }
 
     .ist-hero-actions {
@@ -677,10 +682,10 @@ const commandGroups = [
       justify-content: center;
       gap: 10px;
       padding: 0 20px;
-      border: 1px solid #8ce8e5;
+      border: 1px solid var(--accent);
       border-radius: 6px;
-      background: var(--ist-cyan);
-      color: #15141d;
+      background: var(--accent);
+      color: #fffaf6;
       font-size: 14px;
       font-weight: 700;
       text-decoration: none;
@@ -688,8 +693,8 @@ const commandGroups = [
     }
 
     .ist-primary-action:hover {
-      background: #9af0ed;
-      border-color: #b9f5f3;
+      background: var(--brand);
+      border-color: var(--brand);
     }
 
     .ist-primary-action:active {
@@ -723,13 +728,13 @@ const commandGroups = [
       gap: 4px;
       min-width: 160px;
       padding-left: 16px;
-      border-left: 1px solid rgba(113, 226, 223, 0.34);
+      border-left: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
       color: rgba(255, 255, 255, 0.48);
       font-size: 9px;
     }
 
     .ist-hero-readout strong {
-      color: var(--ist-cyan);
+      color: var(--accent);
       font-size: 12px;
       font-weight: 500;
     }
@@ -942,7 +947,8 @@ const commandGroups = [
 
     .ist-preset-tabs button[aria-selected="true"] {
       background: var(--ist-night);
-      color: var(--ist-cyan);
+      color: var(--accent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 34%, transparent);
     }
 
     .ist-preset-tabs button:focus-visible {
@@ -954,11 +960,11 @@ const commandGroups = [
       display: grid;
       grid-template-columns: minmax(0, 1.32fr) minmax(300px, 0.68fr);
       margin-top: 14px;
-      border: 1px solid #3c3b4c;
+      border: 1px solid var(--ist-line);
       border-radius: 8px;
       overflow: hidden;
       background: var(--ist-night);
-      box-shadow: 0 22px 55px rgba(20, 20, 19, 0.15);
+      box-shadow: 0 22px 55px rgba(20, 14, 10, 0.18);
     }
 
     .ist-editor,
@@ -967,7 +973,7 @@ const commandGroups = [
     }
 
     .ist-inspector {
-      border-left: 1px solid #3c3b4c;
+      border-left: 1px solid var(--ist-line);
       background: var(--ist-panel);
     }
 
@@ -977,8 +983,8 @@ const commandGroups = [
       align-items: center;
       justify-content: space-between;
       padding: 0 14px 0 16px;
-      border-bottom: 1px solid #3c3b4c;
-      background: #1a1921;
+      border-bottom: 1px solid var(--ist-line);
+      background: #15110f;
       color: rgba(255, 255, 255, 0.74);
       font-size: 12px;
     }
@@ -1000,7 +1006,7 @@ const commandGroups = [
     }
 
     .ist-window-dot-cyan {
-      background: var(--ist-cyan);
+      background: var(--accent);
     }
 
     .ist-copy-button,
@@ -1025,9 +1031,9 @@ const commandGroups = [
     .ist-copy-button:hover,
     .ist-copy-button:focus-visible,
     .ist-copy-button[data-copied="true"] {
-      border-color: #4d4c5e;
-      background: #2a2937;
-      color: var(--ist-cyan);
+      border-color: color-mix(in srgb, var(--accent) 42%, var(--ist-line));
+      background: var(--ist-panel-2);
+      color: var(--accent);
     }
 
     .ist-copy-button svg,
@@ -1055,11 +1061,11 @@ const commandGroups = [
       display: grid;
       gap: 7px;
       padding: 0 26px 22px 62px;
-      border-bottom: 1px solid #343342;
+      border-bottom: 1px solid var(--ist-line-soft);
     }
 
     .ist-code-meta span {
-      color: var(--ist-cyan);
+      color: var(--accent);
       font: 500 9px var(--font-mono);
     }
 
@@ -1088,18 +1094,18 @@ const commandGroups = [
     .ist-code-lines li::before {
       content: counter(line);
       padding-right: 12px;
-      color: #77758b;
+      color: var(--ist-code-dim);
       font: 400 11px var(--font-mono);
       text-align: right;
       user-select: none;
     }
 
     .ist-code-lines li:hover {
-      background: rgba(113, 226, 223, 0.05);
+      background: var(--ist-code-hover);
     }
 
     .ist-code-lines code {
-      color: #c8c6d5;
+      color: var(--ist-code-muted);
       font-size: 13px;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
@@ -1114,7 +1120,7 @@ const commandGroups = [
       display: flex;
       align-items: center;
       gap: 6px;
-      color: var(--ist-cyan);
+      color: var(--accent);
       font: 500 9px var(--font-mono);
     }
 
@@ -1122,7 +1128,7 @@ const commandGroups = [
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--ist-cyan);
+      background: var(--accent);
       animation: ist-pulse 1.8s ease-in-out infinite;
     }
 
@@ -1134,7 +1140,7 @@ const commandGroups = [
     }
 
     .ist-inspector-label {
-      color: #9997a8;
+      color: var(--ist-code-faint);
       font: 500 9px var(--font-mono);
       text-transform: uppercase;
     }
@@ -1152,34 +1158,34 @@ const commandGroups = [
       align-items: end;
       justify-content: end;
       padding: 5px;
-      border: 1px solid #5a586c;
+      border: 1px solid color-mix(in srgb, var(--ist-line) 82%, #fff);
       background:
-        linear-gradient(135deg, rgba(244, 173, 66, 0.7), rgba(113, 226, 223, 0.18)),
-        #393748;
+        linear-gradient(135deg, rgba(232, 162, 68, 0.72), rgba(201, 100, 66, 0.24)),
+        var(--ist-panel-2);
       color: #fff;
       font: 500 10px var(--font-mono);
     }
 
     .ist-inventory-preview span:nth-child(2) {
       background:
-        linear-gradient(135deg, rgba(133, 126, 167, 0.74), rgba(40, 39, 52, 0.35)),
-        #393748;
+        linear-gradient(135deg, rgba(128, 98, 74, 0.82), rgba(42, 33, 28, 0.42)),
+        var(--ist-panel-2);
     }
 
     .ist-inventory-preview span:nth-child(3) {
       background:
         linear-gradient(135deg, rgba(201, 100, 66, 0.82), rgba(244, 173, 66, 0.18)),
-        #393748;
+        var(--ist-panel-2);
     }
 
     .ist-inventory-preview .is-selected {
-      border-color: var(--ist-cyan);
-      box-shadow: inset 0 0 0 1px var(--ist-cyan);
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
     }
 
     .ist-inspector-body > p {
       margin: 24px 0 0;
-      color: #d0ceda;
+      color: var(--ist-code-muted);
       font-size: 14px;
       line-height: 1.72;
     }
@@ -1190,7 +1196,7 @@ const commandGroups = [
       gap: 7px;
       margin-top: auto;
       padding-top: 28px;
-      color: #8c8a9c;
+      color: var(--ist-code-dim);
       font: 400 9px var(--font-mono);
       white-space: nowrap;
     }
@@ -1199,7 +1205,7 @@ const commandGroups = [
       width: 12px;
       height: 12px;
       fill: none;
-      stroke: var(--ist-cyan);
+      stroke: var(--accent);
       stroke-width: 1.8;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -1221,7 +1227,7 @@ const commandGroups = [
     }
 
     .ist-command-list article:hover {
-      background: color-mix(in srgb, var(--ist-cyan) 4%, transparent);
+      background: color-mix(in srgb, var(--accent) 5%, transparent);
     }
 
     .ist-command-index {
@@ -1288,13 +1294,13 @@ const commandGroups = [
     .ist-formula {
       margin-top: 30px;
       padding: 18px;
-      border-left: 2px solid var(--ist-cyan);
+      border-left: 2px solid var(--accent);
       background: var(--ist-night);
     }
 
     .ist-formula span {
       display: block;
-      color: #8f8d9e;
+      color: var(--ist-code-faint);
       font: 500 9px var(--font-mono);
     }
 
@@ -1346,7 +1352,7 @@ const commandGroups = [
 
     .ist-reference-grid > section {
       min-width: 0;
-      border-top: 2px solid var(--ist-cyan);
+      border-top: 2px solid var(--accent);
       background: var(--surface);
     }
 
@@ -1436,20 +1442,20 @@ const commandGroups = [
     }
 
     .ist-notes .ist-heading > span {
-      color: var(--ist-cyan);
+      color: var(--accent);
     }
 
     .ist-notes ul {
       margin: 0;
       padding: 0;
       list-style: none;
-      border-top: 1px solid #3d3b4a;
+      border-top: 1px solid var(--ist-line);
     }
 
     .ist-notes li {
       padding: 17px 0;
-      border-bottom: 1px solid #3d3b4a;
-      color: #aaa8b8;
+      border-bottom: 1px solid var(--ist-line);
+      color: var(--ist-code-faint);
       font-size: 13px;
       line-height: 1.72;
     }
@@ -1554,7 +1560,7 @@ const commandGroups = [
       }
 
       .ist-inspector {
-        border-top: 1px solid #3c3b4c;
+        border-top: 1px solid var(--ist-line);
         border-left: 0;
       }
 
