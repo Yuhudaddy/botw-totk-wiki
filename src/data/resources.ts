@@ -64,6 +64,13 @@ export const resourceGames: ResourceGame[] = [
             note: "Hosted by gamertw",
           },
           {
+            title: "轉存格(IST)模擬器",
+            url: "/resources/ist-simulator",
+            externalUrl: "https://ist.pistonite.app",
+            kind: "tool",
+            note: "Developed by Piston",
+          },
+          {
             title: "曠野之息物件中英名詞對照",
             url: "https://docs.google.com/spreadsheets/d/1wLoabOgGwh6ST23-lgQG8O6oKdKwwAyb75fzwH5FYpE/",
             kind: "sheet",

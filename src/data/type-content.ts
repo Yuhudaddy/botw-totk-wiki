@@ -99,6 +99,13 @@ export interface TypeContent {
   notes?: TypeNote[];         // 注意事項
   closing?: string;           // 注意事項下方的結語
   faqLink?: { label: string; path: string }; // Q&A 頁面連結（選填）
+  toolCta?: {
+    kicker?: string;
+    title: string;
+    description: string;
+    primary: { label: string; path: string };
+    secondary?: { label: string; url: string };
+  }; // 右欄工具導引卡片（例：模擬器、互動地圖）
   videos?: RelatedVideo[];    // 相關影片
   termGroups?: TermGroup[];   // termsOnly 頁的名詞說明分組（大亂鬥用）
   videoGroups?: VideoGroup[]; // videosOnly 頁依分類（例如角色）分組的相關影片
@@ -453,6 +460,13 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     closing: "轉存格有很多種變形 (variations)，詳細請參考下方相關影片。",
     faqLink: { label: "轉存格常見問題 Q&A", path: "/types/botw-02-faq" },
+    toolCta: {
+      kicker: "實測工具",
+      title: "用模擬器先跑一次",
+      description: "把流程改成腳本，先確認背包狀態、讀檔結果與轉存格數，再回到實機操作。",
+      primary: { label: "查看 IST 模擬器教學", path: "/resources/ist-simulator" },
+      secondary: { label: "開啟 Piston IST", url: "https://ist.pistonite.app" },
+    },
     videos: [
       { id: "RMkXbRgf4NQ", title: "回應29 - 聖經級《轉存格(IST)》原理動態詳解｜你的問題解答都在這裡！（IST Guidebook Video）", desc: "轉存格、數值訛轉、料理詞綴最完整的原理都在這！" },
       { id: "Fia85vBcq0I", title: "番外52 - 再見薩爾達！最簡單的光弓繼承！「轉存格繼承（Inventory Slot Transfer）」詳解與流程解說", desc: "受發現者委託製作、最早的轉存格教學！" },

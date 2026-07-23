@@ -1,0 +1,1827 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { href } from "../../lib/url";
+
+const IST_URL = "https://ist.pistonite.app";
+const DOCS_URL = "https://skybook.pistonite.dev/zh/";
+const COMMANDS_URL = "https://skybook.pistonite.dev/zh/user/commands.html";
+
+const examples = [
+  {
+    id: "starter",
+    label: "背包起點",
+    eyebrow: "STARTER SCRIPT",
+    title: "建立物品、裝備，再讀回存檔",
+    result: "讀檔後：海利亞盾仍在裝備中，手持狀態已回復",
+    lines: [
+      { command: "get", value: "1 pot-lid 5 apple 1 hylian-shield" },
+      { command: "equip", value: "shield" },
+      { command: "save", value: "" },
+      { command: "hold", value: "5 apple" },
+      { command: "drop", value: "" },
+      { command: "reload", value: "" },
+    ],
+  },
+  {
+    id: "equipment",
+    label: "裝備測試",
+    eyebrow: "EQUIPMENT FLOW",
+    title: "取得弓箭並模擬主世界操作",
+    result: "射出 3 箭後解除弓箭裝備",
+    lines: [
+      { command: "get", value: "1 royal-bow 10 arrow" },
+      { command: "equip", value: "bow" },
+      { command: "shoot", value: "3 times" },
+      { command: "unequip", value: "bow" },
+    ],
+  },
+  {
+    id: "entangle",
+    label: "PE 基礎",
+    eyebrow: "PROMPT ENTANGLEMENT",
+    title: "準備糾纏目標與手持素材",
+    result: "以鍋蓋為 PE 目標，模擬手持蘋果的 Smuggle 狀態",
+    lines: [
+      { command: "get", value: "1 pot-lid 2 apple" },
+      { command: "save", value: "" },
+      { command: "entangle", value: "pot-lid" },
+      { command: ":targeting", value: "pot-lid" },
+      { command: ":smug", value: "hold 1 apple" },
+    ],
+  },
+];
+
+const quickCommands = [
+  {
+    command: "get 1 pot-lid 5 apple",
+    name: "取得物品",
+    description: "直接把指定數量的物品加入背包，可在同一行連續列出多種物品。",
+  },
+  {
+    command: "hold 5 apple",
+    name: "手持素材",
+    description: "模擬在素材頁手持物品；不指定數量時預設手持 1 個。",
+  },
+  {
+    command: "equip shield",
+    name: "裝備物品",
+    description: "裝備第一個符合條件的武器、弓或盾；也可直接指定物品名稱。",
+  },
+  {
+    command: "drop all but 1 shield",
+    name: "丟棄物品",
+    description: "丟棄符合條件的項目；all but 可保留指定數量。",
+  },
+  {
+    command: "save-as test",
+    name: "建立命名存檔",
+    description: "將目前狀態儲存為 test，之後可使用 reload test 讀取。",
+  },
+  {
+    command: "dnp pot-lid",
+    name: "丟下再撿回",
+    description: "Drop and Pick-up 的縮寫，常用於測試裝備排序與狀態變化。",
+  },
+];
+
+const syntaxRows = [
+  { token: "1 apple", label: "數量＋物品", note: "數量可省略，預設為 1" },
+  { token: "all shields", label: "全部符合項目", note: "類別可用複數，如 weapons、bows、materials" },
+  { token: "apple[slot=2]", label: "指定第幾個", note: "選取第二個符合條件的蘋果" },
+  { token: "pot-lid[durability=3]", label: "加入屬性", note: "屬性寫在中括號，耐久也可寫 dura" },
+];
+
+const commandGroups = [
+  {
+    title: "背包",
+    items: [
+      ["get ITEM_LIST", "憑空取得物品"],
+      ["pick-up ITEM_LIST", "撿回先前掉落的物品"],
+      ["hold ITEM_LIST", "手持素材，最多 5 格"],
+      ["unhold", "取消目前手持"],
+      ["eat ITEM_LIST", "吃掉素材或料理"],
+    ],
+  },
+  {
+    title: "裝備",
+    items: [
+      ["equip ITEM_LIST", "裝備符合條件的項目"],
+      ["unequip ITEM_LIST", "解除指定裝備"],
+      ["drop ITEM_LIST", "丟棄指定物品或裝備"],
+      ["dnp ITEM_LIST", "丟下後立刻撿回"],
+      [":dpad equip ITEM", "用快捷選單切換裝備"],
+    ],
+  },
+  {
+    title: "存檔與世界",
+    items: [
+      ["save", "建立手動存檔"],
+      ["save-as NAME", "建立命名存檔"],
+      ["reload [NAME]", "讀取目前或命名存檔"],
+      ["new-game", "回到新遊戲狀態"],
+      ["pause / unpause", "開啟或關閉背包"],
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="轉存格(IST)模擬器使用指南"
+  description="轉存格（IST）模擬器的繁體中文快速使用指南：腳本輸入方式、常用指令、物品語法與可直接複製的範例。"
+  active="resources"
+>
+  <main class="ist-guide">
+    <section class="ist-hero" aria-labelledby="ist-title">
+      <img
+        class="ist-hero-image"
+        src={href("/resource-guides/ist-simulator-interface.png")}
+        alt="轉存格 IST 模擬器的腳本編輯器與背包預覽介面"
+        width="1280"
+        height="720"
+      />
+      <div class="ist-hero-overlay" aria-hidden="true"></div>
+      <div class="ist-hero-grid" aria-hidden="true"></div>
+
+      <div class="ist-wrap ist-hero-inner">
+        <nav class="ist-breadcrumb" aria-label="麵包屑">
+          <a href={href("/")}>首頁</a>
+          <span>/</span>
+          <a href={href("/resources#botw")}>資料網站</a>
+          <span>/</span>
+          <span aria-current="page">IST 模擬器</span>
+        </nav>
+
+        <div class="ist-hero-content">
+          <div class="ist-kicker">
+            <span class="ist-status-dot" aria-hidden="true"></span>
+            Breath of the Wild · Script Simulator
+          </div>
+          <h1 id="ist-title">轉存格<span>(IST)</span>模擬器</h1>
+          <p>
+            它不是靠按鈕操作，而是把遊戲流程寫成腳本。輸入取得物品、裝備、存讀檔等指令，
+            模擬器就會逐行算出背包狀態。
+          </p>
+          <div class="ist-hero-meta">
+            <span>Developed by Piston</span>
+            <span>Web App</span>
+            <span>Script driven</span>
+          </div>
+          <div class="ist-hero-actions">
+            <a class="ist-primary-action" href={IST_URL} target="_blank" rel="noopener">
+              開啟 IST 模擬器
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path>
+              </svg>
+            </a>
+            <a class="ist-secondary-action" href={DOCS_URL} target="_blank" rel="noopener">
+              中文官方文件
+            </a>
+          </div>
+        </div>
+
+        <div class="ist-hero-readout" aria-hidden="true">
+          <span>SIMULATION</span>
+          <strong>READY</strong>
+          <span>LANG / ZH-HANT</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="ist-section-nav" aria-label="本頁章節">
+      <div class="ist-wrap ist-section-nav-inner">
+        <span>IST / QUICK GUIDE</span>
+        <a href="#start">快速開始</a>
+        <a href="#workbench">腳本範例</a>
+        <a href="#syntax">物品語法</a>
+        <a href="#commands">指令速查</a>
+        <a href="#notes">注意事項</a>
+      </div>
+    </nav>
+
+    <section id="start" class="ist-section ist-start">
+      <div class="ist-wrap">
+        <div class="ist-heading">
+          <span>01 · START HERE</span>
+          <h2>先知道它怎麼「跑」。</h2>
+          <p>沒有執行按鈕。腳本變更後會自動重新模擬，游標停在哪一行，右側就顯示該行執行後的狀態。</p>
+        </div>
+
+        <ol class="ist-steps">
+          <li>
+            <span class="ist-step-no">01</span>
+            <div>
+              <h3>在腳本編輯器輸入</h3>
+              <p>通常一行一個動作；也能用分號把多個動作寫在同一行。</p>
+              <code>get 1 pot-lid 5 apple</code>
+            </div>
+          </li>
+          <li>
+            <span class="ist-step-no">02</span>
+            <div>
+              <h3>移動文字游標</h3>
+              <p>模擬器會自動計算，不必尋找「執行」。把游標移到想檢查的指令即可。</p>
+              <code>hold apple; drop</code>
+            </div>
+          </li>
+          <li>
+            <span class="ist-step-no">03</span>
+            <div>
+              <h3>查看右側背包</h3>
+              <p>右側預覽是該行執行後的結果；往上移動游標，也能回看前面的狀態。</p>
+              <code>save → reload</code>
+            </div>
+          </li>
+        </ol>
+
+        <div class="ist-mode-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 11v5M12 8h.01"></path>
+          </svg>
+          <p>
+            預設為<strong>自動儲存</strong>模式，腳本會留在目前瀏覽器。臨時測試可切成「不儲存」；
+            從分享連結開啟時通常會是「唯讀」。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="workbench" class="ist-section ist-workbench-section">
+      <div class="ist-wrap">
+        <div class="ist-heading ist-heading-row">
+          <div>
+            <span>02 · SCRIPT WORKBENCH</span>
+            <h2>從一段能跑的腳本開始。</h2>
+          </div>
+          <p>切換情境後，複製整段貼進 IST 左側編輯器。右邊的文字是這組腳本預期要觀察的重點。</p>
+        </div>
+
+        <div class="ist-preset-tabs" role="tablist" aria-label="腳本範例">
+          {examples.map((example, index) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${example.id}`}
+              aria-controls={`panel-${example.id}`}
+              aria-selected={index === 0 ? "true" : "false"}
+              data-example-tab={example.id}
+            >
+              {example.label}
+            </button>
+          ))}
+        </div>
+
+        <div class="ist-workbench">
+          <div class="ist-editor">
+            <div class="ist-panel-bar">
+              <div>
+                <span class="ist-window-dot"></span>
+                <strong>腳本編輯器</strong>
+              </div>
+              <button
+                id="copy-active-script"
+                type="button"
+                class="ist-copy-button"
+                aria-label="複製目前腳本"
+                title="複製目前腳本"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                </svg>
+                <span>複製腳本</span>
+              </button>
+            </div>
+
+            {examples.map((example, index) => (
+              <div
+                class="ist-code-panel"
+                id={`panel-${example.id}`}
+                role="tabpanel"
+                aria-labelledby={`tab-${example.id}`}
+                data-example-panel={example.id}
+                data-script={example.lines
+                  .map((line) => `${line.command}${line.value ? ` ${line.value}` : ""}`)
+                  .join("\n")}
+                hidden={index !== 0}
+              >
+                <div class="ist-code-meta">
+                  <span>{example.eyebrow}</span>
+                  <strong>{example.title}</strong>
+                </div>
+                <ol class="ist-code-lines">
+                  {example.lines.map((line) => (
+                    <li>
+                      <code><b>{line.command}</b>{line.value && ` ${line.value}`}</code>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          </div>
+
+          <aside class="ist-inspector" aria-label="模擬結果說明">
+            <div class="ist-panel-bar">
+              <div>
+                <span class="ist-window-dot ist-window-dot-cyan"></span>
+                <strong>狀態檢查</strong>
+              </div>
+              <span class="ist-live-label"><i></i> AUTO</span>
+            </div>
+            <div class="ist-inspector-body">
+              <span class="ist-inspector-label">游標所在行執行後</span>
+              <div class="ist-inventory-preview" aria-hidden="true">
+                <span>47</span>
+                <span>40</span>
+                <span>10</span>
+                <span class="is-selected">01</span>
+              </div>
+              {examples.map((example, index) => (
+                <p data-example-result={example.id} hidden={index !== 0}>{example.result}</p>
+              ))}
+              <div class="ist-flow">
+                <span>輸入腳本</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+                <span>自動模擬</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+                <span>查看狀態</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="ist-section ist-recipes">
+      <div class="ist-wrap">
+        <div class="ist-heading ist-heading-row">
+          <div>
+            <span>03 · COMMAND RECIPES</span>
+            <h2>六條最常用的指令。</h2>
+          </div>
+          <p>每列都可以直接複製。ITEM_LIST 可以接數量、物品名稱、類別與屬性條件。</p>
+        </div>
+
+        <div class="ist-command-list">
+          {quickCommands.map((item, index) => (
+            <article>
+              <span class="ist-command-index">{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+              </div>
+              <code>{item.command}</code>
+              <button
+                type="button"
+                class="ist-icon-button"
+                data-copy={item.command}
+                aria-label={`複製「${item.command}」`}
+                title="複製指令"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                </svg>
+              </button>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="syntax" class="ist-section ist-syntax">
+      <div class="ist-wrap ist-syntax-layout">
+        <div class="ist-heading">
+          <span>04 · ITEM SYNTAX</span>
+          <h2>物品不是參數表，是一句短句。</h2>
+          <p>
+            基本格式為 <code>指令 數量 物品名稱 [屬性=值]</code>。物品名稱使用英文，
+            多個詞以連字號連接，例如 <code>pot-lid</code>。
+          </p>
+          <div class="ist-formula">
+            <span>COMMAND</span>
+            <code>get 3 pot-lid[durability=3]</code>
+          </div>
+        </div>
+
+        <div class="ist-syntax-table">
+          {syntaxRows.map((row) => (
+            <div>
+              <code>{row.token}</code>
+              <strong>{row.label}</strong>
+              <span>{row.note}</span>
+              <button
+                type="button"
+                class="ist-icon-button"
+                data-copy={row.token}
+                aria-label={`複製「${row.token}」`}
+                title="複製語法"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                </svg>
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="commands" class="ist-section ist-reference">
+      <div class="ist-wrap">
+        <div class="ist-heading">
+          <span>05 · COMMAND INDEX</span>
+          <h2>常用指令速查。</h2>
+          <p>這裡先收錄日常模擬會用到的核心指令；進階系統操作請以官方指令參考為準。</p>
+        </div>
+
+        <div class="ist-reference-grid">
+          {commandGroups.map((group) => (
+            <section>
+              <h3>{group.title}</h3>
+              <dl>
+                {group.items.map(([command, description]) => (
+                  <>
+                    <dt><code>{command}</code></dt>
+                    <dd>{description}</dd>
+                  </>
+                ))}
+              </dl>
+            </section>
+          ))}
+        </div>
+
+        <div class="ist-prefixes">
+          <div>
+            <code>:</code>
+            <p><strong>註解指令</strong>用於直接控制模擬狀態，例如 <code>:smug</code>、<code>:dpad</code>、<code>:slots</code>。</p>
+          </div>
+          <div>
+            <code>!</code>
+            <p><strong>高階指令</strong>會直接操作底層狀態，例如 <code>!break</code>、<code>!remove</code>、<code>!system</code>。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="notes" class="ist-section ist-notes">
+      <div class="ist-wrap ist-notes-layout">
+        <div class="ist-heading">
+          <span>06 · FIELD NOTES</span>
+          <h2>最容易卡住的地方。</h2>
+        </div>
+        <ul>
+          <li><strong>它會自動執行。</strong>沒有 Run 按鈕，指令改完就會重新模擬。</li>
+          <li><strong>右側不是最終結果。</strong>它顯示的是文字游標所在指令「執行後」的狀態。</li>
+          <li><strong>get 和 pick-up 不同。</strong><code>get</code> 是直接取得；<code>pick-up</code> 只能撿回已經掉在地上的物品。</li>
+          <li><strong>物品名稱使用英文。</strong>若不確定名稱，可用左下物品搜尋器查找並複製。</li>
+          <li><strong>先從短腳本開始。</strong>發生錯誤時，把游標移到出錯行附近，逐行確認是哪個條件不成立。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ist-final">
+      <div class="ist-wrap">
+        <span>READY / 01</span>
+        <h2>先貼一段腳本，再從結果修改。</h2>
+        <p>不必一次背完所有指令。能建立物品、裝備、存檔與讀檔，就足以開始測試大多數 IST 流程。</p>
+        <div>
+          <a class="ist-primary-action" href={IST_URL} target="_blank" rel="noopener">
+            開啟 IST 模擬器
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path>
+            </svg>
+          </a>
+          <a href={COMMANDS_URL} target="_blank" rel="noopener">查看完整指令參考</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .ist-guide {
+      --ist-cyan: #71e2df;
+      --ist-cyan-soft: color-mix(in srgb, var(--ist-cyan) 16%, transparent);
+      --ist-amber: #f4ad42;
+      --ist-night: #1d1c29;
+      --ist-panel: #242331;
+      --ist-panel-2: #2d2c3c;
+      --ist-code: #eeedf5;
+      overflow: clip;
+    }
+
+    .ist-wrap {
+      width: min(1180px, calc(100% - 64px));
+      margin-inline: auto;
+    }
+
+    .ist-hero {
+      position: relative;
+      min-height: 540px;
+      height: min(620px, calc(100svh - 76px));
+      isolation: isolate;
+      overflow: hidden;
+      background: var(--ist-night);
+      color: #fff;
+    }
+
+    .ist-hero-image,
+    .ist-hero-overlay,
+    .ist-hero-grid {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .ist-hero-image {
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(0.82) contrast(1.06) brightness(0.74);
+      transform: scale(1.02);
+      animation: ist-settle 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .ist-hero-overlay {
+      z-index: 1;
+      background:
+        linear-gradient(90deg, rgba(21, 20, 29, 0.98) 0%, rgba(21, 20, 29, 0.9) 37%, rgba(21, 20, 29, 0.42) 72%, rgba(21, 20, 29, 0.2) 100%),
+        linear-gradient(0deg, rgba(21, 20, 29, 0.94) 0%, transparent 36%, rgba(21, 20, 29, 0.18) 100%);
+    }
+
+    .ist-hero-grid {
+      z-index: 2;
+      opacity: 0.28;
+      background-image:
+        linear-gradient(rgba(113, 226, 223, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(113, 226, 223, 0.08) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(90deg, #000, transparent 65%);
+    }
+
+    .ist-hero-inner {
+      position: relative;
+      z-index: 3;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding-block: 28px 38px;
+    }
+
+    .ist-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: rgba(255, 255, 255, 0.56);
+      font-size: 12px;
+    }
+
+    .ist-breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+
+    .ist-breadcrumb a:hover,
+    .ist-breadcrumb a:focus-visible {
+      color: #fff;
+    }
+
+    .ist-hero-content {
+      max-width: 650px;
+      margin-block: auto;
+      padding-block: 24px;
+    }
+
+    .ist-kicker,
+    .ist-hero-meta,
+    .ist-hero-readout,
+    .ist-section-nav-inner > span,
+    .ist-heading > span,
+    .ist-final > .ist-wrap > span {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .ist-kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ist-cyan);
+      font-size: 11px;
+    }
+
+    .ist-status-dot {
+      width: 7px;
+      height: 7px;
+      border: 1px solid var(--ist-cyan);
+      background: var(--ist-cyan);
+      box-shadow: 0 0 0 5px rgba(113, 226, 223, 0.12);
+    }
+
+    .ist-hero h1 {
+      margin: 18px 0 0;
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 500;
+      line-height: 1.06;
+      letter-spacing: 0;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: ist-rise 650ms 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .ist-hero h1 span {
+      color: var(--ist-cyan);
+    }
+
+    .ist-hero-content > p {
+      max-width: 40rem;
+      margin: 22px 0 0;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 17px;
+      line-height: 1.82;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: ist-rise 650ms 210ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .ist-hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 22px;
+      color: rgba(255, 255, 255, 0.52);
+      font-size: 10px;
+    }
+
+    .ist-hero-meta span + span::before {
+      content: "/";
+      margin-right: 18px;
+      color: var(--ist-cyan);
+    }
+
+    .ist-hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px 22px;
+      margin-top: 30px;
+    }
+
+    .ist-primary-action {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 20px;
+      border: 1px solid #8ce8e5;
+      border-radius: 6px;
+      background: var(--ist-cyan);
+      color: #15141d;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background-color 180ms ease, border-color 180ms ease, transform 120ms ease;
+    }
+
+    .ist-primary-action:hover {
+      background: #9af0ed;
+      border-color: #b9f5f3;
+    }
+
+    .ist-primary-action:active {
+      transform: translateY(1px);
+    }
+
+    .ist-primary-action svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ist-secondary-action {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 14px;
+      text-underline-offset: 5px;
+    }
+
+    .ist-hero-readout {
+      position: absolute;
+      right: 0;
+      bottom: 42px;
+      display: grid;
+      gap: 4px;
+      min-width: 160px;
+      padding-left: 16px;
+      border-left: 1px solid rgba(113, 226, 223, 0.34);
+      color: rgba(255, 255, 255, 0.48);
+      font-size: 9px;
+    }
+
+    .ist-hero-readout strong {
+      color: var(--ist-cyan);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .ist-section-nav {
+      position: sticky;
+      top: 64px;
+      z-index: 40;
+      border-bottom: 1px solid var(--border-strong);
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .ist-section-nav-inner {
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .ist-section-nav-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ist-section-nav-inner > span {
+      margin-right: auto;
+      color: var(--accent);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .ist-section-nav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 160ms ease;
+    }
+
+    .ist-section-nav a:hover,
+    .ist-section-nav a:focus-visible {
+      color: var(--ink);
+    }
+
+    .ist-section {
+      padding-block: 88px;
+      scroll-margin-top: 118px;
+    }
+
+    .ist-section + .ist-section {
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .ist-heading > span,
+    .ist-final > .ist-wrap > span {
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .ist-heading h2,
+    .ist-final h2 {
+      margin: 12px 0 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .ist-heading > p {
+      max-width: 44rem;
+      margin: 18px 0 0;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.78;
+    }
+
+    .ist-heading-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 48px;
+    }
+
+    .ist-heading-row > p {
+      max-width: 28rem;
+      margin: 0;
+    }
+
+    .ist-guide code {
+      font-family: var(--font-mono);
+      font-variant-ligatures: none;
+    }
+
+    .ist-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin: 48px 0 0;
+      padding: 0;
+      border-block: 1px solid var(--border-strong);
+      list-style: none;
+    }
+
+    .ist-steps li {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      min-width: 0;
+      padding: 30px 34px 32px 0;
+    }
+
+    .ist-steps li + li {
+      padding-left: 34px;
+      border-left: 1px solid var(--border-strong);
+    }
+
+    .ist-step-no {
+      padding-top: 3px;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .ist-steps h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 500;
+    }
+
+    .ist-steps p {
+      min-height: 70px;
+      margin: 10px 0 16px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .ist-steps code {
+      color: var(--accent);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .ist-mode-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 28px;
+      padding: 16px 18px;
+      border-left: 2px solid var(--ist-amber);
+      background: color-mix(in srgb, var(--ist-amber) 7%, var(--surface));
+    }
+
+    .ist-mode-note svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      margin-top: 2px;
+      fill: none;
+      stroke: var(--ist-amber);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+    }
+
+    .ist-mode-note p {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .ist-mode-note strong {
+      color: var(--ink);
+    }
+
+    .ist-workbench-section {
+      background: var(--surface);
+    }
+
+    .ist-preset-tabs {
+      display: inline-flex;
+      margin-top: 38px;
+      padding: 4px;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .ist-preset-tabs button {
+      min-height: 40px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: 500 12px var(--font-sans);
+      transition: background-color 160ms ease, color 160ms ease;
+    }
+
+    .ist-preset-tabs button[aria-selected="true"] {
+      background: var(--ist-night);
+      color: var(--ist-cyan);
+    }
+
+    .ist-preset-tabs button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .ist-workbench {
+      display: grid;
+      grid-template-columns: minmax(0, 1.32fr) minmax(300px, 0.68fr);
+      margin-top: 14px;
+      border: 1px solid #3c3b4c;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--ist-night);
+      box-shadow: 0 22px 55px rgba(20, 20, 19, 0.15);
+    }
+
+    .ist-editor,
+    .ist-inspector {
+      min-width: 0;
+    }
+
+    .ist-inspector {
+      border-left: 1px solid #3c3b4c;
+      background: var(--ist-panel);
+    }
+
+    .ist-panel-bar {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px 0 16px;
+      border-bottom: 1px solid #3c3b4c;
+      background: #1a1921;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 12px;
+    }
+
+    .ist-panel-bar > div {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .ist-panel-bar strong {
+      font-weight: 500;
+    }
+
+    .ist-window-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--ist-amber);
+    }
+
+    .ist-window-dot-cyan {
+      background: var(--ist-cyan);
+    }
+
+    .ist-copy-button,
+    .ist-icon-button {
+      border: 1px solid transparent;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.58);
+      cursor: pointer;
+      transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+    }
+
+    .ist-copy-button {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border-radius: 5px;
+      font: 500 11px var(--font-sans);
+    }
+
+    .ist-copy-button:hover,
+    .ist-copy-button:focus-visible,
+    .ist-copy-button[data-copied="true"] {
+      border-color: #4d4c5e;
+      background: #2a2937;
+      color: var(--ist-cyan);
+    }
+
+    .ist-copy-button svg,
+    .ist-icon-button svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ist-code-panel {
+      min-height: 340px;
+      padding: 26px 0 30px;
+      color: var(--ist-code);
+    }
+
+    .ist-code-panel[hidden] {
+      display: none;
+    }
+
+    .ist-code-meta {
+      display: grid;
+      gap: 7px;
+      padding: 0 26px 22px 62px;
+      border-bottom: 1px solid #343342;
+    }
+
+    .ist-code-meta span {
+      color: var(--ist-cyan);
+      font: 500 9px var(--font-mono);
+    }
+
+    .ist-code-meta strong {
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .ist-code-lines {
+      margin: 0;
+      padding: 18px 0 0;
+      counter-reset: line;
+      list-style: none;
+    }
+
+    .ist-code-lines li {
+      min-height: 35px;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      align-items: center;
+      padding-right: 24px;
+      counter-increment: line;
+    }
+
+    .ist-code-lines li::before {
+      content: counter(line);
+      padding-right: 12px;
+      color: #77758b;
+      font: 400 11px var(--font-mono);
+      text-align: right;
+      user-select: none;
+    }
+
+    .ist-code-lines li:hover {
+      background: rgba(113, 226, 223, 0.05);
+    }
+
+    .ist-code-lines code {
+      color: #c8c6d5;
+      font-size: 13px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .ist-code-lines b {
+      color: var(--ist-cyan);
+      font-weight: 500;
+    }
+
+    .ist-live-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ist-cyan);
+      font: 500 9px var(--font-mono);
+    }
+
+    .ist-live-label i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ist-cyan);
+      animation: ist-pulse 1.8s ease-in-out infinite;
+    }
+
+    .ist-inspector-body {
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      padding: 28px;
+    }
+
+    .ist-inspector-label {
+      color: #9997a8;
+      font: 500 9px var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .ist-inventory-preview {
+      display: grid;
+      grid-template-columns: repeat(4, 52px);
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .ist-inventory-preview span {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: end;
+      justify-content: end;
+      padding: 5px;
+      border: 1px solid #5a586c;
+      background:
+        linear-gradient(135deg, rgba(244, 173, 66, 0.7), rgba(113, 226, 223, 0.18)),
+        #393748;
+      color: #fff;
+      font: 500 10px var(--font-mono);
+    }
+
+    .ist-inventory-preview span:nth-child(2) {
+      background:
+        linear-gradient(135deg, rgba(133, 126, 167, 0.74), rgba(40, 39, 52, 0.35)),
+        #393748;
+    }
+
+    .ist-inventory-preview span:nth-child(3) {
+      background:
+        linear-gradient(135deg, rgba(201, 100, 66, 0.82), rgba(244, 173, 66, 0.18)),
+        #393748;
+    }
+
+    .ist-inventory-preview .is-selected {
+      border-color: var(--ist-cyan);
+      box-shadow: inset 0 0 0 1px var(--ist-cyan);
+    }
+
+    .ist-inspector-body > p {
+      margin: 24px 0 0;
+      color: #d0ceda;
+      font-size: 14px;
+      line-height: 1.72;
+    }
+
+    .ist-flow {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: auto;
+      padding-top: 28px;
+      color: #8c8a9c;
+      font: 400 9px var(--font-mono);
+      white-space: nowrap;
+    }
+
+    .ist-flow svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: var(--ist-cyan);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ist-command-list {
+      margin-top: 46px;
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .ist-command-list article {
+      min-height: 104px;
+      display: grid;
+      grid-template-columns: 44px minmax(220px, 0.8fr) minmax(260px, 1fr) 44px;
+      align-items: center;
+      gap: 18px;
+      border-bottom: 1px solid var(--border-strong);
+      transition: background-color 160ms ease;
+    }
+
+    .ist-command-list article:hover {
+      background: color-mix(in srgb, var(--ist-cyan) 4%, transparent);
+    }
+
+    .ist-command-index {
+      color: var(--accent);
+      font: 500 10px var(--font-mono);
+    }
+
+    .ist-command-list h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .ist-command-list p {
+      max-width: 33rem;
+      margin: 6px 0 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .ist-command-list > article > code {
+      color: var(--accent);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .ist-icon-button {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: end;
+      border-radius: 6px;
+      color: var(--muted);
+    }
+
+    .ist-icon-button:hover,
+    .ist-icon-button:focus-visible,
+    .ist-icon-button[data-copied="true"] {
+      border-color: var(--border-strong);
+      background: var(--surface);
+      color: var(--accent);
+    }
+
+    .ist-syntax {
+      background: var(--surface);
+    }
+
+    .ist-syntax-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(480px, 1.18fr);
+      gap: 84px;
+      align-items: start;
+    }
+
+    .ist-heading p code {
+      color: var(--accent);
+    }
+
+    .ist-formula {
+      margin-top: 30px;
+      padding: 18px;
+      border-left: 2px solid var(--ist-cyan);
+      background: var(--ist-night);
+    }
+
+    .ist-formula span {
+      display: block;
+      color: #8f8d9e;
+      font: 500 9px var(--font-mono);
+    }
+
+    .ist-formula code {
+      display: block;
+      margin-top: 8px;
+      color: var(--ist-cyan);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .ist-syntax-table {
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .ist-syntax-table > div {
+      min-height: 92px;
+      display: grid;
+      grid-template-columns: minmax(180px, 0.78fr) minmax(130px, 0.55fr) minmax(180px, 1fr) 44px;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .ist-syntax-table code {
+      color: var(--accent);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .ist-syntax-table strong {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .ist-syntax-table span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .ist-reference-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 46px;
+    }
+
+    .ist-reference-grid > section {
+      min-width: 0;
+      border-top: 2px solid var(--ist-cyan);
+      background: var(--surface);
+    }
+
+    .ist-reference-grid h3 {
+      margin: 0;
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--border-strong);
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 500;
+    }
+
+    .ist-reference-grid dl {
+      margin: 0;
+      padding: 10px 22px 18px;
+    }
+
+    .ist-reference-grid dt {
+      margin-top: 14px;
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    .ist-reference-grid dd {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .ist-prefixes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      margin-top: 28px;
+    }
+
+    .ist-prefixes > div {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 22px;
+      border: 1px solid var(--border-strong);
+    }
+
+    .ist-prefixes > div > code {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--ist-night);
+      color: var(--ist-cyan);
+      font-size: 20px;
+    }
+
+    .ist-prefixes p {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .ist-prefixes strong {
+      color: var(--ink);
+    }
+
+    .ist-prefixes p code {
+      color: var(--accent);
+    }
+
+    .ist-notes {
+      background: var(--ist-night);
+      color: #fff;
+    }
+
+    .ist-notes-layout {
+      display: grid;
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: 88px;
+    }
+
+    .ist-notes .ist-heading h2 {
+      color: #fff;
+    }
+
+    .ist-notes .ist-heading > span {
+      color: var(--ist-cyan);
+    }
+
+    .ist-notes ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid #3d3b4a;
+    }
+
+    .ist-notes li {
+      padding: 17px 0;
+      border-bottom: 1px solid #3d3b4a;
+      color: #aaa8b8;
+      font-size: 13px;
+      line-height: 1.72;
+    }
+
+    .ist-notes strong {
+      color: #fff;
+    }
+
+    .ist-notes code {
+      color: var(--ist-cyan);
+    }
+
+    .ist-final {
+      padding-block: 92px;
+      border-top: 1px solid var(--border-strong);
+      text-align: center;
+    }
+
+    .ist-final .ist-wrap {
+      max-width: 760px;
+    }
+
+    .ist-final p {
+      max-width: 38rem;
+      margin: 18px auto 0;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .ist-final > .ist-wrap > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px 24px;
+      margin-top: 30px;
+    }
+
+    .ist-final > .ist-wrap > div > a:not(.ist-primary-action) {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--accent);
+      font-size: 13px;
+      text-underline-offset: 4px;
+    }
+
+    @keyframes ist-rise {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes ist-settle {
+      from {
+        transform: scale(1.055);
+      }
+      to {
+        transform: scale(1.02);
+      }
+    }
+
+    @keyframes ist-pulse {
+      50% {
+        opacity: 0.35;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .ist-hero-overlay {
+        background:
+          linear-gradient(90deg, rgba(21, 20, 29, 0.97) 0%, rgba(21, 20, 29, 0.82) 58%, rgba(21, 20, 29, 0.45) 100%),
+          linear-gradient(0deg, rgba(21, 20, 29, 0.94), transparent 60%);
+      }
+
+      .ist-hero-readout {
+        display: none;
+      }
+
+      .ist-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .ist-steps li,
+      .ist-steps li + li {
+        padding: 26px 0;
+        border-left: 0;
+      }
+
+      .ist-steps li + li {
+        border-top: 1px solid var(--border-strong);
+      }
+
+      .ist-steps p {
+        min-height: 0;
+      }
+
+      .ist-workbench {
+        grid-template-columns: 1fr;
+      }
+
+      .ist-inspector {
+        border-top: 1px solid #3c3b4c;
+        border-left: 0;
+      }
+
+      .ist-code-panel,
+      .ist-inspector-body {
+        min-height: 300px;
+      }
+
+      .ist-command-list article {
+        grid-template-columns: 40px 1fr 44px;
+        gap: 14px;
+        padding-block: 20px;
+      }
+
+      .ist-command-list > article > code {
+        grid-column: 2;
+      }
+
+      .ist-command-list .ist-icon-button {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+      }
+
+      .ist-syntax-layout {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .ist-reference-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ist-notes-layout {
+        grid-template-columns: 1fr;
+        gap: 42px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .ist-section-nav {
+        top: 96px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .ist-wrap {
+        width: min(100% - 36px, 1180px);
+      }
+
+      .ist-hero {
+        min-height: 520px;
+        height: calc(100svh - 160px);
+        max-height: 650px;
+      }
+
+      .ist-hero-image {
+        object-position: 45% center;
+      }
+
+      .ist-hero-overlay {
+        background:
+          linear-gradient(0deg, rgba(21, 20, 29, 0.98) 0%, rgba(21, 20, 29, 0.88) 62%, rgba(21, 20, 29, 0.58) 100%);
+      }
+
+      .ist-hero-inner {
+        padding-block: 22px 30px;
+      }
+
+      .ist-hero h1 {
+        font-size: 40px;
+      }
+
+      .ist-hero-content > p {
+        font-size: 15px;
+      }
+
+      .ist-hero-meta span + span::before {
+        margin-right: 10px;
+      }
+
+      .ist-hero-meta {
+        gap: 8px 10px;
+      }
+
+      .ist-section-nav-inner {
+        gap: 20px;
+      }
+
+      .ist-section-nav-inner > span {
+        display: none;
+      }
+
+      .ist-section {
+        padding-block: 68px;
+        scroll-margin-top: 170px;
+      }
+
+      .ist-heading h2,
+      .ist-final h2 {
+        font-size: 30px;
+      }
+
+      .ist-heading-row {
+        display: block;
+      }
+
+      .ist-heading-row > p {
+        margin-top: 18px;
+      }
+
+      .ist-preset-tabs {
+        width: 100%;
+      }
+
+      .ist-preset-tabs button {
+        flex: 1;
+        min-width: 0;
+        padding-inline: 8px;
+      }
+
+      .ist-workbench {
+        margin-inline: -6px;
+      }
+
+      .ist-copy-button span {
+        display: none;
+      }
+
+      .ist-copy-button {
+        width: 40px;
+        justify-content: center;
+      }
+
+      .ist-code-meta {
+        padding-left: 48px;
+      }
+
+      .ist-code-lines li {
+        grid-template-columns: 38px 1fr;
+        padding-right: 14px;
+      }
+
+      .ist-code-lines code {
+        font-size: 11px;
+      }
+
+      .ist-inspector-body {
+        padding: 24px 18px;
+      }
+
+      .ist-inventory-preview {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .ist-flow {
+        justify-content: space-between;
+        white-space: normal;
+      }
+
+      .ist-command-list article {
+        grid-template-columns: 32px 1fr 44px;
+      }
+
+      .ist-syntax-table > div {
+        grid-template-columns: 1fr 44px;
+        gap: 6px 12px;
+        padding-block: 18px;
+      }
+
+      .ist-syntax-table code,
+      .ist-syntax-table strong,
+      .ist-syntax-table span {
+        grid-column: 1;
+      }
+
+      .ist-syntax-table .ist-icon-button {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+      }
+
+      .ist-prefixes {
+        grid-template-columns: 1fr;
+      }
+
+      .ist-final {
+        padding-block: 72px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ist-hero-image,
+      .ist-hero h1,
+      .ist-hero-content > p,
+      .ist-live-label i {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+
+      .ist-guide *,
+      .ist-guide *::before,
+      .ist-guide *::after {
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+
+  <script>
+    const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-example-tab]"));
+    const panels = Array.from(document.querySelectorAll<HTMLElement>("[data-example-panel]"));
+    const results = Array.from(document.querySelectorAll<HTMLElement>("[data-example-result]"));
+    const copyActiveButton = document.querySelector<HTMLButtonElement>("#copy-active-script");
+
+    function activateExample(id: string) {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.exampleTab === id;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.examplePanel !== id;
+      });
+
+      results.forEach((result) => {
+        result.hidden = result.dataset.exampleResult !== id;
+      });
+    }
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateExample(tab.dataset.exampleTab ?? ""));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const nextIndex =
+          event.key === "ArrowRight"
+            ? (index + 1) % tabs.length
+            : (index - 1 + tabs.length) % tabs.length;
+        const nextTab = tabs[nextIndex];
+        if (!nextTab) return;
+        activateExample(nextTab.dataset.exampleTab ?? "");
+        nextTab.focus();
+      });
+    });
+
+    async function copyText(text: string, button: HTMLElement) {
+      try {
+        await navigator.clipboard.writeText(text);
+        button.dataset.copied = "true";
+        const originalLabel = button.getAttribute("aria-label");
+        button.setAttribute("aria-label", "已複製");
+        window.setTimeout(() => {
+          delete button.dataset.copied;
+          if (originalLabel) button.setAttribute("aria-label", originalLabel);
+        }, 1500);
+      } catch {
+        button.dataset.copied = "error";
+      }
+    }
+
+    document.querySelectorAll<HTMLElement>("[data-copy]").forEach((button) => {
+      button.addEventListener("click", () => copyText(button.dataset.copy ?? "", button));
+    });
+
+    copyActiveButton?.addEventListener("click", () => {
+      const activePanel = panels.find((panel) => !panel.hidden);
+      if (activePanel) copyText(activePanel.dataset.script ?? "", copyActiveButton);
+    });
+  </script>
+</BaseLayout>

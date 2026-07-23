@@ -301,6 +301,35 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           )}
         </div>
 
+        {content?.toolCta && (
+          <aside class="tool-cta" aria-label={content.toolCta.title}>
+            <div class="tool-cta-kicker">
+              <span class="tool-cta-dot" aria-hidden="true"></span>
+              {content.toolCta.kicker ?? "相關工具"}
+            </div>
+            <h2 class="tool-cta-title">{content.toolCta.title}</h2>
+            <p class="tool-cta-desc">{content.toolCta.description}</p>
+            <div class="tool-cta-actions">
+              <a class="tool-cta-primary" href={href(content.toolCta.primary.path)}>
+                {content.toolCta.primary.label}
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="flex-none" aria-hidden="true">
+                  <path d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+              </a>
+              {content.toolCta.secondary && (
+                <a class="tool-cta-secondary" href={content.toolCta.secondary.url} target="_blank" rel="noopener">
+                  {content.toolCta.secondary.label}
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" class="flex-none" aria-hidden="true">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              )}
+            </div>
+          </aside>
+        )}
+
         {/* C: 快速示意（影片或圖片，隨分頁切換） */}
         {!content?.model3d && hasMedia && (
           <div class="prose-custom">
@@ -899,6 +928,102 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   }
   .section-video-link svg {
     flex: none;
+  }
+
+  /* 右欄工具導引卡片 */
+  .tool-cta {
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 52%),
+      var(--surface);
+    padding: 18px;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 12%, transparent);
+  }
+  .tool-cta-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 10px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .tool-cta-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .tool-cta-title {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .tool-cta-desc {
+    margin: 9px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .tool-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 16px;
+  }
+  .tool-cta-primary,
+  .tool-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    border-radius: 8px;
+    padding: 8px 13px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: border-color 0.16s, background-color 0.16s, color 0.16s;
+  }
+  .tool-cta-primary {
+    border: 1px solid var(--brand);
+    background: var(--brand);
+    color: #faf9f5;
+  }
+  .tool-cta-primary:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #faf9f5;
+  }
+  .tool-cta-secondary {
+    border: 1px solid var(--border-strong);
+    background: color-mix(in srgb, var(--surface) 78%, var(--bg));
+    color: var(--ink);
+  }
+  .tool-cta-secondary:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  @media (max-width: 520px) {
+    .tool-cta {
+      padding: 16px;
+    }
+    .tool-cta-actions {
+      flex-direction: column;
+    }
+    .tool-cta-primary,
+    .tool-cta-secondary {
+      width: 100%;
+    }
   }
 
   /* Q&A 按鈕 */
