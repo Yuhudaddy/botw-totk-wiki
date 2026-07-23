@@ -60,6 +60,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "21", zh: "硬直取消", en: "Endlag Cancel" },
       { no: "22", zh: "過載與災禍", en: "Overload & Curse" },
       { no: "23", zh: "近廟入侵", en: "Shrine Coordinate Warp" },
+      { no: "24", zh: "重置靜止器", en: "Stasis Reset" },
     ],
   },
   {

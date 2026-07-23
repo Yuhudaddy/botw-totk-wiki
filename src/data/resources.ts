@@ -239,6 +239,12 @@ export const resourceGames: ResourceGame[] = [
             kind: "video",
             note: "Series by GameSpot / Rin",
           },
+          {
+            title: "神廟攻略",
+            url: "https://www.youtube.com/watch?v=49tZLeBRfkA&list=PLzwWP4iuEFN3u_U6jRJYD29PXpcsbxCie",
+            kind: "video",
+            note: "Created by 老熊皮",
+          },
         ],
       },
       {
@@ -303,6 +309,12 @@ export const resourceGames: ResourceGame[] = [
             url: "https://haozzone.notion.site/Z-5908f127996e4454806aca88e74dcda5",
             kind: "site",
             note: "Created by 巴哈/haophic",
+          },
+          {
+            title: "神廟攻略",
+            url: "https://www.youtube.com/watch?v=RgkZywPAn78&list=PLzwWP4iuEFN1kafFGcN-bOHxKt5ePhb3L&index=4",
+            kind: "video",
+            note: "Created by 老熊皮",
           },
         ],
       },

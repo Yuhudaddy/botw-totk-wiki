@@ -303,7 +303,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         title: "開傘如何轉換成額外速度",
         collapsible: true,
-        text: "開啟滑翔傘時會解除布偶狀態，並重新校正身體與靈魂的位置。若兩者原本相距很遠，靈魂在重新同步時就必須快速移動較長的距離。這段重新同步產生的位移，會轉換成林克的額外的水平動量，畫面延遲時身體與靈魂分離得越遠，開傘時可能產生的回彈效果就越明顯。",
+        text: "開啟滑翔傘時會解除布偶狀態，並重新校正身體與靈魂的位置。若兩者原本相距很遠，靈魂在重新同步時就必須快速移動較長的距離。這段重新同步產生的位移，會轉換成林克額外的水平動量，畫面延遲時身體與靈魂分離得越遠，開傘時可能產生的回彈效果就越明顯。",
       },
       {
         title: "延遲與第一個影格",
@@ -1734,6 +1734,37 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     videos: [
       { id: "yJtjmIrvTvo", title: "番外46 - 無視任務闖入神廟！「近廟入侵(Shrine Coordinate Warp)」" },
+    ],
+  },
+
+  "botw-24": {
+    methods: [
+      {
+        tab: "SR",
+        name: "重置靜止器（Stasis Reset）",
+        steps: [
+          "靜止物體或魔物",
+          "靜止解除後觀看回憶、打開寶箱、消磨時間（對魔物無法）",
+        ],
+      },
+    ],
+    principleSections: [
+      {
+        text: "2018/5 由 【Paradox_Gaming(Guardian)】 玩家發現靜止器可以重置並用在地圖移動上重複在空中飛行。希卡道具的冷卻時間可以由__觀看回憶__、觸發對話（消磨時間、開寶箱等）來重置。",
+      },
+    ],
+    notes: [
+      {
+        text: "若靜止的是移動中的物體，解除靜止時物體仍會先發生 1 幀物體原有的動量之後才會釋放累積後的動量。因此如果是站在物體上面靜止擊飛，到最高點沒有向上慣性時再靜止，才不會被靜止解除後突然的向上動量給擊飛。",
+      },
+    ],
+    videos: [
+      { id: "K5JjZHBTC9c", title: "ED01 - NS2才入手的必看！絕對不能錯過的小知識（上）" },
+      { id: "0A6dkkeEtQo", title: "EX02 - 初學者一定用得到的小技巧和小知識（中文解說）" },
+      { id: "iCRbLZKrgrI", title: "技巧32 - 再也不想走路！「擊飛技巧(Launches)」全攻略" },
+      { id: "FHMarfPxVhY", title: "技巧21 - 劍之試煉的 14 個攻略重點與技巧（大師模式・中文解說）" },
+      { id: "VgLU1-nYBQc", title: "技巧29.5 重置靜止器「寶箱法」- 災厄Amiibo（中文解說）" },
+      { id: "tDvHvBp3WpY", title: "技巧29 - 無限靜止！「重置靜止器(Stasis Resetting)」（中文解說）" },
     ],
   },
 

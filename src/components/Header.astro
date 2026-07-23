@@ -3,6 +3,7 @@ import { navItems, SITE } from "../data/site";
 import { href } from "../lib/url";
 import BrandMark from "./BrandMark.astro";
 import ThemeToggle from "./ThemeToggle.astro";
+import SupportButton from "./SupportButton.astro";
 
 interface Props {
   active?: string;
@@ -73,6 +74,7 @@ const videosUrl = href("/videos");
           </svg>
         </button>
       </div>
+      <SupportButton />
       <ThemeToggle />
     </div>
   </div>

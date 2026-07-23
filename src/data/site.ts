@@ -43,13 +43,24 @@ export interface QuickNavItem {
   no: string;
   series: string; // 小字系列名
   title: string; // 主標題（問句）
-  path: string;
+  path?: string; // 單一連結卡片用（與 links 擇一）
+  links?: { label: string; path: string }[]; // 多按鈕卡片用（與 path 擇一），例：物件地圖有兩個入口
 }
 export const quickNav: QuickNavItem[] = [
   { no: "01", series: "風彈系列", title: "風彈是 Bug 嗎？", path: "/types/botw-01" },
   { no: "02", series: "轉存格系列", title: "救救我的背包！", path: "/types/botw-02" },
   { no: "03", series: "萊尼爾系列", title: "打不贏人馬！", path: "/types/botw-03" },
   { no: "04", series: "被更新系列", title: "新版不能用了？", path: "/videos?search=差在哪裡" },
+  {
+    no: "05",
+    series: "物件地圖",
+    title: "東西在哪呢？",
+    links: [
+      { label: "Leo 曠野物件地圖", path: "/resources/object-map/botw" },
+      { label: "Leo 王淚物件地圖", path: "/resources/object-map/totk" },
+    ],
+  },
+  { no: "06", series: "藍圖分享", title: "有好用藍圖嗎？", path: "/resources/practical-schematics" },
 ];
 
 export interface TagGroup {

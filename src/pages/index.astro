@@ -139,14 +139,30 @@ const featured = youtubeData.featured;
 
       <div class="home-nav-grid">
         {
-          quickNav.map((q) => (
-            <a href={href(q.path)} class="home-nav-card">
-              <span class="home-nav-no">{q.no}</span>
-              <span class="home-nav-series">{q.series}</span>
-              <span class="home-nav-title font-serif text-ink">{q.title}</span>
-              <span class="home-nav-arrow" aria-hidden="true">→</span>
-            </a>
-          ))
+          quickNav.map((q) =>
+            q.links ? (
+              <div class="home-nav-card home-nav-card-multi">
+                <span class="home-nav-no">{q.no}</span>
+                <span class="home-nav-series">{q.series}</span>
+                <span class="home-nav-title font-serif text-ink">{q.title}</span>
+                <div class="home-nav-links">
+                  {q.links.map((l) => (
+                    <a href={href(l.path)} class="home-nav-link-btn">
+                      {l.label}
+                      <span aria-hidden="true">→</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <a href={href(q.path!)} class="home-nav-card">
+                <span class="home-nav-no">{q.no}</span>
+                <span class="home-nav-series">{q.series}</span>
+                <span class="home-nav-title font-serif text-ink">{q.title}</span>
+                <span class="home-nav-arrow" aria-hidden="true">→</span>
+              </a>
+            )
+          )
         }
       </div>
     </div>
@@ -651,6 +667,52 @@ const featured = youtubeData.featured;
       transform: translateX(3px);
     }
 
+    .home-nav-card-multi {
+      grid-template-rows: auto auto auto;
+      cursor: default;
+    }
+
+    .home-nav-card-multi:hover {
+      border-color: var(--border-strong);
+      background: var(--bg);
+    }
+
+    .home-nav-card-multi .home-nav-title {
+      align-self: start;
+      margin-bottom: 2px;
+      white-space: normal;
+    }
+
+    .home-nav-links {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .home-nav-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 12.5px;
+      text-decoration: none;
+      transition: border-color 160ms ease, color 160ms ease;
+    }
+
+    .home-nav-link-btn:hover,
+    .home-nav-link-btn:focus-visible {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .home-nav-link-btn span {
+      font-size: 12px;
+    }
+
     .home-about {
       display: grid;
       grid-template-columns: minmax(195px, 0.52fr) minmax(0, 1.48fr);
@@ -802,7 +864,9 @@ const featured = youtubeData.featured;
       }
 
       .home-hero-frame {
-        margin: 0 -2px;
+        margin: 0 -32px;
+        border-left: 0;
+        border-right: 0;
       }
 
       .home-hero-frame::before {
@@ -881,6 +945,8 @@ const featured = youtubeData.featured;
 
       .home-latest {
         grid-template-columns: 1fr;
+        margin-top: 22px;
+        border-top: 1px solid var(--border-strong);
       }
 
       .home-latest-header {

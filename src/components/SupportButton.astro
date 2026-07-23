@@ -1,0 +1,72 @@
+---
+// 贊助入口：右上角導覽列按鈕，點擊在下方彈出小視窗導向 YouTube 頻道超級感謝。
+import { SITE } from "../data/site";
+---
+
+<div class="relative">
+  <button
+    id="support-toggle"
+    type="button"
+    aria-label="支持本站"
+    aria-haspopup="true"
+    aria-expanded="false"
+    class="ring-hover flex h-9 w-9 items-center justify-center rounded-[9px] bg-sand font-serif text-[15px] font-semibold text-ink-2 shadow-[0_0_0_1px_var(--ring)] cursor-pointer"
+  >
+    $
+  </button>
+
+  <div
+    id="support-popover"
+    role="dialog"
+    class="support-popover pointer-events-none absolute right-0 top-[calc(100%+10px)] z-50 w-[236px] rounded-xl border border-border-strong bg-surface p-4 opacity-0 shadow-lg transition-opacity duration-150"
+  >
+    <p class="mb-3 text-[13px] leading-[1.6] text-text">請 Yukito 一杯牛奶吧！</p>
+    <a
+      href={`${SITE.youtube}/featured`}
+      target="_blank"
+      rel="noopener"
+      title="到任意影片超級感謝"
+      class="block rounded-lg border border-transparent bg-[var(--brand)] px-3 py-2 text-center text-[13px] font-medium text-white no-underline transition-colors hover:bg-[#b95538]"
+    >
+      給 Yuda 超級感謝！
+    </a>
+  </div>
+</div>
+
+<style>
+  .support-popover[data-open="true"] {
+    pointer-events: auto;
+    opacity: 1;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var toggle = document.getElementById("support-toggle");
+    var popover = document.getElementById("support-popover");
+    if (!toggle || !popover) return;
+
+    function close() {
+      popover.removeAttribute("data-open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var open = popover.getAttribute("data-open") === "true";
+      if (open) {
+        close();
+      } else {
+        popover.setAttribute("data-open", "true");
+        toggle.setAttribute("aria-expanded", "true");
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!popover.contains(e.target) && e.target !== toggle) close();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") close();
+    });
+  })();
+</script>
