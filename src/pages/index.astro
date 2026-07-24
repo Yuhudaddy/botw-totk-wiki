@@ -670,7 +670,7 @@ const featured = youtubeData.featured;
     }
 
     .home-nav-card-multi {
-      grid-template-columns: minmax(0, 1fr) minmax(170px, 0.78fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
       grid-template-rows: auto 1fr;
       align-items: start;
       cursor: default;
@@ -722,7 +722,8 @@ const featured = youtubeData.featured;
       color: var(--text);
       font-size: 12.5px;
       text-decoration: none;
-      white-space: nowrap;
+      white-space: normal;
+      overflow-wrap: break-word;
       transition: border-color 160ms ease, color 160ms ease;
     }
 
@@ -811,7 +812,7 @@ const featured = youtubeData.featured;
       }
 
       .home-nav-card-multi {
-        grid-template-columns: minmax(118px, 0.75fr) minmax(156px, 1fr);
+        grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
       }
 
       .home-nav-link-btn {
@@ -1074,7 +1075,7 @@ const featured = youtubeData.featured;
       }
 
       .home-nav-card-multi {
-        grid-template-columns: minmax(0, 1fr) minmax(132px, 0.62fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
         grid-template-rows: auto 1fr;
       }
 

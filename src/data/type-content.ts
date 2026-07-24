@@ -224,10 +224,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-01-stasis": {
+    videoFolder: "botw-launch",
     methods: [
       {
         tab: "撞擊飛",
         name: "撞擊飛（Impact Launch）",
+        video: "撞擊飛.mp4",
         sections: [
           {
             title: "靜止擊飛（Stasis Launch）",
@@ -253,6 +255,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "隨物飛",
+        video: "隨物飛.mp4",
         sections: [
           {
             title: "隨物飛（Attaching Launch）",
@@ -990,9 +993,11 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-18": {
+    videoFolder: "botw-clip",
     methods: [
       {
         tab: "Stasis",
+        video: "impact clip.mp4",
         sections: [
           {
             title: "靜止衝撞（Stasis Clipping）",
@@ -1008,6 +1013,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Cryonis",
+        video: "cryonis clip.mp4",
         sections: [
           {
             title: "冰柱擠壓法（Cryonis Clipping）",
@@ -1020,6 +1026,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Skew",
+        video: "skew clip.mp4",
         sections: [
           {
             title: "盾跳扭曲穿牆（Shield Jump / Skew Clipping）",
@@ -1039,6 +1046,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Horse Jump",
+        video: "horse jump clip.mp4",
         sections: [
           {
             title: "跳馬 S/L 法（Horse Jump Clipping）",
@@ -1561,10 +1569,37 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-21": {
+    videoFolder: "botw-endlag cancel",
     principle: "內容整理中，敬請期待。",
     methods: [
       {
-        tab: "共通",
+        tab: "Swap",
+        video: "Swap Cancel.mp4",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "Crouch",
+        video: "Crouch Cancel.mp4",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "Jump",
+        video: "Jump Cancel.mp4",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "Item Hold",
+        video: "Item Hold Cancel.mp4",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "Landing",
+        video: "Landing Cancel.mp4",
+        steps: ["步驟整理中，敬請期待。"],
+      },
+      {
+        tab: "Stasis",
+        video: "Stasis Cancel.mp4",
         steps: ["步驟整理中，敬請期待。"],
       },
     ],
@@ -1752,10 +1787,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-24": {
+    videoFolder: "botw-stasis reset",
     methods: [
       {
         tab: "SR",
         name: "重置靜止器（Stasis Reset）",
+        video: "Stasis Reset.mp4",
         steps: [
           "靜止物體或魔物",
           "靜止解除後觀看回憶、打開寶箱、消磨時間（對魔物無法）",
@@ -2696,6 +2733,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "ZLOT",
         name: "並列繼承（Zuggle Load Object Transfer）",
+        video: "ZLOT.mp4",
         steps: ["步驟整理中，敬請期待。"],
       },
       {
@@ -2706,6 +2744,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "RL",
         name: "乾坤鎖 / 倒轉固定（RL = Recall Lock）",
+        video: "Recall Lock.mp4",
         steps: ["步驟整理中，敬請期待。"],
       },
     ],
