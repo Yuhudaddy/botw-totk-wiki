@@ -142,6 +142,18 @@ const schematicCount = categories.reduce((total, category) => total + category.i
 >
   <main class="schematics-page">
     <section class="schematics-hero" aria-labelledby="schematics-title">
+      <div class="schematics-scanner" aria-hidden="true">
+        <div class="schematics-grid"></div>
+        <span class="finder finder-a"></span>
+        <span class="finder finder-b"></span>
+        <span class="finder finder-c"></span>
+        <span class="scan-line"></span>
+        <div class="scanner-label">
+          <span>SCHEMATIC ARCHIVE</span>
+          <strong>READY TO INDEX</strong>
+        </div>
+      </div>
+
       <div class="schematics-hero-inner">
         <nav class="schematics-breadcrumb" aria-label="麵包屑">
           <a href={href("/")}>首頁</a>
@@ -163,18 +175,6 @@ const schematicCount = categories.reduce((total, category) => total + category.i
               <span>QR Code</span>
               <span>敘述</span>
               <span>製作者</span>
-            </div>
-          </div>
-
-          <div class="schematics-scanner" aria-hidden="true">
-            <div class="schematics-grid"></div>
-            <span class="finder finder-a"></span>
-            <span class="finder finder-b"></span>
-            <span class="finder finder-c"></span>
-            <span class="scan-line"></span>
-            <div class="scanner-label">
-              <span>SCHEMATIC ARCHIVE</span>
-              <strong>READY TO INDEX</strong>
             </div>
           </div>
         </div>
@@ -331,13 +331,14 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     }
 
     .schematics-hero {
+      position: relative;
+      min-height: 430px;
+      isolation: isolate;
       overflow: hidden;
       border-bottom: 1px solid var(--border-soft);
-      background: linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--schematic-green-soft) 32%, var(--bg)) 100%);
-    }
-
-    [data-theme="dark"] .schematics-hero {
-      background: linear-gradient(90deg, #141413 0%, #181d1a 100%);
+      background: var(--bg);
+      color: var(--ink);
+      transition: background-color 420ms ease, color 420ms ease;
     }
 
     .schematics-hero-inner,
@@ -348,8 +349,12 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     }
 
     .schematics-hero-inner {
-      min-height: 540px;
-      padding-block: 28px 50px;
+      position: relative;
+      z-index: 2;
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+      padding-block: 28px 38px;
     }
 
     .schematics-breadcrumb {
@@ -371,11 +376,15 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     }
 
     .schematics-hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
-      gap: 72px;
-      align-items: center;
-      min-height: 450px;
+      display: block;
+      margin-block: auto;
+      padding-block: 34px;
+    }
+
+    .schematics-copy {
+      position: relative;
+      z-index: 2;
+      max-width: 620px;
     }
 
     .schematics-kicker {
@@ -432,13 +441,23 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     }
 
     .schematics-scanner {
-      position: relative;
-      justify-self: end;
-      width: min(100%, 390px);
+      position: absolute;
+      z-index: 0;
+      top: 50%;
+      right: max(18px, calc((100% - 1180px) / 2));
+      width: min(42vw, 430px);
       aspect-ratio: 1;
       overflow: hidden;
       border: 1px solid var(--schematic-line);
       background: color-mix(in srgb, var(--surface) 68%, transparent);
+      opacity: 0.72;
+      transform: translateY(-48%);
+      transition: opacity 420ms ease, border-color 420ms ease, background-color 420ms ease;
+    }
+
+    [data-theme="dark"] .schematics-scanner {
+      opacity: 0.5;
+      background: color-mix(in srgb, var(--surface) 42%, transparent);
     }
 
     .schematics-grid {
@@ -576,7 +595,7 @@ const schematicCount = categories.reduce((total, category) => total + category.i
 
     .schematics-toolbar {
       display: flex;
-      align-items: start;
+      align-items: end;
       justify-content: space-between;
       gap: 18px;
       margin-bottom: 28px;
@@ -765,12 +784,13 @@ const schematicCount = categories.reduce((total, category) => total + category.i
       display: grid;
       grid-template-columns: 54px 1fr;
       gap: 10px;
+      align-items: baseline;
       padding: 10px 14px;
     }
 
     .schematic-card dl > div + div { border-top: 1px solid var(--border-soft); }
-    .schematic-card dt { color: var(--accent); font-size: 11px; font-weight: 500; }
-    .schematic-card dd { margin: 0; color: var(--text); font-size: 12px; line-height: 1.6; }
+    .schematic-card dt { color: var(--accent); font-size: 11px; font-weight: 500; line-height: 1.45; }
+    .schematic-card dd { margin: 0; color: var(--text); font-size: 12px; line-height: 1.45; }
 
     .schematics-library[data-view="list"] .schematics-list {
       grid-template-columns: 1fr;
@@ -779,28 +799,37 @@ const schematicCount = categories.reduce((total, category) => total + category.i
 
     .schematics-library[data-view="list"] .schematic-card {
       display: grid;
-      grid-template-columns: 118px minmax(180px, 0.8fr) 1fr;
+      grid-template-columns: 118px minmax(0, 1fr);
+      grid-template-areas:
+        "qr head"
+        "qr meta";
+      min-height: 118px;
       align-items: stretch;
     }
 
     .schematics-library[data-view="list"] .schematic-card-head {
+      grid-area: head;
       min-height: 0;
-      border-right: 1px solid var(--border-soft);
-      border-bottom: 0;
+      padding: 12px 20px;
+      border-right: 0;
+      border-bottom: 1px solid var(--border-soft);
     }
 
     .schematics-library[data-view="list"] .schematic-qr {
-      grid-column: 1;
-      grid-row: 1 / span 2;
+      grid-area: qr;
       width: 100%;
-      height: 96px;
+      height: 100%;
+      min-height: 118px;
       aspect-ratio: auto;
       margin: 0;
+      background: var(--ink);
     }
 
     .schematics-library[data-view="list"] .schematic-qr img {
       object-fit: cover;
-      object-position: center 32%;
+      object-position: center 42%;
+      transform: scale(1.55);
+      transform-origin: center 42%;
     }
 
     .schematics-library[data-view="list"] .schematic-qr > span {
@@ -808,19 +837,20 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     }
 
     .schematics-library[data-view="list"] .schematic-card dl {
+      grid-area: meta;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       border-top: 0;
     }
 
     .schematics-library[data-view="list"] .schematic-card dl > div {
-      align-content: center;
-      border-left: 1px solid var(--border-soft);
-      padding-block: 8px;
+      align-items: baseline;
+      border-left: 0;
+      padding: 8px 20px;
     }
 
     .schematics-library[data-view="list"] .schematic-card dl > div + div {
-      border-top: 0;
+      border-top: 1px solid var(--border-soft);
     }
 
     .schematics-empty {
@@ -980,7 +1010,13 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     }
 
     @media (max-width: 900px) {
-      .schematics-hero-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 34px; }
+      .schematics-hero { min-height: 400px; }
+      .schematics-hero-inner { min-height: 400px; }
+      .schematics-scanner {
+        right: 18px;
+        width: min(42vw, 360px);
+        opacity: 0.42;
+      }
       .schematics-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
@@ -989,11 +1025,19 @@ const schematicCount = categories.reduce((total, category) => total + category.i
       .schematics-index-bar,
       .schematics-library { width: min(calc(100% - 40px), 1180px); }
 
-      .schematics-hero-inner { min-height: auto; padding-block: 20px 40px; }
-      .schematics-hero-grid { grid-template-columns: 1fr; gap: 36px; min-height: 0; padding-top: 68px; }
+      .schematics-hero { min-height: 330px; }
+      .schematics-hero-inner { min-height: 330px; padding-block: 20px 34px; }
+      .schematics-hero-grid { margin-block: 0; padding-block: 42px 8px; }
       .schematics-copy h1 { font-size: 32px; }
       .schematics-copy > p { margin-top: 18px; font-size: 13px; }
-      .schematics-scanner { justify-self: start; width: min(76vw, 300px); }
+      .schematics-scanner {
+        top: 58%;
+        right: -78px;
+        width: min(78vw, 330px);
+        opacity: 0.18;
+        transform: translateY(-48%);
+      }
+      [data-theme="dark"] .schematics-scanner { opacity: 0.16; }
       .finder { width: 58px; height: 58px; border-width: 8px; box-shadow: inset 0 0 0 6px var(--surface), inset 0 0 0 13px var(--ink); }
       .finder-a { top: 30px; left: 30px; }
       .finder-b { top: 30px; right: 30px; }
@@ -1006,7 +1050,7 @@ const schematicCount = categories.reduce((total, category) => total + category.i
       .schematics-library-heading h2 { font-size: 24px; }
       .schematics-toolbar {
         display: flex;
-        align-items: flex-start;
+        align-items: flex-end;
         gap: 10px;
       }
       .schematics-tabs {
@@ -1027,19 +1071,19 @@ const schematicCount = categories.reduce((total, category) => total + category.i
       .schematics-tabs strong { font-size: 9px; }
       .schematics-view-toggle {
         flex: 0 0 auto;
-        align-self: flex-start;
+        align-self: flex-end;
       }
       .schematics-list { grid-template-columns: 1fr; }
       .schematics-library[data-view="list"] .schematic-card {
         grid-template-columns: 96px 1fr;
       }
       .schematics-library[data-view="list"] .schematic-card dl {
-        grid-column: 2;
         grid-template-columns: 1fr;
-        border-top: 1px solid var(--border-soft);
+        border-top: 0;
       }
       .schematics-library[data-view="list"] .schematic-card dl > div {
         border-left: 0;
+        padding: 8px 14px;
       }
       .schematics-library[data-view="list"] .schematic-qr {
         height: 100%;
@@ -1055,6 +1099,12 @@ const schematicCount = categories.reduce((total, category) => total + category.i
       }
 
       .schematics-library[data-view="list"] .schematic-card-head {
+        padding-inline: 12px;
+      }
+
+      .schematics-library[data-view="list"] .schematic-card dl > div {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 8px;
         padding-inline: 12px;
       }
 
