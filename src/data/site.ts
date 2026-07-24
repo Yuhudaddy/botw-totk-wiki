@@ -44,7 +44,9 @@ export interface QuickNavItem {
   series: string; // 小字系列名
   title: string; // 主標題（問句）
   path?: string; // 單一連結卡片用（與 links 擇一）
-  links?: { label: string; path: string }[]; // 多按鈕卡片用（與 path 擇一），例：物件地圖有兩個入口
+  // 多按鈕卡片用（與 path 擇一），例：物件地圖有兩個入口。
+  // word/tone 供桌面版 hover 特效使用：word 是淡入的漸層短字，tone 決定漸層配色（botw 藍／totk 青綠）。
+  links?: { label: string; path: string; word?: string; tone?: "botw" | "totk" }[];
 }
 export const quickNav: QuickNavItem[] = [
   { no: "01", series: "風彈系列", title: "風彈是 Bug 嗎？", path: "/types/botw-01" },
@@ -56,8 +58,8 @@ export const quickNav: QuickNavItem[] = [
     series: "物件地圖",
     title: "東西在哪呢？",
     links: [
-      { label: "Léo 曠野物件地圖", path: "/resources/object-map/botw" },
-      { label: "Léo 王淚物件地圖", path: "/resources/object-map/totk" },
+      { label: "Léo 曠野物件地圖", path: "/resources/object-map/botw", word: "曠野", tone: "botw" },
+      { label: "Léo 王淚物件地圖", path: "/resources/object-map/totk", word: "王淚", tone: "totk" },
     ],
   },
   { no: "06", series: "藍圖分享", title: "有好用藍圖嗎？", path: "/resources/practical-schematics" },

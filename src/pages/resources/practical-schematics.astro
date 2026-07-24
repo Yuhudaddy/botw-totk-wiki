@@ -61,7 +61,7 @@ const blueprintMetadata: Record<string, { number: string; title: string; descrip
   },
   "新藍圖 04_Zelda Notes.jpg": {
     number: "04",
-    title: "無碰撞神廟電梯",
+    title: "神廟升降機",
     description: "不受地圖碰撞、可載運林克和NPC",
     author: "Yuda",
   },
@@ -82,6 +82,84 @@ const blueprintMetadata: Record<string, { number: string; title: string; descrip
     title: "脈衝雷射車",
     description: "間斷性光線有高速傷害",
     author: "にょろ",
+  },
+  "小型隨身鳥望台_Calyx.jpg": {
+    number: "08",
+    title: "隨身鳥望台",
+    description: "適用 Switch 2",
+    author: "Calyx",
+  },
+  "巨大化左納烏組01_takkun.jpg": {
+    number: "09",
+    title: "巨大左納烏組",
+    description: "巨大化左納烏組01",
+    author: "takkun",
+  },
+  "巨大化左納烏組02_takkun.jpg": {
+    number: "10",
+    title: "巨大電池組",
+    description: "巨大化左納烏組02",
+    author: "takkun",
+  },
+  "巨大拳擊機_cross.jpg": {
+    number: "11",
+    title: "巨大拳擊機",
+    description: "巨大拳擊機",
+    author: "cross",
+  },
+  "巨大MK2_NeatJungle.jpg": {
+    number: "12",
+    title: "巨大MK2",
+    description: "巨大MK2",
+    author: "NeatJungle",
+  },
+  "全範圍光掃射機_cross.jpg": {
+    number: "13",
+    title: "激光掃射器",
+    description: "全範圍光掃射機",
+    author: "cross",
+  },
+  "血月機_Kleric.jpg": {
+    number: "14",
+    title: "血月機",
+    description: "血月機",
+    author: "Kleric",
+  },
+  "拳擊機_cross.jpg": {
+    number: "15",
+    title: "拳擊機",
+    description: "拳擊機",
+    author: "cross",
+  },
+  "脈衝雷射手_cross.jpg": {
+    number: "16",
+    title: "脈衝雷射手",
+    description: "脈衝雷射手",
+    author: "cross",
+  },
+  "脈衝雷射柱_けけ.jpg": {
+    number: "17",
+    title: "脈衝雷射柱",
+    description: "脈衝雷射柱",
+    author: "けけ",
+  },
+  "馬車_たはた.jpg": {
+    number: "18",
+    title: "馬車",
+    description: "馬車",
+    author: "たはた",
+  },
+  "高速馬車組合_dr. pu.jpg": {
+    number: "19",
+    title: "高速馬車組合",
+    description: "高速馬車組合",
+    author: "dr. pu",
+  },
+  "無電池抬舉飛行器_ぶれねこ.jpg": {
+    number: "20",
+    title: "抬舉飛行器",
+    description: "重複抬舉就能飛上去",
+    author: "ぶれねこ",
   },
 };
 
@@ -236,6 +314,20 @@ const schematicsPerPage = 12;
         </div>
       </div>
 
+      <div class="schematics-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="text"
+          id="schematics-search-input"
+          placeholder="搜尋標題…"
+          autocomplete="off"
+          aria-label="搜尋藍圖標題"
+        />
+      </div>
+
       {
         categories.map((category, categoryIndex) => (
           <div
@@ -250,7 +342,7 @@ const schematicsPerPage = 12;
               category.items.length > 0 ? (
                 <div class="schematics-list">
                   {category.items.map((item, index) => (
-                    <article class="schematic-card" data-schematic-card data-schematic-page={Math.floor(index / schematicsPerPage) + 1} hidden={index >= schematicsPerPage}>
+                    <article class="schematic-card" data-schematic-card data-schematic-title={item.title} data-schematic-page={Math.floor(index / schematicsPerPage) + 1} hidden={index >= schematicsPerPage}>
                       <div class="schematic-card-head">
                         <span>{item.number}</span>
                         <h3>{item.title}</h3>
@@ -299,7 +391,17 @@ const schematicsPerPage = 12;
                     </nav>
                   )}
                 </div>
-              ) : (
+              ) : null
+            }
+            {
+              category.items.length > 0 && (
+                <div class="schematics-search-empty" data-schematics-search-empty hidden>
+                  找不到符合「<strong data-schematics-search-empty-query></strong>」的藍圖標題，換個關鍵字試試？
+                </div>
+              )
+            }
+            {
+              category.items.length === 0 && (
                 <div class="schematics-empty">
                   <div class="empty-mark" aria-hidden="true">
                     <span></span><span></span><span></span>
@@ -735,6 +837,72 @@ const schematicsPerPage = 12;
       stroke-linejoin: round;
     }
 
+    .schematics-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 360px;
+      height: 44px;
+      margin-bottom: 24px;
+      padding: 0 14px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      transition: border-color 0.2s ease;
+    }
+
+    .schematics-search:focus-within {
+      border-color: var(--accent);
+    }
+
+    .schematics-search svg {
+      flex: none;
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s ease;
+    }
+
+    .schematics-search:focus-within svg {
+      stroke: var(--accent);
+    }
+
+    .schematics-search input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .schematics-search input::placeholder {
+      color: var(--muted);
+    }
+
+    .schematics-search-empty {
+      margin-bottom: 18px;
+      padding: 16px 18px;
+      border: 1px solid var(--border-strong);
+      background: color-mix(in srgb, var(--surface) 74%, var(--schematic-green-soft));
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .schematics-search-empty[hidden] {
+      display: none;
+    }
+
+    .schematics-search-empty strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
     .schematics-list {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1156,6 +1324,10 @@ const schematicsPerPage = 12;
         flex: 0 0 auto;
         align-self: flex-end;
       }
+      .schematics-search {
+        max-width: none;
+        margin-bottom: 20px;
+      }
       .schematics-library:not([data-view="list"]) .schematic-card-head {
         padding-top: 14px;
         padding-bottom: 10px;
@@ -1257,6 +1429,7 @@ const schematicsPerPage = 12;
     const lightboxImage = document.querySelector<HTMLImageElement>("[data-lightbox-image]");
     const lightboxTitle = document.getElementById("lightbox-title");
     const closeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-lightbox-close]"));
+    const schematicsSearchInput = document.getElementById("schematics-search-input") as HTMLInputElement | null;
     let lastPreviewButton: HTMLButtonElement | null = null;
     const schematicsPerPage = 12;
 
@@ -1302,6 +1475,44 @@ const schematicsPerPage = 12;
 
         updateSchematicPage(panel, page);
       });
+    });
+
+    function applySchematicSearch(rawQuery: string) {
+      const query = rawQuery.trim().toLowerCase();
+      const isSearching = query.length > 0;
+
+      schematicPanels.forEach((panel) => {
+        const cards = Array.from(panel.querySelectorAll<HTMLElement>("[data-schematic-card]"));
+        const pagination = panel.querySelector<HTMLElement>("[data-schematics-pagination]");
+        const emptyState = panel.querySelector<HTMLElement>("[data-schematics-search-empty]");
+
+        if (!isSearching) {
+          if (pagination) pagination.hidden = false;
+          if (emptyState) emptyState.hidden = true;
+          updateSchematicPage(panel, Number(panel.dataset.currentPage ?? "1"));
+          return;
+        }
+
+        let matchCount = 0;
+        cards.forEach((card) => {
+          const title = (card.dataset.schematicTitle ?? "").toLowerCase();
+          const isMatch = title.includes(query);
+          card.hidden = !isMatch;
+          if (isMatch) matchCount += 1;
+        });
+
+        if (pagination) pagination.hidden = true;
+
+        if (emptyState) {
+          emptyState.hidden = matchCount !== 0;
+          const queryTarget = emptyState.querySelector("[data-schematics-search-empty-query]");
+          if (queryTarget) queryTarget.textContent = rawQuery.trim();
+        }
+      });
+    }
+
+    schematicsSearchInput?.addEventListener("input", () => {
+      applySchematicSearch(schematicsSearchInput.value);
     });
 
     schematicTabs.forEach((tab) => {

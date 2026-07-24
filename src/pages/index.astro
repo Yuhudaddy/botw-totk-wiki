@@ -146,7 +146,27 @@ const featured = youtubeData.featured;
                   <span class="home-nav-no">{q.no}</span>
                   <span class="home-nav-series">{q.series}</span>
                 </div>
+                {/* 桌面（有滑鼠）hover 感應區：左右各半，觸控裝置隱藏改用下方按鈕 */}
+                {q.links.map((l, i) => (
+                  <a
+                    href={href(l.path)}
+                    class={`home-nav-zone home-nav-zone-${i + 1}`}
+                    data-tone={l.tone}
+                    aria-label={l.label}
+                  />
+                ))}
                 <span class="home-nav-title font-serif text-ink">{q.title}</span>
+                {q.links.map(
+                  (l, i) =>
+                    l.word && (
+                      <span
+                        class={`home-nav-word home-nav-word-${i + 1} home-nav-word-${l.tone} font-serif`}
+                        aria-hidden="true"
+                      >
+                        {l.word}
+                      </span>
+                    )
+                )}
                 <div class="home-nav-links">
                   {q.links.map((l) => (
                     <a href={href(l.path)} class="home-nav-link-btn">
@@ -670,10 +690,18 @@ const featured = youtubeData.featured;
     }
 
     .home-nav-card-multi {
+      position: relative;
+      overflow: hidden;
       grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
       grid-template-rows: auto 1fr;
       align-items: start;
       cursor: default;
+    }
+
+    /* hover 感應區與漸層字：預設隱藏，只在有滑鼠的裝置啟用 */
+    .home-nav-zone,
+    .home-nav-word {
+      display: none;
     }
 
     .home-nav-card-multi:hover {
@@ -736,6 +764,96 @@ const featured = youtubeData.featured;
     .home-nav-link-btn span {
       font-size: 12px;
     }
+
+    /* ===== 物件地圖卡片：桌面 hover 特效（觸控裝置維持按鈕版型） ===== */
+    @media (hover: hover) and (pointer: fine) {
+      .home-nav-card-multi .home-nav-links {
+        display: none;
+      }
+
+      .home-nav-card-multi:hover {
+        z-index: 1;
+        border-color: var(--accent);
+        background: var(--surface-2);
+      }
+
+      .home-nav-zone {
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50%;
+        z-index: 4;
+      }
+
+      .home-nav-zone-1 { left: 0; }
+      .home-nav-zone-2 { right: 0; }
+
+      .home-nav-zone:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+      }
+
+      .home-nav-card-multi .home-nav-title {
+        position: relative;
+        z-index: 3;
+        transition: opacity 220ms ease;
+      }
+
+      .home-nav-word {
+        display: block;
+        grid-column: 1;
+        grid-row: 2;
+        align-self: start;
+        justify-self: start;
+        position: relative;
+        z-index: 3;
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.3;
+        letter-spacing: 3px;
+        opacity: 0;
+        transform: translateY(7px);
+        transition: opacity 220ms ease, transform 220ms ease;
+        pointer-events: none;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      .home-nav-word-botw {
+        background-image: linear-gradient(105deg, #6fc3f7 0%, #3b82c4 55%, #1d5e96 100%);
+      }
+
+      .home-nav-word-totk {
+        background-image: linear-gradient(105deg, #6fe3c4 0%, #2aa98b 55%, #147d68 100%);
+      }
+
+      /* 深色主題用較亮的漸層，避免深色端沉進背景 */
+      [data-theme="dark"] .home-nav-word-botw {
+        background-image: linear-gradient(105deg, #a5dbff 0%, #63b3ed 55%, #4090d8 100%);
+      }
+
+      [data-theme="dark"] .home-nav-word-totk {
+        background-image: linear-gradient(105deg, #97f2d8 0%, #52d6b4 55%, #2fae90 100%);
+      }
+
+      .home-nav-zone-1:hover ~ .home-nav-title,
+      .home-nav-zone-1:focus-visible ~ .home-nav-title,
+      .home-nav-zone-2:hover ~ .home-nav-title,
+      .home-nav-zone-2:focus-visible ~ .home-nav-title {
+        opacity: 0;
+      }
+
+      .home-nav-zone-1:hover ~ .home-nav-word-1,
+      .home-nav-zone-1:focus-visible ~ .home-nav-word-1,
+      .home-nav-zone-2:hover ~ .home-nav-word-2,
+      .home-nav-zone-2:focus-visible ~ .home-nav-word-2 {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
 
     .home-about {
       display: grid;
@@ -1075,7 +1193,7 @@ const featured = youtubeData.featured;
       }
 
       .home-nav-card-multi {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+        grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
         grid-template-rows: auto 1fr;
       }
 
@@ -1087,6 +1205,7 @@ const featured = youtubeData.featured;
       .home-nav-card-multi .home-nav-title {
         grid-row: 2;
         grid-column: 1;
+        align-self: end;
       }
 
       .home-nav-links {
@@ -1122,9 +1241,81 @@ const featured = youtubeData.featured;
       .home-text-link span,
       .home-nav-card,
       .home-nav-arrow,
+      .home-nav-title,
+      .home-nav-word,
       .home-section-links a {
         transition: none;
       }
+
     }
   </style>
+
+  {/* 水波紋元素由 JS 動態插入，拿不到 Astro scoped 樣式屬性，須放在 global 樣式 */}
+  <style is:global>
+    .home-nav-ripple {
+      position: absolute;
+      z-index: 2;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: scale(0);
+      animation: home-nav-ripple 560ms ease-out forwards;
+    }
+
+    .home-nav-ripple-botw {
+      background: radial-gradient(circle, rgba(111, 195, 247, 0.5) 0%, rgba(59, 130, 196, 0.24) 55%, transparent 78%);
+    }
+
+    .home-nav-ripple-totk {
+      background: radial-gradient(circle, rgba(111, 227, 196, 0.48) 0%, rgba(42, 169, 139, 0.22) 55%, transparent 78%);
+    }
+
+    @keyframes home-nav-ripple {
+      to {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .home-nav-ripple {
+        display: none;
+      }
+    }
+  </style>
+
+  <script>
+    // 物件地圖卡片：點擊水波紋（限卡片範圍內），播放片刻後再跳轉
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    document.querySelectorAll<HTMLAnchorElement>(".home-nav-zone").forEach((zone) => {
+      zone.addEventListener("click", (event) => {
+        // 修飾鍵（另開分頁等）或非左鍵：交給瀏覽器預設行為
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+
+        const card = zone.closest<HTMLElement>(".home-nav-card-multi");
+        if (!card || reduceMotion) return;
+
+        event.preventDefault();
+
+        const rect = card.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 2.1;
+        // 鍵盤觸發（Enter）沒有座標，改由卡片中心擴散
+        const originX = event.clientX || rect.left + rect.width / 2;
+        const originY = event.clientY || rect.top + rect.height / 2;
+
+        const ripple = document.createElement("span");
+        ripple.className = "home-nav-ripple";
+        if (zone.dataset.tone) ripple.classList.add(`home-nav-ripple-${zone.dataset.tone}`);
+        ripple.style.width = `${size}px`;
+        ripple.style.height = `${size}px`;
+        ripple.style.left = `${originX - rect.left - size / 2}px`;
+        ripple.style.top = `${originY - rect.top - size / 2}px`;
+        card.appendChild(ripple);
+
+        window.setTimeout(() => {
+          window.location.href = zone.href;
+        }, 300);
+      });
+    });
+  </script>
 </BaseLayout>
