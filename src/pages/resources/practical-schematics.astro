@@ -1156,14 +1156,13 @@ const schematicsPerPage = 12;
         flex: 0 0 auto;
         align-self: flex-end;
       }
-      .schematics-library:not([data-view="list"]) .schematic-card-head > span,
-      .schematics-library:not([data-view="list"]) .schematic-card h3 {
-        position: relative;
-        top: 2px;
+      .schematics-library:not([data-view="list"]) .schematic-card-head {
+        padding-top: 14px;
+        padding-bottom: 10px;
       }
-      .schematics-library:not([data-view="list"]) .schematic-card dl > div:last-child :is(dt, dd) {
-        position: relative;
-        top: -2px;
+      .schematics-library:not([data-view="list"]) .schematic-card dl > div:last-child {
+        padding-top: 7px;
+        padding-bottom: 14px;
       }
       .schematics-list { grid-template-columns: 1fr; }
       .schematics-library[data-view="list"] .schematic-card {
