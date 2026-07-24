@@ -737,7 +737,7 @@ const schematicsPerPage = 12;
 
     .schematics-list {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 18px;
     }
 
@@ -1100,7 +1100,7 @@ const schematicsPerPage = 12;
         width: min(42vw, 360px);
         opacity: 0.42;
       }
-      .schematics-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .schematics-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
 
     @media (max-width: 700px) {
@@ -1164,7 +1164,7 @@ const schematicsPerPage = 12;
         padding-top: 7px;
         padding-bottom: 14px;
       }
-      .schematics-list { grid-template-columns: 1fr; }
+      .schematics-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .schematics-library[data-view="list"] .schematic-card {
         grid-template-columns: 96px 1fr;
         min-height: 110px;
@@ -1177,14 +1177,20 @@ const schematicsPerPage = 12;
         border-left: 0;
         padding: 4px 14px;
       }
+      .schematics-library[data-view="list"] .schematic-card dl > div:first-child {
+        padding-top: 2px;
+      }
+      .schematics-library[data-view="list"] .schematic-card dl > div:last-child {
+        padding-bottom: 10px;
+      }
       .schematics-library[data-view="list"] .schematic-qr {
         height: 100%;
         min-height: 0;
         aspect-ratio: 96 / 110;
       }
       .schematics-library[data-view="list"] .schematic-qr img {
-        object-position: center 33%;
-        transform-origin: center 33%;
+        object-position: center 30%;
+        transform-origin: center 30%;
       }
       .schematics-pagination {
         justify-content: center;
