@@ -728,10 +728,10 @@ const schematicCount = categories.reduce((total, category) => total + category.i
 
     .schematic-card-head {
       display: flex;
-      min-height: 50px;
+      min-height: 52px;
       align-items: center;
       gap: 11px;
-      padding-inline: 14px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border-soft);
     }
 
@@ -783,14 +783,15 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     .schematic-card dl > div {
       display: grid;
       grid-template-columns: 54px 1fr;
-      gap: 10px;
+      gap: 8px;
       align-items: baseline;
-      padding: 10px 14px;
+      padding: 9px 16px;
     }
 
     .schematic-card dl > div + div { border-top: 1px solid var(--border-soft); }
-    .schematic-card dt { color: var(--accent); font-size: 11px; font-weight: 500; line-height: 1.45; }
-    .schematic-card dd { margin: 0; color: var(--text); font-size: 12px; line-height: 1.45; }
+    .schematic-card dl > div:last-child { padding-bottom: 12px; }
+    .schematic-card dt { color: var(--accent); font-size: 11px; font-weight: 500; line-height: 1.4; }
+    .schematic-card dd { margin: 0; color: var(--text); font-size: 12px; line-height: 1.4; }
 
     .schematics-library[data-view="list"] .schematics-list {
       grid-template-columns: 1fr;
@@ -810,7 +811,7 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     .schematics-library[data-view="list"] .schematic-card-head {
       grid-area: head;
       min-height: 0;
-      padding: 12px 20px;
+      padding: 14px 20px 9px;
       border-right: 0;
       border-bottom: 1px solid var(--border-soft);
     }
@@ -846,11 +847,15 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     .schematics-library[data-view="list"] .schematic-card dl > div {
       align-items: baseline;
       border-left: 0;
-      padding: 8px 20px;
+      padding: 7px 20px;
     }
 
     .schematics-library[data-view="list"] .schematic-card dl > div + div {
       border-top: 1px solid var(--border-soft);
+    }
+
+    .schematics-library[data-view="list"] .schematic-card dl > div:last-child {
+      padding-bottom: 13px;
     }
 
     .schematics-empty {
