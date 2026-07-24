@@ -133,6 +133,7 @@ const categories: SchematicCategory[] = categoryConfig.map((category) => ({
 }));
 
 const schematicCount = categories.reduce((total, category) => total + category.items.length, 0);
+const schematicsPerPage = 12;
 ---
 
 <BaseLayout
@@ -249,7 +250,7 @@ const schematicCount = categories.reduce((total, category) => total + category.i
               category.items.length > 0 ? (
                 <div class="schematics-list">
                   {category.items.map((item, index) => (
-                    <article class="schematic-card">
+                    <article class="schematic-card" data-schematic-card data-schematic-page={Math.floor(index / schematicsPerPage) + 1} hidden={index >= schematicsPerPage}>
                       <div class="schematic-card-head">
                         <span>{item.number}</span>
                         <h3>{item.title}</h3>
@@ -276,6 +277,27 @@ const schematicCount = categories.reduce((total, category) => total + category.i
                       </dl>
                     </article>
                   ))}
+                  {category.items.length > schematicsPerPage && (
+                    <nav class="schematics-pagination" aria-label={`${category.label}藍圖分頁`} data-schematics-pagination>
+                      <button type="button" data-page-action="prev" aria-label="上一頁">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+                      </button>
+                      <div class="pagination-pages">
+                        {Array.from({ length: Math.ceil(category.items.length / schematicsPerPage) }, (_, pageIndex) => (
+                          <button
+                            type="button"
+                            data-page-number={pageIndex + 1}
+                            aria-current={pageIndex === 0 ? "page" : undefined}
+                          >
+                            {String(pageIndex + 1).padStart(2, "0")}
+                          </button>
+                        ))}
+                      </div>
+                      <button type="button" data-page-action="next" aria-label="下一頁">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+                      </button>
+                    </nav>
+                  )}
                 </div>
               ) : (
                 <div class="schematics-empty">
@@ -858,6 +880,62 @@ const schematicCount = categories.reduce((total, category) => total + category.i
       padding-bottom: 13px;
     }
 
+    .schematics-pagination {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .schematics-pagination button {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-strong);
+      border-radius: 0;
+      background: var(--surface);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: border-color 180ms ease, color 180ms ease, background-color 180ms ease;
+    }
+
+    .schematics-pagination button:hover,
+    .schematics-pagination button[aria-current="page"] {
+      border-color: color-mix(in srgb, var(--accent) 58%, var(--border-strong));
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+      color: var(--accent);
+    }
+
+    .schematics-pagination button:disabled {
+      cursor: default;
+      opacity: 0.38;
+    }
+
+    .schematics-pagination svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .pagination-pages {
+      display: flex;
+      border: 1px solid var(--border-strong);
+    }
+
+    .pagination-pages button {
+      margin: -1px;
+    }
+
     .schematics-empty {
       display: grid;
       grid-template-columns: 190px 1fr;
@@ -1078,6 +1156,15 @@ const schematicCount = categories.reduce((total, category) => total + category.i
         flex: 0 0 auto;
         align-self: flex-end;
       }
+      .schematics-library:not([data-view="list"]) .schematic-card-head > span,
+      .schematics-library:not([data-view="list"]) .schematic-card h3 {
+        position: relative;
+        top: 2px;
+      }
+      .schematics-library:not([data-view="list"]) .schematic-card dl > div:last-child :is(dt, dd) {
+        position: relative;
+        top: -2px;
+      }
       .schematics-list { grid-template-columns: 1fr; }
       .schematics-library[data-view="list"] .schematic-card {
         grid-template-columns: 96px 1fr;
@@ -1093,6 +1180,18 @@ const schematicCount = categories.reduce((total, category) => total + category.i
       .schematics-library[data-view="list"] .schematic-qr {
         height: 100%;
         min-height: 116px;
+      }
+      .schematics-library[data-view="list"] .schematic-qr img {
+        object-position: center 48%;
+        transform-origin: center 48%;
+      }
+      .schematics-pagination {
+        justify-content: center;
+        margin-top: 8px;
+      }
+      .schematics-pagination button {
+        width: 38px;
+        height: 38px;
       }
       .schematics-empty { grid-template-columns: 1fr; gap: 26px; padding: 30px; }
       .empty-mark { width: 128px; }
@@ -1134,6 +1233,51 @@ const schematicCount = categories.reduce((total, category) => total + category.i
     const lightboxTitle = document.getElementById("lightbox-title");
     const closeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-lightbox-close]"));
     let lastPreviewButton: HTMLButtonElement | null = null;
+    const schematicsPerPage = 12;
+
+    function updateSchematicPage(panel: HTMLElement, page: number) {
+      const cards = Array.from(panel.querySelectorAll<HTMLElement>("[data-schematic-card]"));
+      const totalPages = Math.max(1, Math.ceil(cards.length / schematicsPerPage));
+      const currentPage = Math.min(Math.max(page, 1), totalPages);
+      const pageButtons = Array.from(panel.querySelectorAll<HTMLButtonElement>("[data-page-number]"));
+      const previousButton = panel.querySelector<HTMLButtonElement>('[data-page-action="prev"]');
+      const nextButton = panel.querySelector<HTMLButtonElement>('[data-page-action="next"]');
+
+      panel.dataset.currentPage = String(currentPage);
+
+      cards.forEach((card) => {
+        card.hidden = Number(card.dataset.schematicPage ?? "1") !== currentPage;
+      });
+
+      pageButtons.forEach((button) => {
+        if (Number(button.dataset.pageNumber) === currentPage) {
+          button.setAttribute("aria-current", "page");
+        } else {
+          button.removeAttribute("aria-current");
+        }
+      });
+
+      if (previousButton) previousButton.disabled = currentPage === 1;
+      if (nextButton) nextButton.disabled = currentPage === totalPages;
+    }
+
+    schematicPanels.forEach((panel) => {
+      updateSchematicPage(panel, 1);
+
+      panel.querySelector("[data-schematics-pagination]")?.addEventListener("click", (event) => {
+        const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button");
+        if (!button) return;
+
+        const currentPage = Number(panel.dataset.currentPage ?? "1");
+        const page = button.dataset.pageNumber
+          ? Number(button.dataset.pageNumber)
+          : button.dataset.pageAction === "next"
+            ? currentPage + 1
+            : currentPage - 1;
+
+        updateSchematicPage(panel, page);
+      });
+    });
 
     schematicTabs.forEach((tab) => {
       tab.addEventListener("click", () => {
