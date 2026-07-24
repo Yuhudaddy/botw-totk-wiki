@@ -132,15 +132,38 @@ const commandGroups = [
 >
   <main class="ist-guide">
     <section class="ist-hero" aria-labelledby="ist-title">
-      <img
-        class="ist-hero-image"
-        src={href("/resource-guides/ist-simulator-interface.png")}
-        alt="轉存格 IST 模擬器的腳本編輯器與背包預覽介面"
-        width="1280"
-        height="720"
-      />
-      <div class="ist-hero-overlay" aria-hidden="true"></div>
-      <div class="ist-hero-grid" aria-hidden="true"></div>
+      <div class="ist-hero-visual" aria-hidden="true">
+        <div class="ist-visual-grid"></div>
+        <div class="ist-visual-label">STATE TRANSFER / 01—02</div>
+        <div class="ist-visual-stage">
+          <div class="ist-visual-state ist-visual-state-source">
+            <div class="ist-visual-state-head">
+              <span>SAVE 01</span>
+              <strong>BASE</strong>
+            </div>
+            <div class="ist-visual-slots">
+              <i></i><i class="is-active"></i><i></i><i></i>
+            </div>
+            <span class="ist-visual-state-foot">INVENTORY</span>
+          </div>
+          <div class="ist-visual-connector">
+            <span class="ist-visual-connector-line"></span>
+            <span class="ist-visual-transfer"></span>
+            <span class="ist-visual-arrow"></span>
+          </div>
+          <div class="ist-visual-state ist-visual-state-target">
+            <div class="ist-visual-state-head">
+              <span>SAVE 02</span>
+              <strong>INHERIT</strong>
+            </div>
+            <div class="ist-visual-slots">
+              <i></i><i class="is-active"></i><i class="is-inherited"></i><i></i>
+            </div>
+            <span class="ist-visual-state-foot">READY TO LOAD</span>
+          </div>
+        </div>
+        <div class="ist-visual-caption"><span></span>ITEM STATE / CARRIED FORWARD</div>
+      </div>
 
       <div class="ist-wrap ist-hero-inner">
         <nav class="ist-breadcrumb" aria-label="麵包屑">
@@ -527,42 +550,184 @@ const commandGroups = [
       height: min(620px, calc(100svh - 76px));
       isolation: isolate;
       overflow: hidden;
-      background: var(--ist-night);
-      color: #fff;
+      background: var(--bg);
+      color: var(--ink);
+      transition: background-color 420ms ease, color 420ms ease;
     }
 
-    .ist-hero-image,
-    .ist-hero-overlay,
-    .ist-hero-grid {
+    .ist-hero-visual {
       position: absolute;
+      z-index: 0;
+      top: 50%;
+      right: max(0px, calc((100% - 1180px) / 2));
+      width: min(48vw, 560px);
+      aspect-ratio: 1.16;
+      color: color-mix(in srgb, var(--ink) 72%, transparent);
+      opacity: 0.88;
+      transform: translateY(-47%);
+      transition: color 420ms ease, opacity 420ms ease;
+    }
+
+    .ist-visual-grid,
+    .ist-visual-stage,
+    .ist-visual-label,
+    .ist-visual-caption {
+      position: absolute;
+    }
+
+    .ist-visual-grid {
       inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    .ist-hero-image {
-      object-fit: cover;
-      object-position: center;
-      filter: saturate(0.82) contrast(1.06) brightness(0.74);
-      transform: scale(1.02);
-      animation: ist-settle 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .ist-hero-overlay {
-      z-index: 1;
-      background:
-        linear-gradient(90deg, rgba(21, 20, 29, 0.98) 0%, rgba(21, 20, 29, 0.9) 37%, rgba(21, 20, 29, 0.42) 72%, rgba(21, 20, 29, 0.2) 100%),
-        linear-gradient(0deg, rgba(21, 20, 29, 0.94) 0%, transparent 36%, rgba(21, 20, 29, 0.18) 100%);
-    }
-
-    .ist-hero-grid {
-      z-index: 2;
-      opacity: 0.28;
+      opacity: 0.42;
       background-image:
-        linear-gradient(rgba(217, 119, 87, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(217, 119, 87, 0.1) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: linear-gradient(90deg, #000, transparent 65%);
+        linear-gradient(color-mix(in srgb, var(--ink) 14%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--ink) 14%, transparent) 1px, transparent 1px);
+      background-size: 28px 28px;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+      transition: opacity 420ms ease;
+    }
+
+    .ist-visual-label,
+    .ist-visual-caption,
+    .ist-visual-state-head,
+    .ist-visual-state-foot,
+    .ist-visual-state-head strong,
+    .ist-visual-connector-line,
+    .ist-visual-arrow,
+    .ist-visual-caption span {
+      font-family: var(--font-mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 420ms ease, border-color 420ms ease, background-color 420ms ease;
+    }
+
+    .ist-visual-label {
+      top: 8px;
+      left: 8px;
+      color: var(--accent);
+      font-size: 10px;
+    }
+
+    .ist-visual-stage {
+      inset: 52px 12px 54px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ist-visual-state {
+      position: relative;
+      flex: 0 0 35%;
+      aspect-ratio: 1 / 1.12;
+      padding: 15px;
+      border: 1px solid color-mix(in srgb, var(--ink) 42%, transparent);
+      background: color-mix(in srgb, var(--surface) 82%, transparent);
+      box-shadow: 10px 10px 0 color-mix(in srgb, var(--ink) 7%, transparent);
+      transition: background-color 420ms ease, border-color 420ms ease, box-shadow 420ms ease;
+    }
+
+    .ist-visual-state-target {
+      transform: translateY(12px);
+    }
+
+    .ist-visual-state-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: color-mix(in srgb, var(--ink) 58%, transparent);
+      font-size: 9px;
+    }
+
+    .ist-visual-state-head strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .ist-visual-slots {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 18px;
+    }
+
+    .ist-visual-slots i {
+      display: block;
+      aspect-ratio: 1;
+      border: 1px solid color-mix(in srgb, var(--ink) 26%, transparent);
+      background: color-mix(in srgb, var(--bg) 72%, transparent);
+      transition: background-color 420ms ease, border-color 420ms ease;
+    }
+
+    .ist-visual-slots i.is-active {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+    }
+
+    .ist-visual-slots i.is-inherited {
+      animation: ist-inherit 2.8s ease-in-out infinite;
+    }
+
+    .ist-visual-state-foot {
+      position: absolute;
+      right: 15px;
+      bottom: 14px;
+      color: color-mix(in srgb, var(--ink) 48%, transparent);
+      font-size: 8px;
+      white-space: nowrap;
+    }
+
+    .ist-visual-connector {
+      position: relative;
+      flex: 1 1 auto;
+      height: 48px;
+      min-width: 50px;
+    }
+
+    .ist-visual-connector-line {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      left: 0;
+      border-top: 1px solid color-mix(in srgb, var(--accent) 64%, transparent);
+    }
+
+    .ist-visual-arrow {
+      position: absolute;
+      top: calc(50% - 5px);
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-top: 1px solid var(--accent);
+      border-right: 1px solid var(--accent);
+      transform: rotate(45deg);
+    }
+
+    .ist-visual-transfer {
+      position: absolute;
+      top: calc(50% - 5px);
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--accent);
+      background: var(--bg);
+      animation: ist-transfer 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      transition: background-color 420ms ease;
+    }
+
+    .ist-visual-caption {
+      right: 8px;
+      bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: color-mix(in srgb, var(--ink) 48%, transparent);
+      font-size: 9px;
+    }
+
+    .ist-visual-caption span {
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
     }
 
     .ist-hero-inner {
@@ -578,8 +743,9 @@ const commandGroups = [
       display: flex;
       align-items: center;
       gap: 9px;
-      color: rgba(255, 255, 255, 0.56);
+      color: color-mix(in srgb, var(--ink) 54%, transparent);
       font-size: 12px;
+      transition: color 420ms ease;
     }
 
     .ist-breadcrumb a {
@@ -590,11 +756,11 @@ const commandGroups = [
 
     .ist-breadcrumb a:hover,
     .ist-breadcrumb a:focus-visible {
-      color: #fff;
+      color: var(--ink);
     }
 
     .ist-hero-content {
-      max-width: 650px;
+      max-width: 590px;
       margin-block: auto;
       padding-block: 24px;
     }
@@ -644,7 +810,7 @@ const commandGroups = [
     .ist-hero-content > p {
       max-width: 40rem;
       margin: 22px 0 0;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--text);
       font-size: 17px;
       line-height: 1.82;
       opacity: 0;
@@ -657,7 +823,7 @@ const commandGroups = [
       flex-wrap: wrap;
       gap: 8px 18px;
       margin-top: 22px;
-      color: rgba(255, 255, 255, 0.52);
+      color: var(--muted);
       font-size: 10px;
     }
 
@@ -715,9 +881,10 @@ const commandGroups = [
       min-height: 44px;
       display: inline-flex;
       align-items: center;
-      color: rgba(255, 255, 255, 0.78);
+      color: var(--text);
       font-size: 14px;
       text-underline-offset: 5px;
+      transition: color 420ms ease;
     }
 
     .ist-hero-readout {
@@ -729,8 +896,9 @@ const commandGroups = [
       min-width: 160px;
       padding-left: 16px;
       border-left: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
-      color: rgba(255, 255, 255, 0.48);
+      color: var(--muted);
       font-size: 9px;
+      transition: color 420ms ease, border-color 420ms ease;
     }
 
     .ist-hero-readout strong {
@@ -1511,12 +1679,35 @@ const commandGroups = [
       }
     }
 
-    @keyframes ist-settle {
-      from {
-        transform: scale(1.055);
+    @keyframes ist-transfer {
+      0%,
+      18% {
+        opacity: 0;
+        transform: translateX(0);
       }
-      to {
-        transform: scale(1.02);
+      28% {
+        opacity: 1;
+      }
+      72% {
+        opacity: 1;
+      }
+      86%,
+      100% {
+        opacity: 0;
+        transform: translateX(calc(100% - 10px));
+      }
+    }
+
+    @keyframes ist-inherit {
+      0%,
+      16%,
+      100% {
+        opacity: 0.35;
+      }
+      48%,
+      72% {
+        opacity: 1;
+        background: color-mix(in srgb, var(--accent) 28%, var(--surface));
       }
     }
 
@@ -1527,10 +1718,10 @@ const commandGroups = [
     }
 
     @media (max-width: 980px) {
-      .ist-hero-overlay {
-        background:
-          linear-gradient(90deg, rgba(21, 20, 29, 0.97) 0%, rgba(21, 20, 29, 0.82) 58%, rgba(21, 20, 29, 0.45) 100%),
-          linear-gradient(0deg, rgba(21, 20, 29, 0.94), transparent 60%);
+      .ist-hero-visual {
+        right: -24px;
+        width: min(52vw, 500px);
+        opacity: 0.34;
       }
 
       .ist-hero-readout {
@@ -1616,13 +1807,13 @@ const commandGroups = [
         max-height: 650px;
       }
 
-      .ist-hero-image {
-        object-position: 45% center;
-      }
-
-      .ist-hero-overlay {
-        background:
-          linear-gradient(0deg, rgba(21, 20, 29, 0.98) 0%, rgba(21, 20, 29, 0.88) 62%, rgba(21, 20, 29, 0.58) 100%);
+      .ist-hero-visual {
+        top: auto;
+        right: -16%;
+        bottom: 20px;
+        width: 96%;
+        opacity: 0.22;
+        transform: none;
       }
 
       .ist-hero-inner {
@@ -1751,9 +1942,10 @@ const commandGroups = [
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .ist-hero-image,
       .ist-hero h1,
       .ist-hero-content > p,
+      .ist-visual-transfer,
+      .ist-visual-slots i.is-inherited,
       .ist-live-label i {
         animation: none;
         opacity: 1;

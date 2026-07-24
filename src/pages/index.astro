@@ -142,8 +142,10 @@ const featured = youtubeData.featured;
           quickNav.map((q) =>
             q.links ? (
               <div class="home-nav-card home-nav-card-multi">
-                <span class="home-nav-no">{q.no}</span>
-                <span class="home-nav-series">{q.series}</span>
+                <div class="home-nav-card-meta">
+                  <span class="home-nav-no">{q.no}</span>
+                  <span class="home-nav-series">{q.series}</span>
+                </div>
                 <span class="home-nav-title font-serif text-ink">{q.title}</span>
                 <div class="home-nav-links">
                   {q.links.map((l) => (
@@ -668,7 +670,9 @@ const featured = youtubeData.featured;
     }
 
     .home-nav-card-multi {
-      grid-template-rows: auto auto auto;
+      grid-template-columns: minmax(0, 1fr) minmax(170px, 0.78fr);
+      grid-template-rows: auto 1fr;
+      align-items: start;
       cursor: default;
     }
 
@@ -677,29 +681,48 @@ const featured = youtubeData.featured;
       background: var(--bg);
     }
 
+    .home-nav-card-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      grid-column: 1;
+      grid-row: 1;
+      min-width: 0;
+    }
+
+    .home-nav-card-multi .home-nav-series {
+      text-overflow: ellipsis;
+    }
+
     .home-nav-card-multi .home-nav-title {
+      grid-column: 1;
+      grid-row: 2;
       align-self: start;
       margin-bottom: 2px;
       white-space: normal;
     }
 
     .home-nav-links {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-wrap: wrap;
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: center;
+      display: grid;
       gap: 8px;
     }
 
     .home-nav-link-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: space-between;
       gap: 6px;
+      min-width: 0;
       padding: 6px 12px;
       border: 1px solid var(--border-strong);
       border-radius: 999px;
       color: var(--text);
       font-size: 12.5px;
       text-decoration: none;
+      white-space: nowrap;
       transition: border-color 160ms ease, color 160ms ease;
     }
 
@@ -785,6 +808,16 @@ const featured = youtubeData.featured;
 
       .home-explore > div {
         gap: 40px;
+      }
+
+      .home-nav-card-multi {
+        grid-template-columns: minmax(118px, 0.75fr) minmax(156px, 1fr);
+      }
+
+      .home-nav-link-btn {
+        gap: 4px;
+        padding-inline: 8px;
+        font-size: 10.5px;
       }
     }
 
@@ -1040,18 +1073,35 @@ const featured = youtubeData.featured;
         min-height: 112px;
       }
 
+      .home-nav-card-multi {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+
+      .home-nav-card-multi .home-nav-card-meta,
+      .home-nav-card-multi .home-nav-title,
       .home-nav-links {
+        grid-column: 1;
+      }
+
+      .home-nav-card-multi .home-nav-card-meta {
+        grid-row: 1;
+      }
+
+      .home-nav-card-multi .home-nav-title {
+        grid-row: 2;
+      }
+
+      .home-nav-links {
+        grid-row: 3;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
         width: 100%;
       }
 
       .home-nav-link-btn {
-        justify-content: center;
         gap: 5px;
         padding-inline: 8px;
         font-size: 11.5px;
-        white-space: nowrap;
       }
 
       .home-about {
