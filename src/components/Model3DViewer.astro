@@ -27,6 +27,10 @@ interface Props {
                           // 房間反而變得很小，所以固定給一組明確數值，跟 cameraOrbit 同理）。
   topOrbit?: string;      // 「俯視」按鈕的視角：極角接近 0（正上方往下看），方便看清楚
   topTarget?: string;     // 房間排版。不給 topTarget 則沿用 overviewTarget。同樣不給值則不顯示按鈕。
+  transparencyMaterials?: string[]; // 「透明化」開關鈕要調整的材質名稱（不含 "ToTS_" 前綴），
+                                     // 有給值時才顯示按鈕；只調整這些材質的 alpha，其餘（含樓層
+                                     // 文字標籤）完全不受影響。
+  transparencyOpacity?: number;     // 透明化後的不透明度（0～1），預設 0.2
 }
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const {
@@ -34,6 +38,7 @@ const {
   minZoomDistance = 60, maxZoomDistance = 2500,
   cameraOrbit, cameraTarget, layoutSrc,
   overviewOrbit, overviewTarget, topOrbit, topTarget,
+  transparencyMaterials, transparencyOpacity = 0.2,
 } = Astro.props;
 const resolvedTopTarget = topTarget ?? overviewTarget;
 const layoutUrl = layoutSrc
@@ -67,6 +72,8 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
   data-overview-target={overviewTarget}
   data-top-orbit={topOrbit}
   data-top-target={resolvedTopTarget}
+  data-transparency-materials={transparencyMaterials?.join(",")}
+  data-transparency-opacity={transparencyOpacity}
 >
   <!-- model-viewer 的布林屬性不能輸出成 autoplay="false"／auto-rotate="false"：
        HTML 只要看見屬性存在就會視為 true，導致閒置後自動旋轉。 -->
@@ -113,6 +120,19 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
         <path d="M3 4v5h5"></path>
       </svg>
     </button>
+    {transparencyMaterials && transparencyMaterials.length > 0 && (
+      <button
+        type="button"
+        class="model3d-btn model3d-transparency"
+        aria-label="透明化"
+        aria-pressed="false"
+        title="透明化"
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3c3.5 4.2 6 7.7 6 10.5A6 6 0 0 1 6 13.5C6 10.7 8.5 7.2 12 3Z" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    )}
   </div>
   {layoutUrl && (
     <div class="model3d-pick-info" data-hint="點擊模型中的房間或地標，可顯示名稱">
@@ -163,6 +183,11 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
   .model3d-btn:hover {
     border-color: var(--brand);
     color: var(--brand);
+  }
+  .model3d-btn[aria-pressed="true"] {
+    border-color: var(--brand);
+    background: var(--brand);
+    color: #fff;
   }
   .model3d-hint {
     position: absolute;
@@ -243,6 +268,31 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
       if (topTarget) mv.cameraTarget = topTarget;
       mv.fieldOfView = "auto";
     });
+
+    // 透明化：只調整指定材質（依名稱 "ToTS_<key>" 比對）的 alpha，樓層文字等其他材質
+    // 完全不受影響。alphaMode 預設是 OPAQUE（忽略 alpha 值），要切到 BLEND 才會真的顯示透明；
+    // 切回不透明時同樣要切回 OPAQUE，避免半透明材質在某些角度出現排序瑕疵。
+    const transparencyKeys = wrap.dataset.transparencyMaterials?.split(",").filter(Boolean) ?? [];
+    const transparencyOpacity = Number(wrap.dataset.transparencyOpacity ?? "0.2");
+    const transparencyBtn = wrap.querySelector<HTMLButtonElement>(".model3d-transparency");
+    if (transparencyBtn && transparencyKeys.length > 0) {
+      let isTransparent = false;
+      const applyOpacity = (alpha: number, alphaMode: string) => {
+        const materials = mv.model?.materials ?? [];
+        for (const key of transparencyKeys) {
+          const mat = materials.find((m: any) => m.name === `ToTS_${key}`);
+          if (!mat) continue;
+          const [r, g, b] = mat.pbrMetallicRoughness.baseColorFactor;
+          mat.pbrMetallicRoughness.setBaseColorFactor([r, g, b, alpha]);
+          mat.setAlphaMode(alphaMode);
+        }
+      };
+      transparencyBtn.addEventListener("click", () => {
+        isTransparent = !isTransparent;
+        applyOpacity(isTransparent ? transparencyOpacity : 1, isTransparent ? "BLEND" : "OPAQUE");
+        transparencyBtn.setAttribute("aria-pressed", String(isTransparent));
+      });
+    }
 
     // 首次操作提示：只在使用者「這一台裝置第一次看到這個模型」時顯示，拖曳／縮放一次或
     // 5 秒後就淡出，之後用 sessionStorage 記住不再顯示（同一次瀏覽的其他頁籤／重整都算看過）。

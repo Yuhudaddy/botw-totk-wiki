@@ -94,6 +94,9 @@ export interface TypeContent {
     topTarget?: string;
     layoutSrc?: string;    // 點擊互動座標表 JSON 路徑（public/ 下），點擊房間顯示名稱
     legend?: { color: string; label: string }[]; // 色彩圖例（顯示於模型下方）
+    transparencyMaterials?: string[]; // 「透明化」開關鈕要調整的材質名稱（不含 "ToTS_" 前綴），
+                                       // 有給值才顯示按鈕，只影響這些材質，其餘（含樓層文字）不受影響
+    transparencyOpacity?: number;     // 透明化後的不透明度（0～1），預設 0.2
   }; // C 區改放可拖曳旋轉的 3D 模型（取代快速示意）
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
   notes?: TypeNote[];         // 注意事項
@@ -876,6 +879,18 @@ export const typeContent: Record<string, TypeContent> = {
         { color: "#b09a78", label: "盆地地標" },
         { color: "#4a4d52", label: "導師之塔" },
       ],
+      // 「透明化」開關鈕：只調整戰鬥房間（一般房間／水域／奈落／黑暗／雷雨／火山／寒冷）
+      // 的材質透明度，起點／休息平台／綠洲／盆地地標等非戰鬥房間、地面與樓層文字都不受影響。
+      transparencyMaterials: [
+        "normal", "normal_side",
+        "water", "water_side",
+        "void", "void_side",
+        "dark", "dark_side",
+        "storm", "storm_side",
+        "volcano", "volcano_side",
+        "frigid", "frigid_side",
+      ],
+      transparencyOpacity: 0.2,
     },
     methods: [
       {
