@@ -1570,41 +1570,68 @@ export const typeContent: Record<string, TypeContent> = {
 
   "botw-21": {
     videoFolder: "botw-endlag cancel",
-    principle: "內容整理中，敬請期待。",
+    principle: "盾反、投擲、高空落地攻擊、後空翻等等__後硬直（Endlag）__較長，會讓林克比較有破綻，硬直期間林克比較沒有防備，可以靠一些內建操作來取消掉這些硬直。",
     methods: [
       {
         tab: "Swap",
+        name: "切換取消（Swap / Switch Cancel）",
         video: "Swap Cancel.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: ["盾反成功判定或是投擲動作發生後，切換武器或盾牌"],
       },
       {
         tab: "Crouch",
+        name: "蹲下取消（Crouch Cancel）",
         video: "Crouch Cancel.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: ["盾反成功判定或是投擲動作發生後，左搖桿按下蹲下"],
+        note: "※ 通常會連續按兩次恢復站立姿態，但較傷左搖桿。",
       },
       {
         tab: "Jump",
+        name: "跳躍取消（Jump Cancel）",
         video: "Jump Cancel.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: ["按 Y 或按住 Y，攻擊過程或結束時，在硬直期間按下 X 跳"],
+        note: "※ X 和 B 有設定切換時按 B。",
       },
       {
         tab: "Item Hold",
+        name: "持物取消（Item Hold Cancel）",
         video: "Item Hold Cancel.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: [
+          "空中攻擊落地硬直期間，或突擊（Flurry Rush）結束時的硬直期間，暫停手持物品",
+          "按 B 取消手持",
+        ],
       },
       {
-        tab: "Landing",
+        tab: "Turnaround",
+        name: "轉身取消（Turnaround Cancel / Quick Backflip）",
         video: "Landing Cancel.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: [
+          "按住 ZL + 左搖桿往▼ + 輸入 X，執行後空翻",
+          "在空中放開 ZL，保持左搖桿往 ▼",
+          "落地瞬間林克完全轉身前輸入 ZL + X",
+        ],
+        note: "※ 只是後空翻比較長使用，基本上鎖定跳（按住 ZL 的跳躍）都可以。",
       },
       {
         tab: "Stasis",
+        name: "靜止取消（Stasis Cancel）",
         video: "Stasis Cancel.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: [
+          "希卡道具選到靜止器",
+          "按住 ZR 放開射箭",
+          "射箭瞬間按 L 再按 A 靜止",
+        ],
       },
     ],
-    notes: [{ text: "內容整理中，敬請期待。" }],
-    videos: [],
+    notes: [
+      { text: "可以用在「衛星迴力鏢（Rotating Boomerang）」，迴力鏢向上投擲之後可以快速移動，讓迴力鏢產生迴轉。" },
+    ],
+    videos: [
+      { id: "9d1ks1E_a3A", title: "番外00「災厄之路(The way to \"Calamity\")」- 戰鬥技巧詳解", at: 207 },
+      { id: "cgqAOlvubVQ", title: "EX01 -「從初學者畢業的13堂技巧課」 - 遊戲攻略技巧精華（人聲解說）" },
+      { id: "0RlLTe3FRvE", title: "番外14 布偶程錯／布偶跳與無硬直後空翻（Ragdoll Glitch／Ragdoll Jump／Quick Backflips）" },
+      { id: "CTycsi72RlE", title: "番外12 瞬盾翔(PDPL)／光劍硬直取消／盾擋重置(SBR)應用（示範短片）" },
+    ],
   },
 
   "botw-22": {
