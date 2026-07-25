@@ -1574,52 +1574,82 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "Swap",
-        name: "切換取消（Swap / Switch Cancel）",
         video: "Swap Cancel.mp4",
-        steps: ["盾反成功判定或是投擲動作發生後，切換武器或盾牌"],
+        sections: [
+          {
+            title: "切換取消（Swap / Switch Cancel）",
+            tags: ["All Versions"],
+            steps: ["盾反成功判定或是投擲動作發生後，切換武器或盾牌"],
+          },
+        ],
       },
       {
         tab: "Crouch",
-        name: "蹲下取消（Crouch Cancel）",
         video: "Crouch Cancel.mp4",
-        steps: ["盾反成功判定或是投擲動作發生後，左搖桿按下蹲下"],
-        note: "※ 通常會連續按兩次恢復站立姿態，但較傷左搖桿。",
+        sections: [
+          {
+            title: "蹲下取消（Crouch Cancel）",
+            tags: ["All Versions"],
+            steps: ["盾反成功判定或是投擲動作發生後，左搖桿按下蹲下"],
+            note: "※ 通常會連續按兩次恢復站立姿態，但較傷左搖桿。",
+          },
+        ],
       },
       {
         tab: "Jump",
-        name: "跳躍取消（Jump Cancel）",
         video: "Jump Cancel.mp4",
-        steps: ["按 Y 或按住 Y，攻擊過程或結束時，在硬直期間按下 X 跳"],
-        note: "※ X 和 B 有設定切換時按 B。",
+        sections: [
+          {
+            title: "跳躍取消（Jump Cancel）",
+            tags: ["All Versions"],
+            steps: ["按 Y 或按住 Y，攻擊過程或結束時，在硬直期間按下 X 跳"],
+            note: "※ X 和 B 有設定切換時按 B。",
+          },
+        ],
       },
       {
         tab: "Item Hold",
-        name: "持物取消（Item Hold Cancel）",
         video: "Item Hold Cancel.mp4",
-        steps: [
-          "空中攻擊落地硬直期間，或突擊（Flurry Rush）結束時的硬直期間，暫停手持物品",
-          "按 B 取消手持",
+        sections: [
+          {
+            title: "持物取消（Item Hold Cancel）",
+            tags: ["All Versions"],
+            steps: [
+              "空中攻擊落地硬直期間，或突擊（Flurry Rush）結束時的硬直期間，暫停手持物品",
+              "按 B 取消手持",
+            ],
+          },
         ],
       },
       {
         tab: "Turnaround",
-        name: "轉身取消（Turnaround Cancel / Quick Backflip）",
         video: "Landing Cancel.mp4",
-        steps: [
-          "按住 ZL + 左搖桿往▼ + 輸入 X，執行後空翻",
-          "在空中放開 ZL，保持左搖桿往 ▼",
-          "落地瞬間林克完全轉身前輸入 ZL + X",
+        sections: [
+          {
+            title: "轉身取消（Turnaround Cancel / Quick Backflip）",
+            tags: ["All Versions"],
+            steps: [
+              "按住 ZL + 左搖桿往▼ + 輸入 X，執行後空翻",
+              "在空中放開 ZL，保持左搖桿往 ▼",
+              "落地瞬間林克完全轉身前輸入 ZL + X",
+            ],
+            note: "※ 只是後空翻比較長使用，基本上鎖定跳（按住 ZL 的跳躍）都可以。",
+          },
         ],
-        note: "※ 只是後空翻比較長使用，基本上鎖定跳（按住 ZL 的跳躍）都可以。",
       },
       {
         tab: "Stasis",
-        name: "靜止取消（Stasis Cancel）",
         video: "Stasis Cancel.mp4",
-        steps: [
-          "希卡道具選到靜止器",
-          "按住 ZR 放開射箭",
-          "射箭瞬間按 L 再按 A 靜止",
+        sections: [
+          {
+            title: "靜止取消（Stasis Cancel）",
+            tags: ["All Versions"],
+            steps: [
+              "希卡道具選到靜止器",
+              "按住 ZR 放開射箭",
+              "射箭瞬間按 L 再按 A 靜止",
+            ],
+          },
         ],
       },
     ],
@@ -3472,16 +3502,111 @@ export const typeContent: Record<string, TypeContent> = {
 
   "totk-20": {
     videoFolder: "totk-endlag cancel",
-    principle: "內容整理中，敬請期待。",
+    principle: "盾反、投擲、高空落地攻擊、後空翻等等__後硬直（Endlag）__較長，會讓林克比較有破綻，硬直期間林克比較沒有防備，可以靠一些內建操作來取消掉這些硬直。",
     methods: [
       {
-        tab: "Hopback Cancel",
+        tab: "Switch",
+        sections: [
+          {
+            title: "切換取消（Swap / Switch Cancel）",
+            tags: ["All Versions"],
+            steps: ["盾反成功判定或是投擲動作發生後，切換武器或盾牌"],
+            note: "※ 盾反時快速選單按 X 丟棄（Drop）也可以取消硬直。",
+          },
+        ],
+      },
+      {
+        tab: "Jump",
+        sections: [
+          {
+            title: "跳躍取消（Jump Cancel）",
+            tags: ["All Versions"],
+            steps: ["按 Y 或按住 Y，攻擊過程或結束時，在硬直期間按下 X 跳"],
+            note: "※ X 和 B 有設定切換時按 B。",
+          },
+        ],
+      },
+      {
+        tab: "Item Hold",
+        sections: [
+          {
+            title: "持物取消（Item Hold Cancel）",
+            tags: ["All Versions"],
+            steps: [
+              "盾反判定後手持物品",
+              "蹲下或打開望遠鏡取消手持",
+            ],
+            note: "※ 較少被使用，盾反的硬直多以切換裝備來取消。",
+          },
+        ],
+      },
+      {
+        tab: "Rune",
+        sections: [
+          {
+            title: "投擲取消（Rune Throw Cancel）",
+            tags: ["All Versions"],
+            steps: [
+              "按住 R 放開投擲",
+              "投擲完按 L 啟動繼承後按 B 取消技能",
+            ],
+          },
+        ],
+      },
+      {
+        tab: "Hopback",
         video: "Hopback Cancel.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        sections: [
+          {
+            title: "後跳重置（Hopback Cancel）",
+            tags: ["All Versions"],
+            steps: [
+              "按住 ZL，左搖桿往 ▼ 按 X 後空翻",
+              "起跳或在空中按下 Y",
+              "在空中卸掉武器，林克的體態會從「後跳中」恢復成單純「空中落下」的樣子",
+            ],
+            note: [
+              "※ 通常會在空中把盾牌裝備回去，並使用踩盾跳相關連續技。",
+              "※ 向後 SBR 時，後跳重置後的踩盾跳會往後跳。",
+            ],
+          },
+        ],
+      },
+      {
+        tab: "Shield Swap",
+        sections: [
+          {
+            title: "冷切盾取消（Shield Swap Cancel）",
+            tags: ["～Ver.1.1.1"],
+            steps: [
+              "空中攻擊落地、跳斬、突擊完硬直期間按住 L",
+              "放開 L 讓技能輪盤消失的瞬間，十字鍵按 ◀︎ 打開盾牌的快速選單，並切換盾牌",
+            ],
+            note: [
+              "※ 高空落下時故意跳斬再冷切盾，開始落下前按 R 俯衝會重置高度判定，可以取消落下判定。",
+              "※ 也可以用在「餘料糾纏（Fuse Entanglement）」。",
+            ],
+          },
+        ],
       },
     ],
-    notes: [{ text: "內容整理中，敬請期待。" }],
-    videos: [],
+    notes: [
+      { text: "可以用在「衛星迴力鏢（Rotating Boomerang）」，迴力鏢向上投擲之後可以快速移動，讓迴力鏢產生迴轉。" },
+    ],
+    videos: [
+      {
+        id: "zFLuHyITm00",
+        title: "番外01 - 實用技巧攻略(一)｜王國之淚也通用的曠野之息技巧解說！",
+        desc: "基本上沒寫某版本以下的基本上新版也能用。",
+        at: 969,
+      },
+      {
+        id: "Y3AUNIheO84",
+        title: "番外05 - 實用技巧攻略(三)｜王淚戰鬥系統的精髓",
+        desc: "基本上沒寫某版本以下的基本上新版也能用。",
+        at: 617,
+      },
+    ],
   },
 
   "eow-01": {
