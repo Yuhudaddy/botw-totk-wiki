@@ -11,6 +11,10 @@ import openpyxl, re, json, collections
 ROOT = '/Users/yuhudaddy/Desktop/yuda website'
 GAMES = {'BotW': 'botw', 'TotK': 'totk', 'EoW': 'eow', 'SSBU': 'ssbu', 'AoC': 'aoc', 'AoI': 'aoi'}
 
+# 只有「狀態」欄標為已上架的列才會出現在網站上。
+# 校稿完一批就把該列的狀態改成「已上架」，再重跑這支腳本即可上線。
+PUBLISH_STATES = {'已上架'}
+
 KIND = {
     '遊戲名稱縮寫': 'game',
     '技巧縮寫': 'abbr',
@@ -68,12 +72,16 @@ for zh, en, ja in re.findall(r'\{ zh: "([^"]*)"(?:, en: "([^"]*)")?(?:, ja: "([^
 wb = openpyxl.load_workbook(f'{ROOT}/docs/glossary-terms-tracker.xlsx')
 merged = {}
 order = []
+skipped = 0
 for sheet, game in GAMES.items():
     ws = wb[sheet]
     for r in range(2, ws.max_row + 1):
         c = [clean(ws.cell(row=r, column=i).value) for i in range(1, 11)]
-        _, kind_zh, abbr, en, zh, desc, aliases, _, path, note = c
+        state, kind_zh, abbr, en, zh, desc, aliases, _, path, note = c
         if not abbr or not zh:
+            continue
+        if state not in PUBLISH_STATES:
+            skipped += 1
             continue
         if path == '/types/glossary':
             path = None       # 指向術語對照頁本身，不需要列成來源連結
@@ -201,7 +209,7 @@ w('')
 open(f'{ROOT}/src/data/glossary.ts', 'w', encoding='utf-8').write('\n'.join(lines))
 
 # ── 統計 ──
-print(f'條目：{len(entries)}（試算表 328 列，合併跨遊戲同義詞後）')
+print(f'已上架條目：{len(entries)}（另有 {skipped} 列尚未標為已上架，未輸出到網站）')
 print(f'有英文全名：{sum(1 for e in entries if e["en"])}')
 print(f'有日文：    {sum(1 for e in entries if e["ja"])}')
 print(f'有說明：    {sum(1 for e in entries if e["description"])}')
