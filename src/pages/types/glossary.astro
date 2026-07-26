@@ -33,8 +33,6 @@ const entries = glossaryEntries.map((entry) => ({
       </div>
 
       <div class="glossary-signal pointer-events-none" aria-hidden="true">
-        <span class="signal-line signal-line-a"></span>
-        <span class="signal-line signal-line-b"></span>
         <div class="signal-nodes">
           {
             glossaryGames.map((game) => (
@@ -143,27 +141,6 @@ const entries = glossaryEntries.map((entry) => ({
       background-size: 26px 26px;
       content: "";
     }
-    .signal-line {
-      position: absolute;
-      z-index: 1;
-      height: 1px;
-      background: var(--accent);
-      opacity: 0.38;
-      transform-origin: left center;
-      transition: opacity 220ms ease, transform 220ms ease;
-    }
-    .signal-line-a {
-      left: 3%;
-      top: 35%;
-      width: 91%;
-      transform: rotate(18deg);
-    }
-    .signal-line-b {
-      left: 9%;
-      top: 65%;
-      width: 74%;
-      transform: rotate(-24deg);
-    }
     .signal-nodes {
       position: absolute;
       inset: 15% 9%;
@@ -190,9 +167,6 @@ const entries = glossaryEntries.map((entry) => ({
     .glossary-hero[data-active-game="all"] .signal-node {
       opacity: 0.42;
     }
-    .glossary-hero[data-active-game="all"] .signal-line {
-      opacity: 0.42;
-    }
     .glossary-hero[data-active-game="botw"] .signal-node,
     .glossary-hero[data-active-game="totk"] .signal-node,
     .glossary-hero[data-active-game="eow"] .signal-node,
@@ -210,14 +184,6 @@ const entries = glossaryEntries.map((entry) => ({
       color: var(--accent);
       opacity: 0.9;
       transform: translateY(-3px);
-    }
-    .glossary-hero[data-active-game="botw"] .signal-line,
-    .glossary-hero[data-active-game="totk"] .signal-line,
-    .glossary-hero[data-active-game="eow"] .signal-line,
-    .glossary-hero[data-active-game="ssbu"] .signal-line,
-    .glossary-hero[data-active-game="aoc"] .signal-line,
-    .glossary-hero[data-active-game="aoi"] .signal-line {
-      opacity: 0.15;
     }
     .glossary-filters {
       display: flex;
@@ -466,7 +432,6 @@ const entries = glossaryEntries.map((entry) => ({
       }
     }
     @media (prefers-reduced-motion: reduce) {
-      .signal-line,
       .signal-node,
       .glossary-filter,
       .glossary-chevron {

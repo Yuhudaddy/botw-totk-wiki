@@ -281,7 +281,9 @@ const schematicsPerPage = 12;
       </header>
 
       <div class="schematics-toolbar">
-        <div class="schematics-tabs" role="tablist" aria-label="藍圖分類">
+        {/* 分類切換：滑動膠囊表示選中，桌面 hover 時中文換成英文漸層字 */}
+        <div class="schematics-tabs" role="tablist" aria-label="藍圖分類" data-schematics-tabs data-active={categories[0].id}>
+          <span class="schematics-thumb" aria-hidden="true"></span>
           {
             categories.map((category, index) => (
               <button
@@ -292,15 +294,16 @@ const schematicsPerPage = 12;
                 id={`schematics-tab-${category.id}`}
                 data-schematics-tab={category.id}
               >
-                <span>{category.label}</span>
-                <strong>{category.en}</strong>
+                <span class="schematics-tab-zh">{category.label}</span>
+                <span class={`schematics-tab-en schematics-tab-en-${category.id}`} aria-hidden="true">{category.en}</span>
                 <em>{String(category.items.length).padStart(2, "0")}</em>
               </button>
             ))
           }
         </div>
 
-        <div class="schematics-view-toggle" aria-label="圖片展示方式">
+        <div class="schematics-view-toggle" aria-label="圖片展示方式" data-schematics-view-toggle data-active="grid">
+          <span class="schematics-view-thumb" aria-hidden="true"></span>
           <button type="button" aria-pressed="true" data-schematics-view="grid" aria-label="圖塊展示">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />
@@ -726,6 +729,7 @@ const schematicsPerPage = 12;
     }
 
     .schematics-tabs {
+      position: relative;
       display: inline-grid;
       grid-template-columns: repeat(2, minmax(150px, 1fr));
       gap: 0;
@@ -735,14 +739,32 @@ const schematicsPerPage = 12;
       background: var(--surface);
     }
 
+    /* 選中狀態＝滑動填色膠囊（寬度剛好是自身寬，故 translateX(100%) 正好對齊右格） */
+    .schematics-thumb {
+      position: absolute;
+      z-index: 0;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: calc(50% - 3px);
+      border-radius: 9px;
+      background: var(--surface-2);
+      transition: transform 240ms cubic-bezier(0.22, 0.8, 0.36, 1);
+    }
+
+    .schematics-tabs[data-active="playful"] .schematics-thumb {
+      transform: translateX(100%);
+    }
+
     .schematics-tabs button {
       position: relative;
+      z-index: 1;
       display: grid;
-      min-height: 64px;
+      min-height: 54px;
       grid-template-columns: 1fr auto;
       align-items: center;
-      gap: 8px 16px;
-      padding: 13px 16px;
+      gap: 0 14px;
+      padding: 12px 16px;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -751,51 +773,84 @@ const schematicsPerPage = 12;
       cursor: pointer;
     }
 
-    .schematics-tabs button + button {
-      border-left: 1px solid var(--border-soft);
+    /* 中文與英文疊在同一格，hover 時互換 */
+    .schematics-tab-zh,
+    .schematics-tab-en {
+      grid-row: 1;
+      grid-column: 1;
+      transition: opacity 220ms ease, transform 220ms ease;
     }
 
-    .schematics-tabs button[aria-selected="true"] {
-      background:
-        linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 76%),
-        color-mix(in srgb, var(--surface) 86%, var(--schematic-green-soft));
-      color: var(--ink);
-    }
-
-    .schematics-tabs button[aria-selected="true"]::before {
-      content: "";
-      position: absolute;
-      inset: -1px auto -1px -1px;
-      width: 3px;
-      background: var(--accent);
-    }
-
-    .schematics-tabs span {
-      color: var(--ink);
+    .schematics-tab-zh {
+      color: var(--text);
       font-size: 15px;
       font-weight: 500;
     }
 
-    .schematics-tabs strong,
-    .schematics-tabs em {
+    .schematics-tabs button[aria-selected="true"] .schematics-tab-zh {
+      color: var(--ink);
+    }
+
+    .schematics-tab-en {
       font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .schematics-tab-en-practical {
+      background-image: linear-gradient(105deg, #6fae95 0%, #4f826f 55%, #3a6153 100%);
+    }
+
+    .schematics-tab-en-playful {
+      background-image: linear-gradient(105deg, #e0997c 0%, #c96442 55%, #a44c2f 100%);
+    }
+
+    /* 深色主題用較亮的漸層，避免深色端沉進背景 */
+    [data-theme="dark"] .schematics-tab-en-practical {
+      background-image: linear-gradient(105deg, #a5d9c4 0%, #7ba994 55%, #5c8a75 100%);
+    }
+
+    [data-theme="dark"] .schematics-tab-en-playful {
+      background-image: linear-gradient(105deg, #f0a689 0%, #d97757 55%, #b85a3c 100%);
+    }
+
+    .schematics-tabs em {
+      grid-row: 1;
+      grid-column: 2;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
       font-style: normal;
       font-weight: 500;
       letter-spacing: 1px;
+      transition: color 180ms ease;
     }
 
-    .schematics-tabs strong {
-      grid-column: 1;
-      color: var(--muted);
-      font-size: 10px;
-      text-transform: uppercase;
-    }
-
-    .schematics-tabs em {
-      grid-row: 1 / span 2;
-      grid-column: 2;
+    .schematics-tabs button[aria-selected="true"] em {
       color: var(--accent);
-      font-size: 11px;
+    }
+
+    /* 中／英互換只在有滑鼠的裝置啟用；觸控裝置維持中文＋數字 */
+    @media (hover: hover) and (pointer: fine) {
+      .schematics-tabs button:hover .schematics-tab-zh,
+      .schematics-tabs button:focus-visible .schematics-tab-zh {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      .schematics-tabs button:hover .schematics-tab-en,
+      .schematics-tabs button:focus-visible .schematics-tab-en {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .schematics-panel[hidden] {
@@ -803,6 +858,7 @@ const schematicsPerPage = 12;
     }
 
     .schematics-view-toggle {
+      position: relative;
       display: inline-flex;
       overflow: hidden;
       border: 1px solid var(--border-strong);
@@ -810,7 +866,25 @@ const schematicsPerPage = 12;
       background: var(--surface);
     }
 
+    .schematics-view-thumb {
+      position: absolute;
+      z-index: 0;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: calc(50% - 3px);
+      border-radius: 5px;
+      background: color-mix(in srgb, var(--accent) 11%, transparent);
+      transition: transform 240ms cubic-bezier(0.22, 0.8, 0.36, 1);
+    }
+
+    .schematics-view-toggle[data-active="list"] .schematics-view-thumb {
+      transform: translateX(100%);
+    }
+
     .schematics-view-toggle button {
+      position: relative;
+      z-index: 1;
       display: grid;
       width: 44px;
       height: 44px;
@@ -820,14 +894,10 @@ const schematicsPerPage = 12;
       background: transparent;
       color: var(--muted);
       cursor: pointer;
-    }
-
-    .schematics-view-toggle button + button {
-      border-left: 1px solid var(--border-soft);
+      transition: color 180ms ease;
     }
 
     .schematics-view-toggle button[aria-pressed="true"] {
-      background: color-mix(in srgb, var(--accent) 11%, transparent);
       color: var(--accent);
     }
 
@@ -1315,16 +1385,13 @@ const schematicsPerPage = 12;
         min-width: 0;
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .schematics-tabs button + button {
-        border-left: 1px solid var(--border-soft);
-      }
       .schematics-tabs button {
-        min-height: 58px;
-        gap: 5px 8px;
-        padding: 10px 11px;
+        min-height: 50px;
+        gap: 0 8px;
+        padding: 10px 13px;
       }
-      .schematics-tabs span { font-size: 13px; }
-      .schematics-tabs strong { font-size: 9px; }
+      .schematics-tab-zh { font-size: 13px; }
+      .schematics-tabs em { font-size: 11px; }
       .schematics-view-toggle {
         flex: 0 0 auto;
         align-self: flex-end;
@@ -1426,6 +1493,8 @@ const schematicsPerPage = 12;
 
   <script>
     const schematicTabs = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-schematics-tab]"));
+    const schematicTabsRoot = document.querySelector<HTMLElement>("[data-schematics-tabs]");
+    const viewToggleRoot = document.querySelector<HTMLElement>("[data-schematics-view-toggle]");
     const schematicPanels = Array.from(document.querySelectorAll<HTMLElement>("[data-schematics-panel]"));
     const schematicsLibrary = document.querySelector<HTMLElement>(".schematics-library");
     const viewButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-schematics-view]"));
@@ -1531,6 +1600,9 @@ const schematicsPerPage = 12;
         schematicPanels.forEach((panel) => {
           panel.hidden = panel.dataset.schematicsPanel !== target;
         });
+
+        // 驅動滑動膠囊的位置
+        if (schematicTabsRoot && target) schematicTabsRoot.dataset.active = target;
       });
     });
 
@@ -1542,6 +1614,8 @@ const schematicsPerPage = 12;
         viewButtons.forEach((viewButton) => {
           viewButton.setAttribute("aria-pressed", String(viewButton.dataset.schematicsView === view));
         });
+
+        if (viewToggleRoot) viewToggleRoot.dataset.active = view;
       });
     });
 
