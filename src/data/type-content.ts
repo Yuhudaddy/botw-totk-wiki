@@ -3178,6 +3178,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "DUD",
+        name: "Double Unfuse Duplication",
         tags: ["All Versions"],
         sections: [
           {
@@ -3223,6 +3224,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "SID",
+        name: "Split Item Duplication",
         tags: ["Ver.1.2.0+"],
         steps: [
           "對目標素材做堆疊拆分(Stack Splitting)，拆成 1 個一堆、以及另一堆 2 個(以上)",
@@ -3235,6 +3237,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "ZISD",
+        name: "Zonai Inventory Shift Dupe",
         tags: ["All Versions"],
         steps: [
           "準備一顆要丟的膠囊（做法同 MTD）",

@@ -12,9 +12,15 @@ interface Props {
 const { method: m } = Astro.props;
 ---
 
-{m.name ? (
-  <div class="mb-3 text-[15px] font-medium text-ink">{m.name}</div>
-) : (m.tags && m.tags.length > 0) || m.difficulty || m.timeCost ? (
+{/* 白標題與適合／難易度標籤可同時存在：有 name 時標題在上、標籤列接在下方。
+    先前寫成三元判斷，導致 12 個同時設了 name 與 tags 的分頁（如 BLSS 的
+    ～Ver.1.6.0、MSD 的 ～Ver.1.1.1）版本限制標籤完全不顯示。 */}
+{m.name && (
+  <div class:list={["text-[15px] font-medium text-ink", (m.tags && m.tags.length > 0) || m.difficulty || m.timeCost ? "mb-2" : "mb-3"]}>
+    {m.name}
+  </div>
+)}
+{((m.tags && m.tags.length > 0) || m.difficulty || m.timeCost) && (
   <div class="mb-3 flex flex-wrap items-center gap-2">
     {m.tags && m.tags.length > 0 && (
       <>
@@ -37,7 +43,7 @@ const { method: m } = Astro.props;
       </span>
     )}
   </div>
-) : null}
+)}
 {m.intro && (
   <p class="mb-3 text-[13px] leading-[1.7] text-muted">{m.intro}</p>
 )}
