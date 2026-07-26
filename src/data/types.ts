@@ -89,7 +89,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "18", zh: "序章大師劍", en: "MsgNotFound Sword in Prologue" },
       { no: "19", zh: "序章林克繼承", en: "Prologue Escape" },
       { no: "20", zh: "硬直取消", en: "Endlag Cancel" },
-      { no: "21", zh: "沐比", en: "Moobe" },
+      { no: "21", zh: "沐彼", en: "Moobe" },
     ],
   },
   {
