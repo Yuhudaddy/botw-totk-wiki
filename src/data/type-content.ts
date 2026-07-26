@@ -914,7 +914,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "Clip",
         sections: [
           {
-            title: "鐵箱冰柱穿牆法（Metal Box & Cyronis Clipping）",
+            title: "鐵箱冰柱穿牆法（Metal Box & Cryonis Clipping）",
             steps: [
               { text: "通關到有鐵箱的樓層，清掉鐵箱周圍的魔物", sub: ["初級：4F", "中級：1F", "頂級：4F"] },
               "用磁吸將鐵箱拉到靠牆，距離牆壁一個林克寬度的距離",
@@ -2178,7 +2178,7 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "s8wXxO8Lzis", title: "番外12(會員) - 不一定要在一始村！２種另類流程觸發『捆包無限材料增殖(Bundled Item Duplication)』(請以暫停觀看字幕)！", desc: "1/2" },
       { id: "hfWHsO1-zg4", title: "番外12 - 不用馬不用狗！詳解『捆包無限材料增殖(Bundled Item Duplication)』！（程錯原理與流程說明）" },
       { id: "wo7BDQRxag4", title: "番外11(會員) - 幹走蹺蹺板不用找萊克萊克？Yuda原創的「走狗(Zoggle)」路線！" },
-      { id: "EIruDcEuUs4", title: "番外11 - 神廟的蹺蹺板可以幹走！？幹走蹺蹺板來做「超高速飛行器(Hyper Speed Flying Mechine)」(程錯原理與流程說明｜～ver.1.2.1）" },
+      { id: "EIruDcEuUs4", title: "番外11 - 神廟的蹺蹺板可以幹走！？幹走蹺蹺板來做「超高速飛行器(Hyper Speed Flying Machine)」(程錯原理與流程說明｜～ver.1.2.1）" },
       { id: "80XD1dfAxSk", title: "番外10 - 1.2.1版最方便的武器置換和詞綴轉移！『餘料儲存（Fuse Storage）』" },
       { id: "QlJwMCtnE9A", title: "番外10(會員) - 1.2.1版最方便的武器置換和詞綴轉移！『餘料儲存（Fuse Storage）』與步驟詳細解說(Setup Breakdown)！" },
       { id: "Y3AUNIheO84", title: "番外05 - 實用技巧攻略(三)｜王淚戰鬥系統的精髓（～ver.1.2.1版）" },
@@ -2440,8 +2440,8 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "BhagRZoBQRE", title: "不廢話19 -「隱存無形並列(Cull Area Invizuggle)」", desc: "2024-08-03｜影片" },
       { id: "bzM64P6F5tU", title: "不廢話18 -「足持(Sluggle)」與「足下並列(Drop Zuggle)」", desc: "2024-07-31｜影片（未公開）｜相關：隱藏儲存法 / Cull Storage" },
       { id: "3B3f77u_TOI", title: "不廢話17 -「隱藏儲存(Cull Storage)」", desc: "2024-07-30｜影片" },
-      { id: "GZLuq0Xh8Dg", title: "不廢話08 -「攜帶式隱藏(Poratble Culling)」Ver.1.2.0～", desc: "2024-07-17｜Shorts / 短片" },
-      { id: "mE-uVcRvMes", title: "不廢話08 -「攜帶式隱藏(Poratble Culling)」全版本", desc: "2024-07-16｜Shorts / 短片（未公開）" },
+      { id: "GZLuq0Xh8Dg", title: "不廢話08 -「攜帶式隱藏(Portable Culling)」Ver.1.2.0～", desc: "2024-07-17｜Shorts / 短片" },
+      { id: "mE-uVcRvMes", title: "不廢話08 -「攜帶式隱藏(Portable Culling)」全版本", desc: "2024-07-16｜Shorts / 短片（未公開）" },
       { id: "rGCvHgch9jI", title: "不廢話07 -「萊克吞桿隱藏(LLSC, Like-Like Stick Culling)」", desc: "2024-07-16｜影片" },
       { id: "qnq6E_8b9rU", title: "不廢話06 -「纏桿隱藏(SDC Culling)」", desc: "2024-07-14｜影片" },
       { id: "s8wXxO8Lzis", title: "番外12(會員) - 捆包無限材料增殖 2種另類流程", desc: "2024-06-22｜影片｜相關：直接離開隱藏區 / Outside Cull Area" },
@@ -4115,7 +4115,7 @@ export const typeContent: Record<string, TypeContent> = {
           { zh: "按鍵設定", en: "Button Setting", desc: "建議至少將右搖桿設為強攻擊、關閉「快推向上跳躍」，以減少實戰中的誤操作。其餘設定依照使用者習慣，或角色特性再做調整（如需要 C 反可以設置 L 為必殺技、ZR 為跳等等）" },
           { zh: "肌肉記憶／降低思考時間", en: "Muscle Memory", desc: "熟悉角色的技能和移動慣性，透過反覆練習基礎操作讓手部產生記憶，在對戰中能反射性地做出動作而不必停下思考。" },
           { zh: "空中迴避", en: "Air Dodge", desc: "在空中按下防禦鍵可獲得短暫無敵，若同時推動搖桿還能朝特定方向進行位移閃避，只是後硬直會比較長一點。" },
-          { zh: "受身", en: "Tech", desc: "被擊飛並即將撞擊地面或牆壁的瞬間按下防禦鍵，可瞬間恢復姿態站立，避免倒地被Job Lock。" },
+          { zh: "受身", en: "Tech", desc: "被擊飛並即將撞擊地面或牆壁的瞬間按下防禦鍵，可瞬間恢復姿態站立，避免倒地被Jab Lock。" },
           { zh: "攻擊受身", en: "Attack Tech", desc: "有時受身反而會被追，因此在被擊飛、硬直結束後，落地前按下 A 或 B 等攻擊，也能恢復為一般站立的狀態。" },
           { zh: "小跳攻擊", en: "Short Hop Attack", desc: "同時按下跳躍與攻擊鍵，能讓角色直接以較低的跳躍高度使出空中攻擊。" },
           { zh: "隕石攻擊", en: "Meteor", desc: "使用具有「向下擊飛」判定的招式準確打中對手，可將對手垂直重擊扣落於場外。" },
