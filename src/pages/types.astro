@@ -13,20 +13,30 @@ import { GAME_LOGOS } from "../data/gameLogos";
   {/* 標題 */}
   <section class="border-b border-border-soft">
     <div class="r-types-hero mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
-      <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
-        <a href={href("/")} class="no-underline text-muted">首頁</a>
-        <span>/</span>
-        <span class="text-ink">主題解說</span>
+      <div class="r-types-hero-content">
+        <div>
+          <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
+            <a href={href("/")} class="no-underline text-muted">首頁</a>
+            <span>/</span>
+            <span class="text-ink">主題解說</span>
+          </div>
+          <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+            Browse by Series · 系列索引
+          </div>
+          <h1 class="r-types-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
+            主題解說
+          </h1>
+          <p class="r-types-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
+            各遊戲的各種主題的攻略、原理、步驟說明。
+          </p>
+        </div>
+        <a href={href("/types/glossary")} class="r-terminology-link ring-hover no-underline">
+          <span>專業術語索引</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
       </div>
-      <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
-        Browse by Series · 系列索引
-      </div>
-      <h1 class="r-types-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
-        主題解說
-      </h1>
-      <p class="r-types-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
-        各遊戲的各種主題的攻略、原理、步驟說明。
-      </p>
     </div>
   </section>
 
@@ -133,6 +143,30 @@ import { GAME_LOGOS } from "../data/gameLogos";
   .portal {
     height: clamp(52px, 9vw, 64px);
   }
+
+  .r-types-hero-content {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+  }
+  .r-terminology-link {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--accent);
+    padding: 9px 14px;
+    font-size: 14px;
+    transition: border-color 180ms ease, background-color 180ms ease;
+  }
+  .r-terminology-link:hover,
+  .r-terminology-link:focus-visible {
+    border-color: var(--brand);
+  }
   .portal-mark {
     width: clamp(24px, 6vw, 32px);
     height: clamp(24px, 6vw, 32px);
@@ -195,6 +229,14 @@ import { GAME_LOGOS } from "../data/gameLogos";
     }
     .r-types-subtitle {
       font-size: 12px;
+    }
+    .r-types-hero-content {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 17px;
+    }
+    .r-terminology-link {
+      font-size: 13px;
     }
     .r-type-group-title {
       font-size: 24px;
