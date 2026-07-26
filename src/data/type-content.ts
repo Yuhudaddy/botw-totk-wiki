@@ -3648,6 +3648,28 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "totk-21": {
+    showEmptyMedia: true,
+    methods: [
+      { tab: "WST" },
+      { tab: "Zuggle" },
+      { tab: "Drop" },
+      { tab: "SLD" },
+      { tab: "Pickup" },
+    ],
+    principle:
+      "2024/1/6 由 【mulberry】 玩家發現。固定林克攀爬的座標，重新計算實際位置時造成超長距離的瞬間移動使周圍呈現未加載的狀態。",
+    notes: [
+      {
+        text: "Nintendo Switch 2 Edition 版效能提升的關係，幾乎無法產生延遲（lag），因此需要延遲或未加載的方法（血月、WST 等）都無法在 NS2 版上使用。",
+      },
+    ],
+    videos: [
+      { id: "95RPAqAllJo", title: "不廢話21 -「沐彼並列/繼承/掉落/幽體繼承(Advanced Moobe glitches)」(適用：Ver.1.2.0～)" },
+      { id: "0nHE87qDars", title: "番外14 - 最簡單的「詞綴轉移(WST)」！找噁手手製作完美最強英傑武器！(Moobe WST 限定NS1)" },
+    ],
+  },
+
   "eow-01": {
     methods: [
       {
