@@ -81,12 +81,12 @@ const entries = glossaryEntries.map((entry) => ({
             class="glossary-entry"
             data-glossary-entry
             data-games={entry.games.join(" ")}
-            data-search={[entry.label, entry.title, entry.description, ...(entry.aliases ?? [])].join(" ").toLowerCase()}
+            data-search={[entry.abbr, entry.en, entry.ja, entry.zh, entry.description, ...(entry.aliases ?? [])].filter(Boolean).join(" ").toLowerCase()}
           >
             <summary class="glossary-summary">
               <span class="min-w-0">
-                <span class="glossary-label">{entry.label}</span>
-                <span class="glossary-title">{entry.title}</span>
+                <span class="glossary-label">{entry.abbr}</span>
+                <span class="glossary-title">{entry.en ?? entry.zh}</span>
               </span>
               <span class="glossary-summary-end">
                 <span class="glossary-tags">
@@ -99,7 +99,7 @@ const entries = glossaryEntries.map((entry) => ({
             </summary>
             <div class="glossary-answer">
               <p>{entry.description}</p>
-              <p class="glossary-aliases">別名：{[entry.title, ...(entry.aliases ?? [])].join(" ／ ")}</p>
+              <p class="glossary-aliases">別名：{[entry.zh, entry.ja, ...(entry.aliases ?? [])].filter(Boolean).join(" ／ ")}</p>
             </div>
           </details>
         ))
