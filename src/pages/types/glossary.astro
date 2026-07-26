@@ -3,8 +3,17 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href } from "../../lib/url";
 import { GAME_LOGOS } from "../../data/gameLogos";
 import { glossaryEntries, glossaryFamilies, glossaryGames } from "../../data/glossary";
+import { typeGroups } from "../../data/types";
 
 const tagOf = (id: string) => glossaryGames.find((game) => game.id === id)?.tag ?? id;
+
+// 來源連結顯示主題頁的中文名，而不是 botw-02 這種內部代號
+const pageLabels = new Map<string, string>();
+typeGroups.forEach((group) =>
+  group.items.forEach((item) =>
+    pageLabels.set(`/types/${group.game}-${item.no}`, `${group.shortLabel ?? group.label} · ${item.zh}`)
+  )
+);
 
 // 分組鍵：英數開頭歸該字母，中文等其他開頭一律歸「#」放最後
 const groupKey = (abbr: string) => {
@@ -148,7 +157,7 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
                       {entry.sources && entry.sources.length > 0 && (
                         <p class="term-sources">
                           {entry.sources.map((path) => (
-                            <a href={href(path)}>{path.replace("/types/", "").replace("/videos", "影片索引")} →</a>
+                            <a href={href(path)}>{pageLabels.get(path) ?? path} →</a>
                           ))}
                         </p>
                       )}

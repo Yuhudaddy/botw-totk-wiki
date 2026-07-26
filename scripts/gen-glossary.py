@@ -75,6 +75,8 @@ for sheet, game in GAMES.items():
         _, kind_zh, abbr, en, zh, desc, aliases, _, path, note = c
         if not abbr or not zh:
             continue
+        if path == '/types/glossary':
+            path = None       # 指向術語對照頁本身，不需要列成來源連結
 
         fam = None
         m = re.search(r'([一-鿿A-Za-z]+)\s*家族', note or '')

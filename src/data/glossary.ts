@@ -51,7 +51,7 @@ export const glossaryGames: GlossaryGame[] = [
 ];
 
 export const glossaryEntries: GlossaryEntry[] = [
-  { id: "botw", games: ["botw"], kind: "game", abbr: "BotW", en: "Breath of the Wild", zh: "曠野之息", aliases: ["BoTW", "Zelda BotW", "薩爾達傳說 曠野之息"], description: "《曠野之息》的常用英文縮寫。", sources: ["/types/glossary"] },
+  { id: "botw", games: ["botw"], kind: "game", abbr: "BotW", en: "Breath of the Wild", zh: "曠野之息", aliases: ["BoTW", "Zelda BotW", "薩爾達傳說 曠野之息"], description: "《曠野之息》的常用英文縮寫。" },
   { id: "ist", games: ["botw"], kind: "abbr", abbr: "IST", en: "Inventory Slot Transfer", zh: "轉存格", aliases: ["背包", "格子", "轉存格繼承"], description: "利用背包格位與存讀檔流程造成格位轉移的技巧。", sources: ["/types/botw-02"] },
   { id: "pe", games: ["botw"], kind: "abbr", abbr: "PE", en: "Prompt Entanglement", zh: "同位操作", aliases: ["同位", "提示糾纏", "Prompt"], description: "把選單提示與另一個物品或格位狀態糾纏在一起的轉存格應用。", sources: ["/types/botw-02"] },
   { id: "dc", games: ["botw"], kind: "abbr", abbr: "DC", en: "Desync Cursor", zh: "脫頁游標", aliases: ["游標錯位", "脫頁", "Desync"], description: "游標狀態與實際頁面或格位不同步的操作狀態。", sources: ["/types/botw-02"] },
@@ -157,7 +157,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   { id: "pause-buffer", games: ["botw", "totk"], kind: "term", abbr: "Pause Buffer", en: "Pause Buffer / Pause Buffering", zh: "選單緩衝", aliases: ["選單緩衝"], description: "逐幀開關選單調整位置，避免系統查詢真實座標。", sources: ["/types/botw-23", "/types/totk-14"] },
   { id: "multi-shot-bow-overload", games: ["botw"], kind: "term", abbr: "Multi-shot Bow Overload", en: "Multi-shot Bow Method / Overload", zh: "落弓過載法", aliases: ["落弓過載", "雙弓過載"], description: "最常用的複製與轉存格製造法。", sources: ["/types/botw-13"] },
   { id: "mountable-back-slash", games: ["botw"], kind: "term", abbr: "Mountable Back Slash", en: "Mountable Back Slash", zh: "騎背砍", aliases: ["騎背砍"], description: "不耗耐久、對人馬最高效的輸出方式。", sources: ["/types/botw-03"] },
-  { id: "totk", games: ["totk"], kind: "game", abbr: "TotK", en: "Tears of the Kingdom", zh: "王國之淚", aliases: ["ToTK", "Zelda TotK", "薩爾達傳說 王國之淚"], description: "《王國之淚》的常用英文縮寫。", sources: ["/types/glossary"] },
+  { id: "totk", games: ["totk"], kind: "game", abbr: "TotK", en: "Tears of the Kingdom", zh: "王國之淚", aliases: ["ToTK", "Zelda TotK", "薩爾達傳說 王國之淚"], description: "《王國之淚》的常用英文縮寫。" },
   { id: "fe", games: ["totk"], kind: "abbr", abbr: "FE", en: "Fuse Entanglement", zh: "餘料糾纏", aliases: ["餘料糾纏", "Mineru FE"], family: "fuse", description: "讓餘料建造或裝備狀態與另一個物件狀態糾纏的技巧。", sources: ["/types/totk-06"] },
   { id: "fs", games: ["totk"], kind: "abbr", abbr: "FS", en: "Fuse Storage", zh: "餘料儲存", aliases: ["餘料存留", "儲存類"], family: "fuse", description: "保留或延遲餘料狀態，以供後續操作使用。", sources: ["/types/totk-06"] },
   { id: "sdc", games: ["totk"], kind: "abbr", abbr: "SDC", en: "Stick Desync Clip", zh: "纏桿", aliases: ["Stick Desync Clipping", "纏桿隱藏"], description: "讓棍棒或物件狀態不同步，進一步進行穿牆或隱藏。", sources: ["/types/totk-07"] },
@@ -258,7 +258,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   { id: "llsc", games: ["totk"], kind: "abbr", abbr: "LLSC", en: "Like-Like Stick Culling", zh: "萊克吞桿隱藏", aliases: ["萊克吞桿隱藏"], family: "cull", description: "用萊克吞下纏桿觸發隱藏。", sources: ["/types/totk-08"] },
   { id: "enemy-pickpocket", games: ["totk"], kind: "term", abbr: "Enemy Pickpocket", en: "Enemy Pickpocketing", zh: "魔物扒竊", aliases: ["魔物扒竊"], description: "從魔物身上取走裝備。", sources: ["/types/totk-09"] },
   { id: "llsd", games: ["totk"], kind: "abbr", abbr: "LLSD", zh: "萊克虛幻手持法", aliases: ["萊克虛幻手持"], description: "用萊克製造的異常手持狀態。", sources: ["/types/totk-14"] },
-  { id: "eow", games: ["eow"], kind: "game", abbr: "EoW", en: "Echoes of Wisdom", zh: "智慧的再現", aliases: ["Zelda EoW", "薩爾達傳說 智慧的再現"], description: "《智慧的再現》的常用英文縮寫。", sources: ["/types/glossary"] },
+  { id: "eow", games: ["eow"], kind: "game", abbr: "EoW", en: "Echoes of Wisdom", zh: "智慧的再現", aliases: ["Zelda EoW", "薩爾達傳說 智慧的再現"], description: "《智慧的再現》的常用英文縮寫。" },
   { id: "menu-storage", games: ["eow"], kind: "term", abbr: "Menu Storage", en: "Menu Storage", zh: "選單儲存", aliases: ["選單存留", "儲存"], description: "利用選單狀態保留或延後某些操作結果。", sources: ["/types/eow-01"] },
   { id: "skybound", games: ["eow"], kind: "term", abbr: "Skybound", en: "Skybound", zh: "飛天技巧", aliases: ["飛天", "空中移動"], description: "與升空、空中移動或高度取得相關的技巧。", sources: ["/types/eow-03"] },
   { id: "rww", games: ["eow"], kind: "abbr", abbr: "RWW", en: "Random Wrong Warp", zh: "隨機錯傳", aliases: ["隨機錯傳"], description: "游標離開傳送點後被轉成無效資料，按 A 會傳送到隨機區域。", sources: ["/types/eow-01"] },
@@ -266,7 +266,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   { id: "void-out", games: ["eow"], kind: "term", abbr: "Void out", en: "Void out", zh: "虛反", aliases: ["虛反", "落界"], description: "白霧或高空雲層邊界會觸發的落界判定，是選單儲存的觸發條件。", sources: ["/types/eow-01"] },
   { id: "prologue-link-transfer", games: ["eow"], kind: "term", abbr: "Prologue Link Transfer", en: "Prologue Link Transfer", zh: "序章林克繼承", aliases: ["序章林克繼承", "序章繼承"], description: "用選單儲存讓讀檔清單與 Game Over 選單重疊，把序章林克帶進主世界。", sources: ["/types/eow-01"] },
   { id: "mlocation-index", games: ["eow"], kind: "concept", abbr: "MLocation Index", en: "MLocation Index", zh: "傳送點陣列編號", aliases: ["傳送點陣列"], description: "不同世界傳送點共用的索引，是 IWW 的成立基礎。", sources: ["/types/eow-01"] },
-  { id: "ssbu", games: ["ssbu"], kind: "game", abbr: "SSBU", en: "Super Smash Bros. Ultimate", zh: "任天堂明星大亂鬥 特別版", aliases: ["SSB Ultimate", "大亂鬥 SP", "Smash Ultimate"], description: "《任天堂明星大亂鬥 特別版》的常用英文縮寫。", sources: ["/types/glossary"] },
+  { id: "ssbu", games: ["ssbu"], kind: "game", abbr: "SSBU", en: "Super Smash Bros. Ultimate", zh: "任天堂明星大亂鬥 特別版", aliases: ["SSB Ultimate", "大亂鬥 SP", "Smash Ultimate"], description: "《任天堂明星大亂鬥 特別版》的常用英文縮寫。" },
   { id: "tech", games: ["ssbu"], kind: "term", abbr: "Tech", en: "Tech", zh: "受身", aliases: ["受身", "Attack Tech"], description: "被擊飛並即將撞擊地面或牆壁時按防禦鍵恢復姿態。", sources: ["/types/ssbu-01"] },
   { id: "short-hop", games: ["ssbu"], kind: "term", abbr: "Short Hop", en: "Short Hop / Short Jump", zh: "小跳", aliases: ["小跳攻擊", "Short Hop Attack"], description: "按跳躍鍵後 3 幀內放開或同按兩顆跳躍鍵，做出低空跳躍。", sources: ["/types/ssbu-02"] },
   { id: "fast-fall", games: ["ssbu"], kind: "term", abbr: "Fast Fall", en: "Fast Fall / Fast-fallen", zh: "速降", aliases: ["速落", "Fast-fallen"], description: "跳躍達最高點後迅速將左搖桿往下推，加速落地。", sources: ["/types/ssbu-02"] },
@@ -360,9 +360,9 @@ export const glossaryEntries: GlossaryEntry[] = [
   { id: "irar", games: ["ssbu"], kind: "abbr", abbr: "IRAR", en: "Instant Reverse Aerial Rush", zh: "瞬間反向空中衝刺", aliases: ["瞬間反向空中衝刺"], description: "在初始衝刺的極短瞬間輸入後方向加跳躍，是幀數完美版的 RAR。", sources: ["/types/ssbu-06"] },
   { id: "initial-dash", games: ["ssbu"], kind: "concept", abbr: "Initial dash", en: "Initial dash", zh: "初始衝刺", aliases: ["初始衝刺"], description: "衝刺開始的極短瞬間，是 IRAR 的觸發窗口。", sources: ["/types/ssbu-06"] },
   { id: "max-air-speed", games: ["ssbu"], kind: "concept", abbr: "Max Air Speed", en: "Max Air Speed", zh: "最大橫向空中慣性", aliases: ["最大空中慣性"], description: "角色在空中可達到的最大橫向速度。", sources: ["/types/ssbu-06"] },
-  { id: "aoc", games: ["aoc"], kind: "game", abbr: "AoC", en: "Age of Calamity", zh: "災厄啟示錄", aliases: ["Zelda AoC", "Hyrule Warriors: Age of Calamity"], description: "《災厄啟示錄》的常用英文縮寫。", sources: ["/types/glossary"] },
+  { id: "aoc", games: ["aoc"], kind: "game", abbr: "AoC", en: "Age of Calamity", zh: "災厄啟示錄", aliases: ["Zelda AoC", "Hyrule Warriors: Age of Calamity"], description: "《災厄啟示錄》的常用英文縮寫。" },
   { id: "main-story", games: ["aoc"], kind: "term", abbr: "Main Story", en: "Main Story Walkthrough", zh: "主線攻略", aliases: ["主線", "劇情攻略"], description: "主線章節與流程攻略分類。", sources: ["/types/aoc-01"] },
   { id: "advanced-techniques", games: ["aoc"], kind: "term", abbr: "Advanced Techniques", en: "Advanced Techniques", zh: "進階技巧", aliases: ["高階技巧", "進階操作"], description: "進階操作與戰鬥技巧分類。", sources: ["/types/aoc-02"] },
-  { id: "aoi", games: ["aoi"], kind: "game", abbr: "AoI", en: "Age of Imprisonment", zh: "封印戰記", aliases: ["Zelda AoI", "Hyrule Warriors: Age of Imprisonment"], description: "《封印戰記》的常用英文縮寫。", sources: ["/types/glossary"] },
+  { id: "aoi", games: ["aoi"], kind: "game", abbr: "AoI", en: "Age of Imprisonment", zh: "封印戰記", aliases: ["Zelda AoI", "Hyrule Warriors: Age of Imprisonment"], description: "《封印戰記》的常用英文縮寫。" },
   { id: "guide-techniques", games: ["aoi"], kind: "term", abbr: "Guide & Techniques", en: "Guide & Techniques", zh: "攻略技巧", aliases: ["攻略", "技巧"], description: "封印戰記攻略與技巧內容的集合分類。", sources: ["/types/aoi-01"] },
 ];
