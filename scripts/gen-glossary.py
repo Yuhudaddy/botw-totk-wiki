@@ -1,10 +1,11 @@
 """從 docs/glossary-terms-tracker.xlsx 產生 src/data/glossary.ts。
 
 欄位對應：
-  A 狀態(不進網站) B 類型→kind  C 縮寫／用詞→abbr  D 英文全名→en  E 中文名稱→zh
-  F 簡易說明→description  G 別名／搜尋字→aliases  H 網站已收錄(不進網站)
-  I 來源路徑→sources  J 備註→family（只取「XX家族」）
-日文從 type-content.ts 的 ssbu-05 名詞清單以 zh 欄比對帶入。
+  A 狀態(不進網站)  B 類型→kind        C 縮寫／用詞→abbr   D 英文全名→en
+  E 日文名稱→ja     F 中文名稱→zh      G 簡易說明→description
+  H 別名／搜尋字→aliases              I 網站已收錄(不進網站)
+  J 來源路徑→sources                 K 備註→family（只取「XX家族」）
+日文以試算表 E 欄為準；該欄留空時，退回從 type-content.ts 的 ssbu-05 名詞清單比對帶入。
 """
 import openpyxl, re, json, collections
 
@@ -76,8 +77,8 @@ skipped = 0
 for sheet, game in GAMES.items():
     ws = wb[sheet]
     for r in range(2, ws.max_row + 1):
-        c = [clean(ws.cell(row=r, column=i).value) for i in range(1, 11)]
-        state, kind_zh, abbr, en, zh, desc, aliases, _, path, note = c
+        c = [clean(ws.cell(row=r, column=i).value) for i in range(1, 12)]
+        state, kind_zh, abbr, en, ja_cell, zh, desc, aliases, _, path, note = c
         if not abbr or not zh:
             continue
         if state not in PUBLISH_STATES:
@@ -112,9 +113,10 @@ for sheet, game in GAMES.items():
             'kind': KIND.get(kind_zh, 'term'),
             'abbr': abbr,
             'en': en,
-            # 日文只來自大亂鬥的名詞表，不可套到同名的薩爾達術語上
+            # 以試算表的日文欄為準；留空時才回頭查站內名詞表。
+            # 後備查詢限定大亂鬥，否則同名術語會誤植
             # （例：DI 在王淚是 Despawn Interrupt，與大亂鬥的「ベク変」無關）
-            'ja': ja_map.get(abbr) if game == 'ssbu' else None,
+            'ja': ja_cell or (ja_map.get(abbr) if game == 'ssbu' else None),
             'zh': zh,
             'description': desc,
             'aliases': [x.strip() for x in aliases.split(',')] if aliases else [],

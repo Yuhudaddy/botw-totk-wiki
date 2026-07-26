@@ -51,10 +51,10 @@ export const glossaryGames: GlossaryGame[] = [
 ];
 
 export const glossaryEntries: GlossaryEntry[] = [
-  { id: "botw", games: ["botw"], kind: "game", abbr: "BotW", en: "Breath of the Wild", zh: "曠野之息", aliases: ["BoTW", "Zelda BotW", "薩爾達傳說 曠野之息"], description: "《曠野之息》的常用英文縮寫。" },
-  { id: "totk", games: ["totk"], kind: "game", abbr: "TotK", en: "Tears of the Kingdom", zh: "王國之淚", aliases: ["ToTK", "Zelda TotK", "薩爾達傳說 王國之淚"], description: "《王國之淚》的常用英文縮寫。" },
-  { id: "eow", games: ["eow"], kind: "game", abbr: "EoW", en: "Echoes of Wisdom", zh: "智慧的再現", aliases: ["Zelda EoW", "薩爾達傳說 智慧的再現"], description: "《智慧的再現》的常用英文縮寫。" },
+  { id: "botw", games: ["botw"], kind: "game", abbr: "BotW", en: "Breath of the Wild", ja: "ブレスオブザワイルド（ブレワイ）", zh: "曠野之息", aliases: ["BoTW", "Zelda BotW", "薩爾達傳說 曠野之息"], description: "《曠野之息》的常用英文縮寫。" },
+  { id: "totk", games: ["totk"], kind: "game", abbr: "TotK", en: "Tears of the Kingdom", ja: "ティーアズオブザキングダム（ティアキン）", zh: "王國之淚", aliases: ["ToTK", "Zelda TotK", "薩爾達傳說 王國之淚"], description: "《王國之淚》的常用英文縮寫。" },
+  { id: "eow", games: ["eow"], kind: "game", abbr: "EoW", en: "Echoes of Wisdom", ja: "知恵のかりもの", zh: "智慧的再現", aliases: ["Zelda EoW", "薩爾達傳說 智慧的再現"], description: "《智慧的再現》的常用英文縮寫。" },
   { id: "ssbu", games: ["ssbu"], kind: "game", abbr: "SSBU", en: "Super Smash Bros. Ultimate", zh: "任天堂明星大亂鬥 特別版", aliases: ["SSB Ultimate", "大亂鬥 SP", "Smash Ultimate"], description: "《任天堂明星大亂鬥 特別版》的常用英文縮寫。" },
-  { id: "aoc", games: ["aoc"], kind: "game", abbr: "AoC", en: "Age of Calamity", zh: "災厄啟示錄", aliases: ["Zelda AoC", "Hyrule Warriors: Age of Calamity"], description: "《災厄啟示錄》的常用英文縮寫。" },
-  { id: "aoi", games: ["aoi"], kind: "game", abbr: "AoI", en: "Age of Imprisonment", zh: "封印戰記", aliases: ["Zelda AoI", "Hyrule Warriors: Age of Imprisonment"], description: "《封印戰記》的常用英文縮寫。" },
+  { id: "aoc", games: ["aoc"], kind: "game", abbr: "AoC", en: "Age of Calamity", ja: "厄災の黙示録", zh: "災厄啟示錄", aliases: ["Zelda AoC", "Hyrule Warriors: Age of Calamity"], description: "《災厄啟示錄》的常用英文縮寫。" },
+  { id: "aoi", games: ["aoi"], kind: "game", abbr: "AoI", en: "Age of Imprisonment", ja: "封印戦記", zh: "封印戰記", aliases: ["Zelda AoI", "Hyrule Warriors: Age of Imprisonment"], description: "《封印戰記》的常用英文縮寫。" },
 ];

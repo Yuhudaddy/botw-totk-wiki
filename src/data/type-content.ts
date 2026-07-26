@@ -2188,6 +2188,16 @@ export const typeContent: Record<string, TypeContent> = {
   "totk-07": {
     methods: [
       {
+        tab: "Like-Like",
+        tags: ["All Versions"],
+        steps: [
+          "將操縱桿放置於萊克萊克前方，其注意力在操縱桿上",
+          "萊克萊克吞掉操縱桿的瞬間按 A 操作操縱桿（__視角沒有移到萊克萊克上__）",
+          "再被萊克萊克要第二次，解除隱藏",
+        ],
+        note: "※ 林克此時的存在和萊克萊克肚子裡的操縱桿連結，當萊克萊克隱藏時，林克也會跟著隱藏。",
+      },
+      {
         tab: "FS",
         name: "餘料儲存（Fuse Storage）",
         steps: [
@@ -2234,6 +2244,17 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     videos: [
       { id: "bVnFIYKHMZg", title: "不廢話05 -「纏桿(Stick Desync Clip, SDC)」(適用：全版本)", desc: "NS1版的快速纏桿製作示範！" },
+      { id: "rGCvHgch9jI", title: "不廢話07 -「萊克吞桿隱藏(LLSC, Like-Like Stick Culling)」(適用：全版本)" },
+      { id: "GhCe2j_gkq8", title: "實機示範「冷餘料（Cold Fuse）」和「纏桿（SDC）」的手勢（嘴咬手機拍攝版）" },
+      { id: "FYrrFcB40uE", title: "不廢話09 -「米涅魯纏桿糾纏（YeeFE）」(適用：全版本)" },
+      { id: "BhagRZoBQRE", title: "不廢話19 -「隱存無形並列（Cull Area Invizuggle）」(適用：全版本)" },
+      { id: "bzM64P6F5tU", title: "不廢話18 -「足持（Sluggle）」與「足下並列（Drop Zuggle）」(適用：1.2.X)" },
+      { id: "fQ1WwnusSXk", title: "不廢話16 -「並列繼承（Zuggle Load Object Transfer）」與「乾坤鎖（Recall Lock）」(適用：全版本)" },
+      { id: "wUL-pHB2P7Q", title: "不廢話15 -「存讀繼承（Save Load Duping, SLD）」(適用：全版本)" },
+      { id: "AXHn-WTZh8E", title: "不廢話14 -「並列裝備（Zuggle）」(適用：全版本)" },
+      { id: "GZLuq0Xh8Dg", title: "不廢話08 -「攜帶式隱藏（Portable Culling）」(適用：Ver.1.2.0～)" },
+      { id: "mE-uVcRvMes", title: "不廢話08 -「攜帶式隱藏（Portable Culling）」(適用：全版本)" },
+      { id: "qnq6E_8b9rU", title: "不廢話06 -「纏桿隱藏（SDC Culling）」(適用：全版本)" },
     ],
   },
 
