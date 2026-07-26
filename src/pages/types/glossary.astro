@@ -2,17 +2,49 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href } from "../../lib/url";
 import { GAME_LOGOS } from "../../data/gameLogos";
-import { glossaryEntries, glossaryGames } from "../../data/glossary";
+import { glossaryEntries, glossaryFamilies, glossaryGames } from "../../data/glossary";
 
-const entries = glossaryEntries.map((entry) => ({
-  ...entry,
-  gameTags: entry.games.map((game) => glossaryGames.find((item) => item.id === game)!).filter(Boolean),
+const tagOf = (id: string) => glossaryGames.find((game) => game.id === id)?.tag ?? id;
+
+// 分組鍵：英數開頭歸該字母，中文等其他開頭一律歸「#」放最後
+const groupKey = (abbr: string) => {
+  const head = abbr.trim().charAt(0).toUpperCase();
+  return /[A-Z]/.test(head) ? head : "#";
+};
+
+const sorted = [...glossaryEntries].sort((a, b) => {
+  const ka = groupKey(a.abbr);
+  const kb = groupKey(b.abbr);
+  if (ka !== kb) return ka === "#" ? 1 : kb === "#" ? -1 : ka.localeCompare(kb);
+  const locale = ka === "#" ? "zh-Hant" : "en";
+  return a.abbr.localeCompare(b.abbr, locale, { sensitivity: "base" });
+});
+
+const groups = [...new Set(sorted.map((entry) => groupKey(entry.abbr)))].map((letter) => ({
+  letter,
+  anchor: letter === "#" ? "zh" : letter,
+  items: sorted.filter((entry) => groupKey(entry.abbr) === letter),
 }));
+
+// 家族名一併寫進搜尋索引，讓使用者打「隱藏」就能撈出整個 Cull 家族
+const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
+  [
+    entry.abbr,
+    entry.en,
+    entry.ja,
+    entry.zh,
+    entry.description,
+    entry.family ? glossaryFamilies[entry.family] : null,
+    ...(entry.aliases ?? []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 ---
 
 <BaseLayout
-  title="專業術語索引"
-  description="集中查找本站六款遊戲的名稱縮寫、專有名詞與專業術語。"
+  title="術語對照"
+  description="對照本站六款遊戲的縮寫、英文原名、日文與中文譯名。"
   active="types"
 >
   <section class="border-b border-border-soft">
@@ -23,12 +55,12 @@ const entries = glossaryEntries.map((entry) => ({
           <span>/</span>
           <a href={href("/types")} class="no-underline text-muted">主題解說</a>
           <span>/</span>
-          <span class="text-ink">專業術語索引</span>
+          <span class="text-ink">術語對照</span>
         </div>
-        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">Reference Index · 術語檢索</div>
-        <h1 class="mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">專業術語索引</h1>
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">Reference Index · 術語對照</div>
+        <h1 class="mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">術語對照</h1>
         <p class="mt-[18px] max-w-[55ch] text-[16px] leading-[1.65] text-text">
-          收錄本站各遊戲的縮寫、專有名詞與專業術語；資料會先統整，再分批加入索引。
+          對照各遊戲的縮寫、英文原名、日文與中文譯名；點開條目可看說明與對應的主題頁。
         </p>
       </div>
 
@@ -65,54 +97,76 @@ const entries = glossaryEntries.map((entry) => ({
           <circle cx="11" cy="11" r="7"></circle>
           <path d="m16.5 16.5 4 4"></path>
         </svg>
-        <input id="glossary-search" type="search" placeholder="搜尋縮寫、名稱或說明…" autocomplete="off" />
+        <input id="glossary-search" type="search" placeholder="搜尋縮寫、英文、日文或中文…" autocomplete="off" />
       </label>
-      <p class="glossary-count" aria-live="polite">
-        <span data-glossary-count>顯示 1–6 / 6 筆</span>
-        <span aria-hidden="true">·</span>
-        <span>20 筆／頁</span>
-      </p>
+      <p class="glossary-count" aria-live="polite"><span data-glossary-count>共 {sorted.length} 條</span></p>
     </div>
 
-    <div class="glossary-grid mt-7" data-glossary-results>
-      {
-        entries.map((entry) => (
-          <details
-            class="glossary-entry"
-            data-glossary-entry
-            data-games={entry.games.join(" ")}
-            data-search={[entry.abbr, entry.en, entry.ja, entry.zh, entry.description, ...(entry.aliases ?? [])].filter(Boolean).join(" ").toLowerCase()}
-          >
-            <summary class="glossary-summary">
-              <span class="min-w-0">
-                <span class="glossary-label">{entry.abbr}</span>
-                <span class="glossary-title">{entry.en ?? entry.zh}</span>
-              </span>
-              <span class="glossary-summary-end">
-                <span class="glossary-tags">
-                  {entry.gameTags.map((game) => <span class="glossary-tag">{game.tag}</span>)}
-                </span>
-                <svg class="glossary-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </span>
-            </summary>
-            <div class="glossary-answer">
-              <p>{entry.description}</p>
-              <p class="glossary-aliases">別名：{[entry.zh, entry.ja, ...(entry.aliases ?? [])].filter(Boolean).join(" ／ ")}</p>
-            </div>
-          </details>
-        ))
-      }
+    <div class="glossary-layout mt-7">
+      <div class="glossary-table" data-glossary-results>
+        <div class="term-head" aria-hidden="true">
+          <span>縮寫</span>
+          <span>English ／ 日本語</span>
+          <span>中文</span>
+          <span></span>
+          <span></span>
+        </div>
+
+        {
+          groups.map((group) => (
+            <section class="term-group" data-term-group id={`g-${group.anchor}`}>
+              <h2 class="term-letter">{group.letter}</h2>
+              <div class="term-rows">
+                {group.items.map((entry) => (
+                  <details
+                    class="term"
+                    data-term
+                    data-games={entry.games.join(" ")}
+                    data-search={searchIndex(entry)}
+                  >
+                    <summary class="term-row">
+                      {/* 主鍵本身就是英文時只放英文欄，避免縮寫欄與英文欄重複同一個詞 */}
+                      <span class="term-abbr">{entry.en === entry.abbr ? "" : entry.abbr}</span>
+                      <span class="term-en">
+                        {entry.en && <span class="term-en-main">{entry.en}</span>}
+                        {entry.ja && <span class="term-ja">{entry.ja}</span>}
+                      </span>
+                      <span class="term-zh">{entry.zh}</span>
+                      <span class="term-meta">
+                        {entry.family && <span class="term-family">{glossaryFamilies[entry.family]}</span>}
+                        {entry.games.map((game) => <span class="term-tag">{tagOf(game)}</span>)}
+                      </span>
+                      <svg class="term-chevron" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </summary>
+                    <div class="term-body">
+                      <p>{entry.description}</p>
+                      {entry.aliases && entry.aliases.length > 0 && (
+                        <p class="term-aliases">別名：{entry.aliases.join(" ／ ")}</p>
+                      )}
+                      {entry.sources && entry.sources.length > 0 && (
+                        <p class="term-sources">
+                          {entry.sources.map((path) => (
+                            <a href={href(path)}>{path.replace("/types/", "").replace("/videos", "影片索引")} →</a>
+                          ))}
+                        </p>
+                      )}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+
+        <p class="glossary-empty" data-glossary-empty hidden>找不到符合條件的術語，請改用其他關鍵字或遊戲標籤。</p>
+      </div>
+
+      <nav class="term-rail" aria-label="字母跳轉">
+        {groups.map((group) => <a href={`#g-${group.anchor}`} data-rail={group.anchor}>{group.letter}</a>)}
+      </nav>
     </div>
-
-    <p class="glossary-empty" data-glossary-empty hidden>找不到符合條件的術語，請改用其他關鍵字或遊戲標籤。</p>
-
-    <nav class="glossary-pagination mt-8" data-glossary-pagination aria-label="術語頁碼" hidden>
-      <button type="button" data-page-prev>上一頁</button>
-      <span data-glossary-page>第 1 / 1 頁</span>
-      <button type="button" data-page-next>下一頁</button>
-    </nav>
   </section>
 
   <style>
@@ -185,6 +239,7 @@ const entries = glossaryEntries.map((entry) => ({
       opacity: 0.9;
       transform: translateY(-3px);
     }
+
     .glossary-filters {
       display: flex;
       flex-wrap: wrap;
@@ -195,27 +250,22 @@ const entries = glossaryEntries.map((entry) => ({
       border: 1px solid var(--border-strong);
       border-radius: 8px;
       background: var(--surface);
-      color: var(--muted);
+      color: var(--text);
       cursor: pointer;
-      padding: 9px 14px;
+      padding: 8px 13px;
       font-family: var(--font-mono);
       font-size: 12px;
-      letter-spacing: 0.06em;
-      transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+      transition: border-color 180ms ease, color 180ms ease, background-color 180ms ease;
     }
-    .glossary-filter:hover,
+    .glossary-filter:hover {
+      border-color: var(--brand);
+    }
     .glossary-filter[aria-pressed="true"] {
-      border-color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 8%, var(--surface));
-      color: var(--accent);
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #faf9f5;
     }
-    .glossary-filter:focus-visible,
-    .glossary-search:focus-within,
-    .glossary-pagination button:focus-visible,
-    .glossary-entry:focus-within {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
-    }
+
     .glossary-toolbar {
       display: flex;
       align-items: center;
@@ -254,94 +304,197 @@ const entries = glossaryEntries.map((entry) => ({
       font-size: 12px;
       white-space: nowrap;
     }
-    .glossary-grid {
+
+    /* ── 對照表：內容區＋右側字母跳轉條 ── */
+    .glossary-layout {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: start;
     }
-    .glossary-entry {
-      overflow: hidden;
-      border: 1px solid var(--border-strong);
-      border-radius: 16px;
-      background: var(--surface);
+    .term-head {
+      display: grid;
+      grid-template-columns: var(--term-cols);
+      gap: 18px;
+      border-bottom: 1px solid var(--border-strong);
+      padding: 0 14px 9px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
-    .glossary-entry[open] {
-      border-color: color-mix(in srgb, var(--accent) 62%, var(--border-strong));
+    /* 每一列各自是一個 grid，欄寬不可用 auto／fr 混搭決定，
+       否則會依該列的標籤數量而異，列與列、列與表頭都對不齊 */
+    .glossary-table {
+      --term-cols: 116px minmax(0, 1fr) 190px 176px 16px;
     }
-    .glossary-summary {
-      display: flex;
-      min-height: 84px;
-      cursor: pointer;
-      list-style: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 17px 18px;
+    .term-group {
+      scroll-margin-top: 64px; /* 字母條跳轉時不被導覽列蓋住 */
     }
-    .glossary-summary::-webkit-details-marker {
+    .term-group[hidden] {
       display: none;
     }
-    .glossary-label,
-    .glossary-title {
-      display: block;
-    }
-    .glossary-label {
-      color: var(--ink);
-      font-family: var(--font-serif);
-      font-size: 22px;
+    .term-letter {
+      position: sticky;
+      top: 64px; /* 站台導覽列高度，與 resources／object-map 的吸附值一致 */
+      z-index: 2;
+      margin: 0;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--bg);
+      color: var(--accent);
+      padding: 15px 14px 7px;
+      font-family: var(--font-mono);
+      font-size: 12px;
       font-weight: 500;
-      line-height: 1.15;
+      letter-spacing: 0.16em;
     }
-    .glossary-title {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 13px;
+    .term {
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .term[hidden] {
+      display: none;
+    }
+    .term-row {
+      display: grid;
+      grid-template-columns: var(--term-cols);
+      align-items: baseline;
+      gap: 18px;
+      cursor: pointer;
+      list-style: none;
+      padding: 13px 14px;
+      transition: background-color 160ms ease;
+    }
+    .term-row::-webkit-details-marker {
+      display: none;
+    }
+    .term-row:hover {
+      background: var(--surface-2);
+    }
+    .term-abbr {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+    .term-en {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .term-en-main {
+      color: var(--text);
+      font-size: 14px;
       line-height: 1.45;
     }
-    .glossary-summary-end {
-      display: flex;
-      flex: none;
-      align-items: center;
-      gap: 12px;
+    .term-ja {
+      color: var(--lang-tag-ja);
+      font-size: 12.5px;
+      line-height: 1.45;
     }
-    .glossary-tags {
+    .term-zh {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .term-meta {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       justify-content: flex-end;
-      gap: 5px;
+      gap: 6px;
     }
-    .glossary-tag {
+    .term-family {
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      color: var(--muted);
+      padding: 3px 6px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .term-tag {
       border: 1px solid color-mix(in srgb, var(--accent) 46%, var(--border-strong));
       border-radius: 6px;
       color: var(--accent);
-      padding: 4px 6px;
+      padding: 3px 6px;
       font-family: var(--font-mono);
       font-size: 10px;
       letter-spacing: 0.04em;
+      white-space: nowrap;
     }
-    .glossary-chevron {
+    .term-chevron {
+      flex: none;
       color: var(--muted);
-      transition: transform 180ms ease;
+      transition: transform 180ms ease, color 180ms ease;
     }
-    .glossary-entry[open] .glossary-chevron {
+    .term[open] .term-chevron {
       color: var(--accent);
       transform: rotate(180deg);
     }
-    .glossary-answer {
-      border-top: 1px solid var(--border-soft);
-      padding: 16px 18px 18px;
+    .term[open] .term-row {
+      background: var(--surface-2);
     }
-    .glossary-answer p {
+    .term-body {
+      padding: 2px 14px 16px;
+    }
+    .term-body p {
       margin: 0;
+      max-width: 72ch;
       color: var(--text);
       font-size: 14px;
       line-height: 1.7;
     }
-    .glossary-answer .glossary-aliases {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
+    .term-aliases {
+      margin-top: 8px !important;
+      color: var(--muted) !important;
+      font-size: 12px !important;
     }
+    .term-sources {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 9px !important;
+    }
+    .term-sources a {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      text-decoration: none;
+    }
+    .term-sources a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .term-rail {
+      position: sticky;
+      top: 88px;
+      display: grid;
+      gap: 1px;
+      justify-items: center;
+    }
+    .term-rail a {
+      display: grid;
+      width: 22px;
+      height: 20px;
+      place-items: center;
+      border-radius: 5px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-decoration: none;
+      transition: color 140ms ease, background-color 140ms ease;
+    }
+    .term-rail a:hover {
+      background: var(--surface-2);
+      color: var(--accent);
+    }
+    .term-rail a[data-empty] {
+      opacity: 0.28;
+      pointer-events: none;
+    }
+
     .glossary-empty {
       margin: 28px 0 0;
       border: 1px dashed var(--border-strong);
@@ -350,28 +503,40 @@ const entries = glossaryEntries.map((entry) => ({
       padding: 34px 20px;
       text-align: center;
     }
-    .glossary-pagination {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 13px;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 12px;
+
+    /* 中寬螢幕：收掉表頭，縮寫留在左側 gutter，其餘欄位堆疊 */
+    @media (max-width: 960px) {
+      .glossary-table {
+        --term-cols: 108px minmax(0, 1fr) 16px;
+      }
+      .term-head {
+        display: none;
+      }
+      .term-row {
+        align-items: start;
+        gap: 3px 14px;
+      }
+      .term-abbr,
+      .term-en,
+      .term-zh,
+      .term-meta {
+        grid-column: 2;
+      }
+      .term-abbr {
+        grid-column: 1;
+        grid-row: 1 / -1;
+      }
+      .term-meta {
+        justify-content: flex-start;
+        margin-top: 6px;
+      }
+      .term-chevron {
+        grid-column: 3;
+        grid-row: 1 / -1;
+        align-self: center;
+      }
     }
-    .glossary-pagination button {
-      border: 1px solid var(--border-strong);
-      border-radius: 8px;
-      background: var(--surface);
-      color: var(--ink);
-      cursor: pointer;
-      padding: 8px 12px;
-      font: inherit;
-    }
-    .glossary-pagination button:disabled {
-      cursor: not-allowed;
-      opacity: 0.45;
-    }
+
     @media (max-width: 720px) {
       .glossary-hero {
         min-height: 0;
@@ -414,49 +579,86 @@ const entries = glossaryEntries.map((entry) => ({
       .glossary-search {
         width: 100%;
       }
-      .glossary-grid {
+      /* 手機：多數條目沒有縮寫，留左側 gutter 會浪費近三分之一寬度，
+         改成整列單欄堆疊，縮寫有才佔一行 */
+      .glossary-table {
+        --term-cols: minmax(0, 1fr) 16px;
+      }
+      .term-abbr,
+      .term-en,
+      .term-zh,
+      .term-meta {
+        grid-column: 1;
+      }
+      .term-abbr {
+        grid-row: auto;
+        font-size: 12.5px;
+        letter-spacing: 0.04em;
+      }
+      .term-abbr:empty {
+        display: none;
+      }
+      .term-chevron {
+        grid-column: 2;
+      }
+      .term-zh {
+        font-size: 14px;
+      }
+      /* 字母條改成頂部可橫向捲動的一列 */
+      .glossary-layout {
         grid-template-columns: minmax(0, 1fr);
+        gap: 0;
       }
-      .glossary-summary {
-        min-height: 76px;
-        padding: 14px;
+      .term-rail {
+        position: sticky;
+        top: 97px; /* 手機版導覽列會折成兩列，比桌面高 */
+        z-index: 3;
+        order: -1;
+        display: flex;
+        margin: 0 -32px 6px;
+        border-bottom: 1px solid var(--border-soft);
+        background: var(--bg);
+        overflow-x: auto;
+        padding: 7px 32px;
+        scrollbar-width: none;
       }
-      .glossary-label {
-        font-size: 20px;
+      .term-rail::-webkit-scrollbar {
+        display: none;
       }
-      .glossary-title {
-        font-size: 12px;
+      .term-rail a {
+        flex: none;
       }
-      .glossary-answer {
-        padding: 14px;
+      .term-letter {
+        top: 132px; /* 導覽列 97 ＋ 字母條 35 */
+      }
+      .term-group {
+        scroll-margin-top: 132px;
       }
     }
+
     @media (prefers-reduced-motion: reduce) {
       .signal-node,
       .glossary-filter,
-      .glossary-chevron {
+      .term-row,
+      .term-chevron {
         transition: none;
       }
     }
   </style>
 
   <script>
-    const pageSize = 20;
     const hero = document.querySelector<HTMLElement>("[data-glossary-hero]");
     const filters = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-filter]"));
-    const entries = Array.from(document.querySelectorAll<HTMLDetailsElement>("[data-glossary-entry]"));
+    const terms = Array.from(document.querySelectorAll<HTMLDetailsElement>("[data-term]"));
+    const termGroups = Array.from(document.querySelectorAll<HTMLElement>("[data-term-group]"));
+    const railLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-rail]"));
     const search = document.getElementById("glossary-search") as HTMLInputElement | null;
     const count = document.querySelector<HTMLElement>("[data-glossary-count]");
     const empty = document.querySelector<HTMLElement>("[data-glossary-empty]");
-    const pagination = document.querySelector<HTMLElement>("[data-glossary-pagination]");
-    const pageText = document.querySelector<HTMLElement>("[data-glossary-page]");
-    const previous = document.querySelector<HTMLButtonElement>("[data-page-prev]");
-    const next = document.querySelector<HTMLButtonElement>("[data-page-next]");
 
     const validGames = new Set(filters.map((filter) => filter.dataset.filter ?? "all"));
     const params = new URLSearchParams(location.search);
     let activeGame = validGames.has(params.get("game") ?? "") ? params.get("game")! : "all";
-    let currentPage = Math.max(1, Number(params.get("page")) || 1);
 
     if (search && params.get("q")) search.value = params.get("q")!;
 
@@ -467,61 +669,50 @@ const entries = glossaryEntries.map((entry) => ({
       else nextParams.set("game", activeGame);
       if (query) nextParams.set("q", query);
       else nextParams.delete("q");
-      if (currentPage > 1) nextParams.set("page", String(currentPage));
-      else nextParams.delete("page");
       const suffix = nextParams.toString();
-      history.replaceState(null, "", `${location.pathname}${suffix ? `?${suffix}` : ""}`);
+      history.replaceState(null, "", `${location.pathname}${suffix ? `?${suffix}` : ""}${location.hash}`);
     }
 
     function render() {
       const query = (search?.value ?? "").trim().toLocaleLowerCase();
-      const matched = entries.filter((entry) => {
-        const inGame = activeGame === "all" || (entry.dataset.games ?? "").split(" ").includes(activeGame);
-        const inSearch = !query || (entry.dataset.search ?? "").includes(query);
-        return inGame && inSearch;
-      });
-      const totalPages = Math.max(1, Math.ceil(matched.length / pageSize));
-      currentPage = Math.min(currentPage, totalPages);
-      const start = (currentPage - 1) * pageSize;
-      const visible = new Set(matched.slice(start, start + pageSize));
+      let shown = 0;
 
-      entries.forEach((entry) => {
-        const isVisible = visible.has(entry);
-        entry.hidden = !isVisible;
-        if (!isVisible) entry.open = false;
+      terms.forEach((term) => {
+        const inGame = activeGame === "all" || (term.dataset.games ?? "").split(" ").includes(activeGame);
+        const inSearch = !query || (term.dataset.search ?? "").includes(query);
+        const visible = inGame && inSearch;
+        term.hidden = !visible;
+        if (!visible) term.open = false;
+        else shown += 1;
       });
+
+      // 整組沒有可見條目時連字母標頭一起收掉，字母條同步變淡
+      termGroups.forEach((group) => {
+        const has = Array.from(group.querySelectorAll<HTMLElement>("[data-term]")).some((term) => !term.hidden);
+        group.hidden = !has;
+        const anchor = group.id.replace(/^g-/, "");
+        const link = railLinks.find((item) => item.dataset.rail === anchor);
+        if (link) {
+          if (has) link.removeAttribute("data-empty");
+          else link.setAttribute("data-empty", "");
+        }
+      });
+
       filters.forEach((filter) => filter.setAttribute("aria-pressed", String(filter.dataset.filter === activeGame)));
       hero?.setAttribute("data-active-game", activeGame);
-      if (empty) empty.hidden = matched.length !== 0;
-      if (count) {
-        count.textContent = matched.length === 0 ? "顯示 0 / 0 筆" : `顯示 ${start + 1}–${Math.min(start + pageSize, matched.length)} / ${matched.length} 筆`;
-      }
-      if (pagination) pagination.hidden = totalPages <= 1;
-      if (pageText) pageText.textContent = `第 ${currentPage} / ${totalPages} 頁`;
-      if (previous) previous.disabled = currentPage <= 1;
-      if (next) next.disabled = currentPage >= totalPages;
+      if (empty) empty.hidden = shown !== 0;
+      if (count) count.textContent = shown === terms.length ? `共 ${terms.length} 條` : `${shown} / ${terms.length} 條`;
       syncUrl();
     }
 
     filters.forEach((filter) => {
       filter.addEventListener("click", () => {
         activeGame = filter.dataset.filter ?? "all";
-        currentPage = 1;
         render();
       });
     });
-    search?.addEventListener("input", () => {
-      currentPage = 1;
-      render();
-    });
-    previous?.addEventListener("click", () => {
-      currentPage -= 1;
-      render();
-    });
-    next?.addEventListener("click", () => {
-      currentPage += 1;
-      render();
-    });
+
+    search?.addEventListener("input", render);
 
     render();
   </script>
