@@ -323,7 +323,9 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
       margin: 0;
       border-bottom: 1px solid var(--border-soft);
       background: var(--bg);
-      color: var(--accent);
+      /* 沿用英文語言標記的藍色，與縮寫欄的 accent 橘色區分，
+         避免字母分類標頭跟旁邊縮寫的顏色相同而難以分辨 */
+      color: var(--lang-tag);
       padding: 15px 14px 7px;
       font-family: var(--font-mono);
       font-size: 12px;
