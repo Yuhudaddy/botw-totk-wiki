@@ -228,6 +228,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   { id: "dcd", games: ["totk"], kind: "term", abbr: "DCD", en: "Depth Clip Deleter", description: "物件會使黏合在其上隨後被拆卸的裝備因距離太長而消失。" },
   { id: "abcs", games: ["totk"], kind: "term", abbr: "ABCS", en: "Autobuild Cancel Slide", zh: "藍圖取消滑行", description: "Ver.1.1.1版以下讓藍圖保持幽體化，可與林克之間相對位置產生的互動關係而高速移動" },
   { id: "kw", games: ["totk"], kind: "term", abbr: "KW", en: "Kinematic Weapons", description: "用特殊方式分離地底黑影手上的武器，這種武器可以保有自己的運動狀態，不受重力、風力的影響。" },
+  { id: "ref-fe", games: ["totk"], kind: "abbr", abbr: "ref fe", en: "Reference Fuse Entangle", description: "依賴關係尚未建立的不完整餘料糾纏（FE）。" },
   { id: "eow", games: ["eow"], kind: "game", abbr: "EoW", en: "Echoes of Wisdom", ja: "知恵のかりもの", zh: "智慧的再現", aliases: ["Zelda EoW", "薩爾達傳說 智慧的再現"], description: "《智慧的再現》的常用英文縮寫。" },
   { id: "menu-storage", games: ["eow"], kind: "term", abbr: "Menu Storage", en: "Menu Storage", ja: "メニューストレージ", zh: "選單儲存", aliases: ["選單存留", "儲存"], description: "利用選單狀態保留或延後某些操作結果。", sources: ["/types/eow-01"] },
   { id: "rww", games: ["eow"], kind: "abbr", abbr: "RWW", en: "Random Wrong Warp", zh: "隨機錯傳", aliases: ["隨機錯傳"], description: "游標離開傳送點後被轉成無效資料，按 A 會傳送到隨機區域。", sources: ["/types/eow-01"] },
