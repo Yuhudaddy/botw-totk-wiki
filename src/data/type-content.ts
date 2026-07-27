@@ -1024,7 +1024,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
         ],
-        principle: "利用高速撞擊擠壓，讓林克穿出牆面。",
+        principle: "將靜止中的物體打到紅色動量，撞擊林克使其靈體和模型分開，再次同步座標時穿出牆面。",
       },
       {
         tab: "Cryonis",
@@ -1118,6 +1118,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     videos: [
       { id: "Zpc6r4T8Wwk", title: "ED02 - NS2才知道也不遲！絕對不能錯過的技巧！（下）" },
+      { id: "Au6TMo0H_sE", title: "回應03 -「扭曲」的儲存法（Skew Storage）" },
       { id: "llbIv0QoWbk", title: "指法13 - 側盾跳穿牆（ISPC, Instant Shield Pull Clip）" },
       { id: "4bPY98FmdXQ", title: "回應11 - 盾跳穿不了牆？教你「進階穿牆法（ESC/ISC/RSC/SPC）」！" },
       { id: "kIuvvisfXAA", title: "番外38 - 逃出海拉魯！「地圖邊界穿牆法(Clip out of Hyrule Barriers)」" },
@@ -2779,6 +2780,16 @@ export const typeContent: Record<string, TypeContent> = {
         id: "aELlly95zCk",
         title: "番外20 - 全屬性大師劍！並列多把裝備在手上的「再同步並列(Swap Resync Zuggle)」步驟與原理解說",
       },
+      { id: "zaSkPSgXmn8", title: "不廢話24 -「米涅魯地圖並列（Mineru Map Zuggle）」(適用：全版本)" },
+      { id: "_XG5lYJzSpk", title: "不廢話18 -「黏足（Drop Smuggle）」與「足下並列（Drop Zuggle）」(適用：1.2.X)" },
+      { id: "95RPAqAllJo", title: "不廢話21 -「沐彼並列／繼承／掉落／幽體繼承（Advanced Moobe glitches）」(適用：Ver.1.2.0～)" },
+      { id: "Ne1vx1SA_Sk", title: "不廢話20 -「深穴延遲並列（Chasm Delay Zuggle）」(適用：Ver.1.2.0～)" },
+      { id: "BhagRZoBQRE", title: "不廢話19 -「隱存無形並列（Cull Area Invizuggle）」(適用：全版本)" },
+      { id: "bzM64P6F5tU", title: "不廢話18 -「足持（Sluggle）」與「足下並列（Drop Zuggle）」(適用：1.2.X)" },
+      { id: "fQ1WwnusSXk", title: "不廢話16 -「並列繼承（Zuggle Load Object Transfer）」與「乾坤鎖（Recall Lock）」(適用：全版本)" },
+      { id: "wUL-pHB2P7Q", title: "不廢話15 -「存讀繼承（Save Load Duping, SLD）」(適用：全版本)" },
+      { id: "AXHn-WTZh8E", title: "不廢話14 -「並列裝備（Zuggle）」(適用：全版本)" },
+      { id: "wo7BDQRxag4", title: "番外11(會員) - 幹走蹺蹺板不用找萊克萊克？Yuda原創的「走狗（Zoggle）」路線！" },
     ],
   },
 

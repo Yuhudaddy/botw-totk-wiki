@@ -3,17 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { href } from "../../lib/url";
 import { GAME_LOGOS } from "../../data/gameLogos";
 import { glossaryEntries, glossaryFamilies, glossaryGames } from "../../data/glossary";
-import { typeGroups } from "../../data/types";
 
 const tagOf = (id: string) => glossaryGames.find((game) => game.id === id)?.tag ?? id;
-
-// 來源連結顯示主題頁的中文名，而不是 botw-02 這種內部代號
-const pageLabels = new Map<string, string>();
-typeGroups.forEach((group) =>
-  group.items.forEach((item) =>
-    pageLabels.set(`/types/${group.game}-${item.no}`, `${group.shortLabel ?? group.label} · ${item.zh}`)
-  )
-);
 
 // 分組鍵：英數開頭歸該字母，中文等其他開頭一律歸「#」放最後
 const groupKey = (abbr: string) => {
@@ -35,7 +26,7 @@ const groups = [...new Set(sorted.map((entry) => groupKey(entry.abbr)))].map((le
   items: sorted.filter((entry) => groupKey(entry.abbr) === letter),
 }));
 
-// 家族名一併寫進搜尋索引，讓使用者打「隱藏」就能撈出整個 Cull 家族
+// 別名與家族名不顯示在頁面上，但仍寫進搜尋索引，讓使用者打「隱藏」或別名也能找到
 const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
   [
     entry.abbr,
@@ -142,7 +133,6 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
                       </span>
                       <span class="term-zh">{entry.zh}</span>
                       <span class="term-meta">
-                        {entry.family && <span class="term-family">{glossaryFamilies[entry.family]}</span>}
                         {entry.games.map((game) => <span class="term-tag">{tagOf(game)}</span>)}
                       </span>
                       <svg class="term-chevron" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -151,16 +141,6 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
                     </summary>
                     <div class="term-body">
                       <p>{entry.description}</p>
-                      {entry.aliases && entry.aliases.length > 0 && (
-                        <p class="term-aliases">別名：{entry.aliases.join(" ／ ")}</p>
-                      )}
-                      {entry.sources && entry.sources.length > 0 && (
-                        <p class="term-sources">
-                          {entry.sources.map((path) => (
-                            <a href={href(path)}>{pageLabels.get(path) ?? path} →</a>
-                          ))}
-                        </p>
-                      )}
                     </div>
                   </details>
                 ))}
@@ -195,14 +175,6 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
       width: min(31vw, 366px);
       aspect-ratio: 1.35;
       opacity: 0.78;
-    }
-    .glossary-signal::before {
-      position: absolute;
-      inset: 5% 3%;
-      border: 1px solid color-mix(in srgb, var(--border-strong) 68%, transparent);
-      background-image: linear-gradient(to right, color-mix(in srgb, var(--border-soft) 72%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--border-soft) 72%, transparent) 1px, transparent 1px);
-      background-size: 26px 26px;
-      content: "";
     }
     .signal-nodes {
       position: absolute;
@@ -336,7 +308,7 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
     /* 每一列各自是一個 grid，欄寬不可用 auto／fr 混搭決定，
        否則會依該列的標籤數量而異，列與列、列與表頭都對不齊 */
     .glossary-table {
-      --term-cols: 116px minmax(0, 1fr) 190px 176px 16px;
+      --term-cols: 116px minmax(0, 1fr) 190px 134px 16px;
     }
     .term-group {
       scroll-margin-top: 64px; /* 字母條跳轉時不被導覽列蓋住 */
@@ -414,14 +386,6 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
       justify-content: flex-end;
       gap: 6px;
     }
-    .term-family {
-      border: 1px solid var(--border-strong);
-      border-radius: 6px;
-      color: var(--muted);
-      padding: 3px 6px;
-      font-size: 10px;
-      white-space: nowrap;
-    }
     .term-tag {
       border: 1px solid color-mix(in srgb, var(--accent) 46%, var(--border-strong));
       border-radius: 6px;
@@ -453,27 +417,6 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
       color: var(--text);
       font-size: 14px;
       line-height: 1.7;
-    }
-    .term-aliases {
-      margin-top: 8px !important;
-      color: var(--muted) !important;
-      font-size: 12px !important;
-    }
-    .term-sources {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 9px !important;
-    }
-    .term-sources a {
-      color: var(--accent);
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      text-decoration: none;
-    }
-    .term-sources a:hover {
-      text-decoration: underline;
-      text-underline-offset: 3px;
     }
 
     .term-rail {

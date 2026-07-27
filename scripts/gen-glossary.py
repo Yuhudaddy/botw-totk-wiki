@@ -12,9 +12,8 @@ import openpyxl, re, json, collections
 ROOT = '/Users/yuhudaddy/Desktop/yuda website'
 GAMES = {'BotW': 'botw', 'TotK': 'totk', 'EoW': 'eow', 'SSBU': 'ssbu', 'AoC': 'aoc', 'AoI': 'aoi'}
 
-# 只有「狀態」欄標為已上架的列才會出現在網站上。
-# 校稿完一批就把該列的狀態改成「已上架」，再重跑這支腳本即可上線。
-PUBLISH_STATES = {'已上架'}
+# 試算表所有有「縮寫／用詞」的列都會上架，「狀態」欄僅供作者自己追蹤進度。
+# 中文名稱留空（或填「-」）的條目仍會輸出，頁面上該欄留白。
 
 KIND = {
     '遊戲名稱縮寫': 'game',
@@ -74,16 +73,17 @@ wb = openpyxl.load_workbook(f'{ROOT}/docs/glossary-terms-tracker.xlsx')
 merged = {}
 order = []
 skipped = 0
+no_zh = []
 for sheet, game in GAMES.items():
     ws = wb[sheet]
     for r in range(2, ws.max_row + 1):
         c = [clean(ws.cell(row=r, column=i).value) for i in range(1, 12)]
         state, kind_zh, abbr, en, ja_cell, zh, desc, aliases, _, path, note = c
-        if not abbr or not zh:
-            continue
-        if state not in PUBLISH_STATES:
+        if not abbr:
             skipped += 1
             continue
+        if not zh:
+            no_zh.append(f'{sheet}!{abbr}')
         if path == '/types/glossary':
             path = None       # 指向術語對照頁本身，不需要列成來源連結
 
@@ -161,7 +161,7 @@ w('  kind: "game" | "abbr" | "concept" | "object" | "term";')
 w('  abbr: string;        // 索引主鍵：縮寫、原文或中文詞')
 w('  en?: string;         // 英文全名（站內未提供者省略）')
 w('  ja?: string;         // 日文（目前僅大亂鬥術語有）')
-w('  zh: string;          // 中文名稱')
+w('  zh?: string;         // 中文名稱（試算表尚未填寫者省略）')
 w('  aliases?: string[];')
 w('  family?: string;     // 技巧家族 id，對應 glossaryFamilies')
 w('  description?: string;')
@@ -195,7 +195,8 @@ for e in entries:
         parts.append(f'en: {ts(e["en"])}')
     if e['ja']:
         parts.append(f'ja: {ts(e["ja"])}')
-    parts.append(f'zh: {ts(e["zh"])}')
+    if e['zh']:
+        parts.append(f'zh: {ts(e["zh"])}')
     if e['aliases']:
         parts.append(f'aliases: {ts(e["aliases"])}')
     if e['family']:
@@ -211,10 +212,13 @@ w('')
 open(f'{ROOT}/src/data/glossary.ts', 'w', encoding='utf-8').write('\n'.join(lines))
 
 # ── 統計 ──
-print(f'已上架條目：{len(entries)}（另有 {skipped} 列尚未標為已上架，未輸出到網站）')
+print(f'條目：{len(entries)}（試算表另有 {skipped} 列無縮寫／用詞而略過）')
 print(f'有英文全名：{sum(1 for e in entries if e["en"])}')
 print(f'有日文：    {sum(1 for e in entries if e["ja"])}')
 print(f'有說明：    {sum(1 for e in entries if e["description"])}')
 print(f'有家族：    {sum(1 for e in entries if e["family"])}')
 print('kind 分布：', dict(collections.Counter(e['kind'] for e in entries)))
 print('多遊戲條目：', [f'{e["abbr"]}({"+".join(e["games"])})' for e in entries if len(e['games']) > 1])
+if no_zh:
+    print(f'\n⚠ 尚無中文名稱（頁面該欄留白）：{len(no_zh)} 筆')
+    for x in no_zh: print('   ', x)
