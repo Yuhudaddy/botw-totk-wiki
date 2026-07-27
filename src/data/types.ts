@@ -90,6 +90,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "19", zh: "序章林克繼承", en: "Prologue Escape" },
       { no: "20", zh: "硬直取消", en: "Endlag Cancel" },
       { no: "21", zh: "沐彼", en: "Moobe" },
+      { no: "22", zh: "舉物定位傳送", en: "Lift Storage Warping", shortEn: "LSW" },
     ],
   },
   {

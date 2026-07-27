@@ -971,7 +971,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
         ],
-        principle: "先用月步（Moonjump）搭配地底傳送標記器製造[[錯誤的著陸點判定|botw-04]]（Wrong Warp）直接進入劍之考驗地圖，再用[[相機穿牆|botw-18#POV Detach]]卡入水域溺斃來重新初始化位置，最後長按跳躍導向終點觸發過關，跳過中間所有樓層。",
+        principle: "先用月步（Moonjump）搭配地底傳送標記器製造[[錯誤的著陸點判定|botw-04]]（Wrong Warp）直接進入劍之考驗地圖，再用[[相機穿牆|botw-18#Viewpoint]]卡入水域溺斃來重新初始化位置，最後長按跳躍導向終點觸發過關，跳過中間所有樓層。",
       },
     ],
     notes: [
@@ -1075,7 +1075,8 @@ export const typeContent: Record<string, TypeContent> = {
         principle: "騎著馬擠進地圖模型或牆面內，從馬上跳起來存檔，讓遊戲將落地位置紀錄在牆內，讀檔後就可以載入到牆內的位置。",
       },
       {
-        tab: "POV Detach",
+        tab: "Viewpoint",
+        video: "Viewpoint Displacement Clip.mov",
         sections: [
           {
             title: "相機穿牆法（Camera Clipping）",
@@ -3662,11 +3663,11 @@ export const typeContent: Record<string, TypeContent> = {
   "totk-21": {
     showEmptyMedia: true,
     methods: [
-      { tab: "WST" },
-      { tab: "Zuggle" },
-      { tab: "Drop" },
-      { tab: "SLD" },
-      { tab: "Pickup" },
+      { tab: "WST", name: "沐彼詞綴轉移（Moobe WST）", tags: ["Nintendo Switch 1"] },
+      { tab: "Zuggle", name: "沐彼並列（Moobe Zuggle）", tags: ["All Versions"] },
+      { tab: "Drop", name: "沐彼掉落（Moobe Drop）", tags: ["All Versions"] },
+      { tab: "SLD", name: "沐彼存讀繼承（Moobe SLD）", tags: ["All Versions"] },
+      { tab: "Pickup", name: "沐彼撿拾（Moobe Pickup）", tags: ["All Versions"] },
     ],
     principle:
       "2024/1/6 由 【mulberry】 玩家發現。固定林克攀爬的座標，重新計算實際位置時造成超長距離的瞬間移動使周圍呈現未加載的狀態。",
@@ -3679,6 +3680,42 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "95RPAqAllJo", title: "不廢話21 -「沐彼並列/繼承/掉落/幽體繼承(Advanced Moobe glitches)」(適用：Ver.1.2.0～)" },
       { id: "0nHE87qDars", title: "番外14 - 最簡單的「詞綴轉移(WST)」！找噁手手製作完美最強英傑武器！(Moobe WST 限定NS1)" },
     ],
+  },
+
+  "totk-22": {
+    methods: [
+      {
+        tab: "Physical",
+        name: "物理舉物定位傳送（Physical LSW）",
+        tags: ["All Versions"],
+        steps: [
+          "餘料糾纏一個可舉起的物品（電池、石頭等）在盾牌或武器上",
+          "將步驟 1 的武器或盾牌 __Zuggle__，將物品 __ZLOT__ 化",
+          "用與步驟 1 相反的裝備餘料糾纏一個__纏桿__，並將纏桿放置於隱藏區，裝備纏桿的母裝備",
+          "舉起步驟 1 的物品離開隱藏區，丟棄母裝備讓林克和物品一起隱藏",
+          "預計移動的讀取檔案",
+          "林克會出現在「讀檔前開始隱藏的位置」和「讀檔後的初始座標」的中間左右的座標",
+          "消滅步驟 2 __Zuggled__ 的裝備可以解除 LSW",
+        ],
+        note: "※ 步驟 3 亦可單純冷餘料觸發纏桿，步驟 6 讀檔前開始隱藏的位置就是離開隱藏區隱藏的位置。",
+      },
+      {
+        tab: "Intangible",
+        name: "無形舉物定位傳送（Intangible LSW）",
+        tags: ["All Versions"],
+        steps: [
+          "餘料糾纏一個可舉起的物品（電池、石頭等）在盾牌或武器上",
+          "將步驟 1 的武器或盾牌 __Zuggle__（或 Drop Zuggle），將物品 __ZLOT__ 化",
+          "準備好一個纏桿裝備，裝備起來",
+          "舉起步驟 1 的物品，丟棄並切換裝備中的纏桿裝備，直接在選單內讀檔",
+          "丟出步驟 2 __Zuggle__ 的裝備並把它撿起來（Drop Zuggle 可直接空手撿一次），丟棄並切換其他同類型裝備",
+          "不退出選單的狀態下，手持任意材料，退出暫停",
+        ],
+      },
+    ],
+    principle:
+      "2024/1/8 由 【mulberry】 提出。林克舉起物品會被視為一個一體的狀態，這種狀態下被隱藏，物品的座標不會因為林克傳送或讀檔而改變。由於是被視為一體，因此利用特殊的操作可以讓林克瞬間返回舉起物品時的座標位置。根據不同的隱藏機制（物理或無形），會影響被隱藏且固定座標的物品是否能在讀檔後讓林克直接回到舉起物品的位置（物理隱藏存在碰撞判定，能夠直接興地傳達要回傳的位置）。",
+    showEmptyMedia: true,
   },
 
   "eow-01": {
