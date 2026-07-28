@@ -1505,6 +1505,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-19": {
+    videoFolder: "botw-btb",
     principle:
       "2018/4~11月由 【柿子】（偷襲版）、【性冷淡の泰迪】（最早）、【のっぺさん】（廣傳）相繼發現魔物的布偶狀態和踩盾跳有著能讓林克彈飛的功能。林克在踩盾跳的時候會是一個輕物件的狀態模型，當魔物失去平衡呈現布偶狀態時會有一個反作用力把東西彈開，而子彈時間是正常時間的1/20，在子彈時間內踩盾跳與發生布偶狀態的魔物產生碰撞時，彈開的反作用力和動量會按照正常時間做計算，在子彈時間內按照時間比例將 20 倍的力量回推回正常的物理狀態。若玩家在發生初始極大動量的情形下解除子彈時間，就可以在正常時間下獲得近 20 倍的反作用力，即「__子時動量增幅（BTMA, Bullet Time Momentum Amplification）__」。",
     methods: [
@@ -1512,6 +1513,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "BTB",
         name: "子彈時間彈翔 / 踩怪飛（Bullet Time Bounce）",
         tags: ["All Versions"],
+        video: "BTB.mp4",
         steps: [
           "將三類小魔物（波克布林、蜥蜴戰士、莫力布林）結凍",
           "踩盾跳落在結凍的魔物上",
@@ -2275,6 +2277,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-07": {
+    videoFolder: "totk-sdc",
     methods: [
       {
         tab: "Like-Like",
@@ -2289,6 +2292,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "FS",
         name: "餘料儲存（Fuse Storage）",
+        video: "纏桿_FS.mp4",
         steps: [
           "在阿卡萊或一始村隱藏區，丟出一個操縱桿放在隱藏區內，用武器或盾牌對其執行[[餘料儲存|totk-01]]",
           "走進隱藏區，同時按下 L 開啟技能輪盤，選到地圖",
@@ -2302,6 +2306,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Mineru FE",
         name: "米涅魯糾纏（Mineru FE）",
+        video: "纏桿_Mineru FE.mp4",
         steps: [
           "開啟米涅魯，丟棄__裝備中__的武器或盾牌，對其執行[[米涅魯糾纏|totk-01]]",
           "從米涅魯身上跳下來，撿起步驟 1 的裝備，丟出一個操縱桿，啟動餘料對準操縱桿",
@@ -2314,6 +2319,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Zuggle Overload",
         name: "並列過載（Zuggle Overload）",
+        video: "纏桿_Zuggle Overload.mp4",
         steps: [
           "過載狀態下切換裝備，__過載掉落__一個武器或盾牌",
           "將步驟 1 在地上的裝備餘料糾纏到另一類裝備上（__步驟 1 為武器，步驟 2 就是餘料到盾牌上__）",
@@ -2935,6 +2941,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "PSLOT",
         name: "永久繼承（Permanent Save Load Object Transfer）",
+        video: "PSLOT.mp4",
         steps: ["步驟整理中，敬請期待。"],
       },
       {
@@ -3118,6 +3125,7 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "快速繞背",
+        video: "20260729_normal sneakstrike_totk.mp4",
         steps: [
           "在魔物尚未發現玩家的情況下，對魔物造成一次攻擊",
           "魔物會轉向朝著攻擊來源（玩家當下位置）",
@@ -3616,10 +3624,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-17": {
+    videoFolder: "totk-pocket rockets",
     methods: [
       {
         tab: "西方高原",
         name: "西方高原（Western Highlands）",
+        video: "Overload IPR.mp4",
         steps: ["步驟整理中，敬請期待。"],
       },
     ],
@@ -3677,6 +3687,7 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "Switch",
+        video: "Swap Cancel.mp4",
         sections: [
           {
             title: "切換取消（Swap / Switch Cancel）",
@@ -3688,6 +3699,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Jump",
+        video: "Jump Cancel.mp4",
         sections: [
           {
             title: "跳躍取消（Jump Cancel）",
@@ -3699,6 +3711,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Item Hold",
+        video: "Item Hold Cancel.mp4",
         sections: [
           {
             title: "持物取消（Item Hold Cancel）",
@@ -3713,6 +3726,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Rune",
+        video: "Rune Cancel.mp4",
         sections: [
           {
             title: "投擲取消（Rune Throw Cancel）",
