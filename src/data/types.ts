@@ -129,7 +129,7 @@ export const typeGroups: TypeGroup[] = [
     shortEn: "Zelda AoC",
     items: [
       { no: "01", zh: "主線攻略", en: "Main Story Walkthrough", videosOnly: true },
-      { no: "02", zh: "進階技巧", en: "Advanced Techniques", videosOnly: true },
+      { no: "02", zh: "進階技巧", en: "Advanced Techniques" },
     ],
   },
   {
@@ -138,7 +138,7 @@ export const typeGroups: TypeGroup[] = [
     en: "Age of Imprisonment",
     shortEn: "Zelda AoI",
     items: [
-      { no: "01", zh: "攻略技巧", en: "Guide & Techniques", videosOnly: true },
+      { no: "01", zh: "攻略技巧", en: "Guide & Techniques" },
     ],
   },
 ];
