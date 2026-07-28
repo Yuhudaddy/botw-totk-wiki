@@ -3,7 +3,7 @@ import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ArticleAside from "../../components/ArticleAside.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
-import { gameCategories } from "../../data/categories";
+import { gameLabels } from "../../data/types";
 
 export async function getStaticPaths() {
   const entries = await getCollection("glitches");
@@ -17,9 +17,9 @@ const { entry } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
 
-const gameInfo = gameCategories[d.game];
-const tags = d.tags ?? [gameInfo.game, d.category, d.difficulty];
-const eyebrow = [gameInfo.game, d.series, d.category].filter(Boolean).join(" · ");
+const gameLabel = gameLabels[d.game];
+const tags = d.tags ?? [gameLabel, d.category, d.difficulty];
+const eyebrow = [gameLabel, d.series, d.category].filter(Boolean).join(" · ");
 ---
 
 <BaseLayout title={d.title} description={d.subtitle} active={d.game}>
@@ -28,7 +28,7 @@ const eyebrow = [gameInfo.game, d.series, d.category].filter(Boolean).join(" · 
     <div class="mb-[30px] flex items-center gap-2.5 text-[13px] text-muted">
       <a href={href("/")} class="text-muted no-underline">首頁</a>
       <span>/</span>
-      <a href={href(`/${d.game}`)} class="text-muted no-underline">{gameInfo.game}</a>
+      <a href={href("/types")} class="text-muted no-underline">{gameLabel}</a>
       <span>/</span>
       <span class="text-ink">{d.category}</span>
     </div>

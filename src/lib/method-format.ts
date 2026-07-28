@@ -24,7 +24,8 @@ export function parseName(text: string) {
   }).flat();
 }
 
-export function escapeHtml(s: string) {
+// 僅供本檔內部的 HTML 組字使用，未對外開放
+function escapeHtml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 

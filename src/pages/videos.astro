@@ -1,37 +1,31 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import youtubeData from "../data/youtube.json";
+import { gameLabels, gameList } from "../data/types";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-const GAME_LABELS: Record<string, string> = {
-  botw: "曠野之息",
-  totk: "王國之淚",
-  eow: "智慧的再現",
-  ssbu: "大亂鬥",
-};
-
-// CI 跑過 fetch-youtube.mjs 後會有 all[]；本地 seed 沒有時 fallback 合併三個遊戲陣列
-const rawAll: any[] = (youtubeData as any).all ?? [
-  ...((youtubeData as any).botw ?? []).map((v: any) => ({ ...v, game: "botw" })),
-  ...((youtubeData as any).totk ?? []).map((v: any) => ({ ...v, game: "totk" })),
-  ...((youtubeData as any).eow  ?? []).map((v: any) => ({ ...v, game: "eow"  })),
-  ...((youtubeData as any).ssbu ?? []).map((v: any) => ({ ...v, game: "ssbu" })),
-];
+// CI 跑過 fetch-youtube.mjs 後會有 all[]；本地 seed 沒有時 fallback 合併各遊戲陣列
+const rawAll: any[] =
+  (youtubeData as any).all ??
+  gameList.flatMap(({ id }) =>
+    ((youtubeData as any)[id] ?? []).map((v: any) => ({ ...v, game: id }))
+  );
 const videos = rawAll.map((v: any) => ({
   ytId: v.id,
   title: v.title,
   game: v.game ?? "",
-  gameLabel: GAME_LABELS[v.game] ?? "",
-  search: [v.title, v.meta ?? "", GAME_LABELS[v.game] ?? "", v.game ?? ""].join(" ").toLowerCase(),
+  gameLabel: gameLabels[v.game as keyof typeof gameLabels] ?? "",
+  search: [v.title, v.meta ?? "", gameLabels[v.game as keyof typeof gameLabels] ?? "", v.game ?? ""]
+    .join(" ")
+    .toLowerCase(),
 }));
 
-const facets = [
-  { key: "botw", label: "曠野之息" },
-  { key: "totk", label: "王國之淚" },
-  { key: "eow", label: "智慧的再現" },
-  { key: "ssbu", label: "大亂鬥" },
-];
+// 篩選鈕：只顯示實際有影片的遊戲，避免出現永遠 0 筆的空按鈕
+const presentGames = new Set(videos.map((v) => v.game).filter(Boolean));
+const facets = gameList
+  .filter(({ id }) => presentGames.has(id))
+  .map(({ id, label }) => ({ key: id, label }));
 ---
 
 <BaseLayout title="影片索引" active="videos">

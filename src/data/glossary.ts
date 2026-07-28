@@ -1,5 +1,15 @@
-// 由 docs/glossary-terms-tracker.xlsx 產生，請勿手改；
-// 要新增或修改術語請改試算表後重新產生。
+// 「術語對照」頁的資料來源，直接在本檔維護即可。
+//
+// 早期由 docs/glossary-terms-tracker.xlsx 經 scripts/gen-glossary.py 產生，
+// 該流程已於 2026-07-28 退役（試算表僅為初期整理用，內容皆已上站）。
+//
+// 新增術語：在 glossaryEntries 末端加一筆即可，欄位說明見下方 GlossaryEntry。
+//   ・ id     全站唯一，用小寫英數與連字號
+//   ・ abbr   索引主鍵，也是表格第一欄顯示的詞
+//   ・ games  該術語適用哪幾款遊戲，決定它出現在哪些分頁
+//   ・ family 選填，同家族術語會在索引頁分組（對應 glossaryFamilies）
+// 同一技巧橫跨多款遊戲時，寫成「一筆、games 填多個」，不要拆成兩筆，
+// 否則索引頁會出現兩列重複的術語。
 
 export type GlossaryGameId = "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
 

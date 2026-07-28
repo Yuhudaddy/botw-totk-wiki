@@ -30,13 +30,43 @@ function matchKeyword(text, ...keywords) {
   });
 }
 
+// 標題開頭的【】主題標記，例：【曠野Short】【封印戰記】【真三國無雙・起源】
+// 簡稱（曠野／王淚）只在這個標記內比對，避免內文順帶提及造成誤判，例如
+// 「《禦天之劍》用曠野的心態玩」「等不了王淚手滑買了寶可夢」都不該算本傳影片
+function leadingTag(title) {
+  const m = title.match(/^\s*【([^】]*)】/);
+  return m ? m[1] : '';
+}
+
+// 依序比對六款遊戲。useAlias=true 時額外接受頻道慣用簡稱（曠野／王淚），
+// 只在【】標記內開啟——內文的簡稱不可信，例如
+// 「《禦天之劍》用曠野的心態玩」「等不了王淚手滑買了寶可夢」都不是本傳影片。
+// 兩款無雙一律比對全名：「災厄」「無雙」單獨出現會誤中洛克人的「災厄機器人」
+// 與頻道上大量的《真三國無雙》。
+function pickGame(text, useAlias) {
+  if (!text) return '';
+  if (matchKeyword(text, '封印戰記', 'age of imprisonment')) return 'aoi';
+  if (matchKeyword(text, '災厄啟示錄', '薩爾達無雙', 'age of calamity')) return 'aoc';
+  if (matchKeyword(text, '智慧的再現', 'eow', 'echoes of wisdom')) return 'eow';
+  if (matchKeyword(text, '王國之淚', 'totk', 'tears of the kingdom')) return 'totk';
+  if (matchKeyword(text, '曠野之息', 'botw', 'breath of the wild')) return 'botw';
+  if (useAlias) {
+    // 同時出現兩款本傳時（例：【曠野&王淚】）以先出現者為準
+    const iBotw = text.indexOf('曠野');
+    const iTotk = text.indexOf('王淚');
+    if (iBotw >= 0 && iTotk >= 0) return iBotw < iTotk ? 'botw' : 'totk';
+    if (iBotw >= 0) return 'botw';
+    if (iTotk >= 0) return 'totk';
+  }
+  if (matchKeyword(text, '大亂鬥', 'ssbu', 'smash bros', 'super smash bros')) return 'ssbu';
+  return '';
+}
+
 function detectGame(v) {
   const title = v.snippet.title;
-  if (matchKeyword(title, '智慧的再現', 'eow', 'echoes of wisdom')) return 'eow';
-  if (matchKeyword(title, '王國之淚', 'totk', 'tears of the kingdom')) return 'totk';
-  if (matchKeyword(title, '曠野之息', 'botw', 'breath of the wild')) return 'botw';
-  if (matchKeyword(title, '大亂鬥', 'ssbu', 'smash bros', 'super smash bros')) return 'ssbu';
-  return '';
+  // 開頭【】是作者自己標定的主題，優先於內文順帶提及
+  // （例：【王國之淚】⋯#封印戰記 應算王淚，而非封印戰記）
+  return pickGame(leadingTag(title), true) || pickGame(title, false);
 }
 
 // ── 1. 取得 uploads playlist ID（用 forHandle，不需要 Channel ID secret）────
@@ -74,7 +104,10 @@ for (let i = 0; i < allVideoIds.length; i += 50) {
   allVideos.push(...data.items);
 }
 
-// ── 4. 建立分類陣列（botw / totk / eow）─────────────────────────────────────
+// ── 4. 建立分類陣列（六款遊戲各一）──────────────────────────────────────────
+// 遊戲清單與 src/data/types.ts 的 typeGroups 對應；新增遊戲時兩邊都要加。
+const GAME_IDS = ['botw', 'totk', 'eow', 'ssbu', 'aoc', 'aoi'];
+
 const toVideo = (v) => ({
   id: v.id,
   title: v.snippet.title,
@@ -84,9 +117,9 @@ const toVideo = (v) => ({
 
 const gameOf = new Map(allVideos.map((v) => [v.id, detectGame(v)]));
 
-const botwAll = allVideos.filter((v) => gameOf.get(v.id) === 'botw').map(toVideo);
-const totkAll = allVideos.filter((v) => gameOf.get(v.id) === 'totk').map(toVideo);
-const eowAll = allVideos.filter((v) => gameOf.get(v.id) === 'eow').map(toVideo);
+const byGame = Object.fromEntries(
+  GAME_IDS.map((id) => [id, allVideos.filter((v) => gameOf.get(v.id) === id).map(toVideo)])
+);
 
 // ── 5. all：所有影片 + 遊戲標記，供影片索引頁使用 ───────────────────────────
 const all = allVideos.map((v) => ({
@@ -120,13 +153,15 @@ try {
 const out = {
   featured: featured.length >= 3 ? featured : oldFeatured,
   latest,
-  botw: botwAll,
-  totk: totkAll,
-  eow: eowAll,
+  ...byGame,
   all,
   updatedAt: new Date().toISOString(),
 };
 writeFileSync(outPath, JSON.stringify(out, null, 2));
+
+const unclassified = all.filter((v) => !v.game).length;
 console.log(
-  `✓ 已更新 youtube.json（全部 ${all.length}｜BotW ${botwAll.length}｜TotK ${totkAll.length}｜EoW ${eowAll.length}｜精選 ${out.featured.length}）`
+  `✓ 已更新 youtube.json（全部 ${all.length}｜` +
+    GAME_IDS.map((id) => `${id} ${byGame[id].length}`).join('｜') +
+    `｜未分類 ${unclassified}｜精選 ${out.featured.length}）`
 );

@@ -14,8 +14,10 @@ export interface TypeItem {
   hideFromGrid?: boolean; // 家族內非代表項目：不在主題解說列表顯示，只能透過切換帶進入
 }
 
+export type GameId = "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
+
 export interface TypeGroup {
-  game: "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
+  game: GameId;
   label: string;
   en: string;
   shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
@@ -140,3 +142,26 @@ export const typeGroups: TypeGroup[] = [
     ],
   },
 ];
+
+// ── 遊戲中繼資料的單一來源 ────────────────────────────────────────────────
+// 以下三個對照表一律由 typeGroups 衍生，不另外手寫清單。
+// 新增遊戲時只要在 typeGroups 加一組，影片索引、篩選鈕、麵包屑會自動跟上。
+
+/** 遊戲 id → 中文名（例：botw → 曠野之息） */
+export const gameLabels = Object.fromEntries(
+  typeGroups.map((g) => [g.game, g.label])
+) as Record<GameId, string>;
+
+/** 遊戲 id → 英文名（例：botw → Breath of the Wild） */
+export const gameLabelsEn = Object.fromEntries(
+  typeGroups.map((g) => [g.game, g.en])
+) as Record<GameId, string>;
+
+/**
+ * 依 typeGroups 順序排列的 { id, 中文名 }，供篩選鈕等需要固定順序的清單使用。
+ * 用 shortLabel 優先：篩選鈕空間有限，「任天堂明星大亂鬥特別版」會撐破版面。
+ */
+export const gameList: { id: GameId; label: string }[] = typeGroups.map((g) => ({
+  id: g.game,
+  label: g.shortLabel ?? g.label,
+}));

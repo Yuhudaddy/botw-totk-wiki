@@ -12,32 +12,8 @@ export const navItems: NavItem[] = [
   { label: "關於神廟", path: "/about", match: "about" },
 ];
 
-export interface FeaturedItem {
-  id: string;
-  title: string;
-  meta: string;
-}
-export const featured: FeaturedItem[] = [
-  { id: "MWBVJsLTA0c", title: "虛化裝備 Void Dip & DI", meta: "王國之淚 · 虛化類" },
-  { id: "AdwFCk77JsE", title: "永久跨檔繼承 PSLOT", meta: "王國之淚 · 跨檔繼承" },
-  { id: "siBcEvxr1Y0", title: "過場必殺劍 Obliterator", meta: "曠野之息 · 必殺技類" },
-  { id: "MzbtzsGB34A", title: "餘料儲存 Fuse Storage", meta: "王國之淚 · 儲存類" },
-  { id: "HmocgDZFVdk", title: "序章大師劍 MsgNotFound", meta: "王國之淚 · 速通/錯傳" },
-  { id: "h7MpbgUvizw", title: "無限／究極口袋火箭", meta: "王國之淚 · 左納烏裝置" },
-];
-
-export interface LatestItem {
-  title: string;
-  sub: string;
-  ver: string;
-  path: string;
-}
-export const latest: LatestItem[] = [
-  { title: "虛化裝備 Void Dip & DI", sub: "王國之淚 · 虛化類", ver: "1.2.1～", path: "/article/void-dip-di" },
-  { title: "餘料儲存 Fuse Storage", sub: "王國之淚 · 儲存類", ver: "～1.4.3", path: "/article/fuse-storage" },
-  { title: "過場必殺劍 Obliterator", sub: "曠野之息 · 必殺技類", ver: "NS2", path: "/article/cutscene-obliterator" },
-  { title: "無限口袋火箭 Pocket Rockets", sub: "王國之淚 · 左納烏裝置", ver: "1.1.2～", path: "/videos?tag=左納烏裝置" },
-];
+// 首頁的「最近熱門」與「最新整理」改由 src/data/youtube.json 供應
+// （CI 每日跑 scripts/fetch-youtube.mjs 更新），此處原本的手寫清單已移除。
 
 export interface QuickNavItem {
   no: string;
@@ -73,20 +49,6 @@ export const tagGroups: TagGroup[] = [
   { label: "遊戲 · Game", tags: ["王國之淚", "曠野之息"] },
   { label: "分類 · Category", tags: ["虛化類", "儲存類", "左納烏裝置", "跨檔繼承", "速通/錯傳", "必殺技類", "盾擋類", "並列"] },
   { label: "其他 · Misc", tags: ["版本比較"] },
-];
-
-// 影片總覽頁的篩選籌碼
-export const filterChips: string[] = [
-  "王國之淚",
-  "曠野之息",
-  "虛化類",
-  "儲存類",
-  "左納烏裝置",
-  "跨檔繼承",
-  "速通/錯傳",
-  "必殺技類",
-  "並列",
-  "版本比較",
 ];
 
 export const SITE = {
