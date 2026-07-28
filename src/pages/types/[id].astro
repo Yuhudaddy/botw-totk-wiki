@@ -59,6 +59,10 @@ const vidBtnBg = isSimpleLayout ? "bg-surface" : "bg-bg";
 const VIDEOS_PER_PAGE = 10;
 const hasDynamicPrinciple = content?.methods?.some((m) => m.principle != null || m.principleSections?.length) ?? false;
 
+// 只有一個方法時不渲染分頁按鈕列，此時 panel 不可宣告 role="tabpanel"，
+// 否則 aria-labelledby 會指向不存在的 tab，反而讓輔助技術讀到壞掉的關聯。
+const hasMethodTabs = (content?.methods?.length ?? 0) > 1;
+
 // 分頁按鈕分組：同 group 的方法會排在同一行，並在最前面顯示分組標籤；
 // 沒有設定 group 的方法全部落在同一個（無標籤）分組，維持原本單行排列。
 const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[] }[] = [];
@@ -145,6 +149,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                     <button
                       type="button"
                       role="tab"
+                      id={`method-tab-${i}`}
+                      aria-controls={`method-panel-${i}`}
+                      aria-selected={i === 0 ? "true" : "false"}
+                      tabindex={i === 0 ? 0 : -1}
                       data-tab={i}
                       class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
                     >
@@ -156,7 +164,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             </div>
             )}
             {content.methods.map((m, i) => (
-              <div class="method-panel" data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
+              <div class="method-panel" id={hasMethodTabs ? `method-panel-${i}` : undefined} role={hasMethodTabs ? "tabpanel" : undefined} aria-labelledby={hasMethodTabs ? `method-tab-${i}` : undefined} tabindex={hasMethodTabs ? 0 : undefined} data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
                 {m.subTabs ? (
                   <div class="subtab-group">
                     <div role="tablist" class="subtab-tabs mb-4 flex flex-wrap gap-2">
@@ -164,8 +172,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                         <button
                           type="button"
                           role="tab"
+                          id={`subtab-${i}-${j}`}
+                          aria-controls={`subpanel-${i}-${j}`}
                           data-subtab={j}
                           aria-selected={j === 0 ? "true" : "false"}
+                          tabindex={j === 0 ? 0 : -1}
                           class="method-subtab cursor-pointer rounded-full border border-border-strong bg-surface px-3.5 py-1 text-[13px] font-medium transition-colors hover:border-brand"
                         >
                           {sub.tab}
@@ -173,7 +184,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                       ))}
                     </div>
                     {m.subTabs.map((sub, j) => (
-                      <div class="subtab-panel" data-subpanel={j} hidden={j !== 0}>
+                      <div class="subtab-panel" id={`subpanel-${i}-${j}`} role="tabpanel" aria-labelledby={`subtab-${i}-${j}`} tabindex="0" data-subpanel={j} hidden={j !== 0}>
                         <MethodPanelBody method={sub} />
                       </div>
                     ))}
@@ -557,8 +568,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               <button
                 type="button"
                 role="tab"
+                id={`vg-tab-${i}`}
+                aria-controls={`vg-panel-${i}`}
                 data-vg-tab={i}
                 aria-selected={i === 0 ? "true" : "false"}
+                tabindex={i === 0 ? 0 : -1}
                 class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
               >
                 {vg.title}
@@ -566,7 +580,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             ))}
           </div>
           {content.videoGroups.map((vg: VideoGroup, i) => (
-            <div class="video-group-panel" data-vg-panel={i} hidden={i !== 0}>
+            <div class="video-group-panel" id={`vg-panel-${i}`} role="tabpanel" aria-labelledby={`vg-tab-${i}`} tabindex="0" data-vg-panel={i} hidden={i !== 0}>
               {vg.videos.map((v) => (
                 <a
                   href={ytWatch(v.id, v.at)}
@@ -1125,6 +1139,26 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 </style>
 
 <script>
+  // 索引標籤的方向鍵導覽（WAI-ARIA 慣例）：← → 移動、Home／End 跳頭尾。
+  // 搭配 roving tabindex —— 只有選中的分頁在 Tab 順序內，避免鍵盤使用者
+  // 要按很多次 Tab 才能跨過整列分頁。
+  function bindTabArrowKeys(tabEls: HTMLButtonElement[], onSelect: (i: number) => void) {
+    tabEls.forEach((tab, pos) => {
+      tab.addEventListener("keydown", (event: KeyboardEvent) => {
+        const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
+        if (!keys.includes(event.key)) return;
+        event.preventDefault();
+        let next = pos;
+        if (event.key === "ArrowRight") next = (pos + 1) % tabEls.length;
+        else if (event.key === "ArrowLeft") next = (pos - 1 + tabEls.length) % tabEls.length;
+        else if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = tabEls.length - 1;
+        onSelect(next);
+        tabEls[next].focus();
+      });
+    });
+  }
+
   document.querySelectorAll<HTMLElement>(".method-tabs").forEach((root) => {
     // 用 data-tab／data-panel（原始 content.methods 索引）而非 DOM 順序做對應，
     // 這樣分頁按鈕依 group 分行排列時，仍能正確找到對應的內容區塊。
@@ -1180,7 +1214,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     const principleExtra = document.getElementById("principle-extra");
 
     function select(index: number) {
-      tabs.forEach((t) => t.setAttribute("aria-selected", String(Number(t.dataset.tab) === index)));
+      tabs.forEach((t) => {
+        const on = Number(t.dataset.tab) === index;
+        t.setAttribute("aria-selected", String(on));
+        // roving tabindex：只有選中的分頁進入 Tab 順序，其餘用方向鍵抵達
+        t.tabIndex = on ? 0 : -1;
+      });
       panels.forEach((p) => (p.hidden = Number(p.dataset.panel) !== index));
       updateMedia(index);
       if (principleText) {
@@ -1195,6 +1234,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     }
 
     tabs.forEach((tab) => tab.addEventListener("click", () => select(Number(tab.dataset.tab))));
+
+    // 方向鍵依 DOM 順序移動（跨分組也能連續移動），
+    // 但 select() 吃的是 data-tab（原始 methods 索引），兩者不一定相同，需轉換。
+    bindTabArrowKeys(tabs, (pos) => select(Number(tabs[pos].dataset.tab)));
 
     // 從網址 hash 深連結到指定分頁（例如 /types/totk-06#FE），供跨頁連結使用
     const hashTab = decodeURIComponent(window.location.hash.slice(1));
@@ -1221,11 +1264,15 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     const subPanels = Array.from(group.querySelectorAll<HTMLElement>(".subtab-panel"));
 
     function selectSub(index: number) {
-      subTabs.forEach((t, i) => t.setAttribute("aria-selected", String(i === index)));
+      subTabs.forEach((t, i) => {
+        t.setAttribute("aria-selected", String(i === index));
+        t.tabIndex = i === index ? 0 : -1;
+      });
       subPanels.forEach((p, i) => (p.hidden = i !== index));
     }
 
     subTabs.forEach((tab, i) => tab.addEventListener("click", () => selectSub(i)));
+    bindTabArrowKeys(subTabs, selectSub);
   });
 
   // 相關影片分組（videoGroups）：分頁按鈕切換顯示對應分組
@@ -1234,11 +1281,15 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-vg-panel]"));
 
     function select(index: number) {
-      tabs.forEach((t, i) => t.setAttribute("aria-selected", String(i === index)));
+      tabs.forEach((t, i) => {
+        t.setAttribute("aria-selected", String(i === index));
+        t.tabIndex = i === index ? 0 : -1;
+      });
       panels.forEach((p, i) => (p.hidden = i !== index));
     }
 
     tabs.forEach((tab, i) => tab.addEventListener("click", () => select(i)));
+    bindTabArrowKeys(tabs, select);
   });
 
   // 相關影片分頁（每頁 10 部）

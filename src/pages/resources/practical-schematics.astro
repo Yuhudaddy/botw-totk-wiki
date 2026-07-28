@@ -423,7 +423,16 @@ const schematicsPerPage = 12;
     </section>
 
     <div class="schematic-lightbox" data-schematic-lightbox hidden>
-      <button class="lightbox-backdrop" type="button" data-lightbox-close aria-label="關閉預覽"></button>
+      {/* 遮罩點擊可關閉，但不進入鍵盤循環：它與右上角關閉鈕功能重複，
+          留在 Tab 順序裡只會讓讀屏連續唸兩次「關閉預覽」。鍵盤使用者
+          改用關閉鈕或 Esc。aria-hidden 避免它被當成獨立控制項朗讀。 */}
+      <button
+        class="lightbox-backdrop"
+        type="button"
+        data-lightbox-close
+        tabindex="-1"
+        aria-hidden="true"
+      ></button>
       <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
         <div class="lightbox-head">
           <div>
@@ -1646,7 +1655,11 @@ const schematicsPerPage = 12;
         lightboxImage.alt = `${title} QR Code`;
         lightbox.hidden = false;
         document.documentElement.style.overflow = "hidden";
-        closeButtons.find((closeButton) => closeButton.offsetParent !== null)?.focus();
+        // 限定在對話框內找關閉鈕：closeButtons 也包含遮罩，
+        // 而遮罩是 aria-hidden，焦點落在上面等於落進讀屏讀不到的地方。
+        lightbox
+          .querySelector<HTMLButtonElement>(".lightbox-dialog [data-lightbox-close]")
+          ?.focus();
       });
     });
 
@@ -1657,6 +1670,36 @@ const schematicsPerPage = 12;
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && lightbox && !lightbox.hidden) {
         closeLightbox();
+      }
+    });
+
+    // 焦點鎖在對話框內：燈箱宣告了 aria-modal="true"，若 Tab 能跑到背景，
+    // 鍵盤使用者會在看不見的元素上操作，與「背景不存在」的宣告矛盾。
+    lightbox?.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || lightbox.hidden) return;
+
+      // 每次都重新查詢，並用 tabIndex >= 0 過濾。
+      // 不能只靠 CSS 的 :not([tabindex="-1"])——那是 OR 條件，
+      // 遮罩仍會被前面的 button 選擇器命中而混進循環。
+      const focusables = Array.from(
+        lightbox.querySelectorAll<HTMLElement>("button, a[href], [tabindex]")
+      ).filter(
+        (el) =>
+          el.tabIndex >= 0 &&
+          !(el as HTMLButtonElement).disabled &&
+          el.offsetParent !== null
+      );
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     });
   </script>
