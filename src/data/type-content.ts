@@ -210,8 +210,8 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     notes: [
-      { text: "Nintendo Switch 1 版須注意「擊停角度」，方位為 45 度的倍數以外的方向會因為瞬間初速度太快而停止、無法擊飛。" },
-      { text: "Nintendo Switch 2 Editions 版受「擊停角」影響較小。風彈擊飛後的速度些微下降。若第二炸彈放出後不馬上引爆，成功率大幅下降。" },
+      { text: "Nintendo Switch 1 版須注意「擊停角」。方位不是 45 度倍數時，風彈的高速位移較容易讓身體與靈魂距離拉開，觸發重新同步；畫面上會看起來像林克突然停住，導致無法正常擊飛。" },
+      { text: "Nintendo Switch 2 Edition 版讀取與更新速度較快，身體與靈魂距離不容易被拉得太遠，因此受「擊停角」影響較小；但風彈擊飛後的速度會些微下降。若第二炸彈放出後不馬上引爆，成功率大幅下降。" },
     ],
     closing: "風彈有很多種變形 (variations)，詳細請參考下方相關影片。",
     videos: [
