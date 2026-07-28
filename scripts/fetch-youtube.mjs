@@ -51,7 +51,18 @@ function pickGame(text, useAlias) {
   if (matchKeyword(text, '王國之淚', 'totk', 'tears of the kingdom')) return 'totk';
   if (matchKeyword(text, '曠野之息', 'botw', 'breath of the wild')) return 'botw';
   if (useAlias) {
-    // 同時出現兩款本傳時（例：【曠野&王淚】）以先出現者為準
+    // ── 跨兩款本傳的影片：以標記中「先出現」的那款為準 ──────────────────
+    // 一支影片只能掛一個 game，因此像【曠野&王淚】這種同時涵蓋兩款的，
+    // 只能擇一。規則是看誰在【】裡排前面，所以【曠野&王淚】→ 曠野之息。
+    //
+    // 目前受此規則影響的有 3 支（皆為【曠野&王淚】開頭）：
+    //   Glitch測試月步／版本更新比較／Bug 是怎麼被發現的
+    //
+    // 影響範圍僅止於「影片索引頁的遊戲標籤」與「該影片會被哪顆篩選鈕撈到」。
+    // 關鍵字搜尋不受影響——搜尋比對的字串含標題原文，標題本身就有「曠野&王淚」，
+    // 所以搜「王淚」仍然找得到這幾支。
+    //
+    // 若想改判給王國之淚，把下面兩行的 'botw' / 'totk' 對調即可。
     const iBotw = text.indexOf('曠野');
     const iTotk = text.indexOf('王淚');
     if (iBotw >= 0 && iTotk >= 0) return iBotw < iTotk ? 'botw' : 'totk';
