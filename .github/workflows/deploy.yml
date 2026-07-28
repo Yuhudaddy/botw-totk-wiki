@@ -34,6 +34,11 @@ jobs:
       - name: 安裝依賴
         run: npm ci
 
+      # 建置只會抓到「彩現時會當掉」的錯誤，且訊息指向壓縮後的產物。
+      # 型別檢查能在原始碼層先擋下元件 props 不符、可能為 undefined 等問題。
+      - name: 型別檢查
+        run: npm run check
+
       - name: 抓取 YouTube 熱門影片
         run: node scripts/fetch-youtube.mjs
         env:

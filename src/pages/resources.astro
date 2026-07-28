@@ -533,7 +533,9 @@ function sourceLabel(url: string): string {
     filterBtns.forEach((btn) =>
       btn.addEventListener("click", (e) => {
         e.preventDefault();
-        const kind = btn.dataset.kind;
+        // dataset.kind 可能是 undefined；統一收斂成 null，
+        // 否則兩顆都缺 data-kind 的按鈕會因 undefined === undefined 被誤判為選中
+        const kind = btn.dataset.kind ?? null;
         activeKind = activeKind === kind ? null : kind;
         filterBtns.forEach((b) => {
           const isActive = b.dataset.kind === activeKind;
