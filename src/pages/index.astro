@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import VideoCard from "../components/VideoCard.astro";
 import { href } from "../lib/url";
 import { quickNav, SITE } from "../data/site";
+import { typeGroups } from "../data/types";
 import youtubeData from "../data/youtube.json";
 
 const featured = youtubeData.featured;
@@ -40,11 +41,9 @@ const featured = youtubeData.featured;
             </a>
           </div>
 
+          {/* 由 typeGroups 產生，新增遊戲時會自動出現，不需手動補 */}
           <div class="home-series" aria-label="收錄遊戲系列">
-            <span>BOTW</span>
-            <span>TOTK</span>
-            <span>EOW</span>
-            <span>SSBU</span>
+            {typeGroups.map((group) => <span>{group.game.toUpperCase()}</span>)}
           </div>
         </div>
 

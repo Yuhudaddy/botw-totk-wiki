@@ -196,27 +196,43 @@ import { SITE } from "../data/site";
     var popover = document.getElementById("support-popover");
     if (!toggle || !popover) return;
 
-    function close() {
+    // 關閉時把焦點還給觸發按鈕，避免鍵盤使用者的焦點卡在已隱藏的彈窗裡
+    function close(returnFocus) {
+      if (popover.getAttribute("data-open") !== "true") return;
       popover.removeAttribute("data-open");
       toggle.setAttribute("aria-expanded", "false");
+      if (returnFocus) toggle.focus();
+    }
+
+    function open() {
+      popover.setAttribute("data-open", "true");
+      toggle.setAttribute("aria-expanded", "true");
+      var first = popover.querySelector("a[href]");
+      if (first) first.focus();
     }
 
     toggle.addEventListener("click", function (e) {
       e.stopPropagation();
-      var open = popover.getAttribute("data-open") === "true";
-      if (open) {
-        close();
-      } else {
-        popover.setAttribute("data-open", "true");
-        toggle.setAttribute("aria-expanded", "true");
-      }
+      if (popover.getAttribute("data-open") === "true") close(false);
+      else open();
     });
 
     document.addEventListener("click", function (e) {
-      if (!popover.contains(e.target) && e.target !== toggle) close();
+      if (!popover.contains(e.target) && e.target !== toggle) close(false);
     });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") close(true);
+    });
+
+    // Tab 走出彈窗最後一個連結時自動關閉，焦點順勢回到頁面後續元素
+    popover.addEventListener("keydown", function (e) {
+      if (e.key !== "Tab") return;
+      var links = popover.querySelectorAll("a[href]");
+      if (!links.length) return;
+      var first = links[0];
+      var last = links[links.length - 1];
+      if (e.shiftKey && document.activeElement === first) close(true);
+      else if (!e.shiftKey && document.activeElement === last) close(false);
     });
 
     // 點擊水波紋。兩顆按鈕都是 target="_blank"，本頁不會離開，

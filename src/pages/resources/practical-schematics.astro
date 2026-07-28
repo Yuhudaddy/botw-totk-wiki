@@ -219,7 +219,7 @@ const schematicsPerPage = 12;
   description="《薩爾達傳說 王國之淚》藍圖 QR Code 分享庫，依實用與有趣分類整理。"
   active="resources"
 >
-  <main class="schematics-page">
+  <div class="schematics-page">
     <section class="schematics-hero" aria-labelledby="schematics-title">
       <div class="schematics-scanner" aria-hidden="true">
         <div class="schematics-grid"></div>
@@ -441,7 +441,7 @@ const schematicsPerPage = 12;
         </div>
       </div>
     </div>
-  </main>
+  </div>
 
   <style>
     .schematics-page {
@@ -1177,13 +1177,11 @@ const schematicsPerPage = 12;
       stroke-linejoin: round;
     }
 
+    /* 頁碼群組不再另外包一圈邊框：按鈕本身已有邊框與選中底色，
+       外層再加會變成雙層框。間距與外層 .schematics-pagination 的 gap 對齊。 */
     .pagination-pages {
       display: flex;
-      border: 1px solid var(--border-strong);
-    }
-
-    .pagination-pages button {
-      margin: -1px;
+      gap: 8px;
     }
 
     .schematics-empty {
