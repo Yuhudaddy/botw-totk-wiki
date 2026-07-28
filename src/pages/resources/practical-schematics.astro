@@ -161,6 +161,20 @@ const blueprintMetadata: Record<string, { number: string; title: string; descrip
     description: "重複抬舉就能飛上去",
     author: "ぶれねこ",
   },
+  // 以下兩張的敘述與標題不同，需另外指定；其餘鯨魚系列的敘述沿用標題，
+  // 由 titleAndAuthorFromFile() 自動從檔名解析，不必列在這裡。
+  "雪兔號_Yuda.jpg": {
+    number: "21",
+    title: "雪兔號",
+    description: "須裝備防凍",
+    author: "Yuda",
+  },
+  "小鯨魚尾骨_Yuda.jpg": {
+    number: "22",
+    title: "小鯨魚尾骨",
+    description: "推 NPC 神器",
+    author: "Yuda",
+  },
 };
 
 function titleAndAuthorFromFile(fileName: string) {

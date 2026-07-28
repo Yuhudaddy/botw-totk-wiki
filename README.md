@@ -12,11 +12,6 @@
 
 以 Astro 打造的靜態網站。
 
-```bash
-npm install
-npm run dev
-```
-
 ---
 
 ## English
@@ -25,11 +20,6 @@ A guide site for *The Legend of Zelda: Breath of the Wild (BotW)* and *Tears of 
 
 Built as a static site with Astro.
 
-```bash
-npm install
-npm run dev
-```
-
 ---
 
 ## 日本語
@@ -37,8 +27,3 @@ npm run dev
 YouTube チャンネル [Yuda（@zb_yuhudaddy）](https://www.youtube.com/@zb_yuhudaddy) の内容をまとめた『ゼルダの伝説 ブレス オブ ザ ワイルド (BotW)』／『ティアーズ オブ ザ キングダム (TotK)』のテクニック・グリッチ攻略サイトです。動画で紹介されている仕組みの原理、手順、バージョンごとの変更点を整理しています。
 
 Astro で構築した静的サイトです。
-
-```bash
-npm install
-npm run dev
-```

@@ -548,12 +548,6 @@ export const resourceGames: ResourceGame[] = [
             note: "Curated by Hsin-Po",
           },
           {
-            title: "餘料建造模擬器",
-            url: "https://zonai-fusion.link",
-            kind: "tool",
-            note: "Created by Track-tor",
-          },
-          {
             title: "餘料建造組合分享網",
             url: "https://www.hyruleworks.com",
             kind: "tool",

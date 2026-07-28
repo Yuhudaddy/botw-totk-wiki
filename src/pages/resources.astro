@@ -74,7 +74,7 @@ function sourceLabel(url: string): string {
 >
   {/* 標題 */}
   <section class="border-b border-border-soft">
-    <div class="r-res-hero mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+    <div class="r-res-hero mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
         <a href={href("/")} class="no-underline text-muted">首頁</a>
         <span>/</span>
@@ -93,7 +93,7 @@ function sourceLabel(url: string): string {
   </section>
 
   {/* 遊戲分頁：文件頁籤樣式，桌面一排四個、手機 2x2 */}
-  <div class="mx-auto max-w-[1180px] px-8 pt-10">
+  <div class="mx-auto max-w-[1244px] px-8 pt-10">
     <div class="r-game-tabs grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
       {
         resourceGames.map((g) => (
@@ -124,7 +124,7 @@ function sourceLabel(url: string): string {
 
   {/* 搜尋 + 分類圖示列 */}
   <div class="r-res-toolbar border-b border-border-soft bg-bg">
-    <div class="mx-auto flex max-w-[1180px] flex-col gap-3 px-8 py-3.5 sm:flex-row sm:items-center">
+    <div class="mx-auto flex max-w-[1244px] flex-col gap-3 px-8 py-3.5 sm:flex-row sm:items-center">
       <div
         class="flex flex-1 items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand md:flex-none md:w-[260px]"
       >
@@ -249,7 +249,7 @@ function sourceLabel(url: string): string {
   {
     resourceGames.map((g) => (
       <div
-        class="lib mx-auto max-w-[1180px] px-8 pb-20"
+        class="lib mx-auto max-w-[1244px] px-8 pb-20"
         data-lib={g.game}
         hidden={g.game !== "botw"}
       >
