@@ -1,5 +1,5 @@
 ---
-// 贊助入口：右上角導覽列按鈕，點擊在下方彈出小視窗導向 YouTube 頻道超級感謝。
+// 贊助入口：右上角導覽列按鈕，點擊在下方彈出小視窗，導向 YouTube 訂閱與 Portaly 贊助。
 import { SITE } from "../data/site";
 ---
 
@@ -27,7 +27,8 @@ import { SITE } from "../data/site";
         target="_blank"
         rel="noopener"
         title="訂閱 Yuda 的 YouTube 頻道"
-        class="block rounded-lg border border-border-strong bg-transparent px-3 py-2 text-center text-[13px] font-medium text-ink no-underline transition-colors hover:border-brand hover:text-brand"
+        data-support-ripple="subscribe"
+        class="support-btn support-btn-subscribe block rounded-lg border border-border-strong bg-transparent px-3 py-2 text-center text-[13px] font-medium text-ink no-underline"
       >
         訂閱 Yuda
       </a>
@@ -39,7 +40,8 @@ import { SITE } from "../data/site";
         target="_blank"
         rel="noopener"
         title="贊助 Yuda"
-        class="block rounded-lg border border-transparent bg-[var(--brand)] px-3 py-2 text-center text-[13px] font-medium text-white no-underline transition-colors hover:bg-[#b95538]"
+        data-support-ripple="sponsor"
+        class="support-btn support-btn-sponsor block rounded-lg border border-transparent bg-[var(--brand)] px-3 py-2 text-center text-[13px] font-medium text-white no-underline"
       >
         贊助 Yuda
       </a>
@@ -51,6 +53,140 @@ import { SITE } from "../data/site";
   .support-popover[data-open="true"] {
     pointer-events: auto;
     opacity: 1;
+  }
+
+  /* 淺色底用深紅、深色底用亮紅，兩種主題都維持足夠對比 */
+  .support-btn-subscribe {
+    --yt-red: #d32f2f;
+    --yt-red-edge: #ff0000;
+  }
+  :global([data-theme="dark"]) .support-btn-subscribe {
+    --yt-red: #ff5252;
+    --yt-red-edge: #ff3b3b;
+  }
+
+  .support-btn {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 160ms ease-out,
+      border-color 200ms ease-out,
+      color 150ms ease-out,
+      background-color 200ms ease-out;
+  }
+
+  /* 按下時輕微內縮：target="_blank" 不會離開本頁，:active 一定看得到 */
+  .support-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* 負 z-index ＋ isolation：色塊疊在按鈕底色之上、文字之下 */
+  .support-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  /* 訂閱：淡紅底淡入，邊框與文字轉為 YouTube 紅 */
+  .support-btn-subscribe::before {
+    background: color-mix(in srgb, var(--yt-red-edge) 9%, transparent);
+    opacity: 0;
+    transition: opacity 220ms ease-out;
+  }
+
+  /* 贊助：不透明奶白由下往上注入，頂端 2px 較亮處是「液面」。
+     半透明版本疊在橘底上幾乎看不見，且會把白字對比壓到 3.4:1；
+     改為不透明填充並讓文字同步轉深橘，對比反而提升到 5.4:1。 */
+  .support-btn-sponsor {
+    --milk: #fdf6e8;
+    --milk-text: #a04a2e;
+  }
+  .support-btn-sponsor::before {
+    background: linear-gradient(
+      to top,
+      var(--milk) 0%,
+      var(--milk) calc(100% - 2px),
+      #fffdf7 100%
+    );
+    transform: translateY(100%);
+    transition: transform 240ms cubic-bezier(0.22, 0.8, 0.36, 1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .support-btn-subscribe:hover,
+    .support-btn-subscribe:focus-visible {
+      border-color: var(--yt-red-edge);
+      color: var(--yt-red);
+    }
+    .support-btn-subscribe:hover::before,
+    .support-btn-subscribe:focus-visible::before {
+      opacity: 1;
+    }
+
+    /* 文字轉色比填充快，縮短「深字疊在橘底上」的過渡空窗 */
+    .support-btn-sponsor:hover,
+    .support-btn-sponsor:focus-visible {
+      color: var(--milk-text);
+    }
+    .support-btn-sponsor:hover::before,
+    .support-btn-sponsor:focus-visible::before {
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .support-btn {
+      transition: border-color 200ms ease-out, color 200ms ease-out, background-color 200ms ease-out;
+    }
+    .support-btn:active {
+      transform: none;
+    }
+    /* 保留顏色變化，取消位移：奶白直接淡入而非由下升起 */
+    .support-btn-sponsor::before {
+      transform: none;
+      opacity: 0;
+      transition: opacity 200ms ease-out;
+    }
+    .support-btn-sponsor:hover::before,
+    .support-btn-sponsor:focus-visible::before {
+      opacity: 1;
+    }
+  }
+</style>
+
+{/* 水波紋由 JS 動態插入，拿不到 Astro scoped 樣式屬性，須放在 global 樣式 */}
+<style is:global>
+  .support-ripple {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: scale(0);
+    animation: support-ripple 520ms ease-out forwards;
+  }
+
+  .support-ripple-subscribe {
+    background: radial-gradient(circle, rgba(255, 0, 0, 0.26) 0%, rgba(255, 0, 0, 0.12) 55%, transparent 78%);
+  }
+
+  /* 點擊當下按鈕已被奶白填滿，漣漪需用深橘才看得見 */
+  .support-ripple-sponsor {
+    background: radial-gradient(circle, rgba(160, 74, 46, 0.3) 0%, rgba(160, 74, 46, 0.14) 55%, transparent 78%);
+  }
+
+  @keyframes support-ripple {
+    to {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .support-ripple {
+      display: none;
+    }
   }
 </style>
 
@@ -81,6 +217,34 @@ import { SITE } from "../data/site";
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") close();
+    });
+
+    // 點擊水波紋。兩顆按鈕都是 target="_blank"，本頁不會離開，
+    // 因此不必像首頁那樣 preventDefault 延後跳轉，動畫可自然播完。
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    popover.querySelectorAll("[data-support-ripple]").forEach(function (btn) {
+      btn.addEventListener("click", function (event) {
+        if (reduceMotion) return;
+
+        var rect = btn.getBoundingClientRect();
+        var size = Math.max(rect.width, rect.height) * 2.1;
+        // 鍵盤觸發（Enter）沒有座標，改由按鈕中心擴散
+        var originX = event.clientX || rect.left + rect.width / 2;
+        var originY = event.clientY || rect.top + rect.height / 2;
+
+        var ripple = document.createElement("span");
+        ripple.className = "support-ripple support-ripple-" + btn.dataset.supportRipple;
+        ripple.style.width = size + "px";
+        ripple.style.height = size + "px";
+        ripple.style.left = originX - rect.left - size / 2 + "px";
+        ripple.style.top = originY - rect.top - size / 2 + "px";
+        btn.appendChild(ripple);
+
+        window.setTimeout(function () {
+          ripple.remove();
+        }, 560);
+      });
     });
   })();
 </script>
