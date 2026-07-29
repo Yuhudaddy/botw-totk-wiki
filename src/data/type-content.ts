@@ -2992,10 +2992,11 @@ export const typeContent: Record<string, TypeContent> = {
         video: "PSLOT.mp4",
         tags: ["All Versions"],
         steps: [
-          "將目標餘料糾纏在武器(盾牌)上",
-          "Zuggle 該武器(盾牌)",
-          "傳送或讀檔後目標仍會存在於原座標",
+          "將目標餘料糾纏於裝備",
+          "將裝備__懲戒化（Purgatorify）__ 或 __幽體化（Ghostize）__",
+          "目標在讀檔或傳送後仍會存在於相同座標",
         ],
+        note: "※ 懲戒化和幽體化只是 PSLOT 的手段之一，並非只能用這兩種方法。詳細步驟細節可參考相關影片。",
       },
       {
         tab: "RL",
