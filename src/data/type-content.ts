@@ -2993,7 +2993,7 @@ export const typeContent: Record<string, TypeContent> = {
         tags: ["All Versions"],
         steps: [
           "將目標餘料糾纏在武器(盾牌)上",
-          "Zuggle 該武器",
+          "Zuggle 該武器(盾牌)",
           "傳送或讀檔後目標仍會存在於原座標",
         ],
       },
