@@ -2936,20 +2936,23 @@ export const typeContent: Record<string, TypeContent> = {
 
   "totk-10": {
     videoFolder: "totk-transfer",
-    principle: "內容整理中，敬請期待。",
+    // 原理說明放頁面層級（不放進 SLD 的 method 裡）：
+    // 若任何一個 method 有 principle/principleSections，右欄就會切成「跟著分頁切換」的動態模式，
+    // 其餘沒有原理說明的分頁（ZLOT/PSLOT/RL）切過去就會變空白。
+    // 這裡四個分頁共用同一套原理，比照轉存格（botw-02）的做法，放在頁面層級固定顯示。
+    principleSections: [
+      {
+        text: "2023/5/16 由 【ZombieBoy225】、【ness】、【ElDuende】 發現。SLD 指的是任何已經不在「已裝備（Equipped）」或「正在丟棄（Dropping）」欄位中，但尚未被允許清除其「駐留實體狀態（Resident Actor State）」的道具。此狀態適用於那些不應該因為地圖傳送（Warping）或讀檔而卸載的實體（Actors）。林克所有已裝備的道具都會被賦予這個狀態，而 Smuggles 和 Zuggles 也會保留它。在讀取存檔時，系統會明確檢查「裝備（Equip）」欄位中的道具並將其清除，而「正在丟棄（Dropping）」欄位則會在傳送和讀檔時同時進行清除。由於在第二次丟棄後沒有取消暫停，該狀態便永遠不會被清除，因此 Zuggle Drop 便能滿足 SLD 的所有條件。",
+      },
+      {
+        text: "然而，如果在此之後觀看回憶，遊戲會在回憶結束後強制取消暫停 1 影格（1 frame），這段時間就足以清除該駐留狀態（resident state）了。",
+      },
+    ],
     methods: [
       {
         tab: "SLD",
         name: "存讀繼承（Save Load Duplication）",
         video: "SLD.mp4",
-        principleSections: [
-          {
-            text: "2023/5/16 由 【ZombieBoy225】、【ness】、【ElDuende】 發現。SLD 指的是任何已經不在「已裝備（Equipped）」或「正在丟棄（Dropping）」欄位中，但尚未被允許清除其「駐留實體狀態（Resident Actor State）」的道具。此狀態適用於那些不應該因為地圖傳送（Warping）或讀檔而卸載的實體（Actors）。林克所有已裝備的道具都會被賦予這個狀態，而 Smuggles 和 Zuggles 也會保留它。在讀取存檔時，系統會明確檢查「裝備（Equip）」欄位中的道具並將其清除，而「正在丟棄（Dropping）」欄位則會在傳送和讀檔時同時進行清除。由於在第二次丟棄後沒有取消暫停，該狀態便永遠不會被清除，因此 Zuggle Drop 便能滿足 SLD 的所有條件。",
-          },
-          {
-            text: "然而，如果在此之後觀看回憶，遊戲會在回憶結束後強制取消暫停 1 影格（1 frame），這段時間就足以清除該駐留狀態（resident state）了。",
-          },
-        ],
         sections: [
           {
             title: "存讀繼承（SLD, Save Load Dupe）",
