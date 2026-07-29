@@ -2329,6 +2329,16 @@ export const typeContent: Record<string, TypeContent> = {
           "步驟 3 的操縱桿會變成「纏桿（SDC）」",
         ],
       },
+      {
+        tab: "String Feory",
+        name: "弦纏（String Feory）",
+        steps: [
+          "米涅魯糾纏一個盾牌或武器",
+          "用相反裝備製作一個纏桿（配合丟電果 + 倒轉乾坤防止遁地）",
+          "將纏桿餘料在步驟 1 的裝備上",
+        ],
+        note: "※ 事實上這種方法就是糾纏鏈：纏桿 → 裝備 → 米涅魯，這樣就不需兩個纏桿。",
+      },
     ],
     principle:
       "原文 Stick Desync Clipping（操縱桿解除同步遁地法），是 2023/7/1 由 【NaN Gogh】, 【DisguisedMoth】 發現，利用操縱桿可以穿越地面的方法，事實上這種脫離乘坐依附的方式都能造成遁地（Mount Lock 也是），而且林克的存在會和操縱桿綁在一起。若纏桿隱藏(Cull)，林克也會跟著隱藏。",
@@ -2749,7 +2759,7 @@ export const typeContent: Record<string, TypeContent> = {
               "過載掉落目標裝備，將裝備隱藏區隱藏",
               "背對牆壁丟棄失敗目標裝備",
             ],
-            note: "※ 進入隱藏區撿起母物件時會變為 Drop Smuggle（黏足）",
+            note: "※ Sluggle 的情況下再次丟棄該裝備，進入隱藏區時會變為「黏足（Drop Smuggle, 會鎖住裝備視窗）」。",
           },
           {
             title: "法四：Zuggle Overload 掉出裝備後讓 Like Like 吃掉",
@@ -2831,7 +2841,41 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Arrow Smuggle",
-        steps: [],
+        name: "黏箭（Arrow Smuggle）",
+        video: "Arrow Smuggle.mp4",
+        sections: [
+          {
+            title: "電黏法（Shock Smuggle）",
+            tags: ["～Ver.1.1.1"],
+            steps: [
+              "保持收弓狀態，並進行「電黏法（Shock Smuggle）」的步驟",
+              "在被電擊的前一刻（5 幀內），按下 ZR 鍵（拔弓）與 + 鍵",
+              "在暫停選單中丟棄你已裝備的弓，接著取消暫停",
+            ],
+            note: "※ 僅限於 Ver.1.2.0 版有一個更快的 Quick Smuggle，可以參考技巧影片的「斷讀法」。",
+          },
+          {
+            title: "閃藏法（Portacull）",
+            tags: ["All Versions"],
+            steps: [
+              "卸掉弓箭，保持沒有裝備弓的狀態",
+              "按住 L 選擇地圖，地圖開啟前快速選單丟棄纏桿盾 → 切換裝備另一個盾牌 → 裝備弓",
+              "打開地圖後按 + 在背包丟棄裝備中的弓",
+            ],
+            note: "※ 步驟 2 可改為暫停丟切纏桿盾 → 裝備弓 → 快速關開暫停 → 丟棄裝備中的弓",
+          },
+          {
+            title: "黏足法（Drop Smuggle）",
+            tags: ["All Versions"],
+            steps: [
+              "過載掉落一個弓，放進隱藏區",
+              "離開隱藏區讓弓隱藏，背對牆壁丟棄裝備中的弓箭（[[Sluggle|tab:Sluggle]]）",
+              "離開牆壁再丟棄一次裝備中的弓",
+              "走回去隱藏區",
+            ],
+            note: "※ 可以用滿裝開寶箱法解鎖裝備視窗。",
+          },
+        ],
       },
     ],
     principleSections: [
@@ -3241,6 +3285,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-14": {
+    videoFolder: "totk-duplication",
     methods: [
       {
         tab: "MSD",
@@ -3366,6 +3411,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "SID",
         name: "Split Item Duplication",
         tags: ["Ver.1.2.0+"],
+        video: "SID.mp4",
         steps: [
           "對目標素材做堆疊拆分(Stack Splitting)，拆成 1 個一堆、以及另一堆 2 個(以上)",
           "進入任意空中狀態（盾滑、滑翔翼、米涅魯等），然後暫停",
@@ -3379,6 +3425,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "ZISD",
         name: "Zonai Inventory Shift Dupe",
         tags: ["All Versions"],
+        video: "ZISD.mp4",
         steps: [
           "準備一顆要丟的膠囊（做法同 MTD）",
           "走下懸崖邊緣（往下墜落）",
