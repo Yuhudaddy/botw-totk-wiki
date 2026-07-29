@@ -2576,7 +2576,6 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "QlJwMCtnE9A", title: "番外10(會員) - 餘料儲存與步驟詳細解說 (1/2)", desc: "2024-04-11｜影片｜相關：隱藏 / Cull" },
     ],
     notes: [
-      { text: "本頁說明為修改中，正式攻略步驟尚在整理中。" },
       {
         text: "__Aerocull（氣流隱藏）__：Aerocull 會儲存隱藏，不會自行釋放。被儲存隱藏的物件會持續判定自己仍位於隱藏區內，因此即使經過傳送、讀取畫面或進入神廟，隱藏狀態仍可能延續。",
       },
@@ -2989,7 +2988,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "PSLOT",
-        name: "永久繼承（Permanent Save Load Object Transfer）",
+        name: "永久存讀繼承（Permanent Save Load Object Transfer）",
         video: "PSLOT.mp4",
         tags: ["All Versions"],
         steps: [
@@ -3000,9 +2999,13 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "RL",
-        name: "乾坤鎖 / 倒轉固定（RL = Recall Lock）",
+        name: "乾坤鎖 / 倒轉固定（Recall Lock）",
         video: "Recall Lock.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        steps: [
+          "將目標 [[ZLOT|tab:ZLOT]] 或 [[PSLOT|tab:PSLOT]]",
+          "對目標倒轉乾坤之後讀檔",
+        ],
+        note: "※ 再次對著目標倒轉乾坤可以解除。",
       },
     ],
     notes: [
