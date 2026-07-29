@@ -2980,13 +2980,23 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "ZLOT",
         name: "並列繼承（Zuggle Load Object Transfer）",
         video: "ZLOT.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        tags: ["All Versions"],
+        steps: [
+          "將目標餘料糾纏在武器(盾牌)上",
+          "Zuggle 該武器(盾牌)",
+          "傳送或讀檔後目標仍會存在於原座標",
+        ],
       },
       {
         tab: "PSLOT",
         name: "永久繼承（Permanent Save Load Object Transfer）",
         video: "PSLOT.mp4",
-        steps: ["步驟整理中，敬請期待。"],
+        tags: ["All Versions"],
+        steps: [
+          "將目標餘料糾纏在武器(盾牌)上",
+          "Zuggle 該武器",
+          "傳送或讀檔後目標仍會存在於原座標",
+        ],
       },
       {
         tab: "RL",
@@ -2998,7 +3008,12 @@ export const typeContent: Record<string, TypeContent> = {
     notes: [
       { text: "若 ZLOT 或 PSLOT 糾纏的物體是 __Invizuggle（無形並列）__、__Ghost（幽體）__、__Persistent Purgatory（持續型懲戒）__這種直到關閉遊戲都會永久存在的母物件，才會永久繼承。SLOT 本身通常是糾纏於非持續型無隱藏的懲戒裝備（Unculled Purgatory），這種只要離開一段距離或是傳送後懲戒狀態就會消失，與之糾纏的子物件又不會永久繼承。" },
     ],
-    videos: [],
+    videos: [
+      { id: "AdwFCk77JsE", title: "番外20.5 - 和林克無關聯的繼承！「永久跨檔繼承（PSLOT, Permanent Save Load Object Transfer）」", desc: "適用：All Versions" },
+      { id: "fQ1WwnusSXk", title: "不廢話16 -「並列繼承（Zuggle Load Object Transfer）」與「乾坤鎖（Recall Lock）」", desc: "適用：全版本" },
+      { id: "wUL-pHB2P7Q", title: "不廢話15 -「存讀繼承（Save Load Duping, SLD）」", desc: "適用：全版本" },
+      { id: "-oifw9PKeh4", title: "回應03 - 錯過就不再的實用道具？「不壞的序章大師劍」與「料理效果轉移」", desc: "1.1.1版以前限定" },
+    ],
   },
 
   "totk-11": {
