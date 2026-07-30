@@ -48,88 +48,121 @@ const { method: m } = Astro.props;
   <p class="mb-3 text-[13px] leading-[1.7] text-muted">{m.intro}</p>
 )}
 {m.sections ? (
-  m.sections.map((sec) => (
-    <div class="method-section">
-      <div class="method-section-head">
-        <div class={m.sections!.length === 1 ? "method-section-title-single" : "method-section-title"}>
-          {parseAccent(sec.title).map((seg) =>
-            seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
-          )}
-        </div>
-        {sec.videoUrl && (
-          <a class="section-video-link" href={sec.videoUrl} target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
-              <polygon points="6,4 20,12 6,20"></polygon>
-            </svg>
-            <span>教學影片</span>
-          </a>
+  m.sections.map((sec) => {
+    const titleNode = (
+      <div class={m.sections!.length === 1 ? "method-section-title-single" : "method-section-title"}>
+        {parseAccent(sec.title).map((seg) =>
+          seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
         )}
       </div>
-      {sec.intro && (
-        <p class="mb-3 text-[13px] leading-[1.7] text-muted">{sec.intro}</p>
-      )}
-      {sec.tags && sec.tags.length > 0 && (
-        <div class="mb-3 flex flex-wrap items-center gap-2">
-          <span class="text-[13px] text-ink">適合</span>
-          {sec.tags.map((tag) => (
-            <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-      <ol>
-        {sec.steps.map((s) => {
-          const { text, sub } = stepParts(s);
-          return (
-            <li>
-              {parseStep(text).map((seg) =>
-                seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                  : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
-                  : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
-              )}
-              {sub.length > 0 && (
-                <ul class="step-sub">
-                  {sub.map((d) => (
-                    <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
-                      {parseStep(d).map((seg) =>
-                        seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
-                          : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          );
-        })}
-      </ol>
-      {sec.note && (
-        Array.isArray(sec.note) ? (
-          <div class="mt-4 space-y-1">
-            {sec.note.map((n) => (
-              <p class="text-[13px] leading-[1.7] text-muted">
-                {parseStep(n).map((seg) =>
+    );
+    const tagsNode = sec.tags && sec.tags.length > 0 && (
+      <div class="mb-3 flex flex-wrap items-center gap-2">
+        <span class="text-[13px] text-ink">適合</span>
+        {sec.tags.map((tag) => (
+          <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+            {tag}
+          </span>
+        ))}
+      </div>
+    );
+    const body = (
+      <>
+        {sec.intro && (
+          <p class="mb-3 text-[13px] leading-[1.7] text-muted">{sec.intro}</p>
+        )}
+        {!sec.collapsible && tagsNode}
+        <ol>
+          {sec.steps.map((s) => {
+            const { text, sub } = stepParts(s);
+            return (
+              <li>
+                {parseStep(text).map((seg) =>
                   seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                     : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
                     : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                 )}
-              </p>
-            ))}
-          </div>
-        ) : (
-          <p class="mt-4 text-[13px] leading-[1.7] text-muted">
-            {parseStep(sec.note).map((seg) =>
-              seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
-                : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                {sub.length > 0 && (
+                  <ul class="step-sub">
+                    {sub.map((d) => (
+                      <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
+                        {parseStep(d).map((seg) =>
+                          seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                            : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                            : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+        {sec.note && (
+          Array.isArray(sec.note) ? (
+            <div class="mt-4 space-y-1">
+              {sec.note.map((n) => (
+                <p class="text-[13px] leading-[1.7] text-muted">
+                  {parseStep(n).map((seg) =>
+                    seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                      : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                      : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                  )}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p class="mt-4 text-[13px] leading-[1.7] text-muted">
+              {parseStep(sec.note).map((seg) =>
+                seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                  : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                  : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+              )}
+            </p>
+          )
+        )}
+      </>
+    );
+
+    return sec.collapsible ? (
+      <details class="method-section-collapse">
+        <summary class="method-section-collapse-summary">
+          <div class="method-section-head">
+            {titleNode}
+            {sec.videoUrl && (
+              <a class="section-video-link" href={sec.videoUrl} target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+                  <polygon points="6,4 20,12 6,20"></polygon>
+                </svg>
+                <span>教學影片</span>
+              </a>
             )}
-          </p>
-        )
-      )}
-    </div>
-  ))
+          </div>
+          {tagsNode && <div class="method-section-collapse-tags">{tagsNode}</div>}
+          <svg class="method-section-collapse-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </summary>
+        <div class="method-section-collapse-body">{body}</div>
+      </details>
+    ) : (
+      <div class="method-section">
+        <div class="method-section-head">
+          {titleNode}
+          {sec.videoUrl && (
+            <a class="section-video-link" href={sec.videoUrl} target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+                <polygon points="6,4 20,12 6,20"></polygon>
+              </svg>
+              <span>教學影片</span>
+            </a>
+          )}
+        </div>
+        {body}
+      </div>
+    );
+  })
 ) : m.bullets ? (
   <ul>
     {m.bullets.map((b) => (

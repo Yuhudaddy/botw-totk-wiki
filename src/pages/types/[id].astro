@@ -946,6 +946,55 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     flex: none;
   }
 
+  /* 流程步驟的可收合小節（手風琴樣式，用於單一分頁內方法過多時，
+     標題與適合版本先收合列出，展開才顯示詳細步驟；同「原理說明」的 principle-collapse） */
+  .method-section-collapse {
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .method-section + .method-section-collapse,
+  .method-section-collapse + .method-section,
+  .method-section-collapse + .method-section-collapse {
+    margin-top: 1em;
+  }
+  .method-section-collapse-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .method-section-collapse-summary::-webkit-details-marker {
+    display: none;
+  }
+  .method-section-collapse-summary .method-section-head {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-bottom: 0;
+  }
+  .method-section-collapse-tags {
+    flex: none;
+  }
+  .method-section-collapse-tags .mb-3 {
+    margin-bottom: 0;
+  }
+  .method-section-collapse-chevron {
+    flex: none;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+  .method-section-collapse[open] .method-section-collapse-chevron {
+    transform: rotate(180deg);
+  }
+  .method-section-collapse-body {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-soft);
+  }
+
   /* 右欄工具導引卡片 */
   .tool-cta {
     border: 1px solid var(--border-soft);

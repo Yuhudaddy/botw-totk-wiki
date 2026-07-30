@@ -10,6 +10,7 @@ export interface TypeMethodSection {
   steps: TypeStep[];  // 該區塊的編號步驟
   note?: string | string[]; // 該區塊步驟下方的灰色備註（可多行）
   videoUrl?: string;  // 該區塊專屬的外部教學影片連結（YouTube 等），顯示於標題列右側
+  collapsible?: boolean; // 標題與適合版本可收合為手風琴列，展開後才顯示步驟；用於單一分頁內方法數過多時避免過長捲動
 }
 
 export interface TypeMethod {
@@ -773,7 +774,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
     ],
-    principle: "2017/3/10 發售後第八天由 【Pewable】 首度發現並應用於神廟特解，由於太傷盾牌（耐久-30）被棄用。2018/6/17 【Yuda】 得知此技巧後首度使用於戰鬥上。盾擋非膽怯型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
+    principle: "2017/3/10 發售後第八天由 【Pewable】 首度發現並應用於神廟特解，由於太傷盾牌（耐久-30）被棄用。2018/6/17 【Yuda】 得知此技巧後首度使用於戰鬥上。盾擋非因重擊而後撤型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
     notes: [
       { text: "鎖定跳必須帶有「方向」，原地跳雖然可以第二段跳，但通常高度不足無法進入子彈時間，此種 SBR 僅有弊無利。" },
       { text: "炸彈箭觸發的 BSBR 或炸彈箭轉身的 BABSBR 需要相當多的抓幀技巧，屬於高成本低報酬的 SBR，除非製作 Combat Montage 或炫技，不然較少被使用。" },
@@ -2041,6 +2042,9 @@ export const typeContent: Record<string, TypeContent> = {
       {
         text: "人馬掏弓時 / 剛被騎下的 1 秒左右爆頭不會暈眩。",
       },
+      {
+        text: "與《曠野之息》不同，暈眩爬起時仍有可騎乘判定，整體判定較為寬鬆。",
+      },
     ],
     videos: [
       { id: "Yw3V-9jiVAg", title: "番外03 - 曠野雙人馬還不滿足？讓王淚三人馬滿足你的戰鬥慾吧！", at: 14 },
@@ -2092,6 +2096,7 @@ export const typeContent: Record<string, TypeContent> = {
         sections: [
           {
             title: "冷切盾糾纏（Shield Swap FE）",
+            collapsible: true,
             tags: ["～Ver.1.1.2"],
             steps: [
               "啟動餘料建造對準目標物品",
@@ -2102,6 +2107,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "餘料儲存糾纏（Fuse Storage FE, FSFE）",
+            collapsible: true,
             tags: ["All Versions"],
             steps: [
               "將目標物品放在隱藏區內，啟動餘料建造對準目標物品",
@@ -2115,6 +2121,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "第二類餘料儲存糾纏（Fuse Storage 2 FE, FS2FE）",
+            collapsible: true,
             tags: ["All Versions"],
             steps: [
               "將目標物品放在隱藏區內，啟動餘料建造對準目標物品",
@@ -2126,6 +2133,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "米涅魯裝備糾纏（Mineru FE for Equipment）",
+            collapsible: true,
             tags: ["All Versions"],
             steps: [
               "丟棄裝備中的盾牌(武器)",
@@ -2136,6 +2144,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "米涅魯裝置糾纏（Mineru FE for Zonai Device）",
+            collapsible: true,
             tags: ["Ver.1.2.0+"],
             steps: [
               "裝備纏桿盾或纏桿武器",
@@ -2145,6 +2154,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "米涅魯隱藏糾纏（Mineru Cull FE / YeeFE）",
+            collapsible: true,
             tags: ["All Versions"],
             steps: [
               "準備[[纏桿|totk-07]]，並將纏桿餘料到米涅魯上",
@@ -2155,6 +2165,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "過載餘料糾纏（Overload FE）",
+            collapsible: true,
             tags: ["All Versions"],
             steps: [
               "觸發[[並列過載|totk-11#Zuggle]]",
@@ -2985,7 +2996,7 @@ export const typeContent: Record<string, TypeContent> = {
         tags: ["All Versions"],
         steps: [
           "將目標餘料糾纏在武器(盾牌)上",
-          "Zuggle 該武器(盾牌)",
+          "[[Zuggle|totk-09#Zuggle]] 該武器(盾牌)",
           "傳送或讀檔後目標仍會存在於原座標",
         ],
       },
@@ -3212,6 +3223,9 @@ export const typeContent: Record<string, TypeContent> = {
     principleItems: [
       "在尚未被魔物發現的時候受到攻擊，魔物會儲存對攻擊來源的方向，一般來說會轉向當下玩家的所在座標，因此在魔物轉向的過程中移動到魔物後方就可以連續偷襲。",
       "另外，在魔物「受到攻擊 → 轉向攻擊來源」的期間，用__非林克本人造成的傷害__再次造成魔物的傷害的話，魔物只會記錄__當時被傷害來源的座標__，而非玩家的位置。",
+    ],
+    notes: [
+      { text: "莫力布林的回頭機制比較特殊，有的時候會轉到攻擊來源的位置，而非林克身上。" },
     ],
     videos: [
       {
@@ -3520,7 +3534,7 @@ export const typeContent: Record<string, TypeContent> = {
         note: "※ 若武器餘料火焰犄角（古慄歐克或奧爾龍），用武器的火焰餘波點燃炸彈的話，步驟 3 的 ZL+X 往前跳的時機可以比較餘裕。",
       },
     ],
-    principle: "《曠野之息》2017/3/10 由 Pewable 首度發現並應用於神廟特解，2018/6/17 Yuda 首度沿用至戰鬥上。在《王國之淚》也並未被修正。盾擋非膽怯型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
+    principle: "《曠野之息》2017/3/10 由 【Pewable】 首度發現並應用於神廟特解，2018/6/17 【Yuda】 首度沿用至戰鬥上。在《王國之淚》也並未被修正。盾擋非因重擊而後撤型的傷害會重置跳躍判定，因此在空中盾擋此類型傷害時可以在空中進行第二段跳，由於存在足夠的高低差，按 ZR 拉弓可以進入子彈時間，是大部分戰鬥風格或技巧的祖先級程錯。",
     notes: [
       { text: "鎖定跳必須帶有「方向」，原地跳雖然可以第二段跳，但通常高度不足無法進入子彈時間，此種 SBR 僅有弊無利。" },
     ],
@@ -3724,7 +3738,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "過載+虛化法（Overload + DI）",
+            title: "過載 + 虛化法（Overload + DI）",
             tags: ["Ver.1.2.0+"],
             steps: [
               "準備虛化盾牌 S1 + 並列過載（或可調式並列過載）",
@@ -3950,10 +3964,12 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-22": {
+    videoFolder: "totk-lsw",
     methods: [
       {
         tab: "Physical",
         name: "物理舉物定位傳送（Physical LSW）",
+        video: "Physical LSW.mp4",
         tags: ["All Versions"],
         steps: [
           "餘料糾纏一個可舉起的物品（電池、石頭等）在盾牌或武器上",
@@ -3969,6 +3985,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Intangible",
         name: "無形舉物定位傳送（Intangible LSW）",
+        video: "Intangible LSW.mp4",
         tags: ["All Versions"],
         steps: [
           "餘料糾纏一個可舉起的物品（電池、石頭等）在盾牌或武器上",
@@ -3982,7 +3999,9 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     principle:
       "2024/1/8 由 【mulberry】 提出。林克舉起物品會被視為一個一體的狀態，這種狀態下被隱藏，物品的座標不會因為林克傳送或讀檔而改變。由於是被視為一體，因此利用特殊的操作可以讓林克瞬間返回舉起物品時的座標位置。根據不同的隱藏機制（物理或無形），會影響被隱藏且固定座標的物品是否能在讀檔後讓林克直接回到舉起物品的位置（物理隱藏存在碰撞判定，能夠直接性地傳達要回傳的位置）。",
-    showEmptyMedia: true,
+    notes: [
+      { text: "Physical 和 Intangible 的差異來源為隱藏的機制，可參考[[隱藏(剔除)|totk-08]]的原理解說。" },
+    ],
   },
 
   "eow-01": {
