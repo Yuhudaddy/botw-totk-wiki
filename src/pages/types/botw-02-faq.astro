@@ -314,7 +314,7 @@ const faqs: FaqItem[] = [
 >
   {/* 麵包屑 + 標題 */}
   <section class="border-b border-border-soft">
-    <div class="mx-auto max-w-[1180px] px-8 pb-12 pt-[54px]">
+    <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
         <a href={href("/home")} class="no-underline text-muted">首頁</a>
         <span>/</span>
@@ -336,7 +336,7 @@ const faqs: FaqItem[] = [
 
   {/* 分類說明 */}
   <div class="border-b border-border-soft bg-surface">
-    <div class="mx-auto max-w-[1180px] px-8 py-5">
+    <div class="mx-auto max-w-[1244px] px-8 py-5">
       <div class="flex flex-wrap gap-3 text-[13px]">
         {Object.entries(typeLabel).map(([k, v]) => (
           <span class={`type-badge type-${k.toLowerCase()}`}>{k} · {v}</span>
@@ -346,7 +346,7 @@ const faqs: FaqItem[] = [
   </div>
 
   {/* FAQ 列表 */}
-  <article class="mx-auto max-w-[1180px] px-8 pb-20 pt-10">
+  <article class="mx-auto max-w-[1244px] px-8 pb-20 pt-10">
     <div class="faq-list">
       {faqs.map((item) => (
         <details class="faq-item">
