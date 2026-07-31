@@ -70,6 +70,7 @@ export interface VideoGroup {
 }
 
 export interface TypeContent {
+  heroEn?: string;            // 覆蓋 Hero 區的英文副標（types.ts 的 item.en 仍用於主題解說列表按鈕與 meta 說明，兩者可不同）
   videoFolder?: string;       // public/type-videos/ 下的子資料夾名稱（影片用）
   imageFolder?: string;       // public/type-videos/ 下的子資料夾名稱（圖片用）
   methodsTitle?: string;      // A 區左欄標題，預設「流程步驟」
@@ -3942,20 +3943,90 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-21": {
-    showEmptyMedia: true,
+    videoFolder: "totk-moobe",
+    heroEn: "mulberry's Out of Body Experience",
     methods: [
-      { tab: "WST", name: "沐彼詞綴轉移（Moobe WST）", tags: ["Nintendo Switch 1"] },
-      { tab: "Zuggle", name: "沐彼並列（Moobe Zuggle）", tags: ["All Versions"] },
-      { tab: "Drop", name: "沐彼掉落（Moobe Drop）", tags: ["All Versions"] },
-      { tab: "SLD", name: "沐彼存讀繼承（Moobe SLD）", tags: ["All Versions"] },
-      { tab: "Pickup", name: "沐彼撿拾（Moobe Pickup）", tags: ["All Versions"] },
+      {
+        tab: "Moobe",
+        name: "沐彼（Moobe）",
+        video: "moobe.mp4",
+        tags: ["All Versions"],
+        steps: [
+          "攀爬在任意一個地方",
+          "傳送或讀檔到其他地方遠離步驟 1 的位置（近乎一半地圖距離以上）",
+          "按住 ZL 貼著牆壁，切記不要真的爬到牆壁",
+          "按 X，林克到達跳躍高度頂端時按 - 鈕",
+          "觀看一個回憶，略過回憶左搖桿往 ▲ 推",
+          "左下角出現 2 次讀取，且讀取時間比平常時間還久表示成功",
+          "林克的座標會從 1 的位置被拉回 2，延遲周圍環境的加載",
+        ],
+      },
+      {
+        tab: "WST",
+        name: "沐彼詞綴轉移（Moobe WST）",
+        tags: ["Switch 1"],
+        steps: [
+          "裝備想要的詞綴的裝備（譬如攻擊力+10），攀爬在任意一個地方",
+          "傳送或讀檔到其他地方遠離步驟 1 的位置（近乎一半地圖距離以上）",
+          "按住 ZL 貼著牆壁，切記不要真的爬到牆壁",
+          "按 X，林克到達跳躍高度頂端時按 - 鈕",
+          "觀看一個回憶，略過回憶左搖桿往 ▲ 推",
+          "左下角出現 2 次讀取，且讀取時間比平常時間還久表示成功",
+          "切換到想要轉移過去的目標裝備，並確認右邊模型沒有成功切換",
+          "再觀看一次回憶，確認詞綴有被轉移到目標上",
+          "手動存檔，或__卸掉所有裝備__之後解除暫停 → 按 - 號打開地圖傳送走",
+        ],
+      },
+      {
+        tab: "Drop",
+        name: "沐彼丟棄（Moobe Drop）",
+        video: "moobe drop.mp4",
+        tags: ["All Versions"],
+        steps: [
+          "攀爬在任意一個想要裝備掉落的位置",
+          "讀檔到其他地方遠離步驟 1 的位置（近乎一半地圖距離以上）",
+          "將想要掉落的裝備 [[ZLOT|totk-10#ZLOT]] 或 [[PSLOT|totk-10#PSLOT]]",
+          "按住 ZL 貼著牆壁，切記不要真的爬到牆壁",
+          "按 X，林克到達跳躍高度頂端時按 - 鈕",
+          "觀看一個回憶，略過回憶左搖桿往 ▲ 推",
+          "左下角出現 2 次讀取，且讀取時間比平常時間還久表示成功",
+          {
+            text: "再觀看以下次數的回憶，讓裝備可以被丟棄：",
+            sub: ["Switch 1：8 次", "Switch 2 Edition：13 次"],
+          },
+          "丟棄 [[ZLOT|totk-10#ZLOT]] / [[PSLOT|totk-10#PSLOT]] 的裝備，再觀看一次回憶",
+          "關閉暫停之後再打開一次暫停讀取步驟 1 附近的檔案",
+          "[[ZLOT|totk-10#ZLOT]] / [[PSLOT|totk-10#PSLOT]] 的裝備會掉在步驟 1 的位置",
+        ],
+      },
+      {
+        tab: "SLD",
+        name: "沐彼存讀繼承（Moobe SLD）",
+        video: "moobe SLD.mp4",
+        tags: ["All Versions"],
+        steps: [
+          "攀爬在任意一個想要裝備掉落的位置",
+          "讀檔到其他地方遠離步驟 1 的位置（近乎一半地圖距離以上）",
+          "製作一個__纏桿__，把纏桿餘料在武器(盾牌)上，並裝備想要繼承的盾牌(武器)",
+          "按住 ZL 貼著牆壁，切記不要真的爬到牆壁",
+          "按 X，林克到達跳躍高度頂端時按 - 鈕",
+          "觀看一個回憶，略過回憶左搖桿往 ▲ 推",
+          "左下角出現 2 次讀取，且讀取時間比平常時間還久表示成功",
+          {
+            text: "再觀看以下次數的回憶：",
+            sub: ["Switch 1：8 次", "Switch 2 Edition：13 次"],
+          },
+          "丟棄→切換裝備想要繼承的盾牌(武器)，丟棄→切換纏桿武器(盾牌)，快速關開暫停，丟棄裝備中的盾牌(武器)之後不要關閉暫停，直接讀取步驟 1 附近的檔案",
+          "裝備會掉在步驟 1 的位置",
+        ],
+      },
     ],
     principle:
       "2024/1/6 由 【mulberry】 玩家發現。固定林克攀爬的座標，重新計算實際位置時造成超長距離的瞬間移動使周圍呈現未加載的狀態。",
     notes: [
-      {
-        text: "Nintendo Switch 2 Edition 版效能提升的關係，幾乎無法產生延遲（lag），因此需要延遲或未加載的方法（血月、WST 等）都無法在 NS2 版上使用。",
-      },
+      { text: "近乎一半地圖距離以上：如監視堡壘 → 水之神殿 或 初始空島 的距離。" },
+      { text: "Moobe Smuggle 的觸發方式請參考相關影片，新版本較少被使用。" },
+      { text: "Moobe Pickup 的用途被用在複製心心容器，原理上為讓遊戲判定為再超遠距離撿拾未被加載的心心容器，判定上林克獲得容器，但容器本身因為沒被加載，所以畫面拖回去之後又會存在在原位。" },
     ],
     videos: [
       { id: "95RPAqAllJo", title: "不廢話21 -「沐彼並列/繼承/掉落/幽體繼承(Advanced Moobe glitches)」(適用：Ver.1.2.0～)" },
