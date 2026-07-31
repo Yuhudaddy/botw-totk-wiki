@@ -3663,6 +3663,7 @@ export const typeContent: Record<string, TypeContent> = {
               "重複步驟 8 ～ 10 即可批次虛化",
             ],
             note: "※ 背對牆壁丟棄武器讓 W2 回到林克身上就可以正常丟棄武器。",
+            videoUrl: "https://youtu.be/wbpaPhG6hUQ",
           },
         ],
       },
