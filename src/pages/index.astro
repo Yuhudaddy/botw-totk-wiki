@@ -43,6 +43,29 @@ const wikiHomeUrl = href("/home");
         }
         document.documentElement.setAttribute("data-theme", theme);
         document.documentElement.style.colorScheme = theme;
+
+        // 入口頁語言：優先用記住的選擇，否則依瀏覽器語言判斷（zh→中文、ja→日文、其餘英文）。
+        // 在 head 就決定並寫上 data-lang，讓日文標題的語序（CSS order）與字體在首次繪製前就定案，
+        // 避免先閃一下英文版排版。實際文字替換在 body 末端的 script。
+        var lang = "en";
+        try {
+          var savedLang = localStorage.getItem("entrance-lang");
+          if (savedLang === "zh" || savedLang === "en" || savedLang === "ja") {
+            lang = savedLang;
+          } else {
+            var nav = (navigator.languages && navigator.languages[0]) || navigator.language || "en";
+            nav = nav.toLowerCase();
+            if (nav.indexOf("zh") === 0) lang = "zh";
+            else if (nav.indexOf("ja") === 0) lang = "ja";
+          }
+        } catch (error) {
+          lang = "en";
+        }
+        document.documentElement.setAttribute("data-lang", lang);
+        document.documentElement.setAttribute(
+          "lang",
+          lang === "zh" ? "zh-Hant-TW" : lang === "ja" ? "ja" : "en"
+        );
       })();
     </script>
   </head>
@@ -60,13 +83,63 @@ const wikiHomeUrl = href("/home");
         </span>
       </div>
 
-      <button
-        class="theme-switch"
-        id="entrance-theme-switch"
-        type="button"
-        aria-label="Switch to light theme"
-      >
-        <span class="theme-switch-icons" aria-hidden="true">
+      <div class="entrance-header-actions">
+        {/* 語言切換：只影響入口頁的文案，站內其他頁面維持中文 */}
+        <div class="lang-switch" id="entrance-lang-switch">
+          <button
+            class="lang-switch-button"
+            id="entrance-lang-button"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="entrance-lang-menu"
+            aria-label="Change language"
+          >
+            <svg class="lang-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.45" />
+              <path
+                d="M3.3 9.6h17.4M3.3 14.4h17.4"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M12 3a14.4 14.4 0 0 1 0 18 14.4 14.4 0 0 1 0-18Z"
+                stroke="currentColor"
+                stroke-width="1.3"
+              />
+            </svg>
+          </button>
+
+          <div class="lang-menu" id="entrance-lang-menu" role="menu" aria-label="Language" hidden>
+            <button class="lang-option" type="button" role="menuitemradio" aria-checked="false" data-lang-option="zh">
+              <span class="lang-option-label">繁體中文</span>
+              <svg class="lang-option-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12.5 10 17.5 19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button class="lang-option" type="button" role="menuitemradio" aria-checked="false" data-lang-option="en">
+              <span class="lang-option-label">English</span>
+              <svg class="lang-option-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12.5 10 17.5 19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button class="lang-option" type="button" role="menuitemradio" aria-checked="false" data-lang-option="ja">
+              <span class="lang-option-label">日本語</span>
+              <svg class="lang-option-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12.5 10 17.5 19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button
+          class="theme-switch"
+          id="entrance-theme-switch"
+          type="button"
+          aria-label="Switch to light theme"
+        >
+          <span class="theme-switch-icons" aria-hidden="true">
           <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="none">
             <path
               d="M19.6 15.2A8.2 8.2 0 0 1 8.8 4.4a8.25 8.25 0 1 0 10.8 10.8Z"
@@ -85,9 +158,10 @@ const wikiHomeUrl = href("/home");
               stroke-width="1.45"
               stroke-linecap="round"
             />
-          </svg>
-        </span>
-      </button>
+            </svg>
+          </span>
+        </button>
+      </div>
     </header>
 
     <main id="entrance-content">
@@ -311,8 +385,22 @@ const wikiHomeUrl = href("/home");
       }
 
       .entrance-brand,
-      .theme-switch {
+      .entrance-header-actions {
         pointer-events: auto;
+      }
+
+      .entrance-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* 日文的漢字字形與繁中不同（例：解説／説），優先用系統的日文字體，
+         不額外載入字檔；找不到時才退回原本的 Noto Sans TC。 */
+      :root[data-lang="ja"] .entrance-page {
+        font-family:
+          "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Yu Gothic UI", Meiryo,
+          "Noto Sans JP", "Noto Sans TC", "Avenir Next", Avenir, sans-serif;
       }
 
       .entrance-brand {
@@ -422,6 +510,135 @@ const wikiHomeUrl = href("/home");
         outline-offset: 5px;
       }
 
+      /* 語言切換：圓鈕本體沿用主題鈕的尺寸與光暈，展開後在下方顯示三個選項 */
+      .lang-switch {
+        position: relative;
+      }
+
+      .lang-switch-button {
+        position: relative;
+        display: grid;
+        width: 44px;
+        height: 44px;
+        margin: -7px;
+        padding: 0;
+        cursor: pointer;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--entrance-text-soft);
+      }
+
+      .lang-switch-button::after {
+        position: absolute;
+        width: 28px;
+        height: 28px;
+        content: "";
+        border-radius: 50%;
+        background: var(--entrance-particle-glow);
+        opacity: 0;
+        transform: scale(0.72);
+        transition:
+          opacity 220ms cubic-bezier(0.25, 1, 0.5, 1),
+          transform 220ms cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .lang-icon {
+        position: relative;
+        z-index: 1;
+        width: 20px;
+        height: 20px;
+      }
+
+      .lang-switch-button[aria-expanded="true"] {
+        color: var(--entrance-accent-bright);
+      }
+
+      .lang-switch-button[aria-expanded="true"]::after {
+        opacity: 0.75;
+        transform: scale(1);
+      }
+
+      .lang-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: -7px;
+        z-index: 30;
+        display: flex;
+        min-width: 148px;
+        flex-direction: column;
+        padding: 5px;
+        gap: 1px;
+        border: 1px solid var(--entrance-glass-edge);
+        border-radius: 13px;
+        background: var(--entrance-surface);
+        box-shadow: 0 14px 32px var(--entrance-shadow);
+        transform-origin: top right;
+        animation: lang-menu-in 180ms cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .lang-menu[hidden] {
+        display: none;
+      }
+
+      @keyframes lang-menu-in {
+        from {
+          opacity: 0;
+          transform: translateY(-5px) scale(0.96);
+        }
+      }
+
+      .lang-option {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        cursor: pointer;
+        gap: 10px;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        color: var(--entrance-text-soft);
+        font-family: inherit;
+        font-size: 0.82rem;
+        letter-spacing: 0.01em;
+        text-align: left;
+        transition: background-color 160ms cubic-bezier(0.25, 1, 0.5, 1), color 160ms;
+      }
+
+      .lang-option[aria-checked="true"] {
+        color: var(--entrance-accent-bright);
+      }
+
+      .lang-option-check {
+        width: 14px;
+        height: 14px;
+        flex: 0 0 auto;
+        opacity: 0;
+      }
+
+      .lang-option[aria-checked="true"] .lang-option-check {
+        opacity: 1;
+      }
+
+      .lang-switch-button:focus-visible,
+      .lang-option:focus-visible {
+        outline: 2px solid var(--entrance-focus);
+        outline-offset: 3px;
+      }
+
+      /* 日文語序是「品牌名 → へようこそ」，與中英文的「歡迎來到 → 品牌名」相反。
+         用 grid order 對調兩行，不動 DOM 順序（h1 內的語意順序仍由 JS 依語言寫入正確文字）。 */
+      :root[data-lang="ja"] .hero-title-prefix {
+        order: 2;
+      }
+
+      :root[data-lang="ja"] .hero-title em {
+        order: 1;
+      }
+
       @media (hover: hover) {
         .theme-switch:hover {
           color: var(--entrance-accent-bright);
@@ -430,6 +647,24 @@ const wikiHomeUrl = href("/home");
         .theme-switch:hover::after {
           opacity: 0.75;
           transform: scale(1);
+        }
+
+        .lang-switch-button:hover {
+          color: var(--entrance-accent-bright);
+        }
+
+        .lang-switch-button:hover::after {
+          opacity: 0.75;
+          transform: scale(1);
+        }
+
+        .lang-option:hover {
+          background: var(--entrance-glass-fill);
+          color: var(--entrance-text);
+        }
+
+        .lang-option[aria-checked="true"]:hover {
+          color: var(--entrance-accent-bright);
         }
       }
 
@@ -1248,8 +1483,14 @@ const wikiHomeUrl = href("/home");
           animation: none;
         }
 
+        .lang-menu {
+          animation: none;
+        }
+
         .theme-switch::after,
         .theme-icon,
+        .lang-switch-button::after,
+        .lang-option,
         .hero-action,
         .hero-action::before,
         .hero-action::after,
@@ -1267,24 +1508,201 @@ const wikiHomeUrl = href("/home");
         var themeButton = document.getElementById("entrance-theme-switch");
         var themeMeta = document.querySelector('meta[name="theme-color"]');
 
+        /* ── 入口頁三語文案 ────────────────────────────────────────────
+           只有這一頁多語，站內其他頁面仍是中文。
+           titleBrand／titleLead 的顯示順序由 CSS 的 [data-lang="ja"] order 決定：
+           中英文是「titleLead → titleBrand」，日文則相反。 */
+        var I18N = {
+          zh: {
+            htmlLang: "zh-Hant-TW",
+            docTitle: "Yuda 的頻道・遊戲攻略 Wiki",
+            metaDescription: "收錄薩爾達傳說、大亂鬥特別版等系列的進階攻略技巧與程錯解說。",
+            skip: "跳到主要內容",
+            brand: "Dazotikuy Shrine",
+            eyebrowLeft: "Yuda 的頻道",
+            eyebrowRight: "遊戲攻略 Wiki",
+            titleLead: "歡迎來到",
+            titleBrand: "Dazotikuy Shrine",
+            support: "收錄薩爾達傳說、大亂鬥特別版等系列的進階攻略與程錯解說。",
+            actionsLabel: "入口動作按鈕",
+            enter: "進入神廟",
+            channel: "造訪頻道",
+            footer: "© 2026 Yuhudaddy － 內容整理自個人 YouTube 頻道",
+            langLabel: "切換語言",
+            toLight: "切換為淺色主題",
+            toDark: "切換為深色主題",
+          },
+          en: {
+            htmlLang: "en",
+            docTitle: "Yuda's Channel · Game Wiki",
+            metaDescription:
+              "Advanced game guides and mechanics for The Legend of Zelda, Super Smash Bros., and beyond.",
+            skip: "Skip to main content",
+            brand: "Dazotikuy Shrine",
+            eyebrowLeft: "Yuda's Channel",
+            eyebrowRight: "Game Wiki",
+            titleLead: "Welcome to",
+            titleBrand: "Dazotikuy Shrine",
+            support:
+              "Advanced game guides and mechanics for The Legend of Zelda, Super Smash Bros., and beyond.",
+            actionsLabel: "Entrance actions",
+            enter: "Enter Shrine",
+            channel: "Visit Channel",
+            footer: "© 2026 Yuhudaddy - Content Curated from Personal YouTube Channel",
+            langLabel: "Change language",
+            toLight: "Switch to light theme",
+            toDark: "Switch to dark theme",
+          },
+          ja: {
+            htmlLang: "ja",
+            docTitle: "Yudaのチャンネル・ゲーム攻略Wiki",
+            metaDescription:
+              "ゼルダの伝説やスマブラSPなど、上級テクニックとバグ解説をまとめたWikiです。",
+            skip: "メインコンテンツへスキップ",
+            brand: "ダゾ・チクイ祠",
+            eyebrowLeft: "Yudaのチャンネル",
+            eyebrowRight: "ゲーム攻略Wiki",
+            titleLead: "へようこそ",
+            titleBrand: "ダゾ・チクイ祠",
+            support: "ゼルダの伝説やスマブラSPなど、上級テクニックとバグ解説をお届けします。",
+            actionsLabel: "入口アクション",
+            enter: "祠へ",
+            channel: "チャンネルへ",
+            footer: "© 2026 Yuhudaddy － 個人YouTubeチャンネルより編纂",
+            langLabel: "言語を変更",
+            toLight: "ライトテーマに切替",
+            toDark: "ダークテーマに切替",
+          },
+        };
+
+        var langSwitch = document.getElementById("entrance-lang-switch");
+        var langButton = document.getElementById("entrance-lang-button");
+        var langMenu = document.getElementById("entrance-lang-menu");
+        var langOptions = langMenu
+          ? Array.prototype.slice.call(langMenu.querySelectorAll("[data-lang-option]"))
+          : [];
+        var descriptionMeta = document.querySelector('meta[name="description"]');
+
+        function currentLang() {
+          var value = root.getAttribute("data-lang");
+          return I18N[value] ? value : "en";
+        }
+
+        function setText(selector, value) {
+          var node = document.querySelector(selector);
+          if (node) node.textContent = value;
+        }
+
+        function applyLang(lang) {
+          var t = I18N[lang] || I18N.en;
+          root.setAttribute("data-lang", lang);
+          root.setAttribute("lang", t.htmlLang);
+
+          document.title = t.docTitle;
+          if (descriptionMeta) descriptionMeta.setAttribute("content", t.metaDescription);
+
+          setText(".skip-link", t.skip);
+          setText(".entrance-brand .brand-copy span", t.brand);
+          setText(".hero-title-prefix", t.titleLead);
+          setText(".hero-title em", t.titleBrand);
+          setText(".hero-support p", t.support);
+          setText(".entrance-footer p", t.footer);
+
+          var eyebrows = document.querySelectorAll(".hero-eyebrow > span:not(.eyebrow-line)");
+          if (eyebrows[0]) eyebrows[0].textContent = t.eyebrowLeft;
+          if (eyebrows[1]) eyebrows[1].textContent = t.eyebrowRight;
+
+          var actions = document.querySelector(".hero-actions");
+          if (actions) actions.setAttribute("aria-label", t.actionsLabel);
+          var actionLabels = document.querySelectorAll(".hero-action > span:first-child");
+          if (actionLabels[0]) actionLabels[0].textContent = t.enter;
+          if (actionLabels[1]) actionLabels[1].textContent = t.channel;
+
+          if (langButton) langButton.setAttribute("aria-label", t.langLabel);
+          langOptions.forEach(function (option) {
+            option.setAttribute(
+              "aria-checked",
+              option.getAttribute("data-lang-option") === lang ? "true" : "false"
+            );
+          });
+
+          syncThemeControl();
+        }
+
+        function closeLangMenu(refocus) {
+          if (!langMenu || langMenu.hidden) return;
+          langMenu.hidden = true;
+          if (langButton) {
+            langButton.setAttribute("aria-expanded", "false");
+            if (refocus) langButton.focus();
+          }
+        }
+
+        function openLangMenu() {
+          if (!langMenu || !langMenu.hidden) return;
+          langMenu.hidden = false;
+          if (langButton) langButton.setAttribute("aria-expanded", "true");
+          var checked = langOptions.filter(function (option) {
+            return option.getAttribute("aria-checked") === "true";
+          })[0];
+          (checked || langOptions[0]) && (checked || langOptions[0]).focus();
+        }
+
+        if (langButton && langMenu) {
+          langButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            if (langMenu.hidden) openLangMenu();
+            else closeLangMenu(false);
+          });
+
+          langOptions.forEach(function (option, index) {
+            option.addEventListener("click", function () {
+              var next = option.getAttribute("data-lang-option");
+              applyLang(next);
+              try {
+                localStorage.setItem("entrance-lang", next);
+              } catch (error) {}
+              closeLangMenu(true);
+            });
+
+            option.addEventListener("keydown", function (event) {
+              if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+              event.preventDefault();
+              var step = event.key === "ArrowDown" ? 1 : -1;
+              var target = langOptions[(index + step + langOptions.length) % langOptions.length];
+              if (target) target.focus();
+            });
+          });
+
+          document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") closeLangMenu(true);
+          });
+
+          document.addEventListener("click", function (event) {
+            if (langSwitch && !langSwitch.contains(event.target)) closeLangMenu(false);
+          });
+
+          langMenu.addEventListener("focusout", function (event) {
+            if (langSwitch && !langSwitch.contains(event.relatedTarget)) closeLangMenu(false);
+          });
+        }
+
         function currentTheme() {
           return root.getAttribute("data-theme") === "light" ? "light" : "dark";
         }
 
         function syncThemeControl() {
           var theme = currentTheme();
+          var t = I18N[currentLang()] || I18N.en;
           if (themeButton) {
-            themeButton.setAttribute(
-              "aria-label",
-              theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
-            );
+            themeButton.setAttribute("aria-label", theme === "dark" ? t.toLight : t.toDark);
           }
           if (themeMeta) {
             themeMeta.setAttribute("content", theme === "dark" ? "#1a0d07" : "#fff3df");
           }
         }
 
-        syncThemeControl();
+        applyLang(currentLang());
 
         if (themeButton) {
           themeButton.addEventListener("click", function () {
