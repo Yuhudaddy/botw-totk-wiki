@@ -1638,20 +1638,26 @@ const wikiHomeUrl = href("/home");
           }
         }
 
-        function openLangMenu() {
-          if (!langMenu || !langMenu.hidden) return;
+        // focusFirst 只在鍵盤開啟時為 true。觸控裝置（iOS）點按鈕不會移動焦點，
+        // 若在這裡自動 focus，使用者手指一碰選項就會觸發前一個選項的 focusout，
+        // 選單被關掉（display:none）後那一下點擊就永遠落不到選項上。
+        function openLangMenu(focusFirst) {
+          if (!langMenu || langMenu.hidden === false) return;
           langMenu.hidden = false;
           if (langButton) langButton.setAttribute("aria-expanded", "true");
+          if (!focusFirst) return;
           var checked = langOptions.filter(function (option) {
             return option.getAttribute("aria-checked") === "true";
           })[0];
-          (checked || langOptions[0]) && (checked || langOptions[0]).focus();
+          var target = checked || langOptions[0];
+          if (target) target.focus();
         }
 
         if (langButton && langMenu) {
           langButton.addEventListener("click", function (event) {
             event.stopPropagation();
-            if (langMenu.hidden) openLangMenu();
+            // 鍵盤（Enter／Space）觸發的 click，detail 為 0；滑鼠／觸控則大於 0
+            if (langMenu.hidden) openLangMenu(event.detail === 0);
             else closeLangMenu(false);
           });
 
@@ -1678,12 +1684,10 @@ const wikiHomeUrl = href("/home");
             if (event.key === "Escape") closeLangMenu(true);
           });
 
-          document.addEventListener("click", function (event) {
+          // 用 pointerdown 而非 click 判斷「點到外面」：iOS 上點擊非互動元素不一定會
+          // 把 click 冒泡到 document，pointerdown 則滑鼠與觸控都會觸發。
+          document.addEventListener("pointerdown", function (event) {
             if (langSwitch && !langSwitch.contains(event.target)) closeLangMenu(false);
-          });
-
-          langMenu.addEventListener("focusout", function (event) {
-            if (langSwitch && !langSwitch.contains(event.relatedTarget)) closeLangMenu(false);
           });
         }
 
