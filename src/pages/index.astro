@@ -22,7 +22,7 @@ const wikiHomeUrl = href("/home");
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;600&family=Spectral:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400&family=Noto+Serif+JP:wght@400&family=Spectral:ital,wght@0,400;0,500;1,400;1,500&display=swap"
       rel="stylesheet"
     />
 
@@ -630,9 +630,11 @@ const wikiHomeUrl = href("/home");
       }
 
       /* 日文語序是「品牌名 → へようこそ」，與中英文的「歡迎來到 → 品牌名」相反。
-         用 grid order 對調兩行，不動 DOM 順序（h1 內的語意順序仍由 JS 依語言寫入正確文字）。 */
+         用 grid order 對調兩行，不動 DOM 順序（h1 內的語意順序仍由 JS 依語言寫入正確文字）。
+         字型也改成優先 Noto Serif JP，避免假名套用到中文（TC）的字形上。 */
       :root[data-lang="ja"] .hero-title-prefix {
         order: 2;
+        font-family: "Spectral", "Noto Serif JP", "Noto Serif TC", Georgia, serif;
       }
 
       :root[data-lang="ja"] .hero-title em {
@@ -917,14 +919,21 @@ const wikiHomeUrl = href("/home");
         font-size: clamp(2.7rem, 5.6vw, 5.25rem);
         font-weight: 400;
         line-height: 0.98;
-        row-gap: 5px;
+        row-gap: 21px;
         letter-spacing: -0.065em;
         text-align: center;
       }
 
+      /* 「歡迎來到／Welcome to／へようこそ」：改用跟品牌名同系列但直立、非斜體的
+         Spectral 襯線，安靜襯托下方的斜體漸層品牌名，不會互相搶戲；中日文沒有對應
+         字符時才落回 Noto Serif TC/JP（:root[data-lang="ja"] 額外把 JP 排到 TC 前面，
+         避免中文字形套用到日文假名上）。字級用 calc 從原本的比例再減 8px。 */
       .hero-title-prefix {
-        font-size: 0.78em;
-        letter-spacing: -0.055em;
+        font-family: "Spectral", "Noto Serif TC", Georgia, serif;
+        font-size: calc(0.78em - 8px);
+        font-style: normal;
+        color: var(--entrance-text-soft);
+        letter-spacing: -0.02em;
       }
 
       .hero-title em {
@@ -1378,7 +1387,7 @@ const wikiHomeUrl = href("/home");
         }
 
         .hero-title-prefix {
-          font-size: 0.75em;
+          font-size: calc(0.75em - 8px);
         }
 
         .hero-support {
