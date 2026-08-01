@@ -2344,6 +2344,8 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "String Feory",
         name: "弦纏（String Feory）",
+        video: "纏桿_String Feory.mp4",
+        tags: ["All Versions"],
         steps: [
           "米涅魯糾纏一個盾牌或武器",
           "用相反裝備製作一個纏桿（配合丟電果 + 倒轉乾坤防止遁地）",
