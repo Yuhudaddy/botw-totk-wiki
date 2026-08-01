@@ -1147,6 +1147,37 @@ const wikiHomeUrl = href("/home");
         height: 17px;
       }
 
+      /* 觸控裝置沒有 hover，改用 :active（配合下面 JS 的空 touchstart 監聽，
+         讓 iOS Safari 願意套用 :active）呈現同一套邊框發光／掃光／圖示切換效果，
+         這樣手機點擊按鈕也能看到跟桌機滑鼠移入相同的手掌與 YouTube 圖示。 */
+      .hero-action:active {
+        border-color: var(--entrance-glass-edge-bright);
+        box-shadow:
+          inset 0 1px 0 color-mix(in oklch, var(--entrance-glass-edge-bright) 94%, transparent),
+          inset 1px 0 0 color-mix(in oklch, var(--entrance-glass-edge-bright) 52%, transparent),
+          inset 0 -1px 0 color-mix(in oklch, var(--entrance-glass-edge) 70%, transparent),
+          0 15px 36px var(--entrance-glass-shadow);
+      }
+
+      .hero-action:active::before {
+        opacity: 0.98;
+        transform: rotate(14deg) translateX(360%);
+      }
+
+      .hero-action:active::after {
+        opacity: 1;
+      }
+
+      .hero-action:active .action-symbol-default {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.68) rotate(10deg);
+      }
+
+      .hero-action:active .action-symbol-hover {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0);
+      }
+
       @media (hover: hover) {
         .hero-action:hover {
           border-color: var(--entrance-glass-edge-bright);
@@ -1175,13 +1206,6 @@ const wikiHomeUrl = href("/home");
           opacity: 1;
           transform: translate(-50%, -50%) scale(1) rotate(0);
         }
-      }
-
-      .hero-action:active {
-        box-shadow:
-          inset 0 1px 0 color-mix(in oklch, var(--entrance-glass-edge-bright) 70%, transparent),
-          inset 0 -1px 0 color-mix(in oklch, var(--entrance-glass-edge) 70%, transparent),
-          0 8px 22px var(--entrance-glass-shadow);
       }
 
       .entrance-footer {
@@ -1518,6 +1542,11 @@ const wikiHomeUrl = href("/home");
         var page = document.querySelector(".entrance-page");
         var themeButton = document.getElementById("entrance-theme-switch");
         var themeMeta = document.querySelector('meta[name="theme-color"]');
+
+        // iOS Safari 只有在頁面上「掛過」touch 事件監聽時才會套用 :active 樣式，
+        // 否則點擊連結時完全不會觸發 :active，圖示切換效果就看不到。這個監聽器
+        // 本身什麼都不做，純粹是讓 iOS 願意套用 hero-action 的 :active 手掌效果。
+        document.addEventListener("touchstart", function () {}, { passive: true });
 
         /* ── 入口頁三語文案 ────────────────────────────────────────────
            只有這一頁多語，站內其他頁面仍是中文。
