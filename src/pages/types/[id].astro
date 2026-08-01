@@ -310,6 +310,15 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           {hasDynamicPrinciple && (
             <div id="principle-extra" set:html={principleExtraHtml(content?.methods?.[0]?.principleExtra)} />
           )}
+          {content?.applications && (
+            <button type="button" class="applications-open" data-applications-open>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <rect x="3.5" y="4.5" width="17" height="15" rx="2"></rect>
+                <path d="M3.5 9.5h17M9 9.5v10" stroke-linecap="round"></path>
+              </svg>
+              {content.applications.label ?? "應用一覽"}
+            </button>
+          )}
         </div>
 
         {content?.toolCta && (
@@ -492,6 +501,98 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       )}
     </div>
   </article>
+  )}
+
+  {/* 應用一覽彈出視窗：由右欄原理說明下方的按鈕開啟 */}
+  {content?.applications && (
+    <div class="applications-modal" data-applications-modal hidden>
+      <button
+        type="button"
+        class="applications-backdrop"
+        tabindex="-1"
+        aria-hidden="true"
+        data-applications-close
+      ></button>
+
+      <div class="applications-dialog" role="dialog" aria-modal="true" aria-labelledby="applications-title">
+        <div class="applications-head">
+          <div>
+            <span>{item.zh} · {item.en}</span>
+            <h2 id="applications-title">{content.applications.title ?? content.applications.label ?? "應用一覽"}</h2>
+          </div>
+          <button type="button" data-applications-close aria-label="關閉應用一覽">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="applications-body">
+          {content.applications.intro && (
+            <p class="applications-intro">{content.applications.intro}</p>
+          )}
+
+          {content.applications.groups.map((g) => (
+            <section class="applications-group">
+              <h3>{g.title}</h3>
+              {g.intro && <p class="applications-group-intro">{g.intro}</p>}
+
+              {g.columns ? (
+                <>
+                  {/* 對照表：直式卡片，每個效果一列，右側用小標籤標示適用模式。
+                      不用 <table> 是因為說明文字長，窄螢幕上表格會被迫橫向捲動。 */}
+                  <div class="applications-legend" aria-hidden="true">
+                    {g.columns.map((c) => <span>{c}</span>)}
+                  </div>
+                  <ul class="applications-matrix">
+                    {g.items.map((it) => (
+                      <li>
+                        <div class="applications-matrix-main">
+                          <span class="applications-name">{it.name}</span>
+                          {it.desc && <span class="applications-desc">{it.desc}</span>}
+                        </div>
+                        <div class="applications-marks">
+                          {g.columns!.map((c, ci) => (
+                            <span
+                              class:list={["applications-mark", it.marks?.[ci] ? "is-on" : "is-off"]}
+                            >
+                              <span class="applications-mark-label">{c}</span>
+                              <span class="applications-mark-dot" aria-hidden="true">
+                                {it.marks?.[ci] ? "●" : "—"}
+                              </span>
+                              <span class="sr-only">{it.marks?.[ci] ? "適用" : "不適用"}</span>
+                            </span>
+                          ))}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <ul class="applications-list">
+                  {g.items.map((it) => (
+                    <li>
+                      <span class="applications-name">{it.name}</span>
+                      {it.desc && <span class="applications-desc">{it.desc}</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {g.note && (
+                Array.isArray(g.note) ? (
+                  <div class="applications-note">
+                    {g.note.map((n) => <p>{n}</p>)}
+                  </div>
+                ) : (
+                  <div class="applications-note"><p>{g.note}</p></div>
+                )
+              )}
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
   )}
 
   {/* termsOnly 頁的名詞說明 */}
@@ -1107,6 +1208,282 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     color: var(--brand);
   }
 
+  /* ── 應用一覽：右欄按鈕 + 彈出視窗 ───────────────────────────── */
+  .applications-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+    padding: 9px 16px;
+    cursor: pointer;
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .applications-open:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  .applications-open svg {
+    flex: none;
+    color: var(--accent);
+  }
+
+  .applications-modal[hidden] {
+    display: none;
+  }
+  .applications-modal {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    display: grid;
+    padding: 24px;
+    place-items: center;
+  }
+  .applications-backdrop {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    background: color-mix(in srgb, #000 62%, transparent);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+  .applications-dialog {
+    position: relative;
+    display: flex;
+    width: min(760px, 100%);
+    max-height: min(82vh, 780px);
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    background: var(--bg);
+    box-shadow: 0 26px 64px rgb(0 0 0 / 0.32);
+  }
+
+  .applications-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--surface);
+  }
+  .applications-head span {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+  }
+  .applications-head h2 {
+    margin: 0;
+    font-family: var(--font-serif, Georgia, serif);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .applications-head button {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    cursor: pointer;
+    place-items: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 9px;
+    background: var(--bg);
+    color: var(--muted);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .applications-head button:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  .applications-head svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .applications-body {
+    overflow-y: auto;
+    padding: 22px;
+    overscroll-behavior: contain;
+  }
+  .applications-intro {
+    margin: 0 0 20px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .applications-group + .applications-group {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .applications-group h3 {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .applications-group-intro {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* 定義清單：名稱一行、說明一行 */
+  .applications-list {
+    display: flex;
+    flex-direction: column;
+    margin: 12px 0 0;
+    padding: 0;
+    gap: 2px;
+    list-style: none;
+  }
+  .applications-list li {
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: var(--surface);
+  }
+  .applications-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .applications-desc {
+    display: block;
+    margin-top: 3px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* 對照表：左側效果、右側各模式的適用標記 */
+  .applications-legend {
+    display: none;
+  }
+  .applications-matrix {
+    display: flex;
+    flex-direction: column;
+    margin: 12px 0 0;
+    padding: 0;
+    gap: 2px;
+    list-style: none;
+  }
+  .applications-matrix li {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px 12px;
+    border-radius: 9px;
+    background: var(--surface);
+  }
+  .applications-matrix-main {
+    min-width: 0;
+  }
+  .applications-marks {
+    display: flex;
+    flex: none;
+    gap: 6px;
+  }
+  .applications-mark {
+    display: flex;
+    min-width: 52px;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .applications-mark-label {
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .applications-mark-dot {
+    font-size: 11px;
+    line-height: 1;
+    color: var(--border-strong);
+  }
+  .applications-mark.is-on {
+    border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+  }
+  .applications-mark.is-on .applications-mark-label {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .applications-mark.is-on .applications-mark-dot {
+    color: var(--accent);
+  }
+
+  .applications-note {
+    margin-top: 12px;
+  }
+  .applications-note p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .applications-note p + p {
+    margin-top: 3px;
+  }
+
+  @media (max-width: 620px) {
+    .applications-modal {
+      padding: 0;
+      place-items: end stretch;
+    }
+    .applications-dialog {
+      width: 100%;
+      max-height: 90svh;
+      border-width: 1px 0 0;
+      border-radius: 16px 16px 0 0;
+    }
+    .applications-head,
+    .applications-body {
+      padding-inline: 16px;
+    }
+    /* 窄螢幕改為上下堆疊：說明佔滿寬度，標記列移到下方，避免文字被擠成細長條 */
+    .applications-matrix li {
+      flex-direction: column;
+      gap: 9px;
+    }
+    .applications-marks {
+      width: 100%;
+    }
+    .applications-mark {
+      flex: 1 1 0;
+      min-width: 0;
+      flex-direction: row;
+      justify-content: center;
+      gap: 6px;
+      padding: 5px 8px;
+    }
+  }
+
   /* 分頁字色：未選為一般文字色，選中為象牙白（兩個主題皆清晰） */
   .method-tab {
     color: var(--text);
@@ -1373,5 +1750,62 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     });
 
     render();
+  })();
+
+  // ── 應用一覽彈出視窗 ──────────────────────────────────────────
+  (function () {
+    const modal = document.querySelector<HTMLElement>("[data-applications-modal]");
+    const openBtn = document.querySelector<HTMLButtonElement>("[data-applications-open]");
+    if (!modal || !openBtn) return;
+
+    function close() {
+      if (!modal || modal.hidden) return;
+      modal.hidden = true;
+      document.documentElement.style.overflow = "";
+      openBtn?.focus();
+    }
+
+    openBtn.addEventListener("click", () => {
+      modal.hidden = false;
+      document.documentElement.style.overflow = "hidden";
+      // 只在對話框內找關閉鈕：遮罩雖然也帶 data-applications-close，
+      // 但它是 aria-hidden，焦點落上去等於落進讀屏讀不到的地方。
+      modal.querySelector<HTMLButtonElement>(".applications-dialog [data-applications-close]")?.focus();
+    });
+
+    modal.querySelectorAll<HTMLButtonElement>("[data-applications-close]").forEach((btn) => {
+      btn.addEventListener("click", close);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") close();
+    });
+
+    // 焦點鎖在對話框內：宣告了 aria-modal="true"，若 Tab 能跑到背景，
+    // 鍵盤使用者會在看不見的元素上操作，與「背景不存在」的宣告矛盾。
+    modal.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || modal.hidden) return;
+      // 用 tabIndex >= 0 過濾而非 CSS :not([tabindex="-1"])——後者是 OR 條件，
+      // 遮罩仍會被前面的 button 選擇器命中而混進循環。
+      const focusables = Array.from(
+        modal.querySelectorAll<HTMLElement>("button, a[href], [tabindex]")
+      ).filter(
+        (el) =>
+          el.tabIndex >= 0 &&
+          !(el as HTMLButtonElement).disabled &&
+          el.offsetParent !== null
+      );
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
   })();
 </script>

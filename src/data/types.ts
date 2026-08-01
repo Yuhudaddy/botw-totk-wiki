@@ -63,6 +63,9 @@ export const typeGroups: TypeGroup[] = [
       { no: "22", zh: "過載與災禍", en: "Overload & Curse" },
       { no: "23", zh: "近廟入侵", en: "Shrine Coordinate Warp" },
       { no: "24", zh: "重置靜止器", en: "Stasis Reset" },
+      { no: "25", zh: "裝置儲存", en: "Apparatus Storage" },
+      { no: "26", zh: "下馬滑行", en: "Horse Slide" },
+      { no: "27", zh: "飛行礦車", en: "Flying Carts" },
     ],
   },
   {

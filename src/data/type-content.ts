@@ -111,9 +111,32 @@ export interface TypeContent {
     primary: { label: string; path: string };
     secondary?: { label: string; url: string };
   }; // 右欄工具導引卡片（例：模擬器、互動地圖）
+  applications?: TypeApplications; // 原理說明下方的「應用一覽」按鈕與彈出視窗
   videos?: RelatedVideo[];    // 相關影片
   termGroups?: TermGroup[];   // termsOnly 頁的名詞說明分組（大亂鬥用）
   videoGroups?: VideoGroup[]; // videosOnly 頁依分類（例如角色）分組的相關影片
+}
+
+// 「應用一覽」彈出視窗：把一個程錯衍生出的大量效果集中在一個 modal，
+// 不佔用主頁面篇幅。群組可選兩種呈現：
+//   ・不給 columns → 定義清單（名稱＋說明），適合單一情境的效果列表
+//   ・有給 columns → 對照表（例：["快讀", "慢讀"]），用 marks 標示各效果適用於哪一欄，
+//     可一眼看出哪些是共通效果、哪些是單一模式限定，避免重複列兩份清單
+export interface TypeApplications {
+  label?: string;   // 按鈕文字，預設「應用一覽」
+  title?: string;   // 視窗標題，預設同 label
+  intro?: string;   // 視窗標題下方的說明句
+  groups: {
+    title: string;
+    intro?: string;
+    note?: string | string[]; // 群組末尾的灰色備註
+    columns?: string[];       // 有值時渲染成對照表
+    items: {
+      name: string;
+      desc?: string;
+      marks?: boolean[];      // 對照表用，順序對應 columns
+    }[];
+  }[];
 }
 
 export const typeContent: Record<string, TypeContent> = {
@@ -1310,6 +1333,7 @@ export const typeContent: Record<string, TypeContent> = {
       { text: "NS2版落弓過載法在步驟 7 出現模型異常時，須先關閉暫停，點擊 B → ZR 釋放負載，再執行步驟 7 ～ 8 才能確實過載。" },
       { text: "落弓過載法若弓數不足，把法杖、章魚氣球丟在地上，也能增加選單的負載量。" },
       { text: "由於多發弓的過載在最後一次丟棄時，無法正常切換到單發弓來複製。因此單發弓的複製法可以借用法杖、章魚氣球來新增最後一次的負載，並且可以掛在家裡來避免用被電的方式複製裝備。" },
+      { text: "其餘也有其他複製法，可以參考相關影片。" },
     ],
     videos: [
       { id: "cHtxD-IQ_OQ", title: "番外13.5 - 武器複製/耐久移植和維修！「落弓過載法(Multi-Shot Bow Method)」（適用：~ver.1.9.0）", desc: "最常使用的複製方法和選單過載法！" },
@@ -1894,6 +1918,200 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "FHMarfPxVhY", title: "技巧21 - 劍之試煉的 14 個攻略重點與技巧（大師模式・中文解說）" },
       { id: "VgLU1-nYBQc", title: "技巧29.5 重置靜止器「寶箱法」- 災厄Amiibo（中文解說）" },
       { id: "tDvHvBp3WpY", title: "技巧29 - 無限靜止！「重置靜止器(Stasis Resetting)」（中文解說）" },
+    ],
+  },
+
+  "botw-25": {
+    videoFolder: "botw-apparatus storage",
+    methods: [
+      {
+        tab: "慢讀",
+        name: "慢讀（Repause Loading）",
+        video: "慢讀.mp4",
+        tags: ["Ver.1.5.0+"],
+        steps: [
+          "希卡道具選到相機",
+          "按住 ZL 舉盾、或 R 投擲動作、或按 ZR 把弓拿出來，同時按下 L + L3（左搖桿）",
+          "靠近神廟的陀螺儀裝置會出現調查判定，按 A 調查",
+          "儲存或刪除照片，視角拉回去之前暫停",
+          "手持材料",
+          "觀看回憶",
+          "關閉暫停，旋轉搖桿確認前方陀螺儀裝置能夠被操控",
+          "暫停，並讀取檔案",
+        ],
+        note: [
+          "※ 如果要在神廟內移動，步驟 5 完成後，快速關開暫停（仍然還沒回到正常視角）。",
+          "※ 步驟 7 若為可移動狀態時，會有「神廟內儲存」的效果（詳見「應用一覽」），直到再次開啟暫停或快速選單才會解除程錯。",
+        ],
+      },
+      {
+        tab: "快讀",
+        name: "快讀（Direct Loading）",
+        video: "快讀.mp4",
+        tags: ["Ver.1.5.0+"],
+        steps: [
+          "希卡道具選到相機",
+          "按住 ZL 舉盾、或 R 投擲動作、或按 ZR 把弓拿出來，同時按下 L + L3（左搖桿）",
+          "靠近神廟的陀螺儀裝置會出現調查判定，按 A 調查",
+          "儲存或刪除照片，視角拉回去之前暫停",
+          "讀取檔案",
+        ],
+        note: "※ 步驟 5 讀取到裝置的存檔，再做一次快讀，則效果會延續到關閉遊戲為止。",
+      },
+    ],
+    principle:
+      "2019/3/22 【オカメいんこさん】的提出此程錯。用相機視角調查陀螺儀裝置，會延遲裝置鎖定林克的判定，在這時間差內手持物品可以讓林克移動、觀看回憶來固定林克的狀態。Zoom out 前讀檔只繼承部分物理／屬性狀態、Zoom out 後讀檔則完整繼承整個角色數值。",
+    applications: {
+      title: "應用一覽",
+      intro:
+        "裝置儲存衍生的效果分成兩類：程錯進行中（人還在神廟內）能享有的狀態，以及讀檔之後被帶到新存檔的繼承效果。後者依讀檔時機不同，快讀與慢讀能拿到的東西不完全一樣。",
+      groups: [
+        {
+          title: "神廟內儲存",
+          intro: "程錯進行中的效果，直到再次開啟暫停或快速選單才會解除。",
+          items: [
+            { name: "無落下判定", desc: "人物會繼續掉到深淵，直到解除程錯為止（讀檔會繼承落下判定）" },
+            { name: "無限精力", desc: "精力耗盡仍然可以衝刺、空中拉弓子彈時間" },
+            { name: "心心不會耗損", desc: "受到攻擊不會損血，但是一樣會有受傷的物理判定" },
+            { name: "屬性效果免疫", desc: "林克不會燃燒、電擊、結凍影響" },
+            { name: "武器可持續帶電", desc: "金屬武器接觸電擊陷阱，武器會帶電直到取消程錯" },
+            { name: "冷卻時間暫停", desc: "料理時間、大師劍 / 英傑能力的冷卻時間會暫停" },
+            { name: "A 判定凍結", desc: "按 A 的判定都會失效" },
+          ],
+        },
+        {
+          title: "讀檔後繼承",
+          intro: "讀檔時機決定能繼承哪些狀態，四項共通效果兩種讀法都拿得到。",
+          columns: ["快讀", "慢讀"],
+          items: [
+            { name: "屬性效果免疫", desc: "林克不會燃燒、電擊、結凍影響", marks: [true, true] },
+            { name: "破傘狀態", desc: "重力效果被固定，開滑翔翼仍然會下墜", marks: [true, true] },
+            { name: "體感溫度鎖定", desc: "溫度鎖定在神廟內，不會感到寒冷、炎熱", marks: [true, true] },
+            {
+              name: "錯誤傳送",
+              desc: "讀檔到騎著動物的檔案之後傳送到地圖遠端，傳送後會從傳送的位置拉回當初騎乘位置，周圍會來不及加載，最早用於 3 心大師劍的拿法（現在為視角往上消磨時間連打 A 撿大師劍）",
+              marks: [true, true],
+            },
+            { name: "料理效果降級", desc: "高等級料理效果會將成低等級", marks: [true, false] },
+            { name: "回滿血量", desc: "心心會回滿", marks: [true, false] },
+            { name: "大師劍冷卻狀態變化", desc: "大師劍的冷卻時間會有所變化", marks: [true, false] },
+            { name: "火山狀態", desc: "接觸岩漿後會儲存在火山區域的狀態，譬如拿出炸彈箭會爆炸", marks: [true, false] },
+            {
+              name: "容器繼承",
+              desc: "讀檔前的心心、精力狀態會繼承到讀檔後的狀態，變動一次心心或精力的最大值可固定該繼承的狀態",
+              marks: [false, true],
+            },
+            { name: "料理效果繼承", desc: "可將讀檔前的料理效果繼承到讀取後的檔案", marks: [false, true] },
+            {
+              name: "冷卻時間繼承",
+              desc: "英傑能力的冷卻時間或可使用的狀態可繼承到讀檔後的檔案",
+              marks: [false, true],
+            },
+            {
+              name: "落下判定繼承",
+              desc: "在神廟內的落下判定會繼承到讀檔後的檔案（※ 不能回到標題，會錯誤而閃退）",
+              marks: [false, true],
+            },
+          ],
+          note: [
+            "※ 快讀：連續做兩次可保持程錯狀態。",
+            "※ 慢讀：經過讀取畫面會取消程錯。",
+          ],
+        },
+      ],
+    },
+    notes: [
+      { text: "慢讀等到視角幾乎拉回來才觀看回憶，林克會卡死（Softlock），只能關閉遊戲。" },
+      { text: "慢讀和快讀的效果不完全一致，可以參考「應用一覽」。" },
+      { text: "直接回標題跨模式不會有裝置儲存的效果，只有快讀第二次才有效果。" },
+      { text: "有其他不需要裝置的特殊觸發方式，可以參考相關影片。" },
+    ],
+    videos: [
+      { id: "3-6TP1gQEws", title: "技巧34 - 裝置程錯/終端失控（Apparatus Glitch）", at: 895 },
+      { id: "sMBU9UB0Grw", title: "20秒示範「無相機裝置程錯」(Cameraless Apparatus Glitch)" },
+      { id: "Srb1h7_6J9U", title: "2分鐘教你怎麼讓導師站著給你打！「裝置程錯 - 布偶鎖(Apparatus Glitch - Ragdoll Lock)」" },
+      { id: "uogIlCqAsFw", title: "3分鐘教你「不需要相機就增殖心心精力＋3心撿大師劍(僅Switch可)」" },
+      { id: "Rlbv1s-5mEY", title: "番外26「心心／精力增殖法（Hearts & Stamina Duplication）」" },
+      { id: "3sl8_BCRiQg", title: "回應09「增殖的心心精力上哪去了？」- 失敗的原因和其他問題" },
+    ],
+  },
+
+  "botw-26": {
+    videoFolder: "botw-horse slide",
+    methods: [
+      {
+        tab: "水平",
+        name: "下馬滑行 / 水平馬滑（Horse Slide）",
+        video: "horizontal horse slide.mp4",
+        tags: ["All Versions"],
+        steps: [
+          "讓馬呈現下坡狀態，前腳較低、後腳較高（後腳在階梯上也可以）",
+          "按住 ZL 往前按 X 跳騎上馬",
+          "往馬的下坡方向移動，或讀取在馬的下坡方向上騎著馬的檔案",
+          "按 X 跳離馬之後，快速按住 ZL 重複連打 A → X，直到速度足夠快",
+        ],
+      },
+      {
+        tab: "垂直",
+        name: "垂直馬滑（Vertical Horse Slide）",
+        video: "vertical horse slide.mp4",
+        tags: ["All Versions"],
+        steps: [
+          "準備好一個騎著馬的檔案",
+          "用靜止器將物體打至紅色，並用弓箭讓動量朝上",
+          "站在物體上方",
+          "靜止器解除、物體往上飛的瞬間讀取騎著馬的檔案",
+          "按 X 跳離馬",
+        ],
+      },
+    ],
+    principle:
+      "2017/09/23 【Pseudo Twili】 玩家在朋友家玩曠野之息的時候發生下馬之後滑行的現象。幾年後 【filofaxi】、【SilicatYT】與多位玩家共同找出穩定觸發的方法。讓馬呈現下坡狀態，林克以鎖定跳的方式上馬，會異常固定林克的座標，離開一段距離之後下馬會讓林克高速返回上馬位置的程錯。",
+    principleNote: "Credit to: setup discoverers, filofaxi and SilicatYT.",
+    notes: [
+      { text: "水平馬滑若讀取神廟內的檔案，電梯動畫期間林克就會滑行。" },
+      { text: "水平馬滑在 Switch 1 可用於未加載型的複製武器。" },
+    ],
+    videos: [
+      { id: "khIZfyCDWks", title: "番外36 脫離騎乘狀態後的高速移動！-「下馬滑行(Horse Slide/Zip)」", at: 12 },
+      {
+        id: "erkGAtF2QnY",
+        title: "番外36.5 - 下了初始台地就能複製武器！「馬滑武器複製法(Horse Slide Duplication)」",
+        desc: "加載速度較快的 Switch 2 Edition 版不適用。",
+        at: 1,
+      },
+    ],
+  },
+
+  "botw-27": {
+    videoFolder: "botw-flying machine",
+    methods: [
+      {
+        tab: "飛行礦車",
+        name: "飛行礦車（Flying Carts）",
+        video: "flying carts.mp4",
+        steps: [
+          "將兩個礦車垂直交疊",
+          "站在最上面的礦車中央",
+          "用希卡磁鐵吸取下方的礦車往上移動",
+        ],
+      },
+    ],
+    principle:
+      "2017/3/31 【Hot_Diggity_Damn】 玩家在 Reddit 上提出的飛行方法，交疊兩個金屬礦車，藉由用磁鐵拖動下方的礦車產生的反作用力讓礦車能夠向上飛行。",
+    notes: [
+      { text: "上面的礦車可以用鐵箱代替，但穩定性不如礦車好。" },
+    ],
+    videos: [
+      { id: "bllXJh2TsiY", title: "技巧07 - 飛行礦車／長距離飛行的方法", at: 29 },
+      { id: "bBhdV8gglEA", title: "番外17 - 飛行礦車（Flying Machine）" },
+      { id: "x5HAWCtBhoE", title: "指法12 - 天跳（Skyjump, スカイジャンプ）" },
+      {
+        id: "95ZeIyckScw",
+        title: "回應06(new) - 22個冷知識與小技巧（22 Trivia & Tips）",
+        desc: "礦車上坡時會輕量化！調整重量適合天跳！",
+        at: 127,
+      },
     ],
   },
 
