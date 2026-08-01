@@ -44,19 +44,15 @@ const wikiHomeUrl = href("/home");
         document.documentElement.setAttribute("data-theme", theme);
         document.documentElement.style.colorScheme = theme;
 
-        // 入口頁語言：優先用記住的選擇，否則依瀏覽器語言判斷（zh→中文、ja→日文、其餘英文）。
-        // 在 head 就決定並寫上 data-lang，讓日文標題的語序（CSS order）與字體在首次繪製前就定案，
-        // 避免先閃一下英文版排版。實際文字替換在 body 末端的 script。
+        // 入口頁語言：預設一律英文，不依瀏覽器語言判斷；使用者從右上角手動選過
+        // 之後才會記住那個選擇（存在 localStorage）。在 head 就決定並寫上 data-lang，
+        // 讓日文標題的語序（CSS order）與字體在首次繪製前就定案，避免先閃一下英文版排版。
+        // 實際文字替換在 body 末端的 script。
         var lang = "en";
         try {
           var savedLang = localStorage.getItem("entrance-lang");
           if (savedLang === "zh" || savedLang === "en" || savedLang === "ja") {
             lang = savedLang;
-          } else {
-            var nav = (navigator.languages && navigator.languages[0]) || navigator.language || "en";
-            nav = nav.toLowerCase();
-            if (nav.indexOf("zh") === 0) lang = "zh";
-            else if (nav.indexOf("ja") === 0) lang = "ja";
           }
         } catch (error) {
           lang = "en";
@@ -1390,6 +1386,12 @@ const wikiHomeUrl = href("/home");
           font-size: calc(0.75em - 8px);
         }
 
+        /* 中文品牌名「達妯・提庫依神廟」比英日文版本長，窄螢幕下單行會溢出容器
+           約 16px，導致最後一個字斷到第二行；縮小 6% 剛好收進一行，不更動文字內容。 */
+        :root[data-lang="zh"] .hero-title em {
+          font-size: 0.9em;
+        }
+
         .hero-support {
           display: block;
           width: 100%;
@@ -1531,7 +1533,7 @@ const wikiHomeUrl = href("/home");
             eyebrowLeft: "Yuda 的頻道",
             eyebrowRight: "遊戲攻略 Wiki",
             titleLead: "歡迎來到",
-            titleBrand: "Dazotikuy Shrine",
+            titleBrand: "達妯・提庫依神廟",
             support: "收錄薩爾達傳說、大亂鬥特別版等系列的進階攻略與程錯解說。",
             actionsLabel: "入口動作按鈕",
             enter: "進入神廟",
