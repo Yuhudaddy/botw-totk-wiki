@@ -2305,6 +2305,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "FS",
         name: "餘料儲存（Fuse Storage）",
         video: "纏桿_FS.mp4",
+        tags: ["All Versions"],
         steps: [
           "在阿卡萊或一始村隱藏區，丟出一個操縱桿放在隱藏區內，用武器或盾牌對其執行[[餘料儲存|totk-01]]",
           "走進隱藏區，同時按下 L 開啟技能輪盤，選到地圖",
@@ -2319,6 +2320,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "Mineru FE",
         name: "米涅魯糾纏（Mineru FE）",
         video: "纏桿_Mineru FE.mp4",
+        tags: ["All Versions"],
         steps: [
           "開啟米涅魯，丟棄__裝備中__的武器或盾牌，對其執行[[米涅魯糾纏|totk-01]]",
           "從米涅魯身上跳下來，撿起步驟 1 的裝備，丟出一個操縱桿，啟動餘料對準操縱桿",
@@ -2332,6 +2334,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "Zuggle Overload",
         name: "並列過載（Zuggle Overload）",
         video: "纏桿_Zuggle Overload.mp4",
+        tags: ["All Versions"],
         steps: [
           "過載狀態下切換裝備，__過載掉落__一個武器或盾牌",
           "將步驟 1 在地上的裝備餘料糾纏到另一類裝備上（__步驟 1 為武器，步驟 2 就是餘料到盾牌上__）",
