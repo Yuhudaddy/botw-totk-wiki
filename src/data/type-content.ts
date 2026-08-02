@@ -1029,6 +1029,7 @@ export const typeContent: Record<string, TypeContent> = {
           { id: "QlJw8N7cMyo", title: "劍試07 - 劍之試煉 -「靜止衝撞法(Stasis Clipping)」（大師／一般模式皆通用．新方法請見敘述）" },
           { id: "wPsT2Ienj9k", title: "劍試08 - 牆外路線(Oob Route)初級12F冰柱放置教學（中文解說）" },
           { id: "OYu_vHdo2wo", title: "劍試09 - 劍之試煉OOB -「盾跳穿牆法（Shield Skew Clipping）」（示範影片）" },
+          { id: "QixAsgjcgvA", title: "劍試10(NS2) - 劍之考驗太難？用 MWW 直接走去拿劍吧！" },
         ],
       },
     ],
@@ -4788,6 +4789,7 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "siGVEF5-AZY", title: "番外16(2 - 舊) - 1.2.0版～1.2.1版獨有｜不在序章手動存檔之「序章大師劍(MNF/MSG)」流程", desc: "無過載 R0 Cull Zuggle (In Bound) 的舊流程（NS2此法已經較少用，但有很多程錯可以學）" },
       { id: "qumkO3l09Kw", title: "番外16(3 - 舊) - 1.2.X版覺醒大師劍檔(AMS)專用｜失傳已久的過載法「序章大師劍(MNF/MSG)」繼承流程", desc: "有過載 R0 Cull Zuggle (In Bound) 的舊流程，可用在有觸發恆常覺醒大師劍的 AMS 檔（NS2此法已經較少用，但有很多程錯可以學）" },
       { id: "HmocgDZFVdk", title: "番外16(NS2) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）", desc: "R0 Cull Zuggle (Out of Bound) 流程" },
+      { id: "SzIn0i5xyv4", title: "番外16(2) - 儲存隱藏 5 分鐘就能拿到「序章大師劍（MsgNotFound）」！？（ver.1.4.3｜Nintendo Switch 2）" },
     ],
   },
 
