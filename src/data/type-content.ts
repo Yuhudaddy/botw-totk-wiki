@@ -45,6 +45,7 @@ export interface RelatedVideo {
   title: string; // 顯示標題（已移除開頭的【…】）
   desc?: string; // 副標題（選填），顯示於標題下方
   at?: number;   // 指定播放起始秒數（選填），例：1233
+  publishedAt?: string; // 上傳日期（選填，"YYYY-MM-DD"），顯示為縮圖右下角的日期徽章
 }
 
 export interface TypeNote {
@@ -2799,22 +2800,22 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     videos: [
-      { id: "AdwFCk77JsE", title: "番外20.5 - 永久跨檔繼承 PSLOT", desc: "2026-06-04｜影片｜相關：閃藏懲戒、脈衝隱藏懲戒、隱藏區懲戒" },
-      { id: "0MBy9e3FQu0", title: "番外11.5 - 電梯、蹺蹺板通通納入藍圖！CAIZ（Cull Area Invizlot）", desc: "2025-01-09｜影片" },
-      { id: "_XG5lYJzSpk", title: "不廢話18 -「黏足(Drop Smuggle)」與「足下並列(Drop Zuggle)」", desc: "2024-08-29｜影片｜相關：隱藏儲存法 / Cull Storage" },
-      { id: "sfw0n6ywqjg", title: "不廢話10 -「閃藏糾纏(Portacull FE)」", desc: "2024-08-17｜影片" },
-      { id: "siGVEF5-AZY", title: "番外16(2) - 1.2.0～1.2.1 序章大師劍流程", desc: "2024-08-11｜影片｜相關：序章閃藏繼承 / Portacull SLD MNF in Intro" },
-      { id: "BhagRZoBQRE", title: "不廢話19 -「隱存無形並列(Cull Area Invizuggle)」", desc: "2024-08-03｜影片" },
-      { id: "bzM64P6F5tU", title: "不廢話18 -「足持(Sluggle)」與「足下並列(Drop Zuggle)」", desc: "2024-07-31｜影片（未公開）｜相關：隱藏儲存法 / Cull Storage" },
-      { id: "3B3f77u_TOI", title: "不廢話17 -「隱藏儲存(Cull Storage)」", desc: "2024-07-30｜影片" },
-      { id: "GZLuq0Xh8Dg", title: "不廢話08 -「攜帶式隱藏(Portable Culling)」Ver.1.2.0～", desc: "2024-07-17｜Shorts / 短片" },
-      { id: "mE-uVcRvMes", title: "不廢話08 -「攜帶式隱藏(Portable Culling)」全版本", desc: "2024-07-16｜Shorts / 短片（未公開）" },
-      { id: "rGCvHgch9jI", title: "不廢話07 -「萊克吞桿隱藏(LLSC, Like-Like Stick Culling)」", desc: "2024-07-16｜影片" },
-      { id: "qnq6E_8b9rU", title: "不廢話06 -「纏桿隱藏(SDC Culling)」", desc: "2024-07-14｜影片" },
-      { id: "s8wXxO8Lzis", title: "番外12(會員) - 捆包無限材料增殖 2種另類流程", desc: "2024-06-22｜影片｜相關：直接離開隱藏區 / Outside Cull Area" },
-      { id: "hfWHsO1-zg4", title: "番外12 - 捆包無限材料增殖", desc: "2024-06-16｜影片｜相關：米涅魯隱藏增殖法" },
-      { id: "wo7BDQRxag4", title: "番外11(會員) - 走狗(Zoggle)路線", desc: "2024-05-20｜影片｜相關：解桿遁地法 / Stick Desync Culling" },
-      { id: "QlJwMCtnE9A", title: "番外10(會員) - 餘料儲存與步驟詳細解說 (1/2)", desc: "2024-04-11｜影片｜相關：隱藏 / Cull" },
+      { id: "AdwFCk77JsE", title: "番外20.5 - 永久跨檔繼承 PSLOT", desc: "影片｜相關：閃藏懲戒、脈衝隱藏懲戒、隱藏區懲戒", publishedAt: "2026-06-04" },
+      { id: "0MBy9e3FQu0", title: "番外11.5 - 電梯、蹺蹺板通通納入藍圖！CAIZ（Cull Area Invizlot）", desc: "影片", publishedAt: "2025-01-09" },
+      { id: "_XG5lYJzSpk", title: "不廢話18 -「黏足(Drop Smuggle)」與「足下並列(Drop Zuggle)」", desc: "影片｜相關：隱藏儲存法 / Cull Storage", publishedAt: "2024-08-29" },
+      { id: "sfw0n6ywqjg", title: "不廢話10 -「閃藏糾纏(Portacull FE)」", desc: "影片", publishedAt: "2024-08-17" },
+      { id: "siGVEF5-AZY", title: "番外16(2) - 1.2.0～1.2.1 序章大師劍流程", desc: "影片｜相關：序章閃藏繼承 / Portacull SLD MNF in Intro", publishedAt: "2024-08-11" },
+      { id: "BhagRZoBQRE", title: "不廢話19 -「隱存無形並列(Cull Area Invizuggle)」", desc: "影片", publishedAt: "2024-08-03" },
+      { id: "bzM64P6F5tU", title: "不廢話18 -「足持(Sluggle)」與「足下並列(Drop Zuggle)」", desc: "影片（未公開）｜相關：隱藏儲存法 / Cull Storage", publishedAt: "2024-07-31" },
+      { id: "3B3f77u_TOI", title: "不廢話17 -「隱藏儲存(Cull Storage)」", desc: "影片", publishedAt: "2024-07-30" },
+      { id: "GZLuq0Xh8Dg", title: "不廢話08 -「攜帶式隱藏(Portable Culling)」Ver.1.2.0～", desc: "Shorts / 短片", publishedAt: "2024-07-17" },
+      { id: "mE-uVcRvMes", title: "不廢話08 -「攜帶式隱藏(Portable Culling)」全版本", desc: "Shorts / 短片（未公開）", publishedAt: "2024-07-16" },
+      { id: "rGCvHgch9jI", title: "不廢話07 -「萊克吞桿隱藏(LLSC, Like-Like Stick Culling)」", desc: "影片", publishedAt: "2024-07-16" },
+      { id: "qnq6E_8b9rU", title: "不廢話06 -「纏桿隱藏(SDC Culling)」", desc: "影片", publishedAt: "2024-07-14" },
+      { id: "s8wXxO8Lzis", title: "番外12(會員) - 捆包無限材料增殖 2種另類流程", desc: "影片｜相關：直接離開隱藏區 / Outside Cull Area", publishedAt: "2024-06-22" },
+      { id: "hfWHsO1-zg4", title: "番外12 - 捆包無限材料增殖", desc: "影片｜相關：米涅魯隱藏增殖法", publishedAt: "2024-06-16" },
+      { id: "wo7BDQRxag4", title: "番外11(會員) - 走狗(Zoggle)路線", desc: "影片｜相關：解桿遁地法 / Stick Desync Culling", publishedAt: "2024-05-20" },
+      { id: "QlJwMCtnE9A", title: "番外10(會員) - 餘料儲存與步驟詳細解說 (1/2)", desc: "影片｜相關：隱藏 / Cull", publishedAt: "2024-04-11" },
     ],
     notes: [
       {
