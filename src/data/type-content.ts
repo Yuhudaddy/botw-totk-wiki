@@ -4510,7 +4510,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "R0 Cull Zuggle",
+        tab: "Cull Zuggle (R0)",
         group: "有過載（Overloading）",
         subTabs: [
           {
@@ -4679,7 +4679,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "Cull Storage",
+        tab: "Cull Storage (R1)",
         group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
         difficulty: "★★★★★",
@@ -4788,8 +4788,8 @@ export const typeContent: Record<string, TypeContent> = {
       { id: "Gn90XQwp5zU", title: "番外16(1 - 舊) - 1.1.2版～1.2.1版通用流程「序章大師劍(MNF/MSG)」", desc: "1.1.2 版 Cull Storage 的舊流程（NS2此法已經較少用，但有很多程錯可以學）" },
       { id: "siGVEF5-AZY", title: "番外16(2 - 舊) - 1.2.0版～1.2.1版獨有｜不在序章手動存檔之「序章大師劍(MNF/MSG)」流程", desc: "無過載 R0 Cull Zuggle (In Bound) 的舊流程（NS2此法已經較少用，但有很多程錯可以學）" },
       { id: "qumkO3l09Kw", title: "番外16(3 - 舊) - 1.2.X版覺醒大師劍檔(AMS)專用｜失傳已久的過載法「序章大師劍(MNF/MSG)」繼承流程", desc: "有過載 R0 Cull Zuggle (In Bound) 的舊流程，可用在有觸發恆常覺醒大師劍的 AMS 檔（NS2此法已經較少用，但有很多程錯可以學）" },
-      { id: "HmocgDZFVdk", title: "番外16(NS2) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）", desc: "R0 Cull Zuggle (Out of Bound) 流程" },
-      { id: "SzIn0i5xyv4", title: "番外16(2) - 儲存隱藏 5 分鐘就能拿到「序章大師劍（MsgNotFound）」！？（ver.1.4.3｜Nintendo Switch 2）" },
+      { id: "HmocgDZFVdk", title: "番外16(1) - 不去加儂多夫那了！10 分鐘就拿到「序章大師劍（MsgNotFound）」！（ver.1.4.3｜Nintendo Switch 2）", desc: "Switch 2 Edition 版 + 有過載 Cull Zuggle (R0) - Out of Bound 流程" },
+      { id: "SzIn0i5xyv4", title: "番外16(2) - 儲存隱藏 5 分鐘就能拿到「序章大師劍（MsgNotFound）」！？（ver.1.4.3｜Nintendo Switch 2）", desc: "Switch 2 Edition 版 + 無過載 Cull Storage (R1) 流程" },
     ],
   },
 

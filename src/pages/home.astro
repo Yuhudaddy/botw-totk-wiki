@@ -1016,8 +1016,11 @@ const featured = youtubeData.featured;
         padding-top: 0;
       }
 
+      /* 貼齊導覽列後，Hero 自己的上框線會和導覽列的下框線疊在一起變成粗黑一條，
+         由導覽列的分隔線負責就好，這裡把上框線拿掉。 */
       .home-hero-frame {
         margin: 0 -32px;
+        border-top: 0;
         border-left: 0;
         border-right: 0;
       }
