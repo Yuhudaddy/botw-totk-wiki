@@ -1,0 +1,33 @@
+name: 一次性：抓相關影片上傳日期
+
+# 只能手動觸發，不會自動執行，也不影響 deploy.yml 的部署流程。
+# 用完這次全站 backfill 之後這個檔案會被刪除。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得原始碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 抓取影片上傳日期
+        run: node scripts/fetch-video-dates.mjs
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+
+      - name: 上傳結果
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-dates
+          path: video-dates-output.json
+          retention-days: 1
