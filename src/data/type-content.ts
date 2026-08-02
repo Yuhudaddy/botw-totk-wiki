@@ -309,9 +309,11 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-01-super": {
+    videoFolder: "botw-super launch",
     methods: [
       {
         tab: "共通",
+        video: "擊飛加速.mp4",
         sections: [
           {
             title: "擊飛加速（Super Launch）",
@@ -1305,6 +1307,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "裝備未加載",
+        video: "未加載複製法.mp4",
         sections: [
           {
             title: "盾跳馬複製法（Shield Jump Dismount Duplication）",
@@ -1563,6 +1566,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-20": {
+    videoFolder: "botw-blss",
     principleSections: [
       {
         text: "2021/08 【びりかんてん】玩家研究不少黏手、黏物等 Smuggle 相關的程錯，於 2021/09/04 【LegendofLink】發現物品黏弓配合弓鎖會讓林克漂浮在空中，經過不少研究之後被應用於速通（Speedrun）。",
@@ -1587,6 +1591,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "BLSS",
         name: "天滑（Bow Lift Smuggle Slide）",
+        video: "BLSS.mp4",
         tags: ["～Ver.1.6.0"],
         intro: "適合：～Ver.1.6.0",
         steps: [
@@ -3749,6 +3754,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Bomb SBR",
         name: "斬彈二段跳（Bomb Shield Block Reset）",
+        video: "Bomb SBR.mp4",
         steps: [
           "裝備單手劍，按 Y 揮劍",
           "十字鍵按▲，丟出一個炸彈花（或是本身劍上已經餘料一個炸彈花）",
@@ -3937,6 +3943,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "PR",
         name: "口袋火箭（Pocket Rockets）",
+        video: "PR.mp4",
         tags: ["All Versions"],
         steps: [
           "餘料糾纏一個火箭在盾牌上",
@@ -3980,6 +3987,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "UPR",
         name: "究極口袋火箭（Ultimate Pocket Rockets）",
+        video: "UPR.mp4",
         tags: ["All Versions"],
         steps: [
           "準備虛幽化武器 W1 和 虛幽化盾牌 S1，Zuggle 起來讀檔到阿卡萊",
@@ -4131,6 +4139,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Shield Swap",
+        video: "Shield Swap.mp4",
         sections: [
           {
             title: "冷切盾取消（Shield Swap Cancel）",
