@@ -615,10 +615,11 @@ const wikiHomeUrl = href("/home");
       :root[data-theme="dark"] .scene-night-moonlight { opacity: 0.82; }
 
       /* The former vector environment remains as a structural fallback in the
-         document, while the painterly game-environment art provides the scene. */
+         document, while the painterly game-environment art provides the scene.
+         The cloud and haze layers are re-enabled as heavily blurred drifting
+         mist veils over the painting — their vector edges disappear under the
+         blur, leaving only soft moving light. */
       .sky,
-      .cloud-layer,
-      .haze,
       .distant-islands,
       .main-island,
       .shore {
@@ -703,52 +704,65 @@ const wikiHomeUrl = href("/home");
         animation: star-breathe 9s ease-in-out infinite alternate;
       }
 
+      /* 遠景星層以不同週期反相呼吸，兩層交錯避免整片同時明滅 */
+      :root[data-theme="dark"] .stars-far {
+        animation: star-breathe 13s ease-in-out 1.8s infinite alternate-reverse;
+      }
+
       .cloud-layer {
         position: absolute;
         width: 113%;
         left: -8%;
         fill: var(--cloud-far);
+        filter: blur(15px);
         transition-property: fill, opacity;
       }
 
       .cloud-layer-far {
-        top: 8%;
-        height: 39%;
-        animation: cloud-drift 54s ease-in-out infinite alternate;
+        top: 5%;
+        height: 33%;
+        opacity: 0.62;
+        animation: cloud-drift 58s ease-in-out infinite alternate;
       }
 
       .cloud-layer-near {
-        top: 24%;
+        top: 20%;
         left: -12%;
-        width: 120%;
-        height: 38%;
+        width: 122%;
+        height: 33%;
         fill: var(--cloud-near);
-        opacity: 0.62;
-        animation: cloud-drift-reverse 42s ease-in-out infinite alternate;
+        filter: blur(23px);
+        opacity: 0.44;
+        animation: cloud-drift-near 39s ease-in-out infinite alternate;
       }
+
+      /* 夜空雲量收斂：月夜只留隱約流動的雲影 */
+      :root[data-theme="dark"] .cloud-layer-far { opacity: 0.5; }
+      :root[data-theme="dark"] .cloud-layer-near { opacity: 0.36; }
 
       .haze {
         position: absolute;
         border-radius: 50%;
         background: var(--haze);
-        opacity: 0.34;
+        filter: blur(26px);
+        opacity: 0.3;
       }
 
       .haze-one {
-        top: 46%;
-        right: -8%;
+        top: 52%;
+        right: -10%;
         width: 58%;
-        height: 24%;
-        animation: haze-drift 28s ease-in-out infinite alternate;
+        height: 17%;
+        animation: haze-drift 31s ease-in-out infinite alternate;
       }
 
       .haze-two {
-        top: 56%;
-        left: -15%;
-        width: 62%;
-        height: 16%;
-        opacity: 0.21;
-        animation: haze-drift 36s ease-in-out infinite alternate-reverse;
+        top: 60%;
+        left: -14%;
+        width: 60%;
+        height: 13%;
+        opacity: 0.2;
+        animation: haze-drift 43s ease-in-out infinite alternate-reverse;
       }
 
       .distant-islands {
@@ -812,17 +826,18 @@ const wikiHomeUrl = href("/home");
         inset: var(--sea-start) 0 0;
         overflow: hidden;
         background: transparent;
-        opacity: 0.16;
+        opacity: 0.4;
       }
 
       .sea::before {
         position: absolute;
         content: "";
-        inset: 0;
+        inset: 0 -2%;
         border-top: 1px solid color-mix(in oklch, var(--wave) 28%, transparent);
         background:
           repeating-radial-gradient(ellipse at 42% 7%, transparent 0 19px, color-mix(in oklch, var(--wave) 20%, transparent) 20px, transparent 22px 48px);
         opacity: 0.22;
+        animation: sea-current 23s ease-in-out infinite alternate;
       }
 
       .sea-depth {
@@ -848,17 +863,33 @@ const wikiHomeUrl = href("/home");
         opacity: 0.18;
         mix-blend-mode: screen;
         transform: translateX(-50%);
-        animation: water-light 14s ease-in-out infinite alternate;
+        animation: water-light 9.5s ease-in-out infinite alternate;
+      }
+
+      /* 水路上的碎光：與主光路反相位錯動，模擬波面glitter */
+      .light-path::after {
+        content: "";
+        position: absolute;
+        inset: -3% 10%;
+        background:
+          repeating-linear-gradient(180deg, transparent 0 1.05rem, color-mix(in oklch, var(--reflection) 52%, transparent) 1.15rem, transparent 1.35rem 2.2rem);
+        opacity: 0.4;
+        animation: light-glint 6.5s ease-in-out infinite alternate;
       }
 
       :root[data-theme="dark"] .sea {
-        opacity: 0.2;
+        opacity: 0.52;
       }
 
       :root[data-theme="dark"] .light-path {
         background:
           repeating-linear-gradient(180deg, transparent 0 0.72rem, oklch(94% 0.006 240 / 0.11) 0.8rem, transparent 0.96rem 1.62rem),
           radial-gradient(ellipse at 50% 3%, oklch(94% 0.006 240 / 0.26), oklch(72% 0.02 240 / 0.08) 28%, transparent 70%);
+      }
+
+      :root[data-theme="dark"] .light-path::after {
+        background:
+          repeating-linear-gradient(180deg, transparent 0 1.05rem, oklch(94% 0.006 240 / 0.2) 1.15rem, transparent 1.35rem 2.2rem);
       }
 
       .wave-lines {
@@ -875,18 +906,18 @@ const wikiHomeUrl = href("/home");
         top: -3%;
         height: 47%;
         stroke: var(--wave);
-        stroke-width: 1.4;
-        opacity: 0.13;
-        animation: sea-shift 15s ease-in-out infinite alternate;
+        stroke-width: 1.6;
+        opacity: 0.2;
+        animation: sea-shift 16s ease-in-out infinite alternate;
       }
 
       .wave-lines-near {
         bottom: -4%;
         height: 76%;
         stroke: var(--wave-near);
-        stroke-width: 2.1;
-        opacity: 0.08;
-        animation: sea-shift-reverse 12s ease-in-out infinite alternate;
+        stroke-width: 2.2;
+        opacity: 0.14;
+        animation: sea-shift-reverse 11s ease-in-out infinite alternate;
       }
 
       .shore {
@@ -917,8 +948,19 @@ const wikiHomeUrl = href("/home");
         transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
       }
 
+      /* 翅膀撲動：以路徑自身包圍盒為原點做垂直壓縮，配合橫越動畫呈現拍翅 */
+      .birds path {
+        transform-box: fill-box;
+        transform-origin: 50% 50%;
+        animation: wing-flap 0.85s ease-in-out infinite alternate;
+      }
+
       :root[data-theme="dark"] .birds {
         opacity: 0;
+        animation: none;
+      }
+
+      :root[data-theme="dark"] .birds path {
         animation: none;
       }
 
@@ -1452,8 +1494,12 @@ const wikiHomeUrl = href("/home");
       .ocean-reveal-five { animation-delay: 430ms; }
 
       .ocean-page.is-paused .ambient-motion,
+      .ocean-page.is-paused .ambient-motion::after,
+      .ocean-page.is-paused .ambient-motion path,
+      .ocean-page.is-paused .sea::before,
       .ocean-page.is-paused .celestial-glow,
-      .ocean-page.is-paused .stars-near {
+      .ocean-page.is-paused .stars-near,
+      .ocean-page.is-paused .stars-far {
         animation-play-state: paused;
       }
 
@@ -1612,8 +1658,12 @@ const wikiHomeUrl = href("/home");
 
       @media (prefers-reduced-motion: reduce) {
         .ambient-motion,
+        .ambient-motion::after,
+        .ambient-motion path,
+        .sea::before,
         .celestial-glow,
         .stars-near,
+        .stars-far,
         .ocean-reveal {
           animation: none !important;
         }
@@ -1654,34 +1704,57 @@ const wikiHomeUrl = href("/home");
         to { opacity: 1; transform: translateY(0); }
       }
 
+      /* 環境動畫全部只動 transform / opacity（GPU 合成層），
+         各層週期取互質的秒數，整個場景不會出現可察覺的同步循環點 */
       @keyframes cloud-drift {
-        from { transform: translate3d(-1.2%, 0, 0); }
-        to { transform: translate3d(2.2%, 0, 0); }
+        0% { transform: translate3d(-3%, 0.3rem, 0); }
+        55% { transform: translate3d(0.4%, -0.35rem, 0); }
+        100% { transform: translate3d(3.2%, 0.15rem, 0); }
       }
 
-      @keyframes cloud-drift-reverse {
-        from { transform: translate3d(1.6%, 0, 0); }
-        to { transform: translate3d(-1.5%, 0, 0); }
+      @keyframes cloud-drift-near {
+        0% { transform: translate3d(3.6%, -0.2rem, 0); }
+        50% { transform: translate3d(-0.6%, 0.4rem, 0); }
+        100% { transform: translate3d(-4.4%, -0.25rem, 0); }
       }
 
       @keyframes haze-drift {
-        from { transform: translate3d(-1px, 0, 0); }
-        to { transform: translate3d(1px, -1px, 0); }
+        from { transform: translate3d(-2.3%, 0.2rem, 0); }
+        to { transform: translate3d(2.5%, -0.4rem, 0); }
       }
 
       @keyframes sea-shift {
-        from { transform: translate3d(-0.7%, 0, 0); }
-        to { transform: translate3d(0.7%, 1px, 0); }
+        0% { transform: translate3d(-1.5%, 0.12rem, 0); opacity: 0.16; }
+        50% { transform: translate3d(0.3%, -0.12rem, 0) skewX(0.35deg); opacity: 0.3; }
+        100% { transform: translate3d(1.7%, 0.06rem, 0); opacity: 0.2; }
       }
 
       @keyframes sea-shift-reverse {
-        from { transform: translate3d(0.8%, 0, 0); }
-        to { transform: translate3d(-0.8%, -1px, 0); }
+        0% { transform: translate3d(1.9%, 0, 0); opacity: 0.12; }
+        50% { transform: translate3d(-0.4%, -0.18rem, 0) skewX(-0.4deg); opacity: 0.26; }
+        100% { transform: translate3d(-2.3%, 0.1rem, 0); opacity: 0.16; }
+      }
+
+      @keyframes sea-current {
+        from { transform: translate3d(-0.8%, 0, 0); opacity: 0.16; }
+        to { transform: translate3d(0.9%, 0, 0); opacity: 0.3; }
       }
 
       @keyframes water-light {
-        from { transform: translate3d(-52%, 0, 0) scaleX(0.97); opacity: 0.18; }
-        to { transform: translate3d(-48%, 1px, 0) scaleX(1.03); opacity: 0.3; }
+        0% { transform: translate3d(-52%, 0, 0) scaleX(0.92); opacity: 0.2; }
+        45% { transform: translate3d(-49.5%, 0.1rem, 0) scaleX(1.06); opacity: 0.42; }
+        100% { transform: translate3d(-48%, 0, 0) scaleX(0.97); opacity: 0.3; }
+      }
+
+      @keyframes light-glint {
+        0% { transform: translateY(-0.45rem); opacity: 0.18; }
+        60% { transform: translateY(0.15rem); opacity: 0.66; }
+        100% { transform: translateY(0.5rem); opacity: 0.34; }
+      }
+
+      @keyframes wing-flap {
+        from { transform: scaleY(1); }
+        to { transform: scaleY(0.62); }
       }
 
       @keyframes celestial-breathe {
