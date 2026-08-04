@@ -1273,18 +1273,15 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         opacity: 0;
         transform: rotate(-12deg) scale(1);
         background: radial-gradient(circle at 30% 36%, oklch(98% 0.006 95), var(--moon-core) 58%, var(--moon-edge) 100%);
-        filter:
-          drop-shadow(0 0 0.45rem color-mix(in oklch, var(--moon-core) 42%, transparent))
-          drop-shadow(0 0 1.15rem var(--moon-glow));
-        /* 兩層遮罩取交集：第一層挖出新月缺口，第二層讓外緣淡出融進夜空。 */
+        /* 只保留彎月本體；月光暈由 celestial-glow 獨立繪製，
+           避免 drop-shadow 沿遮罩邊緣形成一圈細線。 */
+        filter: none;
+        /* 第一層挖出新月缺口，外圈維持實心邊界，避免半透明外緣
+           在彎月右上角留下一圈不自然的輪廓。 */
         -webkit-mask-image:
-          radial-gradient(circle at 73% 37%, transparent 0 51%, #000 52%),
-          radial-gradient(circle, #000 58%, rgb(0 0 0 / 0.55) 80%, transparent 100%);
+          radial-gradient(circle at 73% 37%, transparent 0 50%, #000 53%, #000 100%);
         mask-image:
-          radial-gradient(circle at 73% 37%, transparent 0 51%, #000 52%),
-          radial-gradient(circle, #000 58%, rgb(0 0 0 / 0.55) 80%, transparent 100%);
-        -webkit-mask-composite: source-in;
-        mask-composite: intersect;
+          radial-gradient(circle at 73% 37%, transparent 0 50%, #000 53%, #000 100%);
       }
 
       .moon-disc::after {
@@ -1634,7 +1631,9 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
          夜空視線；原圖右側的雲光本身負責海面附近的自然反射。 */
       @media (max-width: 767px) {
         :root[data-theme="dark"] {
-          --celestial-y: clamp(8.75rem, 20.8vh, 11rem);
+          /* 直式夜圖右側的月光雲層在可視高度約 54%；月亮控制項
+             對準這個自然光源，避免浮在上方空無一物的天空。 */
+          --celestial-y: 54svh;
         }
 
         /* 直式夜圖已內建右側月光；手機不再重複疊加整面色層與高光，
