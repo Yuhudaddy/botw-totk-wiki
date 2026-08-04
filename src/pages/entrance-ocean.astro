@@ -397,7 +397,7 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         --scene-x: 0px;
         --scene-y: 0px;
         --celestial-x: 94%;
-        --celestial-y: 63vh;
+        --celestial-y: 63svh;
         --celestial-control-size: clamp(4rem, 5.8vw, 5.3rem);
         --sea-start: 70.2%;
         --reflection-width: clamp(5.5rem, 9vw, 10rem);
@@ -460,8 +460,12 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         /* 夜圖是日圖後製，光源位置相同（原圖約 58% 高）。月亮若掛在高空，
            CSS 的 scene-night-moonlight 會在那裡再造一個光暈，與畫中既有的
            光源打架、水面反光也對不上，因此貼齊光源高度，只比日間太陽的
-           63vh 略高一點，讀起來像夜空中稍微升起的月。 */
-        --celestial-y: 58vh;
+           63svh 略高一點，讀起來像夜空中稍微升起的月。
+
+           單位一律用 svh 而非 vh：手機瀏覽器的 vh 以「網址列收起」的大視窗
+           為準，但 .scene 與本控制項都是 position:fixed、填的是實際可見區域。
+           用 vh 會讓日月掉到海平線以下（實測 63vh 會落在可見區的 88%）。 */
+        --celestial-y: 58svh;
         --reflection-width: clamp(6.25rem, 10.5vw, 11.5rem);
       }
 
@@ -1245,6 +1249,10 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         box-shadow:
           0 0 0.65rem color-mix(in oklch, var(--sun-core) 46%, transparent),
           0 0 1.8rem color-mix(in oklch, var(--sun-glow) 68%, transparent);
+        /* 外緣以 alpha 漸層淡出，讓圓盤溶進自身光暈與背景天空，
+           不再是一個貼上去的硬邊圓形。 */
+        -webkit-mask-image: radial-gradient(circle, #000 54%, rgb(0 0 0 / 0.5) 78%, transparent 100%);
+        mask-image: radial-gradient(circle, #000 54%, rgb(0 0 0 / 0.5) 78%, transparent 100%);
       }
 
       .sun-rays {
@@ -1259,8 +1267,15 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         filter:
           drop-shadow(0 0 0.45rem color-mix(in oklch, var(--moon-core) 42%, transparent))
           drop-shadow(0 0 1.15rem var(--moon-glow));
-        -webkit-mask-image: radial-gradient(circle at 73% 37%, transparent 0 51%, #000 52%);
-        mask-image: radial-gradient(circle at 73% 37%, transparent 0 51%, #000 52%);
+        /* 兩層遮罩取交集：第一層挖出新月缺口，第二層讓外緣淡出融進夜空。 */
+        -webkit-mask-image:
+          radial-gradient(circle at 73% 37%, transparent 0 51%, #000 52%),
+          radial-gradient(circle, #000 58%, rgb(0 0 0 / 0.55) 80%, transparent 100%);
+        mask-image:
+          radial-gradient(circle at 73% 37%, transparent 0 51%, #000 52%),
+          radial-gradient(circle, #000 58%, rgb(0 0 0 / 0.55) 80%, transparent 100%);
+        -webkit-mask-composite: source-in;
+        mask-composite: intersect;
       }
 
       .moon-disc::after {
@@ -1610,7 +1625,7 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         :root,
         :root[data-theme="light"] {
           --celestial-x: 92%;
-          --celestial-y: 63vh;
+          --celestial-y: 63svh;
           --celestial-control-size: 4rem;
           --sea-start: 71.2%;
           --reflection-width: 5rem;
@@ -1671,7 +1686,7 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       @media (max-height: 43.75rem) {
         :root,
         :root[data-theme="light"] {
-          --celestial-y: 63vh;
+          --celestial-y: 63svh;
         }
 
         :root {
@@ -1690,7 +1705,7 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
 
       @media (max-width: 45.99rem) and (max-height: 43.75rem) {
         :root,
-        :root[data-theme="light"] { --celestial-y: 63vh; }
+        :root[data-theme="light"] { --celestial-y: 63svh; }
 
         .hero-copy { top: 6.8rem; }
         .main-island { right: -14%; bottom: 24.5%; width: 78vw; }
