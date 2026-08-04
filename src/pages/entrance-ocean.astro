@@ -457,15 +457,20 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         --title-gradient-end: oklch(94% 0.015 88);
         --title-glow: oklch(89% 0.018 235 / 0.18);
         --theme-meta: #0d3d4b;
-        /* 夜圖是日圖後製，光源位置相同（原圖約 58% 高）。月亮若掛在高空，
-           CSS 的 scene-night-moonlight 會在那裡再造一個光暈，與畫中既有的
-           光源打架、水面反光也對不上，因此貼齊光源高度，只比日間太陽的
-           63svh 略高一點，讀起來像夜空中稍微升起的月。
+        /* 夜圖不是日圖的單純後製——月光被另外畫在高空。量測橫式夜圖：天空
+           最亮區在原圖高度 26.1%（日圖的夕陽則在 59.6%）。月亮必須對準這裡，
+           否則 scene-night-moonlight 會在別處再造一個假光源，而 scene-night-depth
+           那圈「中心透明、外圍轉暗」的暗角也會跟著偏移，把上方雲層壓成斑駁。
+
+           兩段式對位：橫式圖以 cover 鋪滿時，畫面比例 ≤16:9 由高度決定縮放，
+           畫中 26.1% 就等於畫面 26.1%；比 16:9 更寬時改由寬度決定，光源會相對
+           上移，此時 50svh − 13.45vw 才是正確位置。取兩者較小值即可涵蓋兩種情形
+           （在 16:9 交界處兩式同值，銜接連續）。
 
            單位一律用 svh 而非 vh：手機瀏覽器的 vh 以「網址列收起」的大視窗
            為準，但 .scene 與本控制項都是 position:fixed、填的是實際可見區域。
            用 vh 會讓日月掉到海平線以下（實測 63vh 會落在可見區的 88%）。 */
-        --celestial-y: 58svh;
+        --celestial-y: min(26svh, calc(50svh - 13.45vw));
         --reflection-width: clamp(6.25rem, 10.5vw, 11.5rem);
       }
 
@@ -1619,6 +1624,16 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       @media (min-width: 70rem) {
         .hero-actions { gap: 0.85rem; }
         .hero-action { min-width: 9.25rem; min-height: 3.3rem; }
+      }
+
+      /* 斷點刻意用 767px 而非其他地方慣用的 45.99rem：這裡要跟著 <source
+         media="(max-width: 767px)"> 換圖的時機走。直式夜圖是另一種構圖，
+         月光落在原圖高度 57.7%（橫式圖是 26.1%），若沿用 45.99rem，
+         736–767px 這段就會拿橫式圖的座標去對直式圖。 */
+      @media (max-width: 767px) {
+        :root[data-theme="dark"] {
+          --celestial-y: 58svh;
+        }
       }
 
       @media (max-width: 45.99rem) {
