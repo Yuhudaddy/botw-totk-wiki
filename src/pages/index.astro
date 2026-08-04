@@ -4,6 +4,8 @@ import { href } from "../lib/url";
 
 // 入口頁本身就在 "/"，兩顆按鈕與站內導引一律指向攻略首頁 "/home"
 const wikiHomeUrl = href("/home");
+// 左上角 Logo 是兩種入口皮膚之間的切換，對應頁在 entrance-ocean（該頁的 Logo 會指回這裡）
+const oceanEntranceUrl = href("/entrance-ocean");
 ---
 
 <!doctype html>
@@ -70,14 +72,18 @@ const wikiHomeUrl = href("/home");
     <a class="skip-link" href="#entrance-content">Skip to main content</a>
 
     <header class="entrance-header">
-      {/* 入口頁本身就是站台起點，Logo 不再是連結（點了只會重載同一頁）；
-          進站一律走下方的 Enter Shrine 按鈕。 */}
-      <div class="entrance-brand">
-        <img class="brand-logo" src={href("/logo/yuda-logo.png")} alt="" />
+      {/* Logo 是兩種入口皮膚的切換鈕：點了換到海島版入口，該頁的 Logo 再點一次就回到這裡。
+          用 <a> 而非 <button>，中鍵開新分頁／右鍵複製連結／鍵盤操作都能照常運作。
+          進站本身一律走下方的 Enter Shrine 按鈕。 */}
+      <a class="entrance-brand" href={oceanEntranceUrl}>
+        <picture class="brand-logo-pic">
+          <source srcset={href("/logo/yuda-logo.webp")} type="image/webp" />
+          <img class="brand-logo" src={href("/logo/yuda-logo.png")} alt="" />
+        </picture>
         <span class="brand-copy">
           <span>Dazotikuy Shrine</span>
         </span>
-      </div>
+      </a>
 
       <div class="entrance-header-actions">
         {/* 語言切換：只影響入口頁的文案，站內其他頁面維持中文 */}
@@ -407,16 +413,37 @@ const wikiHomeUrl = href("/home");
         text-decoration: none;
       }
 
-      .brand-logo {
+      /* <picture> 才是 flex 項目，尺寸與不縮放的規則掛在它身上；
+         裡面的 <img> 只負責填滿。 */
+      .brand-logo-pic {
         position: relative;
         display: block;
         width: 40px;
         height: 40px;
         flex: 0 0 auto;
+      }
+
+      .brand-logo {
+        display: block;
+        width: 100%;
+        height: 100%;
         object-fit: contain;
         transition:
           filter 220ms cubic-bezier(0.25, 1, 0.5, 1),
           transform 220ms cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .entrance-brand:focus-visible {
+        outline: 2px solid var(--entrance-text);
+        outline-offset: 6px;
+        border-radius: 6px;
+      }
+
+      @media (hover: hover) {
+        .entrance-brand:hover .brand-logo {
+          transform: scale(1.06);
+          filter: brightness(1.06);
+        }
       }
 
       .brand-copy {
@@ -1344,7 +1371,7 @@ const wikiHomeUrl = href("/home");
           padding-inline: max(20px, env(safe-area-inset-left));
         }
 
-        .brand-logo {
+        .brand-logo-pic {
           width: 36px;
           height: 36px;
         }
@@ -1569,6 +1596,7 @@ const wikiHomeUrl = href("/home");
             channel: "造訪頻道",
             footer: "© 2026 Yuhudaddy － 內容整理自個人 YouTube 頻道",
             langLabel: "切換語言",
+            brandLink: "切換到海島版入口",
             toLight: "切換為淺色主題",
             toDark: "切換為深色主題",
           },
@@ -1590,6 +1618,7 @@ const wikiHomeUrl = href("/home");
             channel: "Visit Channel",
             footer: "© 2026 Yuhudaddy - Content Curated from Personal YouTube Channel",
             langLabel: "Change language",
+            brandLink: "Switch to the island entrance",
             toLight: "Switch to light theme",
             toDark: "Switch to dark theme",
           },
@@ -1610,6 +1639,7 @@ const wikiHomeUrl = href("/home");
             channel: "チャンネルへ",
             footer: "© 2026 Yuhudaddy － 個人YouTubeチャンネルより編纂",
             langLabel: "言語を変更",
+            brandLink: "海の入口へ切替",
             toLight: "ライトテーマに切替",
             toDark: "ダークテーマに切替",
           },
@@ -1643,6 +1673,10 @@ const wikiHomeUrl = href("/home");
 
           setText(".skip-link", t.skip);
           setText(".entrance-brand .brand-copy span", t.brand);
+
+          // Logo 連結的可讀名稱：品牌字樣本身不足以說明「點了會去哪」
+          var brandLink = document.querySelector(".entrance-brand");
+          if (brandLink) brandLink.setAttribute("aria-label", t.brandLink);
           setText(".hero-title-prefix", t.titleLead);
           setText(".hero-title em", t.titleBrand);
           setText(".hero-support p", t.support);

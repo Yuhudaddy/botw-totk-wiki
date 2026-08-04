@@ -3,6 +3,10 @@ import { SITE } from "../data/site";
 import { href } from "../lib/url";
 
 const wikiHomeUrl = href("/home");
+// 左上角 Logo 指回原版入口（"/"），與該頁的 Logo 互為往返
+const originEntranceUrl = href("/");
+// 這頁是首頁的另一種皮膚（標題與描述都相同），權重集中回 "/"，避免被判重複內容
+const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
 ---
 
 <!doctype html>
@@ -16,12 +20,13 @@ const wikiHomeUrl = href("/home");
     />
     <meta name="theme-color" content="#dce5ec" />
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
+    <link rel="canonical" href={canonicalUrl} />
     <title>Yuda's Channel · Game Wiki</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+JP:wght@400;500&family=Noto+Serif+TC:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+JP:wght@400;500&family=Noto+Serif+TC:wght@400;500&family=Spectral:ital,wght@1,400&display=swap"
       rel="stylesheet"
     />
 
@@ -219,10 +224,15 @@ const wikiHomeUrl = href("/home");
     </div>
 
     <header class="ocean-header">
-      <div class="ocean-brand">
-        <img class="brand-logo" src={href("/logo/yuda-logo.png")} alt="" />
+      {/* Logo 是兩種入口皮膚的切換鈕，這裡指回原版入口（"/"）。
+          用 <a> 而非 <button>，中鍵開新分頁／右鍵複製連結／鍵盤操作都能照常運作。 */}
+      <a class="ocean-brand" href={originEntranceUrl}>
+        <picture class="brand-logo-pic">
+          <source srcset={href("/logo/yuda-logo-blue.webp")} type="image/webp" />
+          <img class="brand-logo" src={href("/logo/yuda-logo-blue.png")} alt="" />
+        </picture>
         <span class="brand-copy">Dazotikuy Shrine</span>
-      </div>
+      </a>
 
       <div class="lang-switch" id="entrance-lang-switch">
         <button
@@ -447,7 +457,11 @@ const wikiHomeUrl = href("/home");
         --title-gradient-end: oklch(94% 0.015 88);
         --title-glow: oklch(89% 0.018 235 / 0.18);
         --theme-meta: #0d3d4b;
-        --celestial-y: clamp(10.75rem, 23.6vh, 13.25rem);
+        /* 夜圖是日圖後製，光源位置相同（原圖約 58% 高）。月亮若掛在高空，
+           CSS 的 scene-night-moonlight 會在那裡再造一個光暈，與畫中既有的
+           光源打架、水面反光也對不上，因此貼齊光源高度，只比日間太陽的
+           63vh 略高一點，讀起來像夜空中稍微升起的月。 */
+        --celestial-y: 58vh;
         --reflection-width: clamp(6.25rem, 10.5vw, 11.5rem);
       }
 
@@ -988,12 +1002,21 @@ const wikiHomeUrl = href("/home");
         display: flex;
         align-items: center;
         justify-content: space-between;
+        /* 與 index 的 .entrance-header 用同一組間距，兩頁互相切換時
+           左上角 Logo 不會位移。 */
         padding:
-          max(1.1rem, env(safe-area-inset-top))
-          max(1.15rem, env(safe-area-inset-right))
+          max(clamp(24px, 4.4vh, 46px), env(safe-area-inset-top))
+          max(clamp(24px, 4.7vw, 68px), env(safe-area-inset-right))
           0
-          max(1.15rem, env(safe-area-inset-left));
+          max(clamp(24px, 4.7vw, 68px), env(safe-area-inset-left));
         pointer-events: none;
+      }
+
+      @media (max-width: 720px) {
+        .ocean-header {
+          padding-top: max(20px, env(safe-area-inset-top));
+          padding-inline: max(20px, env(safe-area-inset-left));
+        }
       }
 
       .ocean-brand,
@@ -1001,27 +1024,62 @@ const wikiHomeUrl = href("/home");
         pointer-events: auto;
       }
 
+      /* Logo 與品牌字樣的尺寸／字型刻意與粒子入口頁（index）對齊，
+         兩頁互相切換時左上角不該有任何跳動。 */
       .ocean-brand {
         display: flex;
         min-width: 0;
         align-items: center;
-        gap: 0.7rem;
+        gap: 11px;
         color: var(--text);
+        text-decoration: none;
+      }
+
+      .ocean-brand:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 6px;
+        border-radius: 6px;
+      }
+
+      /* <picture> 才是 flex 項目，尺寸與不縮放的規則掛在它身上。
+         40px／720px 以下 36px，與 index 的斷點完全相同。 */
+      .brand-logo-pic {
+        display: block;
+        width: 40px;
+        height: 40px;
+        flex: 0 0 auto;
+      }
+
+      @media (max-width: 720px) {
+        .brand-logo-pic {
+          width: 36px;
+          height: 36px;
+        }
       }
 
       .brand-logo {
-        width: clamp(2rem, 4.6vw, 2.75rem);
-        height: clamp(2rem, 4.6vw, 2.75rem);
+        display: block;
+        width: 100%;
+        height: 100%;
         object-fit: contain;
         filter: drop-shadow(0 2px 7px color-mix(in oklch, var(--glass-shadow) 65%, transparent));
+        transition: transform 220ms cubic-bezier(0.25, 1, 0.5, 1);
       }
 
+      @media (hover: hover) {
+        .ocean-brand:hover .brand-logo {
+          transform: scale(1.06);
+        }
+      }
+
+      /* 字型／字級／字距與 index 的 .brand-copy span 一致；
+         overflow 三件組是這頁 header 較窄時的截斷保險，index 沒有對應設定。 */
       .brand-copy {
         overflow: hidden;
-        font-family: "Fraunces", "Noto Serif TC", "Noto Serif JP", serif;
-        font-size: clamp(0.72rem, 1.2vw, 0.88rem);
-        font-variation-settings: "opsz" 48;
-        letter-spacing: 0.045em;
+        font-family: "Spectral", Georgia, serif;
+        font-size: 0.76rem;
+        font-style: italic;
+        letter-spacing: 0.02em;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
@@ -1527,12 +1585,6 @@ const wikiHomeUrl = href("/home");
       }
 
       @media (min-width: 46rem) {
-        .ocean-header {
-          padding-top: max(1.55rem, env(safe-area-inset-top));
-          padding-right: max(2.3rem, 4vw, env(safe-area-inset-right));
-          padding-left: max(2.3rem, 4vw, env(safe-area-inset-left));
-        }
-
         .hero-copy {
           top: clamp(15.8rem, 43vh, 25rem);
           left: max(3.5rem, 8vw, env(safe-area-inset-left));
@@ -1565,7 +1617,6 @@ const wikiHomeUrl = href("/home");
         }
 
         :root[data-theme="dark"] {
-          --celestial-y: clamp(8.75rem, 20.8vh, 11rem);
           --reflection-width: 6rem;
         }
 
@@ -1623,10 +1674,6 @@ const wikiHomeUrl = href("/home");
           --celestial-y: 63vh;
         }
 
-        :root[data-theme="dark"] {
-          --celestial-y: 7.9rem;
-        }
-
         :root {
           --sea-start: 74%;
         }
@@ -1644,8 +1691,6 @@ const wikiHomeUrl = href("/home");
       @media (max-width: 45.99rem) and (max-height: 43.75rem) {
         :root,
         :root[data-theme="light"] { --celestial-y: 63vh; }
-
-        :root[data-theme="dark"] { --celestial-y: 3.8rem; }
 
         .hero-copy { top: 6.8rem; }
         .main-island { right: -14%; bottom: 24.5%; width: 78vw; }
@@ -1807,6 +1852,7 @@ const wikiHomeUrl = href("/home");
             channel: "造訪頻道",
             footer: "© 2026 Yuhudaddy － 內容整理自個人 YouTube 頻道",
             langLabel: "切換語言",
+            brandLink: "回到原版入口",
             toLight: "切換為淺色主題",
             toDark: "切換為深色主題",
           },
@@ -1826,6 +1872,7 @@ const wikiHomeUrl = href("/home");
             channel: "Visit Channel",
             footer: "© 2026 Yuhudaddy - Content Curated from Personal YouTube Channel",
             langLabel: "Change language",
+            brandLink: "Back to the original entrance",
             toLight: "Switch to light theme",
             toDark: "Switch to dark theme",
           },
@@ -1845,6 +1892,7 @@ const wikiHomeUrl = href("/home");
             channel: "チャンネルへ",
             footer: "© 2026 Yuhudaddy － 個人YouTubeチャンネルより編纂",
             langLabel: "言語を変更",
+            brandLink: "元の入口へ戻る",
             toLight: "ライトテーマに切替",
             toDark: "ダークテーマに切替",
           },
@@ -1899,6 +1947,10 @@ const wikiHomeUrl = href("/home");
 
           setText(".skip-link", t.skip);
           setText(".brand-copy", t.brand);
+
+          // Logo 連結的可讀名稱：品牌字樣本身不足以說明「點了會去哪」
+          var brandLink = document.querySelector(".ocean-brand");
+          if (brandLink) brandLink.setAttribute("aria-label", t.brandLink);
           setText(".hero-title-prefix", t.titleLead);
           setText(".hero-title em", t.titleBrand);
           setText(".hero-support", t.support);
