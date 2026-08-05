@@ -742,7 +742,8 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         width: 113%;
         left: -8%;
         fill: var(--cloud-far);
-        filter: blur(15px);
+        filter: blur(11px);
+        mix-blend-mode: screen;
         transition-property: fill, opacity;
         backface-visibility: hidden;
         will-change: transform, opacity;
@@ -751,21 +752,21 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       .cloud-layer-far {
         top: 5%;
         height: 33%;
-        opacity: 0.62;
-        animation: cloud-drift 61s ease-in-out -17s infinite alternate;
+        opacity: 0.7;
+        animation: cloud-drift 37s linear -17s infinite alternate;
       }
 
-      /* 第三層較細的雲帶以最長週期漂移，讓原本兩片柔霧之間出現
-         可辨識但不搶畫面的速度差；只移動合成圖層，不重繪背景照片。 */
+      /* 三層雲帶維持不同速度與方向；線性漂移避免長週期在端點附近
+         幾乎靜止，讓使用者在 5–10 秒內能感覺到雲層正在移動。 */
       .cloud-layer-mid {
         top: 12%;
         left: -17%;
         width: 134%;
         height: 24%;
         fill: var(--cloud-near);
-        filter: blur(12px);
-        opacity: 0.31;
-        animation: cloud-drift-mid 79s ease-in-out -31s infinite alternate;
+        filter: blur(8px);
+        opacity: 0.4;
+        animation: cloud-drift-mid 47s linear -31s infinite alternate;
       }
 
       .cloud-layer-near {
@@ -774,15 +775,15 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         width: 122%;
         height: 33%;
         fill: var(--cloud-near);
-        filter: blur(23px);
-        opacity: 0.44;
-        animation: cloud-drift-near 43s ease-in-out -9s infinite alternate;
+        filter: blur(16px);
+        opacity: 0.54;
+        animation: cloud-drift-near 29s linear -9s infinite alternate;
       }
 
-      /* 夜空雲量收斂：月夜只留隱約流動的雲影 */
-      :root[data-theme="dark"] .cloud-layer-far { opacity: 0.5; }
-      :root[data-theme="dark"] .cloud-layer-mid { opacity: 0.23; }
-      :root[data-theme="dark"] .cloud-layer-near { opacity: 0.36; }
+      /* 月夜保留可辨識的銀藍雲影，但仍低於背景原生雲層的對比。 */
+      :root[data-theme="dark"] .cloud-layer-far { opacity: 0.64; }
+      :root[data-theme="dark"] .cloud-layer-mid { opacity: 0.36; }
+      :root[data-theme="dark"] .cloud-layer-near { opacity: 0.48; }
 
       .haze {
         position: absolute;
@@ -871,7 +872,7 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         inset: var(--sea-start) 0 0;
         overflow: hidden;
         background: transparent;
-        opacity: 0.4;
+        opacity: 0.48;
         contain: paint;
       }
 
@@ -882,10 +883,10 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         border-top: 1px solid color-mix(in oklch, var(--wave) 28%, transparent);
         background:
           repeating-radial-gradient(ellipse at 42% 7%, transparent 0 19px, color-mix(in oklch, var(--wave) 20%, transparent) 20px, transparent 22px 48px);
-        opacity: 0.26;
+        opacity: 0.34;
         mix-blend-mode: screen;
         will-change: transform, opacity;
-        animation: sea-current 23s ease-in-out -7s infinite alternate;
+        animation: sea-current 15s linear -7s infinite alternate;
       }
 
       /* 第二組海流以不同橢圓中心與反向週期滑過海面，打散規律波線。
@@ -899,12 +900,12 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
           repeating-radial-gradient(ellipse at 72% 2%, transparent 0 30px, #000 31px, transparent 33px 76px);
         mask-image:
           repeating-radial-gradient(ellipse at 72% 2%, transparent 0 30px, #000 31px, transparent 33px 76px);
-        opacity: 0.16;
+        opacity: 0.22;
         mix-blend-mode: screen;
         transform-origin: 72% 0;
         transition: background-color 900ms cubic-bezier(0.65, 0, 0.35, 1), opacity 900ms cubic-bezier(0.65, 0, 0.35, 1);
         will-change: transform, opacity;
-        animation: sea-undertow 31s ease-in-out -13s infinite alternate;
+        animation: sea-undertow 19s linear -13s infinite alternate;
       }
 
       .sea-depth {
@@ -945,11 +946,11 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       }
 
       :root[data-theme="dark"] .sea {
-        opacity: 0.34;
+        opacity: 0.42;
       }
 
       :root[data-theme="dark"] .sea::after {
-        opacity: 0.1;
+        opacity: 0.16;
       }
 
       :root[data-theme="dark"] .light-path {
@@ -982,8 +983,8 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         height: 47%;
         stroke: var(--wave);
         stroke-width: 1.6;
-        opacity: 0.24;
-        animation: sea-shift 17s ease-in-out -5s infinite alternate;
+        opacity: 0.34;
+        animation: sea-shift 11s linear -5s infinite alternate;
       }
 
       .wave-lines-near {
@@ -991,8 +992,8 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         height: 76%;
         stroke: var(--wave-near);
         stroke-width: 2.2;
-        opacity: 0.18;
-        animation: sea-shift-reverse 13s ease-in-out -8s infinite alternate;
+        opacity: 0.28;
+        animation: sea-shift-reverse 8.5s linear -4s infinite alternate;
       }
 
       .shore {
@@ -1864,21 +1865,21 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       /* 環境動畫全部只動 transform / opacity（GPU 合成層），
          各層週期取互質的秒數，整個場景不會出現可察覺的同步循環點 */
       @keyframes cloud-drift {
-        0% { transform: translate3d(-4.2%, 0.3rem, 0); }
-        55% { transform: translate3d(0.6%, -0.42rem, 0); }
-        100% { transform: translate3d(4.4%, 0.12rem, 0); }
+        0% { transform: translate3d(-5.4%, 0.42rem, 0); }
+        52% { transform: translate3d(0.5%, -0.58rem, 0); }
+        100% { transform: translate3d(5.8%, 0.18rem, 0); }
       }
 
       @keyframes cloud-drift-mid {
-        0% { transform: translate3d(4.8%, -0.16rem, 0) scaleX(0.985); }
-        48% { transform: translate3d(-0.5%, 0.36rem, 0) scaleX(1.015); }
-        100% { transform: translate3d(-5.2%, -0.25rem, 0) scaleX(0.995); }
+        0% { transform: translate3d(6.2%, -0.28rem, 0) scaleX(0.98); }
+        48% { transform: translate3d(-0.5%, 0.52rem, 0) scaleX(1.02); }
+        100% { transform: translate3d(-6.5%, -0.34rem, 0) scaleX(0.992); }
       }
 
       @keyframes cloud-drift-near {
-        0% { transform: translate3d(5.2%, -0.25rem, 0); }
-        50% { transform: translate3d(-0.8%, 0.48rem, 0); }
-        100% { transform: translate3d(-5.6%, -0.3rem, 0); }
+        0% { transform: translate3d(6.8%, -0.35rem, 0); }
+        50% { transform: translate3d(-0.8%, 0.7rem, 0); }
+        100% { transform: translate3d(-7.2%, -0.42rem, 0); }
       }
 
       @keyframes haze-drift {
@@ -1887,26 +1888,26 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       }
 
       @keyframes sea-shift {
-        0% { transform: translate3d(-2.4%, 0.18rem, 0); opacity: 0.16; }
-        50% { transform: translate3d(0.4%, -0.18rem, 0) skewX(0.42deg); opacity: 0.34; }
-        100% { transform: translate3d(2.6%, 0.08rem, 0); opacity: 0.21; }
+        0% { transform: translate3d(-3.8%, 0.24rem, 0); opacity: 0.24; }
+        50% { transform: translate3d(0.5%, -0.3rem, 0) skewX(0.55deg); opacity: 0.46; }
+        100% { transform: translate3d(4.1%, 0.12rem, 0); opacity: 0.3; }
       }
 
       @keyframes sea-shift-reverse {
-        0% { transform: translate3d(3.1%, 0.04rem, 0); opacity: 0.12; }
-        50% { transform: translate3d(-0.5%, -0.24rem, 0) skewX(-0.48deg); opacity: 0.3; }
-        100% { transform: translate3d(-3.4%, 0.14rem, 0); opacity: 0.17; }
+        0% { transform: translate3d(4.5%, 0.08rem, 0); opacity: 0.2; }
+        50% { transform: translate3d(-0.6%, -0.36rem, 0) skewX(-0.62deg); opacity: 0.42; }
+        100% { transform: translate3d(-4.9%, 0.2rem, 0); opacity: 0.26; }
       }
 
       @keyframes sea-current {
-        from { transform: translate3d(-1.7%, 0.08rem, 0) scaleX(0.99); opacity: 0.17; }
-        to { transform: translate3d(1.9%, -0.08rem, 0) scaleX(1.015); opacity: 0.34; }
+        from { transform: translate3d(-3.2%, 0.12rem, 0) scaleX(0.985); opacity: 0.24; }
+        to { transform: translate3d(3.5%, -0.14rem, 0) scaleX(1.02); opacity: 0.48; }
       }
 
       @keyframes sea-undertow {
-        0% { transform: translate3d(2.8%, -0.16rem, 0) scaleX(0.985); }
-        52% { transform: translate3d(-0.4%, 0.2rem, 0) scaleX(1.018); }
-        100% { transform: translate3d(-3.1%, -0.05rem, 0) scaleX(0.995); }
+        0% { transform: translate3d(4.2%, -0.22rem, 0) scaleX(0.98); }
+        52% { transform: translate3d(-0.5%, 0.3rem, 0) scaleX(1.022); }
+        100% { transform: translate3d(-4.7%, -0.08rem, 0) scaleX(0.992); }
       }
 
       @keyframes water-light {
