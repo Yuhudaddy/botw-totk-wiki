@@ -43,7 +43,7 @@ const imageBase = content?.imageFolder
   ? `${BASE}/type-videos/${content.imageFolder}`
   : null;
 const hasAnyVideo = content?.methods?.some((m) => m.video) ?? false;
-const hasAnyImage = content?.methods?.some((m) => m.image) ?? false;
+const hasAnyImage = content?.methods?.some((m) => m.image || m.extraImage) ?? false;
 const hasMedia = hasAnyVideo || hasAnyImage || content?.showEmptyMedia;
 
 // 只顯示「相關影片」區的分類：隱藏流程／原理／注意事項，
@@ -166,7 +166,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             </div>
             )}
             {content.methods.map((m, i) => (
-              <div class="method-panel" id={hasMethodTabs ? `method-panel-${i}` : undefined} role={hasMethodTabs ? "tabpanel" : undefined} aria-labelledby={hasMethodTabs ? `method-tab-${i}` : undefined} tabindex={hasMethodTabs ? 0 : undefined} data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
+              <div class="method-panel" id={hasMethodTabs ? `method-panel-${i}` : undefined} role={hasMethodTabs ? "tabpanel" : undefined} aria-labelledby={hasMethodTabs ? `method-tab-${i}` : undefined} tabindex={hasMethodTabs ? 0 : undefined} data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-extra-image={m.extraImage ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
                 {m.subTabs ? (
                   <div class="subtab-group">
                     <div role="tablist" class="subtab-tabs mb-4 flex flex-wrap gap-2">
@@ -370,14 +370,17 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 playsinline
                 class="hidden w-full rounded-xl"
               ></video>
-              <a id="demo-image-link" href="#" target="_blank" rel="noopener" class="hidden">
+              <button type="button" id="demo-image-trigger" class="demo-image-trigger hidden" aria-label="放大快速示意圖">
                 <img
                   id="demo-image"
                   alt="快速示意圖"
                   loading="lazy"
                   class="w-full rounded-xl"
                 />
-              </a>
+                <span class="demo-zoom-hint" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /><path d="M11 8v6M8 11h6" /></svg>
+                </span>
+              </button>
               <div
                 id="demo-media-empty"
                 class="hidden flex-col items-center justify-center py-10 text-center text-[14px] text-muted"
@@ -385,10 +388,54 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 <span>示意內容準備中</span>
               </div>
             </div>
+            {/* 影片下方的補充圖解（例如 SLD 的逐幀流程圖），與影片並存、同尺寸容器；
+                圖片路徑沿用上面 demo-media-wrap 的 imageBase，不重複宣告 */}
+            <div
+              id="demo-extra-wrap"
+              class="relative mt-3 overflow-hidden rounded-xl bg-sand"
+              hidden
+            >
+              <button type="button" id="demo-extra-trigger" class="demo-image-trigger" aria-label="放大流程圖解">
+                <img
+                  id="demo-extra-image"
+                  alt="流程圖解"
+                  loading="lazy"
+                  class="w-full rounded-xl"
+                />
+                <span class="demo-zoom-hint" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /><path d="M11 8v6M8 11h6" /></svg>
+                </span>
+              </button>
+            </div>
           </div>
         )}
       </div>
     </div>
+
+    {hasMedia && (
+      <div class="demo-lightbox" id="demo-lightbox" hidden>
+        <button
+          class="demo-lightbox-backdrop"
+          type="button"
+          data-demo-lightbox-close
+          tabindex="-1"
+          aria-hidden="true"
+        ></button>
+        <div class="demo-lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="demo-lightbox-title">
+          <div class="demo-lightbox-head">
+            <h2 id="demo-lightbox-title">快速示意圖</h2>
+            <button type="button" data-demo-lightbox-close aria-label="關閉預覽">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 6 12 12M18 6 6 18" />
+              </svg>
+            </button>
+          </div>
+          <div class="demo-lightbox-image">
+            <img src="" alt="" id="demo-lightbox-image" />
+          </div>
+        </div>
+      </div>
+    )}
 
     {/* 3D 模型參考：獨立全寬區塊（不塞進右欄，避免只有 C 欄寬度太窄），置於注意事項之上 */}
     {content?.model3d && (
@@ -1578,6 +1625,138 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     font-style: italic;
     margin: 0;
   }
+
+  /* 快速示意圖片（單張示意圖或影片下方的補充圖解）：點擊可放大看燈箱 */
+  .demo-image-trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+  .demo-image-trigger img {
+    display: block;
+  }
+  .demo-zoom-hint {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    color: var(--text);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .demo-zoom-hint svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  @media (hover: hover) {
+    .demo-image-trigger:hover .demo-zoom-hint {
+      opacity: 1;
+    }
+  }
+  .demo-image-trigger:focus-visible .demo-zoom-hint {
+    opacity: 1;
+  }
+  .demo-image-trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* 快速示意圖放大燈箱：與 practical-schematics.astro 的藍圖燈箱同一套互動慣例
+     （遮罩點擊關閉、Esc 關閉、Tab 焦點鎖在對話框內），但圖片改用 contain + 自然比例，
+     因為這裡放的是流程圖解、介面截圖，不是固定比例的 QR Code。 */
+  .demo-lightbox[hidden] {
+    display: none;
+  }
+  .demo-lightbox {
+    position: fixed;
+    z-index: 80;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+  .demo-lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: color-mix(in srgb, var(--bg) 74%, #000);
+    opacity: 0.92;
+    cursor: zoom-out;
+  }
+  .demo-lightbox-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(92vw, 900px);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 24px 70px color-mix(in srgb, #000 32%, transparent);
+  }
+  .demo-lightbox-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .demo-lightbox-head h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .demo-lightbox-head button {
+    display: grid;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .demo-lightbox-head svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  .demo-lightbox-image {
+    display: grid;
+    place-items: center;
+    overflow: auto;
+    background: var(--bg);
+  }
+  .demo-lightbox-image img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(88vh - 66px);
+    object-fit: contain;
+  }
 </style>
 
 <script>
@@ -1610,15 +1789,17 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
     const mediaWrap = document.getElementById("demo-media-wrap");
     const videoEl = document.getElementById("demo-video") as HTMLVideoElement | null;
-    const imageLink = document.getElementById("demo-image-link") as HTMLAnchorElement | null;
+    const imageTrigger = document.getElementById("demo-image-trigger") as HTMLButtonElement | null;
     const imageEl = document.getElementById("demo-image") as HTMLImageElement | null;
     const mediaEmpty = document.getElementById("demo-media-empty");
+    const extraWrap = document.getElementById("demo-extra-wrap");
+    const extraImageEl = document.getElementById("demo-extra-image") as HTMLImageElement | null;
     const videoBase = mediaWrap?.dataset.videoBase ?? "";
     const imageBase = mediaWrap?.dataset.imageBase ?? "";
 
     function showOnly(which: "video" | "image" | "empty") {
       videoEl?.classList.toggle("hidden", which !== "video");
-      imageLink?.classList.toggle("hidden", which !== "image");
+      imageTrigger?.classList.toggle("hidden", which !== "image");
       if (mediaEmpty) {
         mediaEmpty.classList.toggle("hidden", which !== "empty");
         mediaEmpty.classList.toggle("flex", which === "empty");
@@ -1630,11 +1811,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       const panel = panelByIndex.get(index);
       const image = panel?.dataset.image ?? "";
       const video = panel?.dataset.video ?? "";
+      const extraImage = panel?.dataset.extraImage ?? "";
 
-      if (image && imageEl && imageLink) {
+      if (image && imageEl && imageTrigger) {
         const src = `${imageBase}/${image}`;
         if (imageEl.getAttribute("src") !== src) imageEl.src = src;
-        imageLink.href = src;
         videoEl?.pause();
         showOnly("image");
       } else if (video && videoEl) {
@@ -1648,6 +1829,17 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       } else {
         videoEl?.pause();
         showOnly("empty");
+      }
+
+      // 影片下方的補充圖解：與上面的 video/image 互不影響，獨立顯示/隱藏
+      if (extraWrap && extraImageEl) {
+        if (extraImage) {
+          const src = `${imageBase}/${extraImage}`;
+          if (extraImageEl.getAttribute("src") !== src) extraImageEl.src = src;
+          extraWrap.hidden = false;
+        } else {
+          extraWrap.hidden = true;
+        }
       }
     }
 
@@ -1698,6 +1890,72 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       });
     });
   });
+
+  // 快速示意圖放大燈箱：demo-image（單張示意圖）與 demo-extra-image（影片下方的補充
+  // 圖解）共用同一個燈箱實例。這兩顆觸發鈕在頁面上只有一份，不隨 .method-tabs 數量
+  // 重複，所以獨立於上面的 forEach 之外只綁定一次。
+  (function () {
+    const lightbox = document.getElementById("demo-lightbox");
+    const lightboxImage = document.getElementById("demo-lightbox-image") as HTMLImageElement | null;
+    const lightboxTitle = document.getElementById("demo-lightbox-title");
+    const closeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-demo-lightbox-close]"));
+    let lastTrigger: HTMLButtonElement | null = null;
+
+    function closeLightbox() {
+      if (!lightbox || !lightboxImage) return;
+      lightbox.hidden = true;
+      lightboxImage.src = "";
+      lightboxImage.alt = "";
+      document.documentElement.style.overflow = "";
+      lastTrigger?.focus();
+    }
+
+    function openLightbox(trigger: HTMLButtonElement, sourceImg: HTMLImageElement) {
+      if (!lightbox || !lightboxImage || !lightboxTitle || !sourceImg.currentSrc) return;
+      lastTrigger = trigger;
+      lightboxTitle.textContent = sourceImg.alt || "快速示意圖";
+      lightboxImage.src = sourceImg.currentSrc;
+      lightboxImage.alt = sourceImg.alt;
+      lightbox.hidden = false;
+      document.documentElement.style.overflow = "hidden";
+      lightbox.querySelector<HTMLButtonElement>(".demo-lightbox-dialog [data-demo-lightbox-close]")?.focus();
+    }
+
+    [
+      ["demo-image-trigger", "demo-image"],
+      ["demo-extra-trigger", "demo-extra-image"],
+    ].forEach(([triggerId, imgId]) => {
+      const trigger = document.getElementById(triggerId) as HTMLButtonElement | null;
+      const img = document.getElementById(imgId) as HTMLImageElement | null;
+      if (!trigger || !img) return;
+      trigger.addEventListener("click", () => openLightbox(trigger, img));
+    });
+
+    closeButtons.forEach((button) => button.addEventListener("click", closeLightbox));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && lightbox && !lightbox.hidden) closeLightbox();
+    });
+
+    // 焦點鎖在對話框內：燈箱宣告了 aria-modal="true"，若 Tab 能跑到背景，
+    // 鍵盤使用者會在看不見的元素上操作，與「背景不存在」的宣告矛盾。
+    lightbox?.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || lightbox.hidden) return;
+      const focusables = Array.from(
+        lightbox.querySelectorAll<HTMLElement>("button, a[href], [tabindex]")
+      ).filter((el) => el.tabIndex >= 0);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  })();
 
   // 合併分頁底下的子分頁（例：R0 Cull Zuggle 的 In Bound／Out of Bound）
   // 各自獨立於所屬的 .method-panel 內切換，不影響外層分頁或快速示意媒體。

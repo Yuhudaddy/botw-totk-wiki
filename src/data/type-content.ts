@@ -26,6 +26,8 @@ export interface TypeMethod {
   sections?: TypeMethodSection[]; // 多區塊步驟，每區塊各自從 1 開始編號
   video?: string;     // 快速示意影片檔名，例："前跳.MP4"
   image?: string;     // 快速示意圖片檔名（與 video 擇一），例："IST.png"
+  extraImage?: string; // 快速示意影片下方額外顯示的圖片（與 video 並存，例如流程圖解），例："SLD_Explain.png"；
+                        // 讀取路徑沿用 imageFolder，與 image 共用同一個資料夾設定
   note?: string | string[]; // 步驟下方的灰色備註（可多行）
   principle?: string;       // 此分頁的原理說明（覆蓋 TypeContent.principle）
   principleSections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[];
@@ -3183,6 +3185,7 @@ export const typeContent: Record<string, TypeContent> = {
 
   "totk-10": {
     videoFolder: "totk-transfer",
+    imageFolder: "totk-transfer",
     // 原理說明放頁面層級（不放進 SLD 的 method 裡）：
     // 若任何一個 method 有 principle/principleSections，右欄就會切成「跟著分頁切換」的動態模式，
     // 其餘沒有原理說明的分頁（ZLOT/PSLOT/RL）切過去就會變空白。
@@ -3200,6 +3203,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "SLD",
         name: "存讀繼承（Save Load Duplication）",
         video: "SLD.mp4",
+        extraImage: "SLD_Explain.png",
         sections: [
           {
             title: "存讀繼承（SLD, Save Load Dupe）",
