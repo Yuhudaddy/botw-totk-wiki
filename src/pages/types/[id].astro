@@ -1626,7 +1626,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     margin: 0;
   }
 
-  /* 快速示意圖片（單張示意圖或影片下方的補充圖解）：點擊可放大看燈箱 */
+  /* 快速示意圖片（單張示意圖或影片下方的補充圖解）：點擊可放大看燈箱。
+     .hidden 用來在沒有圖片時把整顆按鈕藏起來——它跟 .demo-image-trigger
+     同樣是單一 class，權重相同時後寫的規則會贏，所以這裡明確用
+     .demo-image-trigger.hidden 蓋掉 display:block，而不是依賴書寫順序。 */
   .demo-image-trigger {
     position: relative;
     display: block;
@@ -1635,6 +1638,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     border: 0;
     background: none;
     cursor: zoom-in;
+  }
+  .demo-image-trigger.hidden {
+    display: none;
   }
   .demo-image-trigger img {
     display: block;

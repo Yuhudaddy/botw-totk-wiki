@@ -87,7 +87,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "11", zh: "過載", en: "Overload" },
       { no: "12", zh: "偷襲機制", en: "Sneakstrike" },
       { no: "13", zh: "恆動裝置", en: "Guard-less Active Shield", shortEn: "GAS" },
-      { no: "14", zh: "道具複製", en: "Item Duplication" },
+      { no: "14", zh: "材料複製", en: "Item Duplication" },
       { no: "15", zh: "盾擋重置", en: "Shield Block Reset" },
       { no: "16", zh: "虛化裝備", en: "Void Dip & Despawn Interrupt" },
       { no: "17", zh: "連噴火箭盾", en: "Pocket Rockets" },
