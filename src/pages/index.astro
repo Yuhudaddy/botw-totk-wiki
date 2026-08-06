@@ -4,8 +4,19 @@ import { href } from "../lib/url";
 
 // 入口頁本身就在 "/"，兩顆按鈕與站內導引一律指向攻略首頁 "/home"
 const wikiHomeUrl = href("/home");
-// 左上角 Logo 是兩種入口皮膚之間的切換，對應頁在 entrance-ocean（該頁的 Logo 會指回這裡）
+// 左上角 Logo 是通往 entrance-ocean 的隱藏門：預設不可點，
+// 解開標題彩蛋（依序點擊 Dazotikuy 的 y→u→D→a，倒拼出 Yuda）後才會亮起、變成連結
 const oceanEntranceUrl = href("/entrance-ocean");
+// 彩蛋解開瞬間播放的語音（原檔名「みつかちゃったね」，改用 ASCII 檔名避免
+// macOS NFD／GitHub Pages 之間的 Unicode 正規化差異造成 404）
+const secretVoiceUrl = href("/entrance-voice/mitsukachattane.mp3");
+// 序列輸入過程中，每點對一個字母（y/u/D/a）就播放的短音效
+const secretLetterVoices = {
+  y: href("/entrance-voice/y.wav"),
+  u: href("/entrance-voice/u.wav"),
+  D: href("/entrance-voice/D.wav"),
+  a: href("/entrance-voice/a.wav"),
+};
 ---
 
 <!doctype html>
@@ -72,10 +83,14 @@ const oceanEntranceUrl = href("/entrance-ocean");
     <a class="skip-link" href="#entrance-content">Skip to main content</a>
 
     <header class="entrance-header">
-      {/* Logo 是兩種入口皮膚的切換鈕：點了換到海島版入口，該頁的 Logo 再點一次就回到這裡。
-          用 <a> 而非 <button>，中鍵開新分頁／右鍵複製連結／鍵盤操作都能照常運作。
-          進站本身一律走下方的 Enter Shrine 按鈕。 */}
-      <a class="entrance-brand" href={oceanEntranceUrl}>
+      {/* Logo 平常只是圖，不是連結：沒有 href 的 <a> 不可點、不進 Tab 順序、
+          也不會被讀屏當成連結。解開標題彩蛋後由 JS 補上 href（指向海島版入口）
+          並加上 is-secret-unlocked 的光暈。進站本身一律走下方的 Enter Shrine 按鈕。 */}
+      <a
+        class="entrance-brand"
+        data-secret-href={oceanEntranceUrl}
+        data-secret-voice={secretVoiceUrl}
+      >
         <picture class="brand-logo-pic">
           <source srcset={href("/logo/yuda-logo.webp")} type="image/webp" />
           <img class="brand-logo" src={href("/logo/yuda-logo.png")} alt="" />
@@ -185,7 +200,14 @@ const oceanEntranceUrl = href("/entrance-ocean");
             <span>Game Wiki</span>
           </div>
 
-          <h1 id="entrance-heading" class="hero-title entrance-reveal entrance-reveal-2">
+          <h1
+            id="entrance-heading"
+            class="hero-title entrance-reveal entrance-reveal-2"
+            data-sound-y={secretLetterVoices.y}
+            data-sound-u={secretLetterVoices.u}
+            data-sound-d={secretLetterVoices.D}
+            data-sound-a={secretLetterVoices.a}
+          >
             <span class="hero-title-prefix">Welcome to</span>
             <em>Dazotikuy Shrine</em>
           </h1>
@@ -439,10 +461,34 @@ const oceanEntranceUrl = href("/entrance-ocean");
         border-radius: 6px;
       }
 
+      /* hover 效果只在解鎖（有 href）後出現：鎖定狀態下 Logo 只是圖，
+         滑過去若會放大反而洩漏「這裡可以互動」 */
       @media (hover: hover) {
-        .entrance-brand:hover .brand-logo {
+        .entrance-brand[href]:hover .brand-logo {
           transform: scale(1.06);
           filter: brightness(1.06);
+        }
+      }
+
+      /* 彩蛋解鎖後的 Logo 光暈：微微脈衝的外圍暈光，脈衝掛在 <picture> 上，
+         讓 <img> 自己的 hover brightness 不會被 filter 動畫蓋掉 */
+      .entrance-brand.is-secret-unlocked .brand-logo-pic {
+        animation: brand-secret-pulse 2.8s ease-in-out infinite alternate;
+      }
+
+      @keyframes brand-secret-pulse {
+        from {
+          filter: drop-shadow(0 0 3px color-mix(in oklch, white 55%, transparent));
+        }
+        to {
+          filter: drop-shadow(0 0 10px color-mix(in oklch, white 85%, transparent));
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .entrance-brand.is-secret-unlocked .brand-logo-pic {
+          animation: none;
+          filter: drop-shadow(0 0 7px color-mix(in oklch, white 70%, transparent));
         }
       }
 
@@ -993,6 +1039,38 @@ const oceanEntranceUrl = href("/entrance-ocean");
         100% {
           background-position: 34% 50%;
         }
+      }
+
+      /* ── 標題彩蛋（y→u→D→a）─────────────────────────────────────────
+         熱區不塞進 <em>：em 開著 background-clip:text，任何塞進去的字都會
+         被算進漸層的文字遮罩，位置稍有偏差就會多出一層鬼影。改成掛在 h1
+         上的獨立覆蓋層，內放與底下字母同字形的複製字，平常全透明（視覺
+         零改變），點對時上色蓋住底下的漸層字母。座標由 JS 用 Range 實量。 */
+      .hero-title {
+        position: relative;
+      }
+
+      .secret-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .secret-letter {
+        position: absolute;
+        pointer-events: auto;
+        color: transparent;
+        font-family: "Spectral", Georgia, serif;
+        font-style: italic;
+        font-weight: 400;
+        letter-spacing: -0.04em;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: color 300ms cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .secret-letter.is-hit {
+        color: var(--entrance-accent-bright);
       }
 
       .hero-support {
@@ -1674,9 +1752,14 @@ const oceanEntranceUrl = href("/entrance-ocean");
           setText(".skip-link", t.skip);
           setText(".entrance-brand .brand-copy span", t.brand);
 
-          // Logo 連結的可讀名稱：品牌字樣本身不足以說明「點了會去哪」
+          // Logo 連結的可讀名稱：品牌字樣本身不足以說明「點了會去哪」。
+          // 彩蛋未解鎖時 Logo 沒有 href、不是連結，這時不該掛連結用的
+          // aria-label（讀屏會唸出一個按不了的「切換到…」）。
           var brandLink = document.querySelector(".entrance-brand");
-          if (brandLink) brandLink.setAttribute("aria-label", t.brandLink);
+          if (brandLink) {
+            if (brandLink.hasAttribute("href")) brandLink.setAttribute("aria-label", t.brandLink);
+            else brandLink.removeAttribute("aria-label");
+          }
           setText(".hero-title-prefix", t.titleLead);
           setText(".hero-title em", t.titleBrand);
           setText(".hero-support p", t.support);
@@ -1701,6 +1784,10 @@ const oceanEntranceUrl = href("/entrance-ocean");
           });
 
           syncThemeControl();
+
+          // 標題文字被整段換掉了，彩蛋熱區的座標跟著失效：
+          // 英文模式重量重建，中日文模式移除（彩蛋只在英文標題上存在）
+          rebuildSecretLetters();
         }
 
         function closeLangMenu(refocus) {
@@ -1777,6 +1864,173 @@ const oceanEntranceUrl = href("/entrance-ocean");
           }
           if (themeMeta) {
             themeMeta.setAttribute("content", theme === "dark" ? "#1a0d07" : "#fff3df");
+          }
+        }
+
+        /* ── 標題彩蛋：依序點擊 Dazotikuy 的 y→u→D→a（倒拼 Yuda）───────
+           解開後播放語音、左上角 Logo 亮起光暈並變成通往海島版入口的連結。
+           狀態不落地（每次進頁重置）、僅英文標題有效、按錯默默從頭來。 */
+        var SECRET_SEQUENCE = ["y", "u", "D", "a"];
+        var SECRET_TITLE = "Dazotikuy Shrine";
+        // 對應 SECRET_TITLE 中的字元索引：D=0、a=1、u=7、y=8
+        var SECRET_INDICES = { D: 0, a: 1, u: 7, y: 8 };
+        var secretBrand = document.querySelector(".entrance-brand");
+        var secretTitle = document.querySelector(".hero-title");
+        var secretProgress = 0;
+        var secretUnlocked = false;
+        var secretAudio = null;
+        var secretLetterClips = {};
+
+        function rebuildSecretLetters() {
+          if (!secretTitle) return;
+          var oldLayer = secretTitle.querySelector(".secret-layer");
+          if (oldLayer) oldLayer.remove();
+          secretProgress = 0;
+          if (secretUnlocked) return;
+          if (root.getAttribute("data-lang") !== "en") return;
+
+          var em = secretTitle.querySelector("em");
+          var textNode = em && em.firstChild;
+          // 防呆：標題文字必須正好是英文版原文，索引才有意義
+          if (!textNode || textNode.nodeType !== 3 || textNode.nodeValue !== SECRET_TITLE) return;
+
+          var layer = document.createElement("span");
+          layer.className = "secret-layer";
+          layer.setAttribute("aria-hidden", "true");
+
+          var titleRect = secretTitle.getBoundingClientRect();
+          // Range rect 的高度是字體的 em box（Spectral 內建行距約 1.52），
+          // 但標題行盒被 line-height: 0.98 壓得比它矮，字形以行盒為中心
+          // 上下溢出。覆蓋字母的盒子是自己的行盒（同樣 0.98），若直接用
+          // rect.top 對齊 em box，字形會整體偏高約 (emBox − 行盒)/2。
+          // 這裡把 top 補回這段差值，讓兩邊的「行盒」對齊＝字形對齊。
+          var emLineHeight = parseFloat(window.getComputedStyle(em).lineHeight);
+          SECRET_SEQUENCE.forEach(function (ch) {
+            var range = document.createRange();
+            range.setStart(textNode, SECRET_INDICES[ch]);
+            range.setEnd(textNode, SECRET_INDICES[ch] + 1);
+            var rect = range.getBoundingClientRect();
+            var baselineFix = emLineHeight > 0 ? (rect.height - emLineHeight) / 2 : 0;
+            var letter = document.createElement("span");
+            letter.className = "secret-letter";
+            letter.dataset.ch = ch;
+            letter.textContent = ch;
+            letter.style.left = rect.left - titleRect.left + "px";
+            letter.style.top = rect.top - titleRect.top + baselineFix + "px";
+            layer.appendChild(letter);
+          });
+          secretTitle.appendChild(layer);
+        }
+
+        function prepareSecretAudio() {
+          if (secretAudio || !secretBrand) return;
+          var src = secretBrand.getAttribute("data-secret-voice");
+          if (!src) return;
+          secretAudio = new Audio(src);
+          secretAudio.preload = "auto";
+        }
+
+        // 序列輸入過程中，每點對一個字母就播一段短音效（跟解鎖瞬間的
+        // mitsukachattane 語音是兩回事，音量刻意壓低，不搶最後的語音）
+        function playLetterSound(ch) {
+          if (!secretTitle) return;
+          var audio = secretLetterClips[ch];
+          if (!audio) {
+            var src = secretTitle.dataset["sound" + ch.toUpperCase()];
+            if (!src) return;
+            audio = new Audio(src);
+            audio.preload = "auto";
+            audio.volume = 0.45;
+            secretLetterClips[ch] = audio;
+          }
+          try {
+            audio.currentTime = 0;
+            audio.play();
+          } catch (error) {}
+        }
+
+        function clearSecretHits() {
+          if (!secretTitle) return;
+          secretTitle.querySelectorAll(".secret-letter.is-hit").forEach(function (el) {
+            el.classList.remove("is-hit");
+          });
+        }
+
+        function unlockSecret() {
+          secretUnlocked = true;
+          if (secretBrand) {
+            var target = secretBrand.getAttribute("data-secret-href");
+            if (target) secretBrand.setAttribute("href", target);
+            secretBrand.classList.add("is-secret-unlocked");
+            var t = I18N[currentLang()] || I18N.en;
+            secretBrand.setAttribute("aria-label", t.brandLink);
+            secretBrand.dataset.secretState = "unlocked";
+          }
+          if (secretAudio) {
+            secretAudio.currentTime = 0;
+            var playing = secretAudio.play();
+            if (playing && playing.then) {
+              playing.then(
+                function () { if (secretBrand) secretBrand.dataset.secretAudio = "played"; },
+                function () { if (secretBrand) secretBrand.dataset.secretAudio = "blocked"; }
+              );
+            }
+          }
+          // 四個字母亮著停一拍，再一起淡回原樣，最後整層拆掉
+          window.setTimeout(function () {
+            clearSecretHits();
+            window.setTimeout(function () {
+              var layer = secretTitle && secretTitle.querySelector(".secret-layer");
+              if (layer) layer.remove();
+            }, 420);
+          }, 1100);
+        }
+
+        if (secretTitle && secretBrand) {
+          // 按錯的定義是「點了下一個該點的字母以外的任何地方」，不只是
+          // 點錯另一個字母——點在標題其他文字、頁面其他角落都算，所以
+          // 監聽要掛在 document 上，而不是只掛在 secretTitle 底下。
+          document.addEventListener("click", function (event) {
+            if (secretUnlocked) return;
+            var target = event.target;
+            var letter = target && target.closest ? target.closest(".secret-letter") : null;
+            var ch = letter ? letter.dataset.ch : null;
+            if (ch && ch === SECRET_SEQUENCE[secretProgress]) {
+              letter.classList.add("is-hit");
+              playLetterSound(ch);
+              secretProgress += 1;
+              if (secretProgress === 1) prepareSecretAudio();
+              if (secretProgress === SECRET_SEQUENCE.length) unlockSecret();
+            } else {
+              // 按錯：全部熄滅、無任何提示；若按的正好是序列開頭，直接當新的開始
+              clearSecretHits();
+              if (ch === SECRET_SEQUENCE[0]) {
+                letter.classList.add("is-hit");
+                playLetterSound(ch);
+                secretProgress = 1;
+                prepareSecretAudio();
+              } else {
+                secretProgress = 0;
+              }
+            }
+          });
+
+          // 字母座標是實量出來的，任何會改變排版的事都要重量一次：
+          // 字體載入完成（字寬變）、視窗縮放（字級 clamp 變）。
+          // ResizeObserver 直接盯標題尺寸，比 window resize 更貼近「排版真的變了」；
+          // 兩者都掛是雙保險，rebuild 本身冪等而且便宜。
+          // rebuild 會順便歸零進度——彩蛋精神是無提示，中斷就重來。
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(rebuildSecretLetters);
+          }
+          var secretResizeTimer = 0;
+          function queueSecretRebuild() {
+            window.clearTimeout(secretResizeTimer);
+            secretResizeTimer = window.setTimeout(rebuildSecretLetters, 160);
+          }
+          window.addEventListener("resize", queueSecretRebuild);
+          if (typeof ResizeObserver === "function") {
+            new ResizeObserver(queueSecretRebuild).observe(secretTitle);
           }
         }
 

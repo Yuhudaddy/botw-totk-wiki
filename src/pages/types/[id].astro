@@ -215,11 +215,23 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <div class="prose-custom">
           <h2>{content?.principleTitle ?? "原理說明"}</h2>
           {hasDynamicPrinciple ? (
-            content?.methods?.[0]?.principleSections ? (
-              <div id="principle-sections" set:html={principleSectionsHtml(content.methods[0].principleSections)} />
-            ) : (
-              <p id="principle-text" set:html={principleHtml(content?.methods?.[0]?.principle ?? "")} />
-            )
+            // 兩個容器都固定生成、用 hidden 切換，而非建置時只挑一個：
+            // 分頁彼此獨立決定要用 principle 還是 principleSections（例如本頁
+            // 第一個分頁 MSD 用純文字，SID 用可收合分段），若只依 methods[0]
+            // 決定要不要生成 #principle-sections，其他分頁切過去時 JS 會找不到
+            // 容器可寫入，原理說明整欄變空白。
+            <>
+              <p
+                id="principle-text"
+                class:list={{ hidden: !!content?.methods?.[0]?.principleSections }}
+                set:html={principleHtml(content?.methods?.[0]?.principle ?? "")}
+              />
+              <div
+                id="principle-sections"
+                class:list={{ hidden: !content?.methods?.[0]?.principleSections }}
+                set:html={principleSectionsHtml(content?.methods?.[0]?.principleSections)}
+              />
+            </>
           ) : content?.principleSections ? (
             content.principleSections.map((sec) => {
               const body = (
@@ -1862,14 +1874,22 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       });
       panels.forEach((p) => (p.hidden = Number(p.dataset.panel) !== index));
       updateMedia(index);
+      // 每個分頁各自決定用哪一種：this.dataset.principleSections 非空就代表
+      // 該分頁設了 principleSections，兩個容器都要跟著切換內容與顯示狀態，
+      // 不能只填內容不管 hidden（否則舊分頁的空段落會跟新分頁的內容並排出現）。
+      const activePanel = panelByIndex.get(index);
+      const sectionsHtml = activePanel?.dataset.principleSections ?? "";
+      const hasSections = sectionsHtml.length > 0;
       if (principleText) {
-        principleText.innerHTML = panelByIndex.get(index)?.dataset.principle ?? "";
+        principleText.innerHTML = activePanel?.dataset.principle ?? "";
+        principleText.classList.toggle("hidden", hasSections);
       }
       if (principleSections) {
-        principleSections.innerHTML = panelByIndex.get(index)?.dataset.principleSections ?? "";
+        principleSections.innerHTML = sectionsHtml;
+        principleSections.classList.toggle("hidden", !hasSections);
       }
       if (principleExtra) {
-        principleExtra.innerHTML = panelByIndex.get(index)?.dataset.principleExtra ?? "";
+        principleExtra.innerHTML = activePanel?.dataset.principleExtra ?? "";
       }
     }
 
