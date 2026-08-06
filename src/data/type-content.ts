@@ -129,6 +129,8 @@ export interface TypeApplications {
   label?: string;   // 按鈕文字，預設「應用一覽」
   title?: string;   // 視窗標題，預設同 label
   intro?: string;   // 視窗標題下方的說明句
+  placement?: "principle" | "notes"; // 按鈕位置，預設 "principle"（原理說明下方）；
+                                      // "notes" 則改放注意事項區、緊接在 faqLink 旁邊
   groups: {
     title: string;
     intro?: string;
@@ -3166,6 +3168,33 @@ export const typeContent: Record<string, TypeContent> = {
       },
     ],
     faqLink: { label: "深入了解 Zuggle", path: "/types/totk-09-zuggle" },
+    applications: {
+      label: "ZLOT & Zuggle Drop 的特性",
+      placement: "notes",
+      groups: [
+        {
+          title: "特性",
+          items: [
+            {
+              name: "對話／過場中持續移動",
+              desc: "非左納烏裝置的 ZLOT 與其他物品究極手黏合時，將其他物品抬高或放在不穩定位置，觸發對話或過場後仍會繼續移動或落下，常用於「對話恆墜法（Text Diving）」讓 NPC 強制穿越地底，或「序章逃脫（Prologue Escape）」需要讓物體在對話中持續移動時使用。",
+            },
+            {
+              name: "重新配置時不會消失",
+              desc: "與其他物體以究極手黏合的狀態下，若觸發一卡拉村軌道車破壞等「物體會被消除並重新配置」的處理，被黏合的物體不會跟著消失，會保留下來。",
+            },
+            {
+              name: "通天術會強制解除倒轉乾坤",
+              desc: "對其倒轉乾坤（Recall）後使用「通天術（Ascend）」，倒轉乾坤會被強制解除。",
+            },
+            {
+              name: "過載拾取後餘料建造會冷卻",
+              desc: "對其進行 Overload Pickup／Enemy Pickpocket 後，若再進行餘料建造，該次會是冷餘料。",
+            },
+          ],
+        },
+      ],
+    },
     videos: [
       {
         id: "aELlly95zCk",
@@ -3563,6 +3592,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "MSD",
         name: "YB複製法（Midair Sort Duplication）",
         tags: ["～Ver.1.1.1"],
+        video: "MSD.mp4",
         steps: [
           "讓林克處於空中狀態（盾跳、滑翔翼，或站在米涅魯上）",
           "打開暫停選單並持有道具",
@@ -3579,6 +3609,7 @@ export const typeContent: Record<string, TypeContent> = {
         tab: "ZSD",
         name: "左納烏YB複製法（Zonai Sort Duplication）",
         tags: ["～Ver.1.1.1"],
+        video: "ZSD.mp4",
         steps: [
           "讓林克面向牆壁或懸崖，站在一個不會太近、但又足夠靠近的距離",
           "取出想要的數量的左納烏裝置",
@@ -4564,9 +4595,11 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-18": {
+    videoFolder: "totk-mnf",
     methods: [
       {
         tab: "SLD",
+        video: "SLD.mp4",
         group: "無過載（Overload-less）",
         tags: ["～Ver.1.1.1"],
         difficulty: "★☆☆☆☆",
@@ -4771,6 +4804,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Cull Storage (R1)",
+        video: "R1.mp4",
         group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
         difficulty: "★★★★★",

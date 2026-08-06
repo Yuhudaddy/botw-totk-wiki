@@ -324,7 +324,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           {hasDynamicPrinciple && (
             <div id="principle-extra" set:html={principleExtraHtml(content?.methods?.[0]?.principleExtra)} />
           )}
-          {content?.applications && (
+          {content?.applications && content.applications.placement !== "notes" && (
             <button type="button" class="applications-open" data-applications-open>
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                 <rect x="3.5" y="4.5" width="17" height="15" rx="2"></rect>
@@ -547,17 +547,28 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         )}
       </ul>
       {content?.closing && <p class="mt-1 text-[15px] text-muted">{content.closing}</p>}
-      {content?.faqLink && (
-        <div class="mt-6">
-          <a
-            href={href(content.faqLink.path)}
-            class="faq-btn inline-flex items-center gap-2 no-underline"
-          >
-            {content.faqLink.label}
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="flex-none">
-              <path d="M5 12h14M12 5l7 7-7 7"></path>
-            </svg>
-          </a>
+      {(content?.faqLink || (content?.applications && content.applications.placement === "notes")) && (
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          {content?.faqLink && (
+            <a
+              href={href(content.faqLink.path)}
+              class="faq-btn inline-flex items-center gap-2 no-underline"
+            >
+              {content.faqLink.label}
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="flex-none">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          )}
+          {content?.applications && content.applications.placement === "notes" && (
+            <button type="button" class="applications-open applications-open--inline" data-applications-open>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <rect x="3.5" y="4.5" width="17" height="15" rx="2"></rect>
+                <path d="M3.5 9.5h17M9 9.5v10" stroke-linecap="round"></path>
+              </svg>
+              {content.applications.label ?? "應用一覽"}
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -1303,6 +1314,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   .applications-open:hover {
     border-color: var(--brand);
     color: var(--brand);
+  }
+  /* 放在注意事項區、跟 faq-btn 並排時：外層 flex 已經有 gap，
+     不需要 .applications-open 原本為了獨立站在原理說明下方留的頂部間距 */
+  .applications-open--inline {
+    margin-top: 0;
   }
   .applications-open svg {
     flex: none;
