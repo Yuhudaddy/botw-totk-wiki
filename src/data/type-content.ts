@@ -12,6 +12,11 @@ export interface TypeMethodSection {
   note?: string | string[]; // 該區塊步驟下方的灰色備註（可多行）
   videoUrl?: string;  // 該區塊專屬的外部教學影片連結（YouTube 等），顯示於標題列右側
   collapsible?: boolean; // 標題與適合版本可收合為手風琴列，展開後才顯示步驟；用於單一分頁內方法數過多時避免過長捲動
+  mapFlow?: (FlowMapStepAction | null)[];
+                      // 「參照流程地圖」的步驟資料，與本區塊的 steps 索引一一對齊（每個區塊
+                      // 各自從 0 算起，跟 steps 各自從 1 編號的邏輯一致）。用法與
+                      // TypeMethod.mapFlow 相同，見該欄位註解；分頁若是 sections 版，
+                      // 步驟單選按鈕改看這裡而非 TypeMethod.mapFlow。
 }
 
 export interface TypeMethod {
@@ -4250,6 +4255,7 @@ export const typeContent: Record<string, TypeContent> = {
                   "風扇機 × 4+",
                   "便攜鍋 × 1",
                   "翼 × 5+",
+                  "禽蛋 × 1+",
                   "火箭 × 6+",
                 ],
               },
@@ -4316,6 +4322,17 @@ export const typeContent: Record<string, TypeContent> = {
               },
               "讀取自動存檔 A",
             ],
+            // 目前只有這一個座標是實際確認過的，其餘步驟先不放（避免示意座標
+            // 造成誤導），之後 Yuda 補齊座標後再依序填入
+            mapFlow: [
+              null, null, null, null,
+              {
+                layer: "surface",
+                focus: { x: 1226, z: 1209, zoom: 3 },
+                pins: [{ x: 1226, z: 1209, label: "纏桿放置點 (1226, 1209)" }],
+              },
+              null, null, null, null, null, null, null, null, null, null, null,
+            ],
           },
         ],
       },
@@ -4332,7 +4349,7 @@ export const typeContent: Record<string, TypeContent> = {
             collapsible: true,
             steps: [
               {
-                text: "準備以下材料，亦可用 Zelda Notes 傳送",
+                text: "準備以下材料，材料除了左納烏之外可用 Zelda Notes 傳送",
                 sub: [
                   "魔猶伊的遺失物 × 1",
                   "大的左納烏能源 × 1",
@@ -4340,6 +4357,7 @@ export const typeContent: Record<string, TypeContent> = {
                   "風扇機 × 4+",
                   "便攜鍋 × 1",
                   "翼 × 5+",
+                  "禽蛋 × 1+",
                   "火箭 × 6+",
                 ],
               },
@@ -4406,6 +4424,17 @@ export const typeContent: Record<string, TypeContent> = {
                 ],
               },
               "讀取自動存檔 A",
+            ],
+            // 目前只有這一個座標是實際確認過的，其餘步驟先不放（避免示意座標
+            // 造成誤導），之後 Yuda 補齊座標後再依序填入
+            mapFlow: [
+              null, null, null, null,
+              {
+                layer: "surface",
+                focus: { x: 1226, z: 1209, zoom: 3 },
+                pins: [{ x: 1226, z: 1209, label: "纏桿放置點 (1226, 1209)" }],
+              },
+              null, null, null, null, null, null, null, null, null, null, null,
             ],
           },
         ],

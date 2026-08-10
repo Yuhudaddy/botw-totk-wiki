@@ -79,10 +79,24 @@ const { method: m, mapGroup } = Astro.props;
             此時不要生出空的 <ol>，否則會多一段列表的上下留白 */}
         {sec.steps && sec.steps.length > 0 && (
         <ol>
-          {sec.steps.map((s) => {
+          {sec.steps.map((s, idx) => {
             const { text, sub } = stepParts(s);
+            // sections 版的步驟地圖連動：與 TypeMethod.steps 版共用同一顆
+            // flow-step-radio／同一個 mapGroup（同一頁只有一張地圖），但資料
+            // 來源改看 sec.mapFlow（每個區塊各自從 0 索引，跟着自己的 steps）
+            const mapAction = mapGroup ? sec.mapFlow?.[idx] : undefined;
             return (
               <li>
+                {mapAction && (
+                  <input
+                    type="radio"
+                    class="flow-step-radio"
+                    name={`flow-steps-${mapGroup}`}
+                    data-map={JSON.stringify({ ...mapAction, stepNo: idx + 1 })}
+                    aria-label={`在參照流程地圖上顯示步驟 ${idx + 1}`}
+                    title="在地圖上顯示此步驟"
+                  />
+                )}
                 {parseStep(text).map((seg) =>
                   seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                     : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
