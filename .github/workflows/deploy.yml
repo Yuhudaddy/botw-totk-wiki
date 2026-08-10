@@ -34,6 +34,33 @@ jobs:
       - name: 安裝依賴
         run: npm ci
 
+      # 示範影片存放在 Cloudflare R2、不進版控（避免 repo 每月膨脹逾 1GB）。
+      # 建置前取回，取回後由 media-manifest.txt 驗證齊全，缺檔就讓建置失敗。
+      - name: 安裝 rclone
+        run: sudo apt-get update && sudo apt-get install -y rclone
+
+      # 快取命中時只需補下載差異檔；清單有變動會退回最近一次快取再補齊。
+      - name: 取用影片快取
+        uses: actions/cache@v4
+        with:
+          path: public/type-videos
+          key: type-videos-${{ hashFiles('media-manifest.txt') }}
+          restore-keys: type-videos-
+
+      - name: 從 R2 取回示範影片
+        run: rclone copy r2:botw-totk-wiki-media/type-videos public/type-videos --transfers 8 --stats-one-line --stats 30s
+        env:
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_REGION: auto
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+
+      # 寧可建置失敗讓維護者收到通知，也不要默默部署一個缺影片的網站。
+      - name: 驗證影片素材齊全
+        run: npm run media:verify
+
       # 建置只會抓到「彩現時會當掉」的錯誤，且訊息指向壓縮後的產物。
       # 型別檢查能在原始碼層先擋下元件 props 不符、可能為 undefined 等問題。
       - name: 型別檢查
