@@ -7,7 +7,8 @@ dist/
 .astro/
 *.log
 .env
-.env.production
+.env.*
+!.env.example
 
 # Python 虛擬環境
 .venv/
@@ -44,3 +45,7 @@ Thumbs.db
 # Blender 備份／自動存檔
 blender-tots/_backup_phase3/
 *.blend1
+
+# 流程地圖底圖的圖磚暫存（fetch-flowmap-basemap.mjs 的中繼產物，
+# 成品是 public/flow-map/ 下的 webp，暫存不需要進版控）
+.tmp-flowmap-tiles/

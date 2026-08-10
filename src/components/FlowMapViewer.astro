@@ -1,0 +1,315 @@
+---
+// 「參照流程地圖」：可縮放拖曳的 2D 流程地圖，包裝自行架設的 Leaflet
+// （public/vendor/leaflet/，不依賴外部 CDN，比照 Model3DViewer 的做法）。
+// 底圖用「每層一張大圖」＋ L.CRS.Simple + imageOverlay，不用完整圖磚金字塔——
+// 步驟導覽不需要 objmap 等級的細節，全站也才多幾 MB。
+//
+// 互動協定（與 [id].astro 的步驟單選按鈕配合）：
+//   ・document 上的 CustomEvent "flowmap:show"，detail 為 FlowMapStepAction
+//     （見 src/data/type-content.ts），另可帶 stepNo 供狀態列顯示步驟編號
+//   ・CustomEvent "flowmap:reset"：清除標記並回到總覽
+// 座標系：遊戲內座標 (X, Z)，X 向東為正、Z 向南為正，
+// 範圍 X: -6000~6000、Z: -5000~5000；圖片上緣為北（Z = -5000）。
+interface FlowMapLayer {
+  id: string;    // 圖層識別字，對應 FlowMapStepAction.layer
+  label: string; // 切換按鈕文字
+  image: string; // 底圖路徑（相對於 BASE_URL）
+}
+interface Props {
+  layers?: FlowMapLayer[];
+  defaultLayer?: string; // 初始圖層 id，預設第一層
+  note?: string;         // 地圖下方的灰色備註
+}
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const {
+  layers = [
+    { id: "surface", label: "地面", image: "/flow-map/totk/surface.webp" },
+    { id: "sky", label: "空島", image: "/flow-map/totk/sky.webp" },
+  ],
+  defaultLayer,
+  note,
+} = Astro.props;
+const resolvedLayers = layers.map((l) => ({
+  ...l,
+  image: `${BASE}${l.image.startsWith("/") ? l.image : `/${l.image}`}`,
+}));
+const config = {
+  layers: resolvedLayers,
+  defaultLayer: defaultLayer ?? resolvedLayers[0]?.id,
+  // 地圖涵蓋範圍（遊戲座標）。換成實際底圖時若涵蓋範圍不同，再從 Props 開放設定
+  minX: -6000, maxX: 6000, minZ: -5000, maxZ: 5000,
+};
+---
+
+<link rel="stylesheet" href={`${BASE}/vendor/leaflet/leaflet.css`} />
+
+<div class="flow-map" data-flow-map data-config={JSON.stringify(config)}>
+  <div class="flow-map-toolbar">
+    <div class="flow-map-layers" role="group" aria-label="切換地圖圖層">
+      {resolvedLayers.map((l) => (
+        <button
+          type="button"
+          class="flow-map-layer-btn"
+          data-flow-layer={l.id}
+          aria-pressed={l.id === (defaultLayer ?? resolvedLayers[0]?.id) ? "true" : "false"}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
+    <span class="flow-map-status" data-flow-status aria-live="polite">
+      點擊步驟前的圓形按鈕，在地圖上顯示該步驟的行為
+    </span>
+    <button type="button" class="flow-map-overview-btn" data-flow-overview>總覽</button>
+  </div>
+  <div class="flow-map-canvas" data-flow-canvas></div>
+  {note && <p class="flow-map-note">{note}</p>}
+</div>
+
+{/* Leaflet 以傳統 script 同步載入（非 module），確保執行順序早於下方的
+    Astro 打包 module script，init 時 window.L 一定存在 */}
+<script is:inline src={`${BASE}/vendor/leaflet/leaflet.js`}></script>
+
+<script>
+  // 型別從簡：Leaflet 由傳統 script 掛在 window 上，這裡不引型別定義檔
+  const L = (window as any).L;
+  const root = document.querySelector<HTMLElement>("[data-flow-map]");
+
+  if (root && L) {
+    const config = JSON.parse(root.dataset.config ?? "{}");
+    const canvas = root.querySelector<HTMLElement>("[data-flow-canvas]")!;
+    const statusEl = root.querySelector<HTMLElement>("[data-flow-status]");
+    const layerBtns = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-flow-layer]"));
+    const defaultStatus = statusEl?.textContent ?? "";
+
+    // 1 個地圖單位（latlng）= 10 遊戲單位；圖片上緣為北（z = minZ）
+    const W = (config.maxX - config.minX) / 10;
+    const H = (config.maxZ - config.minZ) / 10;
+    const toLatLng = (x: number, z: number): [number, number] => [
+      (config.maxZ - z) / 10,
+      (x - config.minX) / 10,
+    ];
+
+    const css = getComputedStyle(document.documentElement);
+    const accent = css.getPropertyValue("--accent").trim() || "#d97757";
+    const inkColor = css.getPropertyValue("--ink").trim() || "#faf9f5";
+
+    const map = L.map(canvas, {
+      crs: L.CRS.Simple,
+      minZoom: -1,
+      maxZoom: 5,
+      zoomSnap: 0.25,
+      attributionControl: false,
+      // CRS.Simple 預設縮放中心行為即可；滾輪、雙指、雙擊縮放全開
+    });
+    const bounds: [number, number][] = [[0, 0], [H, W]];
+    // 拖出界時輕微回彈，避免整張圖被拖到看不見
+    map.setMaxBounds([[-150, -150], [H + 150, W + 150]]);
+
+    let activeLayerId: string = config.defaultLayer;
+    const layerById = new Map<string, { id: string; label: string; image: string }>(
+      (config.layers as { id: string; label: string; image: string }[]).map((l) => [l.id, l])
+    );
+    const overlay = L.imageOverlay(layerById.get(activeLayerId)?.image, bounds).addTo(map);
+    map.fitBounds(bounds);
+
+    // 步驟標記（Pin／軌跡）集中放在一個 layerGroup，換步驟時整組清掉
+    const marks = L.layerGroup().addTo(map);
+
+    function setLayer(id: string) {
+      const layer = layerById.get(id);
+      if (!layer || id === activeLayerId) return;
+      activeLayerId = id;
+      overlay.setUrl(layer.image);
+      layerBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.flowLayer === id)));
+    }
+
+    // 軌跡箭頭：divIcon 不隨縮放改變大小，放在每段線段的中點指向前進方向。
+    // 螢幕座標 y 向下＝lat 減少，所以 dy 取負
+    function addSegmentArrow(a: [number, number], b: [number, number]) {
+      const dx = b[1] - a[1];
+      const dy = -(b[0] - a[0]);
+      const deg = (Math.atan2(dy, dx) * 180) / Math.PI;
+      const mid: [number, number] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      L.marker(mid, {
+        interactive: false,
+        icon: L.divIcon({
+          className: "flow-map-arrow",
+          html: `<svg width="14" height="14" viewBox="0 0 14 14" style="transform:rotate(${deg}deg)"><path d="M2 2 L13 7 L2 12 L5 7 Z" fill="${accent}" stroke="${inkColor}" stroke-width="0.6"/></svg>`,
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+        }),
+      }).addTo(marks);
+    }
+
+    function show(detail: {
+      layer?: string;
+      focus?: { x: number; z: number; zoom?: number };
+      pins?: { x: number; z: number; label?: string }[];
+      path?: [number, number][];
+      stepNo?: number;
+    }) {
+      marks.clearLayers();
+      if (detail.layer) setLayer(detail.layer);
+
+      const focusPoints: [number, number][] = [];
+
+      (detail.pins ?? []).forEach((p) => {
+        const ll = toLatLng(p.x, p.z);
+        focusPoints.push(ll);
+        const marker = L.circleMarker(ll, {
+          radius: 7,
+          color: inkColor,
+          weight: 1.5,
+          fillColor: accent,
+          fillOpacity: 0.95,
+        }).addTo(marks);
+        if (p.label) {
+          marker.bindTooltip(p.label, {
+            permanent: true,
+            direction: "top",
+            offset: [0, -9],
+            className: "flow-map-tip",
+          });
+        }
+      });
+
+      if (detail.path && detail.path.length >= 2) {
+        const latlngs = detail.path.map(([x, z]) => toLatLng(x, z));
+        latlngs.forEach((ll) => focusPoints.push(ll));
+        L.polyline(latlngs, {
+          color: accent,
+          weight: 3,
+          opacity: 0.9,
+          dashArray: "6 6",
+        }).addTo(marks);
+        for (let i = 0; i < latlngs.length - 1; i++) addSegmentArrow(latlngs[i], latlngs[i + 1]);
+      }
+
+      if (detail.focus) {
+        map.setView(toLatLng(detail.focus.x, detail.focus.z), detail.focus.zoom ?? 1);
+      } else if (focusPoints.length > 0) {
+        // 沒指定鏡頭就自動框住所有標記；maxZoom 防止單一 Pin 時貼太近
+        map.fitBounds(L.latLngBounds(focusPoints).pad(0.4), { maxZoom: 2 });
+      }
+
+      if (statusEl) {
+        statusEl.textContent = detail.stepNo != null ? `目前顯示：步驟 ${detail.stepNo}` : "目前顯示：選取的步驟";
+      }
+    }
+
+    function reset() {
+      marks.clearLayers();
+      map.fitBounds(bounds);
+      if (statusEl) statusEl.textContent = defaultStatus;
+    }
+
+    document.addEventListener("flowmap:show", ((e: CustomEvent) => show(e.detail)) as EventListener);
+    document.addEventListener("flowmap:reset", reset);
+
+    layerBtns.forEach((btn) =>
+      btn.addEventListener("click", () => setLayer(btn.dataset.flowLayer ?? ""))
+    );
+    root.querySelector<HTMLButtonElement>("[data-flow-overview]")?.addEventListener("click", () => {
+      map.fitBounds(bounds);
+    });
+  }
+</script>
+
+<style>
+  .flow-map {
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .flow-map-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .flow-map-layers {
+    display: flex;
+    gap: 6px;
+  }
+  .flow-map-layer-btn,
+  .flow-map-overview-btn {
+    cursor: pointer;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--ink-2);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .flow-map-layer-btn:hover,
+  .flow-map-overview-btn:hover {
+    border-color: var(--brand);
+  }
+  .flow-map-layer-btn[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .flow-map-status {
+    flex: 1;
+    min-width: 160px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .flow-map-overview-btn {
+    margin-left: auto;
+  }
+  .flow-map-canvas {
+    /* 12:10 的地圖塞進 2:1 左右的容器：桌機高一點、手機順著寬度縮 */
+    height: clamp(320px, 44vw, 560px);
+    background: var(--surface);
+    outline: none;
+  }
+  .flow-map-note {
+    margin: 0;
+    padding: 8px 14px 10px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    border-top: 1px solid var(--border-strong);
+  }
+
+  /* Leaflet 控制項配合全站深淺色（元件 scoped 樣式無法選到 Leaflet 動態
+     產生的節點，以下用 :global 穿透） */
+  .flow-map :global(.leaflet-container) {
+    background: var(--surface);
+    font: inherit;
+  }
+  .flow-map :global(.leaflet-bar a) {
+    background: var(--surface-2);
+    color: var(--ink);
+    border-bottom-color: var(--border-strong);
+  }
+  .flow-map :global(.leaflet-bar a:hover) {
+    background: var(--surface);
+  }
+  .flow-map :global(.leaflet-bar) {
+    border-color: var(--border-strong);
+  }
+  .flow-map :global(.flow-map-tip) {
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 12px;
+    box-shadow: none;
+  }
+  .flow-map :global(.flow-map-tip::before) {
+    display: none; /* 拿掉 Leaflet tooltip 預設的小三角，深淺色下顏色對不上 */
+  }
+  .flow-map :global(.flow-map-arrow) {
+    background: none;
+    border: none;
+  }
+</style>

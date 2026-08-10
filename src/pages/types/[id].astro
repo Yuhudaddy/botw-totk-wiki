@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import MethodPanelBody from "../../components/MethodPanelBody.astro";
 import Model3DViewer from "../../components/Model3DViewer.astro";
+import FlowMapViewer from "../../components/FlowMapViewer.astro";
 import LaunchFamilyNav from "../../components/LaunchFamilyNav.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../../data/types";
@@ -187,12 +188,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                     </div>
                     {m.subTabs.map((sub, j) => (
                       <div class="subtab-panel" id={`subpanel-${i}-${j}`} role="tabpanel" aria-labelledby={`subtab-${i}-${j}`} tabindex="0" data-subpanel={j} hidden={j !== 0}>
-                        <MethodPanelBody method={sub} />
+                        <MethodPanelBody method={sub} mapGroup={`${i}-${j}`} />
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <MethodPanelBody method={m} />
+                  <MethodPanelBody method={m} mapGroup={String(i)} />
                 )}
               </div>
             ))}
@@ -507,6 +508,27 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             <li>滾輪／捏合：縮放</li>
             <li>右鍵拖曳（或雙指拖曳）：平移視角</li>
             <li>右上角圓形按鈕：總覽／俯視／重置視角</li>
+          </ul>
+        </div>
+      </div>
+    )}
+
+    {/* 參照流程地圖：獨立全寬區塊（與 3D 模型同層級、可並存），置於注意事項之上。
+        點擊步驟前的單選按鈕（.flow-step-radio）會在這張地圖上顯示該步驟的行為 */}
+    {content?.flowMap && (
+      <div class="prose-custom mt-10 border-t border-border-soft pt-10">
+        <h2>{content.flowMap.title ?? "參照流程地圖"}</h2>
+        <FlowMapViewer
+          defaultLayer={content.flowMap.defaultLayer}
+          note={content.flowMap.note}
+        />
+        <div class="mt-3 text-[13px] leading-[1.6] text-muted">
+          <div class="mb-1.5 text-[12px] font-medium text-ink">操作方式</div>
+          <ul>
+            <li>點擊流程步驟前的圓形按鈕：地圖顯示該步驟的地點與移動軌跡（再點一次取消）</li>
+            <li>拖曳（左鍵／單指）：平移地圖</li>
+            <li>滾輪／捏合：縮放</li>
+            <li>地圖上方按鈕：切換圖層（地面／空島）、「總覽」回到全圖</li>
           </ul>
         </div>
       </div>
@@ -985,6 +1007,36 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   }
   .prose-custom .step-sub .step-sub-deep {
     padding-left: 1.2em;
+  }
+
+  /* 「參照流程地圖」的步驟單選按鈕：跟在步驟編號後、步驟文字前的圓形按鈕，
+     點擊後頁面下方的流程地圖會顯示該步驟的行為（見 FlowMapViewer.astro） */
+  .flow-step-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 0 0.5em 0 0;
+    vertical-align: -3px;
+    border: 1.5px solid var(--muted);
+    border-radius: 50%;
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  .flow-step-radio:hover {
+    border-color: var(--accent);
+  }
+  .flow-step-radio:checked {
+    border-color: var(--accent);
+    background: var(--accent);
+    /* 內圈留一圈底色，做出實心圓點的樣子 */
+    box-shadow: inset 0 0 0 3px var(--surface);
+  }
+  .flow-step-radio:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   /* 原理說明的次層條列（①②③ 開頭） */
@@ -1814,6 +1866,48 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     });
   }
 
+  // ── 參照流程地圖：步驟單選按鈕 ↔ 地圖（FlowMapViewer.astro）──
+  // 依「目前可見面板裡被選取的 radio」決定地圖顯示什麼：切換分頁／子分頁後
+  // 也呼叫一次，回到該分頁上次選取的步驟（radio 的 checked 狀態跨 hidden 保留），
+  // 該分頁沒選過就回總覽。函式宣告放在 .method-tabs 初始化之前，
+  // select() 首次執行時就叫得到。
+  function syncFlowMap() {
+    if (!document.querySelector("[data-flow-map]")) return;
+    const radios = Array.from(document.querySelectorAll<HTMLInputElement>(".flow-step-radio"));
+    // offsetParent 為 null 代表在 hidden 面板裡（display:none）
+    const visible = radios.find((r) => r.checked && r.offsetParent !== null);
+    if (visible?.dataset.map) {
+      document.dispatchEvent(new CustomEvent("flowmap:show", { detail: JSON.parse(visible.dataset.map) }));
+    } else {
+      document.dispatchEvent(new CustomEvent("flowmap:reset"));
+    }
+  }
+  // 「再點一次取消選取」：radio 原生不支援取消，而且事件順序是 click 先於
+  // change（activation 先改 checked、發 click，之後才發 input/change），沒辦法
+  // 在 click 當下用 checked 區分「剛選上」還是「本來就選著」，所以自己用一張
+  // 表記住每個群組目前選到哪一顆
+  const lastFlowRadio = new Map<string, HTMLInputElement>();
+  document.addEventListener("click", (event) => {
+    const t = event.target;
+    if (!(t instanceof HTMLInputElement) || !t.classList.contains("flow-step-radio")) return;
+    if (lastFlowRadio.get(t.name) === t) {
+      // 點擊已選取的 radio：取消選取、地圖回總覽
+      t.checked = false;
+      lastFlowRadio.delete(t.name);
+    } else {
+      lastFlowRadio.set(t.name, t);
+    }
+    syncFlowMap();
+  });
+  document.addEventListener("change", (event) => {
+    // 鍵盤方向鍵切換選取只發 change 不發 click，這裡也要記錄＋同步
+    const t = event.target;
+    if (t instanceof HTMLInputElement && t.classList.contains("flow-step-radio")) {
+      lastFlowRadio.set(t.name, t);
+      syncFlowMap();
+    }
+  });
+
   document.querySelectorAll<HTMLElement>(".method-tabs").forEach((root) => {
     // 用 data-tab／data-panel（原始 content.methods 索引）而非 DOM 順序做對應，
     // 這樣分頁按鈕依 group 分行排列時，仍能正確找到對應的內容區塊。
@@ -1907,6 +2001,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       if (principleExtra) {
         principleExtra.innerHTML = activePanel?.dataset.principleExtra ?? "";
       }
+      // 參照流程地圖跟著分頁走：回到該分頁上次選取的步驟，或總覽
+      syncFlowMap();
     }
 
     tabs.forEach((tab) => tab.addEventListener("click", () => select(Number(tab.dataset.tab))));
@@ -2011,6 +2107,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         t.tabIndex = i === index ? 0 : -1;
       });
       subPanels.forEach((p, i) => (p.hidden = i !== index));
+      // 參照流程地圖跟著子分頁走（同外層分頁的 syncFlowMap 行為）
+      syncFlowMap();
     }
 
     subTabs.forEach((tab, i) => tab.addEventListener("click", () => selectSub(i)));

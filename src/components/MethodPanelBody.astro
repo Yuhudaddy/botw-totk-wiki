@@ -8,8 +8,11 @@ import { parseAccent, parseStep, stepParts } from "../lib/method-format";
 
 interface Props {
   method: TypeMethod;
+  mapGroup?: string; // 「參照流程地圖」單選按鈕的群組識別字（呼叫端以 method 索引組成，
+                     // 每個分頁／子分頁一組，避免不同分頁的 radio 互相搶選取狀態）。
+                     // 未傳或 method 沒有 mapFlow 時不渲染單選按鈕
 }
-const { method: m } = Astro.props;
+const { method: m, mapGroup } = Astro.props;
 ---
 
 {/* 白標題與適合／難易度標籤可同時存在：有 name 時標題在上、標籤列接在下方。
@@ -72,6 +75,9 @@ const { method: m } = Astro.props;
           <p class="mb-3 text-[13px] leading-[1.7] text-muted">{sec.intro}</p>
         )}
         {!sec.collapsible && tagsNode}
+        {/* steps 可省略：只有標題與 tags 的區塊當作純標頭用（例：變體名稱），
+            此時不要生出空的 <ol>，否則會多一段列表的上下留白 */}
+        {sec.steps && sec.steps.length > 0 && (
         <ol>
           {sec.steps.map((s) => {
             const { text, sub } = stepParts(s);
@@ -99,6 +105,7 @@ const { method: m } = Astro.props;
             );
           })}
         </ol>
+        )}
         {sec.note && (
           Array.isArray(sec.note) ? (
             <div class="mt-4 space-y-1">
@@ -175,10 +182,23 @@ const { method: m } = Astro.props;
   </ul>
 ) : (
   <ol>
-    {(m.steps ?? []).map((s) => {
+    {(m.steps ?? []).map((s, idx) => {
       const { text, sub } = stepParts(s);
+      // 「參照流程地圖」的步驟單選按鈕：地圖行為以 JSON 塞進 data-map，
+      // 由 [id].astro 的腳本統一監聽 change 後派發 flowmap:show 事件
+      const mapAction = mapGroup ? m.mapFlow?.[idx] : undefined;
       return (
         <li>
+          {mapAction && (
+            <input
+              type="radio"
+              class="flow-step-radio"
+              name={`flow-steps-${mapGroup}`}
+              data-map={JSON.stringify({ ...mapAction, stepNo: idx + 1 })}
+              aria-label={`在參照流程地圖上顯示步驟 ${idx + 1}`}
+              title="在地圖上顯示此步驟"
+            />
+          )}
           {parseStep(text).map((seg) =>
             seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
               : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
