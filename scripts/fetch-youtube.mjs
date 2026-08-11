@@ -7,10 +7,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_HANDLE = 'zb_yuhudaddy'; // 頻道 handle，無需 secret
 
-if (!API_KEY) {
-  console.error('缺少 YOUTUBE_API_KEY 環境變數');
-  process.exit(1);
+// YouTube 熱門影片只是首頁的一小塊裝飾內容，不該讓它拖累整個網站的部署——
+// API 配額用盡、金鑰失效、暫時性錯誤，都不是「今天不能更新網站」的理由。
+// src/data/youtube.json 已經在版控裡，抓取失敗時直接沿用舊資料、正常結束
+// （exit 0），讓建置繼續往下走；下次抓取成功時自然會更新回最新資料。
+function giveUpAndKeepExisting(reason) {
+  console.warn(`⚠️  YouTube 抓取失敗，沿用既有 youtube.json，不影響本次部署：${reason}`);
+  process.exit(0);
 }
+
+if (!API_KEY) giveUpAndKeepExisting('缺少 YOUTUBE_API_KEY 環境變數');
 
 function formatViews(count) {
   const n = parseInt(count, 10);
@@ -84,9 +90,9 @@ function detectGame(v) {
 const channelRes = await fetch(
   `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${CHANNEL_HANDLE}&key=${API_KEY}`
 );
-if (!channelRes.ok) { console.error('channels.list 失敗:', await channelRes.text()); process.exit(1); }
+if (!channelRes.ok) giveUpAndKeepExisting(`channels.list 失敗: ${await channelRes.text()}`);
 const channelData = await channelRes.json();
-if (!channelData.items?.length) { console.error('找不到頻道:', CHANNEL_HANDLE); process.exit(1); }
+if (!channelData.items?.length) giveUpAndKeepExisting(`找不到頻道: ${CHANNEL_HANDLE}`);
 const uploadsId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
 console.log(`uploads playlist: ${uploadsId}`);
 
@@ -96,7 +102,7 @@ let pageToken = '';
 do {
   const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=50${pageToken ? `&pageToken=${pageToken}` : ''}&key=${API_KEY}`;
   const res = await fetch(url);
-  if (!res.ok) { console.error('playlistItems.list 失敗:', await res.text()); process.exit(1); }
+  if (!res.ok) giveUpAndKeepExisting(`playlistItems.list 失敗: ${await res.text()}`);
   const data = await res.json();
   allVideoIds.push(...data.items.map((item) => item.snippet.resourceId.videoId));
   pageToken = data.nextPageToken || '';
@@ -110,7 +116,7 @@ for (let i = 0; i < allVideoIds.length; i += 50) {
   const res = await fetch(
     `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${batch}&key=${API_KEY}`
   );
-  if (!res.ok) { console.error('videos.list 批次失敗:', await res.text()); process.exit(1); }
+  if (!res.ok) giveUpAndKeepExisting(`videos.list 批次失敗: ${await res.text()}`);
   const data = await res.json();
   allVideos.push(...data.items);
 }
