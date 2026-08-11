@@ -33,20 +33,16 @@ const queryExamples = [
   },
 ];
 
+// 王淚版只支援以下 6 個欄位（官方 Help 的 Available columns，並已逐一實測）。
+// 曠野版另有的 drop / equip / onehit / lastboss / hard / no_rankup / bonus
+// 在王淚會直接回報「Could not understand search query」，因此不列在這裡。
 const fieldFilters = [
-  { field: "map", value: "MainField/D-5", use: "限定地圖或地圖單位" },
+  { field: "map", value: "Surface_D-5", use: "限定地圖或地圖單位（Surface／Depths／Sky）" },
   { field: "static", value: "1", use: "1 為 Static，0 為 Dynamic" },
   { field: "actor", value: "Enemy_Zonau_Golem_Junior", use: "依遊戲內部 Actor 名稱搜尋" },
   { field: "name", value: '"Soldier Construct"', use: "依玩家看見的物件名稱搜尋" },
   { field: "data", value: "IsGround", use: "搜尋物件內部資料" },
-  { field: "drop", value: "Zonaite", use: "搜尋掉落物或寶箱內容" },
-  { field: "equip", value: "Weapon", use: "搜尋敵人持有的裝備" },
-  { field: "onehit", value: "1", use: "限定一擊必殺之劍挑戰物件" },
-  { field: "lastboss", value: "1", use: "限定進入城堡主殿後的物件" },
-  { field: "hard", value: "0", use: "排除大師模式專屬物件" },
-  { field: "no_rankup", value: "1", use: "不會隨世界等級升級" },
   { field: "scale", value: "0", use: "不會隨世界等級變化" },
-  { field: "bonus", value: "2", use: "指定最低附加效果等級" },
 ];
 
 const mapTools = [
@@ -126,7 +122,7 @@ const mapTools = [
 
           <div class="obj-hero-actions">
             <a class="obj-primary-action" href={MAP_URL} target="_blank" rel="noopener">
-              <span>開啟王國之淚物件地圖</span>
+              <span>開啟王淚物件地圖</span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
               </svg>
@@ -159,27 +155,44 @@ const mapTools = [
       <div class="obj-wrap">
         <div class="obj-section-heading">
           <span>START HERE · 快速開始</span>
-          <h2>先會三件事，就能開始查。</h2>
+          <h2>輸入方式</h2>
         </div>
 
         <div class="obj-start-grid">
           <article>
             <span class="obj-step-no">01</span>
-            <h3>輸入名稱</h3>
-            <p>可輸入英文顯示名稱，也可以直接輸入遊戲內部 Actor 名稱。</p>
-            <code>Construct</code>
+            <h3>英文名稱</h3>
+            <p>
+              參考<a class="obj-inline-link" href="https://docs.google.com/spreadsheets/d/1wLoabOgGwh6ST23-lgQG8O6oKdKwwAyb75fzwH5FYpE/edit?gid=0#gid=0" target="_blank" rel="noopener">中英文對照</a>，輸入搜尋目標的英文或 Actor 名稱。
+            </p>
+            <div class="obj-step-examples">
+              <div class="obj-step-example">
+                <code>Areaculling</code>
+                <span>隱藏區</span>
+              </div>
+            </div>
           </article>
           <article>
             <span class="obj-step-no">02</span>
-            <h3>加入條件</h3>
-            <p>使用 <code>欄位:內容</code>，把結果限定在地圖、模式或物件屬性。</p>
-            <code>scale:0</code>
+            <h3>運算子</h3>
+            <p>加入錨點 <code>^</code>、前綴 <code>*</code>、片語 <code>""</code>、布林運算（<code>AND</code> / <code>NOT</code> / <code>OR</code>），查詢更細節的內容。</p>
+            <div class="obj-step-examples">
+              <div class="obj-step-example">
+                <code>^Lynel</code>
+                <span>只會出現 Lynel 作為前綴開頭的結果，如 Silver Lynel 之類 Lynel 出現在後面的結果不會出現</span>
+              </div>
+            </div>
           </article>
           <article>
             <span class="obj-step-no">03</span>
-            <h3>放上地圖</h3>
-            <p>確認搜尋結果後按下 Add to map，標記才會固定顯示在地圖上。</p>
-            <code>Add to map</code>
+            <h3>篩選</h3>
+            <p>加入 <code>欄位:</code> 可以篩選出更細節的結果，如「在哪張地圖」「會不會升級」</p>
+            <div class="obj-step-examples">
+              <div class="obj-step-example">
+                <code>static:1</code>
+                <span>位於 Static 地圖單位的物件，0 則為 Dynamic</span>
+              </div>
+            </div>
           </article>
         </div>
       </div>
@@ -190,16 +203,16 @@ const mapTools = [
         <div class="obj-lab-copy">
           <div class="obj-section-heading">
             <span>QUERY LAB · 搜尋式組合器</span>
-            <h2>搜尋不是猜字，是組條件。</h2>
+            <h2>練習條件組合</h2>
           </div>
           <p>
-            以 <code>Gleeok</code> 為起點，切換右側條件看看搜尋式如何變化。空格代表 AND，
+            點擊右邊試著了解搜尋的語法。空格代表 <code>AND</code>,
             <code>NOT</code> 會排除符合的結果。
           </p>
 
           <div class="obj-query-output" aria-live="polite">
             <span>SEARCH QUERY</span>
-            <code id="query-output">Gleeok</code>
+            <code id="query-output" class="is-placeholder">請點擊右側內容</code>
             <button id="copy-query" type="button" data-copy-target="query-output">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <rect x="8" y="8" width="11" height="11" rx="2"></rect>
@@ -213,19 +226,25 @@ const mapTools = [
         <div class="obj-query-controls" aria-label="搜尋條件">
           <div>
             <span class="obj-control-label">基本關鍵字</span>
-            <code>Gleeok</code>
+            <select id="query-base" class="obj-base-select" aria-label="選擇基本關鍵字">
+              <option value="" selected disabled>請選擇…</option>
+              <option value="Bokoblin">波克布林</option>
+              <option value="Mobli*">莫力布</option>
+              <option value="Lynel">萊尼爾</option>
+              <option value={'"Lynel Bow"'}>萊尼爾之弓</option>
+            </select>
           </div>
-          <button type="button" class="obj-token" data-query-token={'NOT "King Gleeok"'} aria-pressed="false">
-            <span>排除王種結果</span>
-            <code>NOT "King Gleeok"</code>
+          <button type="button" class="obj-token" data-query-token={'NOT "Lynel Bow"'} aria-pressed="false">
+            <span>沒有裝備萊尼爾之弓</span>
+            <code>NOT "Lynel Bow"</code>
           </button>
           <button type="button" class="obj-token" data-query-token="scale:0" aria-pressed="false">
             <span>不隨世界等級變化</span>
             <code>scale:0</code>
           </button>
-          <button type="button" class="obj-token" data-query-token="hard:0" aria-pressed="false">
-            <span>排除大師模式專屬</span>
-            <code>hard:0</code>
+          <button type="button" class="obj-token" data-query-token="static:1" aria-pressed="false">
+            <span>固定配置</span>
+            <code>static:1</code>
           </button>
         </div>
       </div>
@@ -268,8 +287,8 @@ const mapTools = [
             欄位語法固定使用 <code>COLUMN:QUERY</code>。不同欄位可以放在同一條搜尋式中，逐步縮小結果。
           </p>
           <div class="obj-filter-formula">
-            <code>^Construct scale:0 hard:0</code>
-            <span>名稱開頭符合 + 不升級 + 一般模式</span>
+            <code>^Construct scale:0 static:1</code>
+            <span>名稱開頭符合 + 不隨世界等級變化 + 固定配置</span>
           </div>
         </div>
 
@@ -321,7 +340,8 @@ const mapTools = [
           <li>物件地圖會顯示未探索地區、內部名稱與任務物件，可能包含劇情或探索上的雷。</li>
           <li>搜尋結果預設有顯示數量上限；條件太寬時，請加入欄位或關鍵字再搜尋。</li>
           <li>名稱中含有空格或特殊字元時，請用雙引號包住整個名稱，例如 <code>"Soldier Construct"</code>。</li>
-          <li>Master Mode、LastBoss Mode 等顯示設定不一定會改變搜尋結果，仍應在搜尋式中加入對應欄位。</li>
+          <li>王淚版可用的欄位只有上方列出的 6 個；曠野版才有的 <code>hard:</code>、<code>equip:</code>、<code>drop:</code> 等欄位在這裡會直接回報無法解析搜尋式。</li>
+          <li>天空、地表與地底是三個獨立圖層，畫面上的圖層切換不會改變搜尋範圍；要限定範圍請用 <code>map:</code> 指定 Surface／Depths／Sky。</li>
         </ul>
       </div>
     </section>
@@ -329,9 +349,9 @@ const mapTools = [
     <section class="obj-final-cta obj-reveal">
       <div class="obj-wrap">
         <span>READY TO SEARCH</span>
-        <h2>帶著搜尋式，回到海拉魯。</h2>
+        <h2>熟悉搜尋語法，了解海拉魯的世界。</h2>
         <a href={MAP_URL} target="_blank" rel="noopener">
-          開啟王國之淚物件地圖
+          開啟王淚物件地圖
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
           </svg>
@@ -806,10 +826,43 @@ const mapTools = [
       font-variant-ligatures: none;
     }
 
-    .obj-start-grid > article > code,
     .obj-filter-formula code {
       color: var(--accent);
       font-size: 12px;
+    }
+
+    .obj-inline-link {
+      color: var(--accent);
+      text-underline-offset: 2px;
+    }
+
+    .obj-inline-link:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    /* 每張卡片的範例：程式碼＋備註成對，之後要補多組範例時直接往容器裡加 */
+    .obj-step-examples {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .obj-step-example {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 8px;
+    }
+
+    .obj-step-example code {
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .obj-step-example span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
     }
 
     .obj-section-lab {
@@ -891,6 +944,11 @@ const mapTools = [
       overflow-wrap: anywhere;
     }
 
+    .obj-query-output > code.is-placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+
     .obj-query-output button {
       display: inline-flex;
       min-height: 40px;
@@ -960,6 +1018,26 @@ const mapTools = [
       flex: none;
       color: var(--accent);
       font-size: 11px;
+    }
+
+    /* 取代原本固定顯示關鍵字的 code：改成可選的下拉選單，
+       視覺上比照同一列右側 code chip 的字體與強調色 */
+    .obj-base-select {
+      flex: none;
+      padding: 4px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 5px;
+      background: var(--surface);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: border-color 160ms, color 160ms;
+    }
+
+    .obj-base-select:hover,
+    .obj-base-select:focus-visible {
+      border-color: var(--accent);
     }
 
     .obj-token span {
@@ -1538,14 +1616,28 @@ const mapTools = [
   <script>
     const tokenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".obj-token"));
     const queryOutput = document.getElementById("query-output");
+    const baseSelect = document.getElementById("query-base") as HTMLSelectElement | null;
+    // 還沒選基本關鍵字、也沒點任何條件時顯示的提示文字
+    const QUERY_PLACEHOLDER = "請點擊右側內容";
 
     function updateQuery() {
       const tokens = tokenButtons
         .filter((button) => button.getAttribute("aria-pressed") === "true")
         .map((button) => button.dataset.queryToken)
         .filter(Boolean);
-      if (queryOutput) queryOutput.textContent = ["Gleeok", ...tokens].join(" ");
+      const base = baseSelect?.value ?? "";
+      const parts = [base, ...tokens].filter(Boolean);
+      if (!queryOutput) return;
+      if (parts.length === 0) {
+        queryOutput.textContent = QUERY_PLACEHOLDER;
+        queryOutput.classList.add("is-placeholder");
+      } else {
+        queryOutput.textContent = parts.join(" ");
+        queryOutput.classList.remove("is-placeholder");
+      }
     }
+
+    baseSelect?.addEventListener("change", updateQuery);
 
     tokenButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -1578,6 +1670,7 @@ const mapTools = [
     document.querySelectorAll<HTMLElement>("[data-copy-target]").forEach((button) => {
       button.addEventListener("click", () => {
         const target = document.getElementById(button.dataset.copyTarget ?? "");
+        if (target?.classList.contains("is-placeholder")) return; // 還沒選內容，不複製提示文字
         if (target?.textContent) copyText(target.textContent, button);
       });
     });
