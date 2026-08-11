@@ -24,8 +24,13 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Claude Code 本機工作階段
-.claude/
+# Claude Code：預設全部排除（本機設定、對話紀錄等因人而異，且這是公開 repo，
+# 不能靠「只點名排除已知的本機檔案」這種做法——那樣任何未來新增的本機檔案
+# （例如含憑證的 mcp.json）預設都會被 commit。改成白名單：只放行 skills/，
+# 其他一律不進版控。用 .claude/* （星號）而不是 .claude/，這樣底下的 !例外
+# 規則才吃得到——父資料夾整個被排除時，git 不會再進去看子層的例外規則。
+.claude/*
+!.claude/skills/
 
 # 各編碼工具本機 skill 設定（與網站程式碼無關）
 .agent/
@@ -49,3 +54,8 @@ blender-tots/_backup_phase3/
 # 流程地圖底圖的圖磚暫存（fetch-flowmap-basemap.mjs 的中繼產物，
 # 成品是 public/flow-map/ 下的 webp，暫存不需要進版控）
 .tmp-flowmap-tiles/
+
+# 示範影片改存放在 Cloudflare R2（repo 曾以每月約 1.2GB 的速度膨脹）。
+# 本機仍保留檔案供 astro dev 預覽；新增／更新影片後記得 npm run media:push。
+# 換新環境／clone 後用 npm run media:pull 取回。
+public/type-videos/

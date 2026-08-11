@@ -1,0 +1,5 @@
+# media-manifest.txt 是 media-manifest.mjs 逐行比對的資料檔，checkout 時
+# 若被自動轉成 CRLF（例如 Windows 開發者的 core.autocrlf=true），每一行末尾
+# 會多一個 \r，跟本機掃出來的路徑逐字比對就會全部判定「缺少」。腳本已經會
+# 容忍 CRLF，這裡再從源頭固定行尾，兩層保險。
+media-manifest.txt -text

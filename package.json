@@ -10,10 +10,14 @@
     "check": "astro check",
     "preview": "astro preview",
     "astro": "astro",
-    "media:push": "rclone copy public/type-videos r2:botw-totk-wiki-media/type-videos --exclude '.DS_Store' --transfers 8 --progress && node scripts/media-manifest.mjs",
+    "media:push": "rclone copy public/type-videos r2:botw-totk-wiki-media/type-videos --exclude .DS_Store --transfers 8 --progress && node scripts/media-manifest.mjs",
     "media:pull": "rclone copy r2:botw-totk-wiki-media/type-videos public/type-videos --transfers 8 --progress",
-    "media:check": "rclone check public/type-videos r2:botw-totk-wiki-media/type-videos --exclude '.DS_Store'",
-    "media:verify": "node scripts/media-manifest.mjs --verify"
+    "media:check": "rclone check public/type-videos r2:botw-totk-wiki-media/type-videos --exclude .DS_Store",
+    "media:verify": "node scripts/media-manifest.mjs --verify",
+    "media:verify-refs": "node --experimental-strip-types scripts/media-manifest.mjs --verify-references"
+  },
+  "engines": {
+    "node": ">=22.6"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.0",
