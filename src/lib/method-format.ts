@@ -61,9 +61,9 @@ export function principleHtml(text: string) {
       ? `<u style="text-decoration-color: white; text-underline-offset: 3px;">${escapeHtml(seg.text)}</u>`
       : parseStep(seg.text).map((s) =>
           s.href
-            ? `<a href="${PRINCIPLE_BASE}/types/${s.href}" class="accent-link">${escapeHtml(s.text)}</a>`
+            ? `<a href="${PRINCIPLE_BASE}/types/${escapeHtml(s.href)}" class="accent-link">${escapeHtml(s.text)}</a>`
             : s.accent
-              ? `<span class="text-accent">${escapeHtml(s.text)}</span>`
+              ? `<span class="accent-text">${escapeHtml(s.text)}</span>`
               : escapeHtml(s.text)
         ).join("")
   ).join("");
@@ -106,7 +106,7 @@ export function principleExtraHtml(extra?: { title?: string; items: TypeStep[] }
     const { text, sub } = stepParts(it);
     const mainHtml = parseStep(text).map((s) =>
       s.href
-        ? `<a href="${PRINCIPLE_BASE}/types/${s.href}" class="accent-link">${escapeHtml(s.text)}</a>`
+        ? `<a href="${PRINCIPLE_BASE}/types/${escapeHtml(s.href)}" class="accent-link">${escapeHtml(s.text)}</a>`
         : s.accent
           ? `<span class="accent-text">${escapeHtml(s.text)}</span>`
           : escapeHtml(s.text)

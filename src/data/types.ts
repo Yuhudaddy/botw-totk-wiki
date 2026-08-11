@@ -7,9 +7,6 @@ export interface TypeItem {
   shortEn?: string; // 主題索引卡片用的短英文；未填則使用 en
   videosOnly?: boolean; // 詳細頁只顯示「相關影片」區（隱藏流程／原理／注意事項）
   termsOnly?: boolean;  // 詳細頁只顯示「名詞說明」＋「相關影片」（大亂鬥用）
-  aliases?: string[]; // 影片索引搜尋用的別名／關鍵字（例：["IST", "背包", "格子"]）
-  playlist?: string;  // YouTube 播放清單連結（待補）
-  videos?: string[];  // 詳細頁底部顯示的 YouTube 影片 ID（待補）
   family?: string;       // 技巧家族 id（同家族的項目在詳細頁會顯示彈道切換帶，例："launch"）
   hideFromGrid?: boolean; // 家族內非代表項目：不在主題解說列表顯示，只能透過切換帶進入
 }
@@ -153,11 +150,6 @@ export const typeGroups: TypeGroup[] = [
 /** 遊戲 id → 中文名（例：botw → 曠野之息） */
 export const gameLabels = Object.fromEntries(
   typeGroups.map((g) => [g.game, g.label])
-) as Record<GameId, string>;
-
-/** 遊戲 id → 英文名（例：botw → Breath of the Wild） */
-export const gameLabelsEn = Object.fromEntries(
-  typeGroups.map((g) => [g.game, g.en])
 ) as Record<GameId, string>;
 
 /**

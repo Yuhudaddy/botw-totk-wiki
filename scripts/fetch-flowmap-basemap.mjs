@@ -105,4 +105,4 @@ for (const layer of LAYERS) {
   await stitch(layer.area, layer.out, dir);
 }
 
-console.log("\n完成。記得把 FlowMapViewer.astro 的預設圖層路徑從 .svg 換成 .webp。");
+console.log("\n完成。");

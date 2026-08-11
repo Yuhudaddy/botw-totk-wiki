@@ -133,8 +133,7 @@ export interface TypeContent {
     defaultLayer?: "surface" | "sky";  // 初始圖層，預設 surface
     note?: string;                     // 地圖下方的灰色備註
   }; // 「參照流程地圖」容器：位於主體格線之下、注意事項之上（與 model3d 同層級，可並存）。
-     // 底圖放在 public/flow-map/totk/{surface,sky}.svg（換成實際地圖時保持檔名與
-     // 涵蓋範圍不變即可）；步驟端的資料放在各 method 的 mapFlow
+     // 底圖放在 public/flow-map/totk/{surface,sky}.webp；步驟端的資料放在各 method 的 mapFlow
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
   notes?: TypeNote[];         // 注意事項
   closing?: string;           // 注意事項下方的結語
