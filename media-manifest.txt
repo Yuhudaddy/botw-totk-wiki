@@ -28,8 +28,9 @@
 194208	botw-ist/FDIC.png
 231909	botw-ist/IST.png
 273579	botw-ist/WMC.png
-27004168	botw-launch/撞擊飛.mp4
-28315048	botw-launch/隨物飛.mp4
+15508542	botw-launch/木箱擊飛.MP4
+27004168	botw-launch/靜止擊飛.mp4
+28315048	botw-launch/靜止隨飛.mp4
 20955532	botw-lynel/共通.mp4
 15624255	botw-lynel/持劍.mp4
 22951479	botw-lynel/持大劍.mp4

@@ -4,7 +4,10 @@
 export type TypeStep = string | { text: string; sub: string[] };
 
 export interface TypeMethodSection {
-  title: string;      // 子章節標題，例："K+1 法（通用版）"
+  title?: string;     // 子章節標題，例："K+1 法（通用版）"；省略時只顯示 tags／steps，
+                      // 用於同一個方法（已有 TypeMethod.name 當白色總標題）底下純粹依
+                      // 版本／條件分段、不需要各自再掛一次橘色小標題的情形
+                      // （例：木箱擊飛依 Switch 1／Switch 2 分兩段）
   tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["～Ver.1.1.2"]
   intro?: string;     // 該區塊步驟上方的灰色說明句（選填）
   steps?: TypeStep[]; // 該區塊的編號步驟；省略時只顯示標題與 tags，用於「變體名稱」這種
@@ -291,9 +294,8 @@ export const typeContent: Record<string, TypeContent> = {
     videoFolder: "botw-launch",
     methods: [
       {
-        tab: "撞擊飛",
-        name: "撞擊飛（Impact Launch）",
-        video: "撞擊飛.mp4",
+        tab: "靜止擊飛",
+        video: "靜止擊飛.mp4",
         sections: [
           {
             title: "靜止擊飛（Stasis Launch）",
@@ -306,29 +308,43 @@ export const typeContent: Record<string, TypeContent> = {
             ],
             note: "※ 必要時可在步驟 2 用弓箭調整擊飛方向。",
           },
-          {
-            title: "木箱擊飛（Kibako Launch）",
-            tags: ["Nintendo Switch 1"],
-            steps: [
-              "將方形炸彈放在木箱前方貼緊木箱",
-              "爬到木箱按住 ZL 貼近炸彈另一端的邊緣",
-              "按下 L 引爆炸彈把林克擊飛",
-            ],
-          },
         ],
       },
       {
-        tab: "隨物飛",
-        video: "隨物飛.mp4",
+        tab: "靜止隨飛",
+        video: "靜止隨飛.mp4",
         sections: [
           {
-            title: "隨物飛（Attaching Launch）",
+            title: "靜止隨飛（Attaching Launch）",
             tags: ["All Versions"],
             steps: [
               "靜止要擊飛的物體（箱子、樹等）",
               "將其打至需要的動量（橙色、紅色等）",
               "站在物體上，或是攀爬在物體上",
               "靜止器結束後隨物體一起移動（攀爬時可在目的地按 B 取消攀爬）",
+            ],
+          },
+        ],
+      },
+      {
+        tab: "木箱擊飛",
+        name: "木箱擊飛（Kibako Launch）",
+        video: "木箱擊飛.MP4",
+        sections: [
+          {
+            tags: ["Nintendo Switch 1"],
+            steps: [
+              "在木箱前面緊貼木箱放置一個方形遙控炸彈",
+              "爬到木箱上往前走到對側的端部",
+              "按 L 引爆炸彈",
+            ],
+          },
+          {
+            tags: ["Nintendo Switch 2"],
+            steps: [
+              "在木箱前面緊貼木箱放置一個方形遙控炸彈",
+              "爬到木箱上往前走到對側的端部",
+              "跳起來落地前瞬間，按 L 引爆炸彈",
             ],
           },
         ],

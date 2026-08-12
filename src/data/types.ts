@@ -35,7 +35,7 @@ export const typeGroups: TypeGroup[] = [
     shortEn: "Zelda BoTW",
     items: [
       { no: "01", zh: "風彈", en: "Windbomb", shortZh: "擊飛", shortEn: "Launch", family: "launch" },
-      { no: "01-stasis", zh: "靜止擊飛", en: "Stasis Launch", family: "launch", hideFromGrid: true },
+      { no: "01-stasis", zh: "一般擊飛", en: "General Launch", family: "launch", hideFromGrid: true },
       { no: "01-super", zh: "擊飛加速", en: "Super Launch", family: "launch", hideFromGrid: true },
       { no: "02", zh: "轉存格", en: "Inventory Slot Transfer" },
       { no: "03", zh: "萊尼爾", en: "Lynels" },

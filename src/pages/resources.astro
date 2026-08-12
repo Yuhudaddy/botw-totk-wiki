@@ -277,10 +277,11 @@ function sourceLabel(url: string): string {
               if (c.label.includes("中文") || c.id.includes("zh")) lang = "zh";
               else if (c.label.includes("日文") || c.id.includes("ja") || c.en.includes("日本語"))
                 lang = "ja";
-              return { ...item, lang };
+              return { ...item, lang, starOnly: false };
             })
           );
-          // 每個遊戲的清單最後補上 Hsin-Po 的個人網站
+          // 每個遊戲的清單最後補上 Hsin-Po 的個人網站，但不在預設清單裡顯示，
+          // 只有按下星星篩選（站長推薦）才會被搜到，避免每個遊戲頁面都預設洗版
           if (allItems.length > 0) {
             allItems.push({
               title: "Hsin-Po 的個人網站",
@@ -288,6 +289,8 @@ function sourceLabel(url: string): string {
               kind: "site",
               lang: "zh",
               recommended: true,
+              note: "Yuda's Discord 資深管理員",
+              starOnly: true,
             });
           }
           return (
@@ -301,6 +304,7 @@ function sourceLabel(url: string): string {
                     class="res group flex min-w-0 items-center gap-3.5 rounded-xl border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
                     data-search={`${item.title} ${item.note ?? ""} ${sourceLabel(item.externalUrl ?? item.url)}`.toLowerCase()}
                     data-recommended={item.recommended ? "true" : "false"}
+                    data-star-only={item.starOnly ? "true" : "false"}
                   >
                   <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[10px] bg-sand text-muted transition-colors group-hover:text-accent" data-kind={item.kind}>
                     <svg
@@ -488,7 +492,9 @@ function sourceLabel(url: string): string {
         rows.forEach((row) => {
           const matchesSearch = !q || (row.dataset.search ?? "").includes(q);
           const matchesKind = !activeKind
-            ? true
+            // 沒有篩選時：一般項目都算符合，但 starOnly 項目（例：Hsin-Po 的個人網站）
+            // 只能透過星星篩選找到，預設清單裡不出現
+            ? row.dataset.starOnly !== "true"
             : activeKind === "star"
               ? row.dataset.recommended === "true"
               : row.querySelector("span[data-kind]")?.getAttribute("data-kind") === activeKind;
@@ -556,7 +562,10 @@ function sourceLabel(url: string): string {
       }
     });
 
-    const initial = location.hash.replace("#", "");
-    if (gameOrder.includes(initial)) setGame(initial, false);
+    // 沒有 hash（直接打開 /resources）時 initial 會是空字串，落回預設的 botw，
+    // 確保 applyFilter() 一定會在首次載入時跑過一次——否則 starOnly 這類
+    // 只靠 JS 隱藏的項目，在使用者還沒做任何互動前會維持 SSR 時的預設可見狀態
+    const hashGame = location.hash.replace("#", "");
+    setGame(gameOrder.includes(hashGame) ? hashGame : "botw", false);
   </script>
 </BaseLayout>
