@@ -24,13 +24,12 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Claude Code：預設全部排除（本機設定、對話紀錄等因人而異，且這是公開 repo，
-# 不能靠「只點名排除已知的本機檔案」這種做法——那樣任何未來新增的本機檔案
-# （例如含憑證的 mcp.json）預設都會被 commit。改成白名單：只放行 skills/，
-# 其他一律不進版控。用 .claude/* （星號）而不是 .claude/，這樣底下的 !例外
-# 規則才吃得到——父資料夾整個被排除時，git 不會再進去看子層的例外規則。
-.claude/*
-!.claude/skills/
+# Claude Code：全部排除（本機設定、對話紀錄、skills 說明文件等因人而異，
+# 且這是公開 repo，不能靠「只點名排除已知的本機檔案」這種做法——那樣任何
+# 未來新增的本機檔案（例如含憑證的 mcp.json）預設都會被 commit。原本 skills/
+# 有白名單放行，但 skills 說明文件屬於「我們跟 Claude Code 之間的技術細節」，
+# 不需要公開，換電腦時會整台硬碟遷移過去，不靠 git 保留，故一併排除。
+.claude/
 
 # 各編碼工具本機 skill 設定（與網站程式碼無關）
 .agent/
@@ -48,8 +47,19 @@ Thumbs.db
 .github/prompts/
 
 # Blender 備份／自動存檔
+blender-tots/_backup_phase1/
 blender-tots/_backup_phase3/
+blender-tots/render_*.png
 *.blend1
+
+# Astro 遷移前的原型產物（設計原型、轉換指南、生成用的 AI prompt）：
+# 已被現在的 Astro 專案完全取代，src/ 底下沒有任何引用，公開 repo 沒必要留著。
+reference/
+yuda-channel-game-wiki-prompt.md
+
+# 開發過程紀錄（設計決策文件等）：跟 .claude/skills/ 一樣屬於我們跟
+# Claude Code 之間的技術細節，換電腦會整台硬碟遷移過去，不靠 git 保留。
+docs/
 
 # 流程地圖底圖的圖磚暫存（fetch-flowmap-basemap.mjs 的中繼產物，
 # 成品是 public/flow-map/ 下的 webp，暫存不需要進版控）
