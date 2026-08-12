@@ -1920,6 +1920,10 @@ const secretLetterVoices = {
             layer.appendChild(letter);
           });
           secretTitle.appendChild(layer);
+          // 熱區建好＝彩蛋在這個語系下是活的，順便把 4 個字母音效預先建立、
+          // 開始背景下載，避免使用者點第一個字母（通常是 y）時才臨時抓檔案，
+          // 感覺特別卡（見 playLetterSound 的原本寫法：點到才 new Audio）
+          prepareLetterSoundClips();
         }
 
         function prepareSecretAudio() {
@@ -1928,6 +1932,21 @@ const secretLetterVoices = {
           if (!src) return;
           secretAudio = new Audio(src);
           secretAudio.preload = "auto";
+        }
+
+        // 4 個字母音效統一在這裡建立（見 rebuildSecretLetters 呼叫處），
+        // playLetterSound 只負責找已經建好的 clip 來播；找不到才當保險網現場建立
+        function prepareLetterSoundClips() {
+          if (!secretTitle) return;
+          Object.keys(SECRET_INDICES).forEach(function (ch) {
+            if (secretLetterClips[ch]) return;
+            var src = secretTitle.dataset["sound" + ch.toUpperCase()];
+            if (!src) return;
+            var audio = new Audio(src);
+            audio.preload = "auto";
+            audio.volume = 0.45;
+            secretLetterClips[ch] = audio;
+          });
         }
 
         // 序列輸入過程中，每點對一個字母就播一段短音效（跟解鎖瞬間的
@@ -1948,6 +1967,35 @@ const secretLetterVoices = {
             audio.play();
           } catch (error) {}
         }
+
+        // 使用者第一次跟頁面互動時（不限定點在哪），偷播一次靜音音效讓瀏覽器
+        // 把音訊輸出管線熱機——這筆初始化成本通常只在分頁生命週期第一次真正
+        // 播放聲音時才會發生，跟個別檔案有沒有載入完成是兩回事，prepareLetterSoundClips
+        // 只能省下下載時間，省不了這筆。掛在 pointerdown 而非 click 是因為就算
+        // 使用者第一次點擊就直接點在 y 上，pointerdown 也會早於 click 觸發，
+        // 讓熱機的 play() 搶先一步開始，不會跟真正的播放完全撞在一起。
+        // 不用 { once: true }：如果使用者第一次互動發生在字型還沒載完、
+        // secretLetterClips 還沒建好之前，直接移除監聽會讓熱機永遠沒機會發生，
+        // 改成只有真正熱機成功才移除，之前的 pointerdown 就先靜靜略過。
+        function warmUpAudioPipeline() {
+          var probe = secretLetterClips.y;
+          if (!probe) return;
+          document.removeEventListener("pointerdown", warmUpAudioPipeline);
+          var vol = probe.volume;
+          probe.volume = 0;
+          var playing = probe.play();
+          if (playing && playing.then) {
+            playing.then(
+              function () {
+                probe.pause();
+                probe.currentTime = 0;
+                probe.volume = vol;
+              },
+              function () { probe.volume = vol; }
+            );
+          }
+        }
+        document.addEventListener("pointerdown", warmUpAudioPipeline, { passive: true });
 
         function clearSecretHits() {
           if (!secretTitle) return;
