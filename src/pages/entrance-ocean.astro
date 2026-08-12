@@ -286,6 +286,73 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       </span>
     </button>
 
+    {/* 瓶中信彩蛋：一顆漂在海面的小瓶子。做成 fixed 定位的獨立按鈕而不是
+        塞進 .scene——場景整層 pointer-events:none、.sea 又有 overflow 裁切，
+        放在裡面會點不到也飛不出海面帶；「畫在場景裡」的效果改用同一套
+        色票、水線泡沫與倒影達成。活動範圍由 JS 依 .sea 的實際邊界計算。
+        點擊後飛到語言鈕左側縮成軟木塞（同一顆按鈕），信紙攤開播放影片。
+        沒有 JS 時整組隱藏：純裝飾彩蛋，不能影響入口頁基本功能。 */}
+    <button
+      class="drift-bottle"
+      id="drift-bottle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="bottle-letter"
+      hidden
+    >
+      <span class="bottle-swing" aria-hidden="true">
+        <svg class="bottle-art" viewBox="0 0 48 64">
+          <defs>
+            <clipPath id="drift-bottle-body">
+              <path
+                d="M19.5 13.5h9v3.2c0 3.4 6.5 5.6 6.5 11.3v21.5c0 5-4.4 8-11 8s-11-3-11-8V28c0-5.7 6.5-7.9 6.5-11.3Z"
+                transform="rotate(14 24 40)"
+              />
+            </clipPath>
+          </defs>
+          <g transform="rotate(14 24 40)">
+            <rect class="bottle-cork" x="18.6" y="2" width="10.8" height="8.4" rx="2.6" />
+            <path
+              class="bottle-glass"
+              d="M19.5 13.5h9v3.2c0 3.4 6.5 5.6 6.5 11.3v21.5c0 5-4.4 8-11 8s-11-3-11-8V28c0-5.7 6.5-7.9 6.5-11.3Z"
+            />
+            <rect class="bottle-paper" x="18.4" y="29" width="11.2" height="17" rx="1.6" transform="rotate(-11 24 37.5)" />
+            <path class="bottle-paper-line" d="M20.6 34.5l7.4-1.5M20.9 38.2l7.4-1.5M21.2 41.9l6-1.2" transform="rotate(-11 24 37.5)" />
+            {/* 夜燈用 --temple-light：這個 token 在淺色主題的 alpha 是 0、
+                深色主題才亮起（與島上神廟門口同一招），免寫任何主題判斷 */}
+            <circle class="bottle-glow bottle-glow-halo" cx="24" cy="37" r="6.5" />
+            <circle class="bottle-glow bottle-glow-core" cx="24" cy="37" r="2.4" />
+            <path class="bottle-glint" d="M16.8 24.5c-1.1 5.5-1.2 14.5-.2 21.5" />
+          </g>
+          {/* 水線與吃水：水平方向固定（瓶身自己是斜的），泡沫比瓶寬，讀起來
+              才像浮在海面而不是貼了一張貼紙 */}
+          <rect class="bottle-submerged" x="0" y="46" width="48" height="18" clip-path="url(#drift-bottle-body)" />
+          <path class="bottle-waterline" d="M2.5 46.4c3.4-1.5 6.8-1.5 10.2 0s6.8 1.5 10.2 0 6.8-1.5 10.2 0 6.9 1.5 10.4 0" />
+        </svg>
+        <svg class="cork-art" viewBox="0 0 24 24">
+          <rect class="cork-body" x="5.2" y="6.4" width="13.6" height="12.4" rx="3.4" />
+          <ellipse class="cork-top" cx="12" cy="7.4" rx="6.4" ry="2.2" />
+          <path class="cork-cross" d="M9.4 10.9l5.2 5.2M14.6 10.9l-5.2 5.2" />
+        </svg>
+      </span>
+    </button>
+
+    {/* 半透明背景幕：手機沒有桌機那種右側空白可以塞信紙，攤開時勢必疊在標題／
+        按鈕上方，用這層讓背景整體變暗、文字暫時不可讀不可點，讀起來像正常的
+        彈出視窗在收信，而不是版面卡到東西。桌機一起套用是為了視覺一致，
+        也讓「開信」這個動作本身更像一個真的被岔開的小事件。
+        點在幕上會關閉：不用額外綁事件，本來就有的
+        document pointerdown（目標不在瓶子／信紙內就收信）已經涵蓋。 */}
+    <div class="bottle-scrim" id="bottle-scrim" aria-hidden="true" hidden></div>
+
+    <div class="bottle-letter" id="bottle-letter" role="region" hidden>
+      <figure class="letter-paper">
+        <span class="letter-seal" aria-hidden="true"></span>
+        <video id="bottle-video" playsinline controls preload="none" src={href("/type-videos/entrance/bottle-message.mp4")}></video>
+        <p class="letter-fallback" hidden></p>
+      </figure>
+    </div>
+
     <main id="ocean-content">
       <section class="hero-copy" aria-labelledby="ocean-heading">
         <div class="hero-eyebrow ocean-reveal ocean-reveal-one">
@@ -405,6 +472,14 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         --celestial-control-size: clamp(4rem, 5.8vw, 5.3rem);
         --sea-start: 70.2%;
         --reflection-width: clamp(5.5rem, 9vw, 10rem);
+        --bottle-glass: oklch(84% 0.05 196 / 0.52);
+        --bottle-glass-edge: oklch(97% 0.03 190 / 0.75);
+        --bottle-paper: oklch(95% 0.032 84);
+        --letter-paper: oklch(94% 0.034 83);
+        --letter-paper-edge: oklch(66% 0.06 70);
+        --letter-ink: oklch(38% 0.055 55);
+        --letter-seal: oklch(50% 0.13 27);
+        --bottle-scrim: oklch(14% 0.025 235 / 0.58);
       }
 
       :root[data-theme="dark"] {
@@ -476,6 +551,14 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
            用 vh 會讓日月掉到海平線以下（實測 63vh 會落在可見區的 88%）。 */
         --celestial-y: min(26svh, calc(50svh - 13.45vw));
         --reflection-width: clamp(6.25rem, 10.5vw, 11.5rem);
+        --bottle-glass: oklch(42% 0.05 203 / 0.55);
+        --bottle-glass-edge: oklch(76% 0.04 200 / 0.5);
+        --bottle-paper: oklch(82% 0.028 84);
+        --letter-paper: oklch(75% 0.04 80);
+        --letter-paper-edge: oklch(46% 0.055 65);
+        --letter-ink: oklch(27% 0.045 52);
+        --letter-seal: oklch(41% 0.12 26);
+        --bottle-scrim: oklch(3% 0.02 235 / 0.66);
       }
 
       .ocean-html {
@@ -1612,6 +1695,261 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         transform: translate(-50%, -50%) scale(1) rotate(0);
       }
 
+      /* ── 瓶中信彩蛋 ──────────────────────────────────────────────
+         z-index 佈局：header 是 20、footer 是 5，瓶子取 60（飛行時要越過
+         所有內容跳到右上角）、信紙取 24（壓過內容、讓開 header）。 */
+      .drift-bottle {
+        position: fixed;
+        z-index: 60;
+        top: 0;
+        left: 0;
+        width: 3.6rem;
+        height: 4.6rem;
+        padding: 0.45rem;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        opacity: 0.92;
+        transition-property: transform, opacity;
+        transition-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+        will-change: transform;
+      }
+
+      .drift-bottle[hidden] { display: none; }
+
+      .drift-bottle:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 4px;
+        border-radius: 12px;
+      }
+
+      /* 水面倒影：跟著瓶子走的一道垂直光暈，是「物體浮在水上」最便宜的證據 */
+      .drift-bottle::after {
+        content: "";
+        position: absolute;
+        top: 86%;
+        left: 26%;
+        width: 48%;
+        height: 55%;
+        background: linear-gradient(180deg, color-mix(in oklch, var(--reflection) 34%, transparent), transparent 82%);
+        filter: blur(2.5px);
+        opacity: 0.4;
+        pointer-events: none;
+        transition: opacity 900ms cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      :root[data-theme="dark"] .drift-bottle::after { opacity: 0.24; }
+
+      .bottle-swing {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        /* 起伏節奏對齊海面動畫群（11／8.5／15／19s），取互質的 7.3s */
+        animation: bottle-bob 7.3s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+      }
+
+      .ocean-page.is-paused .bottle-swing { animation-play-state: paused; }
+
+      .bottle-art,
+      .cork-art {
+        position: absolute;
+        transition: opacity 260ms cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .bottle-art { inset: 0; width: 100%; height: 100%; }
+      .cork-art { inset: 16% 12%; width: 76%; height: 68%; opacity: 0; }
+
+      /* 主題切換時所有部件顏色與整幅畫同步過渡 */
+      .bottle-art path,
+      .bottle-art rect,
+      .bottle-art circle,
+      .cork-art path,
+      .cork-art rect,
+      .cork-art ellipse {
+        transition: fill 900ms cubic-bezier(0.65, 0, 0.35, 1), stroke 900ms cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      .bottle-art .bottle-cork { fill: var(--sand); stroke: color-mix(in oklch, var(--sand-shadow) 80%, transparent); stroke-width: 1; }
+      .bottle-art .bottle-glass { fill: var(--bottle-glass); stroke: var(--bottle-glass-edge); stroke-width: 1.1; }
+      .bottle-art .bottle-paper { fill: var(--bottle-paper); }
+      .bottle-art .bottle-paper-line { fill: none; stroke: color-mix(in oklch, var(--letter-ink) 55%, transparent); stroke-width: 0.9; stroke-linecap: round; }
+      .bottle-art .bottle-glow-halo { fill: var(--temple-light); opacity: 0.3; }
+      .bottle-art .bottle-glow-core { fill: var(--temple-light); opacity: 0.85; }
+      .bottle-art .bottle-glint {
+        fill: none;
+        stroke: var(--reflection);
+        stroke-width: 1.4;
+        stroke-linecap: round;
+        opacity: 0.5;
+        transition: opacity 240ms ease, stroke 900ms cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      .bottle-art .bottle-submerged { fill: color-mix(in oklch, var(--sea-mid) 55%, transparent); }
+      .bottle-art .bottle-waterline { fill: none; stroke: var(--foam); stroke-width: 1.6; stroke-linecap: round; opacity: 0.85; }
+
+      .cork-art .cork-body { fill: var(--sand); stroke: color-mix(in oklch, var(--sand-shadow) 85%, transparent); stroke-width: 1; }
+      .cork-art .cork-top { fill: color-mix(in oklch, var(--sand) 72%, var(--foam)); }
+      .cork-art .cork-cross { fill: none; stroke: var(--sand-shadow); stroke-width: 1.7; stroke-linecap: round; }
+
+      @media (hover: hover) {
+        .drift-bottle:not(.is-docked):hover { opacity: 1; }
+        .drift-bottle:not(.is-docked):hover .bottle-glint { opacity: 1; }
+      }
+
+      .drift-bottle.is-flying { transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+      .drift-bottle.is-flying .bottle-swing { animation-play-state: paused; }
+
+      .drift-bottle.is-docked { opacity: 1; }
+      .drift-bottle.is-docked::after { opacity: 0; }
+      .drift-bottle.is-docked .bottle-swing { animation: none; }
+      .drift-bottle.is-docked .bottle-art { opacity: 0; }
+      .drift-bottle.is-docked .cork-art { opacity: 1; }
+
+      /* z-index 22：壓過 header(20) 與整個場景，但讓開信紙(24)與瓶子/軟木塞(60)。
+         開啟時 pointer-events 一併轉 auto，擋掉對背景內容（含語言鈕）的誤觸，
+         點在幕上會經由既有的 document pointerdown 收信邏輯關閉。 */
+      .bottle-scrim {
+        position: fixed;
+        z-index: 22;
+        inset: 0;
+        background: var(--bottle-scrim);
+        opacity: 0;
+        pointer-events: none;
+        backdrop-filter: blur(1.5px);
+        -webkit-backdrop-filter: blur(1.5px);
+        transition: opacity 420ms cubic-bezier(0.65, 0, 0.35, 1), background-color 900ms cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      .bottle-scrim[hidden] { display: none; }
+
+      .bottle-scrim.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .bottle-letter {
+        position: fixed;
+        z-index: 24;
+        top: 47svh;
+        right: clamp(2.5rem, 8vw, 9rem);
+        width: min(30rem, 33vw);
+        transform: translateY(-50%) rotate(-1.6deg);
+        filter: drop-shadow(0 18px 34px color-mix(in oklch, var(--glass-shadow) 90%, transparent));
+        clip-path: inset(0 0 100% 0 round 10px);
+        opacity: 0;
+        transition:
+          clip-path 620ms cubic-bezier(0.65, 0, 0.35, 1),
+          opacity 420ms cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      .bottle-letter[hidden] { display: none; }
+
+      /* 攤開時 inset 給負值，讓突出紙緣的蠟封不被裁掉。
+         這裡刻意用固定長度而非百分比：百分比是相對信紙自己的高度算的，
+         而信紙高度會隨內容變（影片是 16:9 高、後備文字只有一兩行矮），
+         矮的時候 -8% 只剩約 7px，蓋不住往上突出 0.5rem 的蠟封，上緣就被切掉。 */
+      .bottle-letter.is-open {
+        clip-path: inset(-1.15rem -1.15rem -0.7rem -0.7rem round 10px);
+        opacity: 1;
+      }
+
+      .letter-paper {
+        position: relative;
+        margin: 0;
+        padding: clamp(0.7rem, 1.2vw, 1.05rem);
+        background:
+          linear-gradient(160deg, color-mix(in oklch, var(--letter-paper) 94%, white) 0%, var(--letter-paper) 55%, color-mix(in oklch, var(--letter-paper) 86%, var(--letter-paper-edge)) 100%);
+        border: 1px solid color-mix(in oklch, var(--letter-paper-edge) 55%, transparent);
+        /* 不規則圓角模擬手撕紙緣 */
+        border-radius: 7px 16px 9px 14px / 14px 8px 16px 9px;
+        box-shadow:
+          inset 0 0 0.9rem color-mix(in oklch, var(--letter-paper-edge) 26%, transparent),
+          inset 0 1px 0 color-mix(in oklch, white 55%, transparent);
+        transition: background 900ms cubic-bezier(0.65, 0, 0.35, 1), border-color 900ms cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      .letter-paper video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 5px;
+        background: oklch(18% 0.02 235);
+        object-fit: cover;
+      }
+
+      .letter-paper video[hidden] { display: none; }
+
+      .letter-seal {
+        position: absolute;
+        top: -0.5rem;
+        right: -0.5rem;
+        width: 1.8rem;
+        height: 1.8rem;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 34% 30%, color-mix(in oklch, var(--letter-seal) 55%, white) 0 8%, transparent 42%),
+          radial-gradient(circle at 50% 50%, var(--letter-seal) 0 62%, color-mix(in oklch, var(--letter-seal) 74%, black) 100%);
+        box-shadow: 0 2px 7px color-mix(in oklch, var(--glass-shadow) 80%, transparent);
+      }
+
+      /* 內圈與陰影跟著蠟封尺寸等比縮，否則縮小後內圈會顯得過粗、佔比失衡 */
+      .letter-seal::after {
+        content: "";
+        position: absolute;
+        inset: 0.29rem;
+        border: 1.2px solid color-mix(in oklch, white 34%, transparent);
+        border-radius: 50%;
+        opacity: 0.75;
+      }
+
+      /* 影片載入中：蠟封當作呼吸中的讀取指示 */
+      .letter-paper.is-loading .letter-seal { animation: seal-wait 1.15s ease-in-out infinite alternate; }
+
+      .letter-fallback {
+        margin: 0.7rem 0 0.15rem;
+        color: var(--letter-ink);
+        font-family: "Spectral", Georgia, serif;
+        font-size: 0.86rem;
+        font-style: italic;
+        letter-spacing: 0.015em;
+        text-align: center;
+      }
+
+      .letter-fallback[hidden] { display: none; }
+
+      @media (max-width: 45.99rem) {
+        .drift-bottle { width: 3rem; height: 3.9rem; }
+
+        /* 手機沒有「右側空白」，信紙改成置中浮層 */
+        .bottle-letter {
+          top: 50svh;
+          right: 50%;
+          width: min(88vw, 26rem);
+          transform: translate(50%, -50%) rotate(-1.2deg);
+        }
+      }
+
+      @keyframes bottle-bob {
+        0% { transform: translate3d(0, -2.3px, 0) rotate(-2deg); }
+        55% { transform: translate3d(0, 2.5px, 0) rotate(1.7deg); }
+        100% { transform: translate3d(0, -1.2px, 0) rotate(-0.7deg); }
+      }
+
+      @keyframes seal-wait {
+        from { transform: scale(1); opacity: 1; }
+        to { transform: scale(0.88); opacity: 0.7; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .bottle-swing { animation: none !important; }
+
+        .drift-bottle,
+        .bottle-letter,
+        .bottle-scrim {
+          transition-duration: 0.01ms !important;
+        }
+      }
+
       .ocean-footer {
         position: relative;
         z-index: 5;
@@ -1992,6 +2330,10 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
             brandLink: "回到原版入口",
             toLight: "切換為淺色主題",
             toDark: "切換為深色主題",
+            bottleLabel: "海上的漂流瓶",
+            corkLabel: "收起瓶中信",
+            letterLabel: "瓶中信",
+            letterFallback: "信還在海上漂流——影片即將送達。",
           },
           en: {
             htmlLang: "en",
@@ -2012,6 +2354,10 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
             brandLink: "Back to the original entrance",
             toLight: "Switch to light theme",
             toDark: "Switch to dark theme",
+            bottleLabel: "A bottle drifting at sea",
+            corkLabel: "Put the message away",
+            letterLabel: "Message in a bottle",
+            letterFallback: "The letter is still adrift at sea — its video will wash ashore soon.",
           },
           ja: {
             htmlLang: "ja",
@@ -2032,6 +2378,10 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
             brandLink: "元の入口へ戻る",
             toLight: "ライトテーマに切替",
             toDark: "ダークテーマに切替",
+            bottleLabel: "海を漂う小瓶",
+            corkLabel: "手紙をしまう",
+            letterLabel: "瓶の中の手紙",
+            letterFallback: "手紙はまだ海を漂っています——動画はまもなく届きます。",
           },
         };
 
@@ -2104,6 +2454,21 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
           if (actionLabels[1]) actionLabels[1].textContent = t.channel;
 
           if (langButton) langButton.setAttribute("aria-label", t.langLabel);
+
+          // 瓶中信彩蛋的無障礙文字：狀態（漂流中／已停靠）由 class 判斷，
+          // 換語言的當下不打斷彩蛋的進行
+          var bottleEgg = document.getElementById("drift-bottle");
+          if (bottleEgg) {
+            bottleEgg.setAttribute(
+              "aria-label",
+              bottleEgg.classList.contains("is-docked") ? t.corkLabel : t.bottleLabel
+            );
+          }
+          var letterEgg = document.getElementById("bottle-letter");
+          if (letterEgg) letterEgg.setAttribute("aria-label", t.letterLabel);
+          var letterNote = document.querySelector(".letter-fallback");
+          if (letterNote) letterNote.textContent = t.letterFallback;
+
           langOptions.forEach(function (option) {
             option.setAttribute(
               "aria-checked",
@@ -2244,6 +2609,309 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
             pointerFrame = 0;
           });
         }, { passive: true });
+
+        // ── 瓶中信彩蛋 ──────────────────────────────────────────
+        // 瓶子在 .sea 的實際範圍內慢速漂流：一次移動一段路徑點（transform-only），
+        // transitionend 接力下一段，中間隨機停頓。點擊後飛到語言鈕左側縮成
+        // 軟木塞、信紙攤開播影片；再點軟木塞（或 Esc／點外面）收信回海。
+        var bottle = document.getElementById("drift-bottle");
+        var letterBox = document.getElementById("bottle-letter");
+        var letterPaper = letterBox ? letterBox.querySelector(".letter-paper") : null;
+        var letterVideo = document.getElementById("bottle-video");
+        var letterFallback = letterBox ? letterBox.querySelector(".letter-fallback") : null;
+        var letterScrim = document.getElementById("bottle-scrim");
+        var seaSurface = document.querySelector(".sea");
+
+        if (bottle && letterBox && letterVideo && seaSurface) {
+          var bottleMode = "wander"; // wander | flying | docked | returning
+          var driftTimer = 0;
+          var bottleX = 0;
+          var bottleY = 0;
+
+          var randomBetween = function (min, max) {
+            return min + Math.random() * (max - min);
+          };
+
+          // 活動帶以 .sea 的實際邊界換算：不管視窗比例怎麼變，瓶子永遠只在
+          // 海面上漂。上下各留邊距，避開水平線與 footer。
+          // 頁面在背景分頁載入時 viewport 可能量出 0×0，此時回傳 null，
+          // 呼叫端改為稍後重試，避免瓶子被丟到 (0,0) 卡在左上角。
+          var bottleBand = function () {
+            var sea = seaSurface.getBoundingClientRect();
+            if (sea.height < 8 || window.innerWidth < 80) return null;
+            var w = bottle.offsetWidth || 58;
+            var h = bottle.offsetHeight || 74;
+            var minY = sea.top + sea.height * 0.12;
+            var maxY = Math.max(sea.top + sea.height * 0.66 - h, minY);
+            return {
+              minX: window.innerWidth * 0.04,
+              maxX: Math.max(window.innerWidth * 0.9 - w, window.innerWidth * 0.04),
+              minY: minY,
+              maxY: maxY,
+            };
+          };
+
+          var placeBottle = function (x, y, duration) {
+            bottleX = x;
+            bottleY = y;
+            bottle.style.transitionDuration = (duration || 0) + "ms";
+            bottle.style.transform = "translate3d(" + x + "px, " + y + "px, 0)";
+          };
+
+          // 漂流途中被點擊時，要凍結在「目前看得到的位置」而不是這段路徑的終點
+          var currentBottlePoint = function () {
+            try {
+              var m = new DOMMatrixReadOnly(window.getComputedStyle(bottle).transform);
+              return { x: m.m41, y: m.m42 };
+            } catch (error) {
+              return { x: bottleX, y: bottleY };
+            }
+          };
+
+          var driftOnce = function () {
+            if (bottleMode !== "wander") return;
+            var band = bottleBand();
+            if (!band) {
+              scheduleDrift(1500);
+              return;
+            }
+            var targetX = randomBetween(band.minX, band.maxX);
+            var targetY = randomBetween(band.minY, band.maxY);
+            var dist = Math.hypot(targetX - bottleX, targetY - bottleY);
+            // 速度約 14px/s，比雲層再慢一點；限制單段時長避免過短或過長
+            var duration = Math.min(26000, Math.max(9000, (dist / 14) * 1000));
+            placeBottle(targetX, targetY, duration);
+          };
+
+          var scheduleDrift = function (delay) {
+            window.clearTimeout(driftTimer);
+            driftTimer = window.setTimeout(driftOnce, delay);
+          };
+
+          var corkPoint = function () {
+            var anchor = langButton
+              ? langButton.getBoundingClientRect()
+              : { left: window.innerWidth - 80, top: 24, width: 44, height: 44 };
+            var w = bottle.offsetWidth || 58;
+            var h = bottle.offsetHeight || 74;
+            return {
+              x: anchor.left - w - 2,
+              y: anchor.top + (anchor.height - h) / 2,
+            };
+          };
+
+          var syncBottleLabel = function () {
+            var t = I18N[currentLang()] || I18N.en;
+            bottle.setAttribute(
+              "aria-label",
+              bottleMode === "docked" || bottleMode === "flying" ? t.corkLabel : t.bottleLabel
+            );
+          };
+
+          // 軟木塞「啵」一聲：用 WebAudio 現場合成，不必多下載一個音檔。
+          // 只在點擊（使用者手勢）時呼叫，AudioContext 不會被自動播放政策擋下。
+          var popCtx = null;
+          var popSound = function () {
+            try {
+              var Ctx = window.AudioContext || window.webkitAudioContext;
+              if (!Ctx) return;
+              if (!popCtx) popCtx = new Ctx();
+              var osc = popCtx.createOscillator();
+              var gain = popCtx.createGain();
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(430, popCtx.currentTime);
+              osc.frequency.exponentialRampToValueAtTime(160, popCtx.currentTime + 0.09);
+              gain.gain.setValueAtTime(0.11, popCtx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.0001, popCtx.currentTime + 0.13);
+              osc.connect(gain);
+              gain.connect(popCtx.destination);
+              osc.start();
+              osc.stop(popCtx.currentTime + 0.14);
+            } catch (error) {}
+          };
+
+          var tryPlayLetter = function () {
+            if (letterFallback) letterFallback.hidden = true;
+            letterVideo.hidden = false;
+            if (letterPaper) letterPaper.classList.add("is-loading");
+            // 上次載入失敗後 error 事件不會自己再觸發一次，重開信紙時先
+            // load() 重置再試：檔案還是不存在就會重新走 error → 後備文字；
+            // 若影片這段期間上架了，這裡就能直接播出來
+            if (letterVideo.error) letterVideo.load();
+            var playing = letterVideo.play();
+            if (playing && playing.catch) playing.catch(function () {});
+          };
+
+          letterVideo.addEventListener("playing", function () {
+            if (letterPaper) letterPaper.classList.remove("is-loading");
+          });
+
+          // 影片還沒上傳到 R2（或路徑打錯）時，信紙改顯示一句「還在漂流」，
+          // 彩蛋本身照樣可以完整走完開合流程
+          letterVideo.addEventListener("error", function () {
+            if (letterPaper) letterPaper.classList.remove("is-loading");
+            letterVideo.hidden = true;
+            if (letterFallback) letterFallback.hidden = false;
+          });
+
+          var openLetter = function () {
+            letterBox.hidden = false;
+            if (letterScrim) letterScrim.hidden = false;
+            // 先強制重排，把「還沒展開」的起始狀態寫進版面，再加 is-open，
+            // 轉場才會真的跑動畫而不是直接跳到終點。這裡不用
+            // requestAnimationFrame 排程：分頁不可見時 rAF 會被節流甚至不執行，
+            // is-open 就永遠加不上去，信紙留在完全裁切掉的狀態等於打不開。
+            void letterBox.offsetWidth;
+            letterBox.classList.add("is-open");
+            if (letterScrim) letterScrim.classList.add("is-open");
+            tryPlayLetter();
+          };
+
+          var shutLetter = function () {
+            letterVideo.pause();
+            letterBox.classList.remove("is-open");
+            if (letterScrim) letterScrim.classList.remove("is-open");
+            window.setTimeout(function () {
+              if (!letterBox.classList.contains("is-open")) letterBox.hidden = true;
+              if (letterScrim && !letterScrim.classList.contains("is-open")) letterScrim.hidden = true;
+            }, 660);
+          };
+
+          // 飛行／回航的收尾不能只靠 transitionend：分頁被節流或轉場被中斷時
+          // 事件可能延遲甚至遺失，狀態機會卡在中間態讓彩蛋永久失靈。
+          // 收尾函式做成冪等（以 bottleMode 判斷），transitionend 與看門狗
+          // 計時器誰先到都行。
+          var settleTimer = 0;
+
+          var finishFlight = function () {
+            if (bottleMode !== "flying") return;
+            window.clearTimeout(settleTimer);
+            bottleMode = "docked";
+            bottle.classList.add("is-docked");
+            syncBottleLabel();
+          };
+
+          var finishReturn = function () {
+            if (bottleMode !== "returning") return;
+            window.clearTimeout(settleTimer);
+            bottleMode = "wander";
+            bottle.classList.remove("is-flying");
+            scheduleDrift(randomBetween(600, 1800));
+          };
+
+          var openBottle = function () {
+            if (bottleMode !== "wander") return;
+            window.clearTimeout(driftTimer);
+            var cur = currentBottlePoint();
+            placeBottle(cur.x, cur.y, 0);
+            void bottle.offsetWidth; // 先把「凍結在目前位置」寫進版面，再起飛
+            bottleMode = "flying";
+            bottle.classList.add("is-flying");
+            bottle.setAttribute("aria-expanded", "true");
+            popSound();
+            syncBottleLabel();
+            var target = corkPoint();
+            placeBottle(target.x, target.y, 860);
+            window.clearTimeout(settleTimer);
+            settleTimer = window.setTimeout(finishFlight, 1100);
+            window.setTimeout(openLetter, 240);
+          };
+
+          var returnBottle = function () {
+            if (bottleMode !== "docked") return;
+            bottleMode = "returning";
+            bottle.classList.remove("is-docked");
+            bottle.setAttribute("aria-expanded", "false");
+            shutLetter();
+            syncBottleLabel();
+            var band = bottleBand();
+            if (band) {
+              placeBottle(randomBetween(band.minX, band.maxX), randomBetween(band.minY, band.maxY), 900);
+            } else {
+              // 量不到海面（幾乎不會發生：使用者才剛點過畫面）就放畫面下緣中間
+              placeBottle(window.innerWidth * 0.5, window.innerHeight * 0.8, 900);
+            }
+            window.clearTimeout(settleTimer);
+            settleTimer = window.setTimeout(finishReturn, 1150);
+          };
+
+          bottle.addEventListener("transitionend", function (event) {
+            if (event.propertyName !== "transform") return;
+            if (bottleMode === "wander") {
+              scheduleDrift(randomBetween(1200, 4600));
+            } else if (bottleMode === "flying") {
+              finishFlight();
+            } else if (bottleMode === "returning") {
+              finishReturn();
+            }
+          });
+
+          bottle.addEventListener("click", function () {
+            if (bottleMode === "wander") openBottle();
+            else if (bottleMode === "docked") returnBottle();
+          });
+
+          document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && bottleMode === "docked") returnBottle();
+          });
+
+          document.addEventListener("pointerdown", function (event) {
+            if (bottleMode !== "docked") return;
+            if (bottle.contains(event.target) || letterBox.contains(event.target)) return;
+            returnBottle();
+          });
+
+          window.addEventListener("resize", function () {
+            if (bottleMode === "docked") {
+              var target = corkPoint();
+              placeBottle(target.x, target.y, 0);
+            } else if (bottleMode === "wander") {
+              var band = bottleBand();
+              if (!band) return;
+              placeBottle(
+                Math.min(Math.max(bottleX, band.minX), band.maxX),
+                Math.min(Math.max(bottleY, band.minY), band.maxY),
+                0
+              );
+              scheduleDrift(900);
+            }
+          });
+
+          document.addEventListener("visibilitychange", function () {
+            if (!document.hidden) {
+              if (bottleMode === "wander") scheduleDrift(800);
+              return;
+            }
+            if (!letterVideo.paused) letterVideo.pause();
+            if (bottleMode === "wander") {
+              window.clearTimeout(driftTimer);
+              var cur = currentBottlePoint();
+              placeBottle(cur.x, cur.y, 0);
+            }
+          });
+
+          // 啟動：減速偏好時固定停在海面右側，不漂流也不搖晃（CSS 一併關閉）；
+          // 一般情況從畫面左外側慢慢漂進來，晚於入場動畫（~1s）一拍出現。
+          // 背景分頁載入（viewport 量出 0）時每 1.2 秒重試，等看得到再下水。
+          (function launchBottle() {
+            var band = bottleBand();
+            if (!band) {
+              window.setTimeout(launchBottle, 1200);
+              return;
+            }
+            var startY = randomBetween(band.minY, band.maxY);
+            if (reducedMotion.matches) {
+              placeBottle(band.minX + (band.maxX - band.minX) * 0.72, startY, 0);
+              bottle.hidden = false;
+              syncBottleLabel();
+              return;
+            }
+            placeBottle(-80, startY, 0);
+            bottle.hidden = false;
+            syncBottleLabel();
+            window.setTimeout(driftOnce, 2400);
+          })();
+        }
       })();
     </script>
   </body>

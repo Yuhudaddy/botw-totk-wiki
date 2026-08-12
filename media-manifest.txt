@@ -52,6 +52,7 @@
 13865344	botw-windbomb/擊上.MP4
 9439464	botw-windbomb/空中.MP4
 10438806	botw-windbomb/跑跳.MP4
+53879305	entrance/bottle-message.mp4
 39763835	eow-lynel/20260710_breaking spam.mp4
 35085288	eow-lynel/20260710_techniques.mp4
 21552220	ssbu-slingshot/20260709_Slingshot.mp4

@@ -292,21 +292,45 @@ const mapTools = [
           </div>
         </div>
 
-        <div class="obj-filter-list">
-          {fieldFilters.map((item) => (
-            <details>
-              <summary>
-                <code>{item.field}:</code>
-                <span>{item.use}</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-              </summary>
-              <div>
-                <span>範例</span>
-                <code>{item.field}:{item.value}</code>
-                <button type="button" data-copy={`${item.field}:${item.value}`}>複製</button>
-              </div>
-            </details>
-          ))}
+        {/* 鍵帽牆＋檢視面板：欄位橫向排列一眼可見，說明固定顯示在下方面板。
+            面板內容由 JS 從鍵帽自身的 data-* 換入，無 JS 時仍會顯示第一個欄位。 */}
+        <div class="obj-filter-board">
+          <div class="obj-filter-keys" role="tablist" aria-label="欄位篩選">
+            {fieldFilters.map((item, index) => (
+              <button
+                type="button"
+                role="tab"
+                id={`objkey-${item.field}`}
+                aria-controls="obj-filter-detail"
+                aria-selected={index === 0 ? "true" : "false"}
+                tabindex={index === 0 ? 0 : -1}
+                data-field={item.field}
+                data-use={item.use}
+                data-value={item.value}
+              >
+                {item.field}:
+              </button>
+            ))}
+          </div>
+
+          <div
+            class="obj-filter-detail"
+            id="obj-filter-detail"
+            role="tabpanel"
+            aria-labelledby={`objkey-${fieldFilters[0].field}`}
+          >
+            <p>
+              <code data-detail="field">{fieldFilters[0].field}:</code>
+              <span data-detail="use">{fieldFilters[0].use}</span>
+            </p>
+            <div>
+              <span>範例</span>
+              <code data-detail="example">{fieldFilters[0].field}:{fieldFilters[0].value}</code>
+              <button type="button" data-copy={`${fieldFilters[0].field}:${fieldFilters[0].value}`}>
+                <span>複製</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -315,7 +339,7 @@ const mapTools = [
       <div class="obj-wrap">
         <div class="obj-section-heading">
           <span>MAP WORKFLOW · 地圖工具</span>
-          <h2>搜尋完成後，才是地圖工作的開始。</h2>
+          <h2>呈現於地圖</h2>
         </div>
 
         <div class="obj-tools-list">
@@ -349,7 +373,7 @@ const mapTools = [
     <section class="obj-final-cta obj-reveal">
       <div class="obj-wrap">
         <span>READY TO SEARCH</span>
-        <h2>熟悉搜尋語法，了解海拉魯的世界。</h2>
+        <h2>開始探索海拉魯</h2>
         <a href={MAP_URL} target="_blank" rel="noopener">
           開啟王淚物件地圖
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -849,9 +873,9 @@ const mapTools = [
 
     .obj-step-example {
       display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 4px 8px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
     }
 
     .obj-step-example code {
@@ -1139,72 +1163,101 @@ const mapTools = [
       font-size: 11px;
     }
 
-    .obj-filter-list {
-      border-top: 1px solid var(--border-strong);
-    }
-
-    .obj-filter-list details {
-      border-bottom: 1px solid var(--border-strong);
-    }
-
-    .obj-filter-list summary {
-      min-height: 60px;
+    /* 選中鍵帽的配色隨主題翻轉：淺色模式把 accent 壓深才夠白字的對比，
+       深色模式的 accent 本身較亮，配深色字即可。 */
+    .obj-filter-board {
+      --key-on-bg: color-mix(in srgb, var(--accent) 88%, #000);
+      --key-on-ink: #fff;
       display: grid;
-      grid-template-columns: 90px 1fr 20px;
-      gap: 18px;
-      align-items: center;
-      padding-inline: 4px;
-      list-style: none;
+      gap: 22px;
+    }
+
+    :global([data-theme="dark"]) .obj-filter-board {
+      --key-on-bg: var(--accent);
+      --key-on-ink: #1a1a18;
+    }
+
+    .obj-filter-keys {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .obj-filter-keys button {
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12px;
       cursor: pointer;
+      transition:
+        border-color 180ms cubic-bezier(0.65, 0, 0.35, 1),
+        background-color 180ms cubic-bezier(0.65, 0, 0.35, 1),
+        color 180ms cubic-bezier(0.65, 0, 0.35, 1);
     }
 
-    .obj-filter-list summary::-webkit-details-marker {
-      display: none;
+    .obj-filter-keys button:hover {
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--border-strong));
+      color: var(--ink);
     }
 
-    .obj-filter-list summary code {
+    .obj-filter-keys button[aria-selected="true"] {
+      border-color: var(--key-on-bg);
+      background: var(--key-on-bg);
+      color: var(--key-on-ink);
+    }
+
+    .obj-filter-detail {
+      display: grid;
+      gap: 16px;
+      padding: 22px 20px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      background: var(--bg);
+    }
+
+    .obj-filter-detail > p {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 12px;
+      margin: 0;
+    }
+
+    .obj-filter-detail > p code {
       color: var(--accent);
       font-size: 12px;
     }
 
-    .obj-filter-list summary span {
+    .obj-filter-detail > p span {
       color: var(--text);
       font-size: 13px;
     }
 
-    .obj-filter-list summary svg {
-      width: 16px;
-      height: 16px;
-      fill: none;
-      stroke: var(--muted);
-      stroke-width: 1.8;
-      transition: transform 200ms cubic-bezier(0.65, 0, 0.35, 1);
-    }
-
-    .obj-filter-list details[open] summary svg {
-      transform: rotate(180deg);
-    }
-
-    .obj-filter-list details > div {
+    .obj-filter-detail > div {
       display: grid;
-      grid-template-columns: 90px 1fr auto;
-      gap: 18px;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 14px;
       align-items: center;
-      padding: 0 4px 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-strong);
     }
 
-    .obj-filter-list details > div span {
+    .obj-filter-detail > div > span {
       color: var(--muted);
       font-size: 11px;
     }
 
-    .obj-filter-list details > div code {
+    .obj-filter-detail > div code {
       color: var(--ink);
       font-size: 12px;
       overflow-wrap: anywhere;
     }
 
-    .obj-filter-list details > div button {
+    .obj-filter-detail > div button {
       min-width: 56px;
       min-height: 38px;
       border: 1px solid var(--border-strong);
@@ -1215,7 +1268,7 @@ const mapTools = [
       cursor: pointer;
     }
 
-    .obj-filter-list details > div button:hover {
+    .obj-filter-detail > div button:hover {
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -1371,8 +1424,11 @@ const mapTools = [
     }
 
     @media (max-width: 760px) {
+      /* Hero 高度原本設 560px/最小 470px，內容區塊又用 margin-block:auto 置中，
+         兩者疊加在窄螢幕上留下大片看得到但沒東西的地圖背景。收窄容器高度，
+         讓置中後的留白貼近內容本身的份量。 */
       .obj-guide {
-        --hero-canvas-height: calc(min(560px, calc(100svh - 116px)) + 55px);
+        --hero-canvas-height: calc(min(420px, calc(100svh - 96px)) + 55px);
       }
 
       .obj-wrap,
@@ -1382,8 +1438,8 @@ const mapTools = [
       }
 
       .obj-hero {
-        height: min(560px, calc(100svh - 116px));
-        min-height: 470px;
+        height: min(420px, calc(100svh - 96px));
+        min-height: 380px;
       }
 
       .obj-hero-shell::after {
@@ -1391,11 +1447,17 @@ const mapTools = [
       }
 
       .obj-hero-inner {
-        padding-block: 20px 30px;
+        padding-block: 20px 16px;
       }
 
+      /* 原本這裡疊加了 padding-top:52px，跟 margin-block:auto 的置中效果
+         互相加成，是留白過寬的主因，移除後交給置中自然分配上下空間。
+         下緣特意比上緣窄：置中留白本身上下相等，但內容自己的
+         padding-block（基礎規則 24px／24px）+ 這層容器的下內距
+         會疊加在下緣，天生比上緣多兩層，所以這裡刻意把下內距壓低、
+         再把內容自身的下內距單獨蓋掉，兩緣才不會差太多 */
       .obj-hero-content {
-        padding-top: 52px;
+        padding-block: 24px 8px;
       }
 
       .obj-hero h1 {
@@ -1497,17 +1559,18 @@ const mapTools = [
         grid-row: 1 / span 3;
       }
 
-      .obj-filter-list summary {
-        grid-template-columns: 72px 1fr 20px;
-        gap: 10px;
+      /* 鍵帽是這區主要的點擊目標，窄螢幕放大到建議的 44px 觸控高度 */
+      .obj-filter-keys button {
+        min-height: 44px;
       }
 
-      .obj-filter-list details > div {
-        grid-template-columns: 1fr auto;
+      /* 窄螢幕把「範例」標籤挪到自己一行，讓查詢字串有完整寬度不被擠斷 */
+      .obj-filter-detail > div {
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: 8px 12px;
       }
 
-      .obj-filter-list details > div span {
+      .obj-filter-detail > div > span {
         grid-column: 1 / -1;
       }
 
@@ -1564,10 +1627,11 @@ const mapTools = [
     }
 
     @media (max-width: 380px) {
+      /* 100% - 28px 兩側各留 14px，太貼邊緣；32px 讓兩側各多 2px 呼吸空間 */
       .obj-wrap,
       .obj-hero-inner,
       .obj-section-nav-inner {
-        width: min(100% - 28px, 1180px);
+        width: min(100% - 32px, 1180px);
       }
 
       .obj-kicker {
@@ -1674,6 +1738,64 @@ const mapTools = [
         if (target?.textContent) copyText(target.textContent, button);
       });
     });
+
+    // 欄位鍵帽牆：選取狀態 + 檢視面板換內容。採 roving tabindex，
+    // 整組鍵帽在 Tab 順序裡只佔一站，進去後用方向鍵移動（ARIA tablist 慣例）。
+    const filterKeys = Array.from(
+      document.querySelectorAll<HTMLButtonElement>(".obj-filter-keys button"),
+    );
+    const filterDetail = document.getElementById("obj-filter-detail");
+
+    if (filterKeys.length > 0 && filterDetail) {
+      const fieldOut = filterDetail.querySelector<HTMLElement>('[data-detail="field"]');
+      const useOut = filterDetail.querySelector<HTMLElement>('[data-detail="use"]');
+      const exampleOut = filterDetail.querySelector<HTMLElement>('[data-detail="example"]');
+      const detailCopy = filterDetail.querySelector<HTMLElement>("[data-copy]");
+
+      const selectFilterKey = (index: number, moveFocus: boolean) => {
+        const key = filterKeys[index];
+        if (!key) return;
+
+        filterKeys.forEach((button) => {
+          const isOn = button === key;
+          button.setAttribute("aria-selected", isOn ? "true" : "false");
+          button.tabIndex = isOn ? 0 : -1;
+        });
+
+        const query = `${key.dataset.field ?? ""}:${key.dataset.value ?? ""}`;
+        if (fieldOut) fieldOut.textContent = `${key.dataset.field ?? ""}:`;
+        if (useOut) useOut.textContent = key.dataset.use ?? "";
+        if (exampleOut) exampleOut.textContent = query;
+        // 複製鈕的監聽器是在點擊當下才讀 data-copy，改屬性就會跟著換
+        if (detailCopy) detailCopy.dataset.copy = query;
+        filterDetail.setAttribute("aria-labelledby", key.id);
+
+        if (moveFocus) key.focus();
+      };
+
+      filterKeys.forEach((key, index) => {
+        key.addEventListener("click", () => selectFilterKey(index, false));
+        key.addEventListener("keydown", (event) => {
+          const step =
+            event.key === "ArrowRight" || event.key === "ArrowDown"
+              ? 1
+              : event.key === "ArrowLeft" || event.key === "ArrowUp"
+                ? -1
+                : 0;
+
+          if (step !== 0) {
+            event.preventDefault();
+            selectFilterKey((index + step + filterKeys.length) % filterKeys.length, true);
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            selectFilterKey(0, true);
+          } else if (event.key === "End") {
+            event.preventDefault();
+            selectFilterKey(filterKeys.length - 1, true);
+          }
+        });
+      });
+    }
 
     const revealItems = document.querySelectorAll<HTMLElement>(".obj-reveal");
     if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
