@@ -1,4 +1,4 @@
-# 曠野・王國攻略 Wiki
+# Dazotikuy Shrine - Zelda Techniques & Glitches Wiki
 
 [繁體中文](#繁體中文) | [English](#english) | [日本語](#日本語)
 
