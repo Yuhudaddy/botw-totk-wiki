@@ -1,13 +1,13 @@
 ---
 name: media-assets
-description: 本專案（yuda website / botw-totk-wiki）的示範影片與快速示意圖處理方式。只要工作內容碰到 public/type-videos/、type-content.ts 裡的 videoFolder/imageFolder/video/image/extraImage 欄位、任何 media: 開頭的 npm 指令、或是 CI（.github/workflows/deploy.yml）裡跟影片相關的步驟失敗，都要先讀這份 skill 再動作——不要重新推導這套機制，也不要假設影片檔案本身在 git 版控裡（它們不在）。新增/更新示範影片、除錯「建置在驗證影片素材時失敗」、或有人問「這個網站的影片是怎麼運作的」，都適用。
+description: 本專案（yuda website / dazotikuy）的示範影片與快速示意圖處理方式。只要工作內容碰到 public/type-videos/、type-content.ts 裡的 videoFolder/imageFolder/video/image/extraImage 欄位、任何 media: 開頭的 npm 指令、或是 CI（.github/workflows/deploy.yml）裡跟影片相關的步驟失敗，都要先讀這份 skill 再動作——不要重新推導這套機制，也不要假設影片檔案本身在 git 版控裡（它們不在）。新增/更新示範影片、除錯「建置在驗證影片素材時失敗」、或有人問「這個網站的影片是怎麼運作的」，都適用。
 ---
 
 # 示範影片與快速示意圖：R2 儲存機制
 
 ## 一句話說明現況
 
-**`public/type-videos/` 底下的檔案不進 git 版控。** 本機硬碟上照樣有這些檔案（給 `astro dev` 本機預覽用），但 `.gitignore` 已經排除它們，commit 裡看不到它們。真正的檔案存放在 Cloudflare R2（bucket 名稱 `botw-totk-wiki-media`），CI 建置網站時會即時從 R2 下載回來、打包進部署的網站，訪客看到的影片依然是由 GitHub Pages 直接送出——**訪客端的體驗完全沒有改變**。
+**`public/type-videos/` 底下的檔案不進 git 版控。** 本機硬碟上照樣有這些檔案（給 `astro dev` 本機預覽用），但 `.gitignore` 已經排除它們，commit 裡看不到它們。真正的檔案存放在 Cloudflare R2（bucket 名稱 `botw-totk-wiki-media`——這是 repo 改名為 dazotikuy 之前建立的，**不要為了名稱一致去改它**：R2 的 bucket 無法重新命名，只能新建再搬 2.4GB，而名稱不一致完全不影響運作），CI 建置網站時會即時從 R2 下載回來、打包進部署的網站，訪客看到的影片依然是由 GitHub Pages 直接送出——**訪客端的體驗完全沒有改變**。
 
 ## 為什麼會這樣（別重新質疑這個決定）
 

@@ -1,5 +1,5 @@
-// 內部連結一律經過這裡，自動加上 base path（/botw-totk-wiki）。
-// 用法：href("/botw") → "/botw-totk-wiki/botw"
+// 內部連結一律經過這裡，自動加上 base path（/dazotikuy）。
+// 用法：href("/botw") → "/dazotikuy/botw"
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export function href(path = "/"): string {
