@@ -1,15 +1,27 @@
 ---
 import { navItems, SITE } from "../data/site";
 import { href } from "../lib/url";
+import { uiStrings, type Lang } from "../data/ui-strings";
 import BrandMark from "./BrandMark.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 import SupportButton from "./SupportButton.astro";
+import LangToggle from "./LangToggle.astro";
 
 interface Props {
   active?: string;
+  lang?: Lang;
 }
-const { active = "" } = Astro.props;
+const { active = "", lang = "zh" } = Astro.props;
+const t = uiStrings[lang];
 const videosUrl = href("/videos");
+
+// 導覽列文字改查表：navItems 的 match 同時當語言字串的 key（navTypes 等）
+const navLabelKey = {
+  types: "navTypes",
+  videos: "navVideos",
+  resources: "navResources",
+  about: "navAbout",
+} as const;
 ---
 
 <header class="sticky top-0 z-50 border-b border-border-soft bg-bg">
@@ -25,6 +37,7 @@ const videosUrl = href("/videos");
       {
         navItems.map((n) => {
           const isActive = n.match === active;
+          const key = navLabelKey[n.match as keyof typeof navLabelKey];
           return (
             <a
               href={href(n.path)}
@@ -34,7 +47,7 @@ const videosUrl = href("/videos");
                   : "font-normal text-text"
               }`}
             >
-              {n.label}
+              {key ? t[key] : n.label}
             </a>
           );
         })
@@ -49,14 +62,14 @@ const videosUrl = href("/videos");
         <input
           id="nav-search"
           type="text"
-          placeholder="搜尋技巧…"
+          placeholder={t.searchPlaceholder}
           autocomplete="off"
           class="w-full bg-transparent py-2 pl-3.5 pr-1 text-sm text-ink outline-none placeholder:text-muted"
         />
         <button
           id="nav-search-btn"
           type="button"
-          aria-label="搜尋"
+          aria-label={t.searchLabel}
           class="flex flex-none cursor-pointer items-center px-3 py-2 text-muted transition-colors hover:text-brand"
         >
           <svg
@@ -75,6 +88,7 @@ const videosUrl = href("/videos");
         </button>
       </div>
       <SupportButton />
+      <LangToggle lang={lang} />
       <ThemeToggle />
     </div>
   </div>

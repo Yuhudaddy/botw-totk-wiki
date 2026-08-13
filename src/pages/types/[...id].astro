@@ -7,25 +7,36 @@ import LaunchFamilyNav from "../../components/LaunchFamilyNav.astro";
 import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../../data/type-content";
+import { uiStrings, type Lang } from "../../data/ui-strings";
 import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml, principleSectionsHtml } from "../../lib/method-format";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
+// 同一份模板產出中日兩種路徑：
+//   中文 /types/totk-11、日文 /types/ja/totk-11
+// 用 rest 參數（[...id]）才吃得到帶斜線的 ja/xxx；中文網址維持原樣不變。
+// 日文版是漸進式的：ui-strings 決定外殼文字，攻略內文尚未翻譯時沿用中文，
+// 所以日文頁在翻譯補齊前會是「外殼日文、內文中文」的混合狀態。
 export function getStaticPaths() {
-  const paths: { params: { id: string }; props: { group: TypeGroup; item: TypeItem } }[] = [];
+  const paths: {
+    params: { id: string };
+    props: { group: TypeGroup; item: TypeItem; lang: Lang };
+  }[] = [];
   for (const group of typeGroups) {
     for (const item of group.items) {
-      paths.push({
-        params: { id: `${group.game}-${item.no}` },
-        props: { group, item },
-      });
+      const base = `${group.game}-${item.no}`;
+      paths.push({ params: { id: base }, props: { group, item, lang: "zh" } });
+      paths.push({ params: { id: `ja/${base}` }, props: { group, item, lang: "ja" } });
     }
   }
   return paths;
 }
 
-const { group, item } = Astro.props;
-const { id } = Astro.params as { id: string };
+const { group, item, lang } = Astro.props;
+// params.id 在日文版是 "ja/totk-11"，查 typeContent 要用去掉語言前綴的原始 id
+const { id: routeId } = Astro.params as { id: string };
+const id = routeId.replace(/^ja\//, "");
+const t = uiStrings[lang];
 const gameLabelMap: Record<string, string> = {
   botw: "曠野之息",
   totk: "王國之淚",
@@ -85,14 +96,15 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   title={`${item.zh} · ${gameLabel}`}
   description={`${item.zh}（${item.en}）攻略說明，${gameLabel}系列。`}
   active="types"
+  lang={lang}
 >
   {/* 麵包屑 + 標題 */}
   <section class="border-b border-border-soft">
     <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
-        <a href={href("/home")} class="no-underline text-muted">首頁</a>
+        <a href={href("/home")} class="no-underline text-muted">{t.breadcrumbHome}</a>
         <span>/</span>
-        <a href={href("/types")} class="no-underline text-muted">主題解說</a>
+        <a href={href("/types")} class="no-underline text-muted">{t.navTypes}</a>
         {family && (
           <>
             <span>/</span>
@@ -137,7 +149,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     <div class="grid gap-x-12 gap-y-10 md:grid-cols-[1.6fr_1fr]">
       {/* 左：流程步驟 */}
       <div class="prose-custom">
-        <h2>{content?.methodsTitle ?? "流程步驟"}</h2>
+        <h2>{content?.methodsTitle ?? t.sectionMethods}</h2>
         {content?.methods ? (
           <div class="method-tabs">
             {/* 只有單一分頁時不顯示膠囊分頁按鈕列，內容改由 MethodPanelBody 的 m.name 顯示白色小標題 */}
@@ -200,11 +212,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           </div>
         ) : (
           <>
-            <p class="note">⚠️ 步驟待補——Yuda 會陸續整理更新。</p>
+            <p class="note">{t.emptySteps}</p>
             <ol>
-              <li>（步驟一）</li>
-              <li>（步驟二）</li>
-              <li>（步驟三）</li>
+              <li>{t.stepPlaceholder1}</li>
+              <li>{t.stepPlaceholder2}</li>
+              <li>{t.stepPlaceholder3}</li>
             </ol>
           </>
         )}
@@ -214,7 +226,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       <div class="flex flex-col gap-8">
         {/* B: 原理說明 */}
         <div class="prose-custom">
-          <h2>{content?.principleTitle ?? "原理說明"}</h2>
+          <h2>{content?.principleTitle ?? t.sectionPrinciple}</h2>
           {hasDynamicPrinciple ? (
             // 兩個容器都固定生成、用 hidden 切換，而非建置時只挑一個：
             // 分頁彼此獨立決定要用 principle 還是 principleSections（例如本頁
@@ -368,7 +380,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         {/* C: 快速示意（影片或圖片，隨分頁切換） */}
         {!content?.model3d && hasMedia && (
           <div class="prose-custom">
-            <h2>快速示意</h2>
+            <h2>{t.sectionDemo}</h2>
             <div
               id="demo-media-wrap"
               data-video-base={videoBase}
@@ -383,10 +395,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 playsinline
                 class="hidden w-full rounded-xl"
               ></video>
-              <button type="button" id="demo-image-trigger" class="demo-image-trigger hidden" aria-label="放大快速示意圖">
+              <button type="button" id="demo-image-trigger" class="demo-image-trigger hidden" aria-label={t.zoomDemoImage}>
                 <img
                   id="demo-image"
-                  alt="快速示意圖"
+                  alt={t.demoImageAlt}
                   loading="lazy"
                   class="w-full rounded-xl"
                 />
@@ -398,7 +410,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 id="demo-media-empty"
                 class="hidden flex-col items-center justify-center py-10 text-center text-[14px] text-muted"
               >
-                <span>示意內容準備中</span>
+                <span>{t.emptyDemo}</span>
               </div>
             </div>
             {/* 多支影片上下排列＋各自標題（例：Zuggle 分頁需同時示意 Invizuggle 與
@@ -412,7 +424,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               class="relative mt-3 overflow-hidden rounded-xl bg-sand"
               hidden
             >
-              <button type="button" id="demo-extra-trigger" class="demo-image-trigger" aria-label="放大流程圖解">
+              <button type="button" id="demo-extra-trigger" class="demo-image-trigger" aria-label={t.zoomFlowImage}>
                 <img
                   id="demo-extra-image"
                   alt="流程圖解"
@@ -440,8 +452,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         ></button>
         <div class="demo-lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="demo-lightbox-title">
           <div class="demo-lightbox-head">
-            <h2 id="demo-lightbox-title">快速示意圖</h2>
-            <button type="button" data-demo-lightbox-close aria-label="關閉預覽">
+            <h2 id="demo-lightbox-title">{t.demoImageAlt}</h2>
+            <button type="button" data-demo-lightbox-close aria-label={t.closePreview}>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m6 6 12 12M18 6 6 18" />
               </svg>
@@ -457,7 +469,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     {/* 3D 模型參考：獨立全寬區塊（不塞進右欄，避免只有 C 欄寬度太窄），置於注意事項之上 */}
     {content?.model3d && (
       <div class="prose-custom mt-10 border-t border-border-soft pt-10">
-        <h2>地圖模型</h2>
+        <h2>{t.sectionModel}</h2>
         <Model3DViewer
           src={content.model3d.src}
           alt={content.model3d.alt}
@@ -506,12 +518,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           </>
         )}
         <div class="mt-3 text-[13px] leading-[1.6] text-muted">
-          <div class="mb-1.5 text-[12px] font-medium text-ink">操作方式</div>
+          <div class="mb-1.5 text-[12px] font-medium text-ink">{t.sectionControls}</div>
           <ul>
-            <li>拖曳（左鍵／單指）：旋轉視角</li>
-            <li>滾輪／捏合：縮放</li>
-            <li>右鍵拖曳（或雙指拖曳）：平移視角</li>
-            <li>右上角圓形按鈕：總覽／俯視／重置視角</li>
+            <li>{t.model3dRotate}</li>
+            <li>{t.model3dZoom}</li>
+            <li>{t.model3dPan}</li>
+            <li>{t.model3dButtons}</li>
           </ul>
         </div>
       </div>
@@ -527,12 +539,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           note={content.flowMap.note}
         />
         <div class="mt-3 text-[13px] leading-[1.6] text-muted">
-          <div class="mb-1.5 text-[12px] font-medium text-ink">操作方式</div>
+          <div class="mb-1.5 text-[12px] font-medium text-ink">{t.sectionControls}</div>
           <ul>
-            <li>點擊流程步驟前的圓形按鈕：地圖顯示該步驟的地點與移動軌跡（再點一次取消）</li>
-            <li>拖曳（左鍵／單指）：平移地圖</li>
-            <li>滾輪／捏合：縮放</li>
-            <li>地圖上方按鈕：切換圖層（地面／空島）、「總覽」回到全圖</li>
+            <li>{t.flowMapSteps}</li>
+            <li>{t.flowMapPan}</li>
+            <li>{t.model3dZoom}</li>
+            <li>{t.flowMapLayers}</li>
           </ul>
         </div>
       </div>
@@ -540,7 +552,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
     {/* 注意事項：跨兩欄 */}
     <div class="prose-custom mt-10 border-t border-border-soft pt-10">
-      <h2>{content?.notesTitle ?? "注意事項"}</h2>
+      <h2>{content?.notesTitle ?? t.sectionNotes}</h2>
       <ul>
         {content?.notes ? (
           content.notes.map((n) => (
@@ -567,8 +579,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           ))
         ) : (
           <>
-            <li>本頁說明為示意內容，正式攻略步驟尚在整理中。</li>
-            <li>如有疑問，歡迎前往 YouTube 頻道留言詢問。</li>
+            <li>{t.placeholderPage}</li>
+            <li>{t.askOnYoutube}</li>
           </>
         )}
       </ul>
@@ -618,7 +630,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             <span>{item.zh} · {item.en}</span>
             <h2 id="applications-title">{content.applications.title ?? content.applications.label ?? "應用一覽"}</h2>
           </div>
-          <button type="button" data-applications-close aria-label="關閉應用一覽">
+          <button type="button" data-applications-close aria-label={t.closeAppList}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
             </svg>
@@ -697,7 +709,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   {termsOnly && (
     <div class="border-b border-border-soft">
       <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-10">
-        <h2 class="mb-8 font-serif text-[22px] font-medium text-ink">名詞說明</h2>
+        <h2 class="mb-8 font-serif text-[22px] font-medium text-ink">{t.sectionTerms}</h2>
         {content?.termGroups && content.termGroups.length > 0 ? (
           content.termGroups.map((tg: TermGroup) => (
             <div class="mb-10 last:mb-0">
@@ -718,7 +730,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                     <div class="term-answer">
                       {term.desc
                         ? <p>{term.desc}</p>
-                        : <p class="term-empty">說明整理中…</p>
+                        : <p class="term-empty">{t.emptyPrincipleShort}</p>
                       }
                     </div>
                   </details>
@@ -727,7 +739,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             </div>
           ))
         ) : (
-          <p class="text-[15px] text-muted">名詞說明整理中，敬請期待。</p>
+          <p class="text-[15px] text-muted">{t.emptyTerms}</p>
         )}
       </div>
     </div>
@@ -737,11 +749,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   {videosOnly && (
     <div class="border-b border-border-soft">
       <div class="mx-auto max-w-[1244px] px-8 pb-10 pt-10">
-        <h2 class="mb-4 font-serif text-[22px] font-medium text-ink">簡介與說明</h2>
+        <h2 class="mb-4 font-serif text-[22px] font-medium text-ink">{t.sectionIntro}</h2>
         {content?.intro ? (
           <p class="text-[16px] leading-[1.8] text-ink">{content.intro}</p>
         ) : (
-          <p class="text-[15px] text-muted">說明內容整理中，敬請期待。</p>
+          <p class="text-[15px] text-muted">{t.emptyPrinciple}</p>
         )}
       </div>
     </div>
@@ -754,7 +766,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         {!videosOnly && (
           <div class="mb-6">
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
-              相關影片 · Videos
+              {t.sectionVideos}
             </div>
             <h2 class="mt-2 font-serif text-[26px] font-medium text-ink">
               {item.zh} 相關影片
@@ -832,7 +844,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <div class="mb-6 flex items-end justify-between gap-5">
           <div>
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
-              相關影片 · Videos
+              {t.sectionVideos}
             </div>
             <h2 class="mt-2 font-serif text-[26px] font-medium text-ink">
               {item.zh} 相關影片
@@ -908,8 +920,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   ) : !(content?.videoGroups && content.videoGroups.length > 0) && (
     <section class={vidSectionClass}>
       <div class="mx-auto max-w-[1244px] px-8 py-12">
-        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">相關影片 · Videos</div>
-        <p class="mt-3 text-[15px] text-muted">影片整理中，敬請期待。</p>
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{t.sectionVideos}</div>
+        <p class="mt-3 text-[15px] text-muted">{t.emptyVideos}</p>
       </div>
     </section>
   )}
