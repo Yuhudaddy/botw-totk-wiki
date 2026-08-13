@@ -8,6 +8,7 @@ import { href, ytThumb, ytWatch } from "../../lib/url";
 import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../../data/type-content";
 import { uiStrings, type Lang } from "../../data/ui-strings";
+import { resolveTypeContent } from "../../lib/i18n-content";
 import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml, principleSectionsHtml } from "../../lib/method-format";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -44,7 +45,8 @@ const gameLabelMap: Record<string, string> = {
   ssbu: "大亂鬥特別版",
 };
 const gameLabel = gameLabelMap[group.game] ?? group.label;
-const content = typeContent[id];
+// 日文版會把 type-content.ja.ts 的翻譯疊加上來；沒翻到的欄位自動沿用中文
+const content = resolveTypeContent(id, lang);
 const family = item.family ? typeFamilies[item.family] : null;
 const familyMembers = item.family ? group.items.filter((i) => i.family === item.family) : [];
 

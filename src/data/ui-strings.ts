@@ -77,9 +77,9 @@ const zh = {
 
 // ja 必須涵蓋 zh 的每一個 key（型別強制），確保不會漏翻而在頁面上顯示 undefined
 const ja: Record<keyof typeof zh, string> = {
-  navTypes: "テクニック解説",
-  navVideos: "動画インデックス",
-  navResources: "参考サイト",
+  navTypes: "テーマ別解説",
+  navVideos: "動画検索",
+  navResources: "データベース",
   navAbout: "この祠について",
 
   searchPlaceholder: "テクニックを検索…",
@@ -91,9 +91,9 @@ const ja: Record<keyof typeof zh, string> = {
 
   breadcrumbHome: "ホーム",
 
-  sectionMethods: "手順",
-  sectionPrinciple: "原理の解説",
-  sectionDemo: "デモ映像",
+  sectionMethods: "セットアップ",
+  sectionPrinciple: "解説",
+  sectionDemo: "クイックデモ",
   sectionNotes: "注意事項",
   sectionTerms: "用語解説",
   sectionVideos: "関連動画 · Videos",
@@ -116,7 +116,7 @@ const ja: Record<keyof typeof zh, string> = {
   zoomFlowImage: "フロー図を拡大",
   closeAppList: "応用一覧を閉じる",
   closePreview: "プレビューを閉じる",
-  demoImageAlt: "デモ画像",
+  demoImageAlt: "クイックデモ",
 
   model3dRotate: "ドラッグ（左クリック／1本指）：視点を回転",
   model3dPan: "右ドラッグ（または2本指ドラッグ）：視点を平行移動",
