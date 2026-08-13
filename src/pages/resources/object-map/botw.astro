@@ -1690,8 +1690,15 @@ const mapTools = [
     const tokenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".obj-token"));
     const queryOutput = document.getElementById("query-output");
     const baseSelect = document.getElementById("query-base") as HTMLSelectElement | null;
+    // .obj-lab-layout 在 960px 斷點以下會從左右並排改成上下堆疊（見對應的
+    // @media (max-width: 960px) 規則），條件按鈕從「右側」變成「下方」，
+    // 提示文字要跟著同一個斷點換方向用詞，不然窄螢幕會出現「請點擊右側內容」
+    // 但右側其實什麼都沒有的錯誤指示
+    const stackedQuery = window.matchMedia("(max-width: 960px)");
     // 還沒選基本關鍵字、也沒點任何條件時顯示的提示文字（取代原本預設就秀出 Lynel 的做法）
-    const QUERY_PLACEHOLDER = "請點擊右側內容";
+    function queryPlaceholderText() {
+      return stackedQuery.matches ? "請點擊下方內容" : "請點擊右側內容";
+    }
 
     function updateQuery() {
       const tokens = tokenButtons
@@ -1702,13 +1709,17 @@ const mapTools = [
       const parts = [base, ...tokens].filter(Boolean);
       if (!queryOutput) return;
       if (parts.length === 0) {
-        queryOutput.textContent = QUERY_PLACEHOLDER;
+        queryOutput.textContent = queryPlaceholderText();
         queryOutput.classList.add("is-placeholder");
       } else {
         queryOutput.textContent = parts.join(" ");
         queryOutput.classList.remove("is-placeholder");
       }
     }
+
+    // 頁面載入時先跑一次，把 SSR 輸出的預設文字校正成目前實際視窗寬度該顯示的版本
+    updateQuery();
+    stackedQuery.addEventListener("change", updateQuery);
 
     baseSelect?.addEventListener("change", updateQuery);
 
