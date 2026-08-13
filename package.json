@@ -14,7 +14,8 @@
     "media:pull": "rclone copy r2:botw-totk-wiki-media/type-videos public/type-videos --transfers 8 --progress",
     "media:check": "rclone check public/type-videos r2:botw-totk-wiki-media/type-videos --exclude .DS_Store",
     "media:verify": "node scripts/media-manifest.mjs --verify",
-    "media:verify-refs": "node --experimental-strip-types scripts/media-manifest.mjs --verify-references"
+    "media:verify-refs": "node --experimental-strip-types scripts/media-manifest.mjs --verify-references",
+    "ja:draft": "node --experimental-strip-types scripts/gen-ja-draft.mjs"
   },
   "engines": {
     "node": ">=22.6"
