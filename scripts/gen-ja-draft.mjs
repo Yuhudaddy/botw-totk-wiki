@@ -64,6 +64,41 @@ function collectHints(text) {
   for (const h of hintsFor(text)) allHints.add(h);
 }
 
+/** 原理說明區：principle／principleSections／principleExtra，佔頁面篇幅很大，漏掉等於整區沒翻 */
+function emitPrinciple(m, indent) {
+  const pad = " ".repeat(indent);
+  if (m.principle) {
+    collectHints(m.principle);
+    out.push(`${pad}// principle：`);
+    out.push(`${pad}//   ${m.principle}`);
+    out.push(`${pad}// principle: "",`);
+  }
+  if (m.principleSections?.length) {
+    out.push(`${pad}// principleSections（共 ${m.principleSections.length} 段）：`);
+    m.principleSections.forEach((s, i) => {
+      collectHints(s.title ?? "");
+      collectHints(s.text ?? "");
+      out.push(`${pad}//   [${i}] ${s.title ?? "（無標題）"}`);
+      if (s.text) out.push(`${pad}//       ${s.text}`);
+      (s.items ?? []).forEach((it) => {
+        const text = stepText(it);
+        collectHints(text);
+        out.push(`${pad}//       - ${text}`);
+      });
+    });
+    out.push(`${pad}// principleSections: [],`);
+  }
+  if (m.principleExtra) {
+    out.push(`${pad}// principleExtra「${m.principleExtra.title}」：`);
+    (m.principleExtra.items ?? []).forEach((it) => {
+      const text = stepText(it);
+      collectHints(text);
+      out.push(`${pad}//   - ${text}`);
+    });
+    out.push(`${pad}// principleExtra: { title: "", items: [] },`);
+  }
+}
+
 /** note 可能是字串或字串陣列；漏掉它翻譯者就會跟著漏翻步驟下方的灰色備註 */
 function emitNote(note, indent) {
   if (!note) return;
@@ -122,6 +157,7 @@ if (content.methods?.length) {
     }
     emitSteps(m.steps, 6);
     emitNote(m.note, 6);
+    emitPrinciple(m, 6);
     out.push(`    },`);
   }
   out.push(`  },`);
