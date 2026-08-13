@@ -99,8 +99,9 @@
 27502979	totk-moobe/moobe drop.mp4
 18916594	totk-moobe/moobe.mp4
 41686024	totk-overload/Fuse Overload.mp4
+38798395	totk-overload/GDI Chain.mp4
+20220837	totk-overload/Invizuggle Overload.mp4
 37279730	totk-overload/Super Fuse Overload.mp4
-10186248	totk-overload/Zuggle Overload.mp4
 33296392	totk-pocket rockets/Overload IPR.mp4
 7246428	totk-pocket rockets/PR.mp4
 35989058	totk-pocket rockets/UPR.mp4

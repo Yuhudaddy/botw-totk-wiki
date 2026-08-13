@@ -34,6 +34,10 @@ export interface TypeMethod {
   bullets?: string[]; // 無序條列（圓點，與 steps / sections 擇一），用於並列分類
   sections?: TypeMethodSection[]; // 多區塊步驟，每區塊各自從 1 開始編號
   video?: string;     // 快速示意影片檔名，例："前跳.MP4"
+  videos?: { video: string; title: string }[];
+                      // 快速示意多支影片（與 video 擇一），各自標題＋上下排列，
+                      // 用於同一分頁需要並列示意多種手法的情形（例：Zuggle 分頁
+                      // 同時示意 Invizuggle 與 GDI Chain）
   image?: string;     // 快速示意圖片檔名（與 video 擇一），例："IST.png"
   extraImage?: string; // 快速示意影片下方額外顯示的圖片（與 video 並存，例如流程圖解），例："SLD_Explain.png"；
                         // 讀取路徑沿用 imageFolder，與 image 共用同一個資料夾設定
@@ -3355,7 +3359,10 @@ export const typeContent: Record<string, TypeContent> = {
     methods: [
       {
         tab: "Zuggle",
-        video: "Zuggle Overload.mp4",
+        videos: [
+          { video: "Invizuggle Overload.mp4", title: "Invizuggle 法" },
+          { video: "GDI Chain.mp4", title: "GDI Chain Zuggle Drop 法" },
+        ],
         sections: [
           {
             title: "單純並列（Simple Zuggles）",
@@ -3378,12 +3385,12 @@ export const typeContent: Record<string, TypeContent> = {
               {
                 text: "技能輪盤消失、打開地圖之前，打開快速選單完成：",
                 sub: [
-                  "丟棄裝備中的武器",
-                  "丟棄裝備中的弓箭",
                   "丟棄裝備中的纏桿盾",
-                  "切換另一個盾牌",
-                  "裝備另一把武器",
-                  "裝備另一把弓箭",
+                  "丟棄裝備中的弓箭",
+                  "切換裝備另一把弓箭",
+                  "丟棄裝備中的武器",
+                  "切換裝備另一個武器",
+                  "切換裝備另一把盾牌",
                 ],
               },
               "地圖打開之後按 + 進入背包，丟棄裝備中的武器和弓箭",

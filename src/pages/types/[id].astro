@@ -43,7 +43,7 @@ const videoBase = content?.videoFolder
 const imageBase = content?.imageFolder
   ? `${BASE}/type-videos/${content.imageFolder}`
   : null;
-const hasAnyVideo = content?.methods?.some((m) => m.video) ?? false;
+const hasAnyVideo = content?.methods?.some((m) => m.video || (m.videos && m.videos.length > 0)) ?? false;
 const hasAnyImage = content?.methods?.some((m) => m.image || m.extraImage) ?? false;
 const hasMedia = hasAnyVideo || hasAnyImage || content?.showEmptyMedia;
 
@@ -167,7 +167,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             </div>
             )}
             {content.methods.map((m, i) => (
-              <div class="method-panel" id={hasMethodTabs ? `method-panel-${i}` : undefined} role={hasMethodTabs ? "tabpanel" : undefined} aria-labelledby={hasMethodTabs ? `method-tab-${i}` : undefined} tabindex={hasMethodTabs ? 0 : undefined} data-panel={i} data-video={m.video ?? ""} data-image={m.image ?? ""} data-extra-image={m.extraImage ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
+              <div class="method-panel" id={hasMethodTabs ? `method-panel-${i}` : undefined} role={hasMethodTabs ? "tabpanel" : undefined} aria-labelledby={hasMethodTabs ? `method-tab-${i}` : undefined} tabindex={hasMethodTabs ? 0 : undefined} data-panel={i} data-video={m.video ?? ""} data-videos={m.videos ? JSON.stringify(m.videos) : ""} data-image={m.image ?? ""} data-extra-image={m.extraImage ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
                 {m.subTabs ? (
                   <div class="subtab-group">
                     <div role="tablist" class="subtab-tabs mb-4 flex flex-wrap gap-2">
@@ -401,6 +401,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 <span>示意內容準備中</span>
               </div>
             </div>
+            {/* 多支影片上下排列＋各自標題（例：Zuggle 分頁需同時示意 Invizuggle 與
+                GDI Chain 兩種手法）。與上面單一影片的 demo-media-wrap 互斥顯示，
+                由 updateMedia() 依 panel 是否設定 m.videos 決定顯示哪一個 */}
+            <div id="demo-video-stack" class="flex flex-col gap-4" hidden></div>
             {/* 影片下方的補充圖解（例如 SLD 的逐幀流程圖），與影片並存、同尺寸容器；
                 圖片路徑沿用上面 demo-media-wrap 的 imageBase，不重複宣告 */}
             <div
@@ -1133,6 +1137,14 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     letter-spacing: 0.02em;
     margin-bottom: 0.75em;
     text-transform: uppercase;
+  }
+  /* 快速示意多支影片各自的標題，沿用同一套橙色小標語彙，但保留原始大小寫 */
+  .demo-video-item-title {
+    margin-bottom: 0.5em;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.02em;
   }
   /* 區塊標題內的重點：以底線強調（標題本身已是橙色） */
   .method-section-title .accent-strong {
@@ -1920,6 +1932,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     const imageTrigger = document.getElementById("demo-image-trigger") as HTMLButtonElement | null;
     const imageEl = document.getElementById("demo-image") as HTMLImageElement | null;
     const mediaEmpty = document.getElementById("demo-media-empty");
+    const videoStackEl = document.getElementById("demo-video-stack");
     const extraWrap = document.getElementById("demo-extra-wrap");
     const extraImageEl = document.getElementById("demo-extra-image") as HTMLImageElement | null;
     const videoBase = mediaWrap?.dataset.videoBase ?? "";
@@ -1940,23 +1953,63 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       const image = panel?.dataset.image ?? "";
       const video = panel?.dataset.video ?? "";
       const extraImage = panel?.dataset.extraImage ?? "";
+      const videosRaw = panel?.dataset.videos ?? "";
 
-      if (image && imageEl && imageTrigger) {
-        const src = `${imageBase}/${image}`;
-        if (imageEl.getAttribute("src") !== src) imageEl.src = src;
-        videoEl?.pause();
-        showOnly("image");
-      } else if (video && videoEl) {
-        const src = `${videoBase}/${video}`;
-        if (videoEl.getAttribute("src") !== src) {
-          videoEl.pause();
-          videoEl.src = src;
-          videoEl.load();
+      let videoList: { video: string; title: string }[] = [];
+      if (videosRaw) {
+        try {
+          videoList = JSON.parse(videosRaw);
+        } catch {
+          videoList = [];
         }
-        showOnly("video");
-      } else {
+      }
+
+      if (videoList.length > 0 && videoStackEl) {
+        // 多支影片模式：跟單一影片／圖片互斥，切走時記得暫停裡面所有影片
         videoEl?.pause();
-        showOnly("empty");
+        mediaWrap.hidden = true;
+        videoStackEl.innerHTML = "";
+        for (const item of videoList) {
+          const wrap = document.createElement("div");
+          const label = document.createElement("p");
+          label.className = "demo-video-item-title";
+          label.textContent = item.title ?? "";
+          const vid = document.createElement("video");
+          vid.className = "w-full rounded-xl bg-sand";
+          vid.controls = true;
+          vid.loop = true;
+          vid.muted = true;
+          vid.playsInline = true;
+          vid.src = `${videoBase}/${item.video}`;
+          wrap.append(label, vid);
+          videoStackEl.append(wrap);
+        }
+        videoStackEl.hidden = false;
+      } else {
+        if (videoStackEl) {
+          videoStackEl.querySelectorAll("video").forEach((v) => v.pause());
+          videoStackEl.hidden = true;
+          videoStackEl.innerHTML = "";
+        }
+        mediaWrap.hidden = false;
+
+        if (image && imageEl && imageTrigger) {
+          const src = `${imageBase}/${image}`;
+          if (imageEl.getAttribute("src") !== src) imageEl.src = src;
+          videoEl?.pause();
+          showOnly("image");
+        } else if (video && videoEl) {
+          const src = `${videoBase}/${video}`;
+          if (videoEl.getAttribute("src") !== src) {
+            videoEl.pause();
+            videoEl.src = src;
+            videoEl.load();
+          }
+          showOnly("video");
+        } else {
+          videoEl?.pause();
+          showOnly("empty");
+        }
       }
 
       // 影片下方的補充圖解：與上面的 video/image 互不影響，獨立顯示/隱藏

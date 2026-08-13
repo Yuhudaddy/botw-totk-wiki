@@ -85,6 +85,14 @@ function collectReferences(typeContent) {
           path: content.videoFolder ? `${content.videoFolder}/${m.video}` : null,
         });
       }
+      for (const v of m.videos ?? []) {
+        refs.push({
+          kind: "video",
+          contentId,
+          tab: m.tab,
+          path: content.videoFolder ? `${content.videoFolder}/${v.video}` : null,
+        });
+      }
       for (const [kind, filename] of [
         ["image", m.image],
         ["extraImage", m.extraImage],
