@@ -93,8 +93,11 @@ export const typeContentJa: Record<string, TypeContentJa> = {
           { title: "連鎖ゴーストフロックス化（GDI Chain）" },
         ],
       },
+      // Fuse 單獨出現（分頁標籤）用スクラビルド；與其他字結合時用スクビル。
+      // Overload 在王國之淚用オーバーロード（曠野之息才用過負荷）。
       Fuse: {
-        sections: [{ title: "フューズ過負荷（Fuse Overload）" }],
+        tab: "スクラビルド",
+        sections: [{ title: "スクビルオーバーロード（Fuse Overload）" }],
       },
     },
   },

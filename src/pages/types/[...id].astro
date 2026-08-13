@@ -47,6 +47,10 @@ const gameLabelMap: Record<string, string> = {
 const gameLabel = gameLabelMap[group.game] ?? group.label;
 // 日文版會把 type-content.ja.ts 的翻譯疊加上來；沒翻到的欄位自動沿用中文
 const content = resolveTypeContent(id, lang);
+// [[文字|tab:分頁名]] 的跳轉目標一律以「中文版的 tab」為準：分頁標籤被翻成日文後，
+// 若還用顯示文字比對就會找不到目標而靜默失效。合併後的 methods 與中文版同序同長度，
+// 所以可以用索引取回原始 tab 當作穩定 key。
+const zhMethods = typeContent[id]?.methods;
 const family = item.family ? typeFamilies[item.family] : null;
 const familyMembers = item.family ? group.items.filter((i) => i.family === item.family) : [];
 
@@ -171,6 +175,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                       aria-selected={i === 0 ? "true" : "false"}
                       tabindex={i === 0 ? 0 : -1}
                       data-tab={i}
+                      data-tab-key={zhMethods?.[i]?.tab ?? m.tab}
                       class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
                     >
                       {m.tab}
@@ -2090,7 +2095,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     root.querySelectorAll<HTMLButtonElement>(".jump-tab-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const target = btn.dataset.jumpTab;
-        const targetTab = tabs.find((t) => t.textContent?.trim() === target);
+        // 比對 data-tab-key（中文版的 tab）而非顯示文字：日文版的標籤已翻譯，
+        // 用文字比對會找不到目標而讓跳轉鈕靜默失效
+        const targetTab = tabs.find((t) => t.dataset.tabKey === target);
         if (targetTab) select(Number(targetTab.dataset.tab));
       });
     });
