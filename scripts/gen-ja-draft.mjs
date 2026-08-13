@@ -64,6 +64,19 @@ function collectHints(text) {
   for (const h of hintsFor(text)) allHints.add(h);
 }
 
+/** note 可能是字串或字串陣列；漏掉它翻譯者就會跟著漏翻步驟下方的灰色備註 */
+function emitNote(note, indent) {
+  if (!note) return;
+  const pad = " ".repeat(indent);
+  const lines = Array.isArray(note) ? note : [note];
+  out.push(`${pad}// note：`);
+  lines.forEach((n) => {
+    collectHints(n);
+    out.push(`${pad}//   ${n}`);
+  });
+  out.push(`${pad}// note: "",`);
+}
+
 function emitSteps(steps, indent) {
   if (!steps?.length) return;
   const pad = " ".repeat(indent);
@@ -102,11 +115,13 @@ if (content.methods?.length) {
         collectHints(s.title ?? "");
         out.push(`        // [${i}] ${s.title ?? "（無標題）"}`);
         emitSteps(s.steps, 8);
+        emitNote(s.note, 8);
         out.push(`        null,  // ← 不翻這段就留 null；要翻改成 { title: "", steps: [...] }`);
       });
       out.push(`      ],`);
     }
     emitSteps(m.steps, 6);
+    emitNote(m.note, 6);
     out.push(`    },`);
   }
   out.push(`  },`);
