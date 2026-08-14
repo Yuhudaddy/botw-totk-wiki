@@ -2560,6 +2560,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Like-Like",
         tags: ["All Versions"],
+        video: "纏桿_Like Like SDC.mp4",
         steps: [
           "將操縱桿放置於萊克萊克前方，其注意力在操縱桿上",
           "萊克萊克吞掉操縱桿的瞬間按 A 操作操縱桿（__視角沒有移到萊克萊克上__）",
