@@ -117,6 +117,38 @@ function mergeContent(zh: TypeContent, ja: TypeContentJa): TypeContent {
     merged.faqLink = { ...zh.faqLink, label: pick(ja.faqLink.label, zh.faqLink.label) };
   }
 
+  if (zh.applications && ja.applications) {
+    merged.applications = {
+      ...zh.applications,
+      label: pick(ja.applications.label, zh.applications.label),
+      title: pick(ja.applications.title, zh.applications.title),
+      intro: pick(ja.applications.intro, zh.applications.intro),
+      groups: ja.applications.groups
+        ? zh.applications.groups.map((group, i) => {
+            const jaGroup = ja.applications?.groups?.[i];
+            if (!jaGroup) return group;
+            return {
+              ...group,
+              title: pick(jaGroup.title, group.title),
+              intro: pick(jaGroup.intro, group.intro),
+              note: pick(jaGroup.note, group.note),
+              items: jaGroup.items
+                ? group.items.map((item, j) => {
+                    const jaItem = jaGroup.items?.[j];
+                    if (!jaItem) return item;
+                    return {
+                      ...item,
+                      name: pick(jaItem.name, item.name),
+                      desc: pick(jaItem.desc, item.desc),
+                    };
+                  })
+                : group.items,
+            };
+          })
+        : zh.applications.groups,
+    };
+  }
+
   return merged;
 }
 

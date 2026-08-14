@@ -219,6 +219,54 @@ if (content.methods?.length) {
   out.push(`  },`);
 }
 
+/** 「應用一覽」彈出視窗：label／title／intro／groups[].items[].name+desc，佔頁面篇幅可觀，漏掉等於整塊沒翻 */
+if (content.applications) {
+  const app = content.applications;
+  out.push(`  // ── 應用一覽（applications）──`);
+  if (app.label) {
+    collectHints(app.label);
+    out.push(`  // label：${app.label}`);
+    out.push(`  // label: "",`);
+  }
+  if (app.title) {
+    collectHints(app.title);
+    out.push(`  // title：${app.title}`);
+    out.push(`  // title: "",`);
+  }
+  if (app.intro) {
+    collectHints(app.intro);
+    out.push(`  // intro：${app.intro}`);
+    out.push(`  // intro: "",`);
+  }
+  if (app.groups?.length) {
+    out.push(`  // groups（共 ${app.groups.length} 組）：`);
+    out.push(`  groups: [`);
+    app.groups.forEach((g, i) => {
+      collectHints(g.title ?? "");
+      out.push(`    // [${i}] ${g.title ?? "（無標題）"}`);
+      out.push(`    {`);
+      out.push(`      // title: "",`);
+      if (g.intro) {
+        collectHints(g.intro);
+        out.push(`      // intro：${g.intro}`);
+        out.push(`      // intro: "",`);
+      }
+      emitNote(g.note, 6);
+      out.push(`      items: [`);
+      (g.items ?? []).forEach((it, j) => {
+        collectHints(it.name ?? "");
+        collectHints(it.desc ?? "");
+        out.push(`        // [${j}] ${it.name ?? ""}`);
+        if (it.desc) out.push(`        //     ${it.desc}`);
+        out.push(`        // { name: "", desc: "" },`);
+      });
+      out.push(`      ],`);
+      out.push(`    },`);
+    });
+    out.push(`  ],`);
+  }
+}
+
 if (content.notes?.length) {
   out.push(`  notes: [`);
   content.notes.forEach((n, i) => {
