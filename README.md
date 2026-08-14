@@ -27,3 +27,14 @@ Built as a static site with Astro.
 YouTube チャンネル [Yuda（@zb_yuhudaddy）](https://www.youtube.com/@zb_yuhudaddy) の内容をまとめた『ゼルダの伝説 ブレス オブ ザ ワイルド (BotW)』／『ティアーズ オブ ザ キングダム (TotK)』のテクニック・グリッチ攻略サイトです。動画で紹介されている仕組みの原理、手順、バージョンごとの変更点を整理しています。
 
 Astro で構築した静的サイトです。
+
+---
+
+## 授權 / License / ライセンス
+
+本站的攻略內容與程式碼採用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hant) 授權：**可自由轉載、改作，但必須標示出處，且不得用於商業用途。**
+
+Licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — share and adapt freely with attribution, non-commercial use only.
+
+※ 遊戲畫面、官方美術素材等素材的著作權屬於任天堂株式會社，不在本授權範圍內。<br>
+※ Screenshots and official artwork remain the property of Nintendo Co., Ltd. and are not covered by this license.

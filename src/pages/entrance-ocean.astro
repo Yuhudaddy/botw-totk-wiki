@@ -19,6 +19,10 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       content="Advanced game guides and mechanics for The Legend of Zelda, Super Smash Bros., and beyond."
     />
     <meta name="theme-color" content="#dce5ec" />
+    {/* 這頁是要靠彩蛋才進得來的隱藏入口，被搜尋出來就沒有驚喜了。
+        三道保險：noindex 明確拒絕收錄、canonical 指回 "/"、並排除在 sitemap 之外
+        （見 astro.config.mjs 的 sitemap filter）。 */}
+    <meta name="robots" content="noindex, follow" />
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
     <link rel="canonical" href={canonicalUrl} />
     <title>Yuda's Channel · Game Wiki</title>

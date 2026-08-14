@@ -32,6 +32,9 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={entranceDescription} />
+    {/* Google Search Console 的擁有權驗證。這串不是機密（本來就公開在原始碼裡），
+        但不能刪——刪掉 Google 會判定驗證失效，Search Console 的資料就斷了。 */}
+    <meta name="google-site-verification" content="WZrHSF2yf3HQZ-aEsslluBQvRXB3zK6FG0TjTfy_63o" />
     <meta name="theme-color" content="#1a0d07" />
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
