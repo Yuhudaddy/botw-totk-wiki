@@ -4884,9 +4884,15 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "高空傷害",
         video: "20260710_breaking spam.mp4",
-        intro: "在左側樹上堆疊兩層以上的高度人馬不易發覺，在高處丟會破碎的道具持續給予人馬傷害。",
+        steps: [
+          "在左側樹上堆疊兩層以上的高度，人馬不易發覺",
+          "在高處丟會破碎的道具，持續給予人馬傷害",
+        ],
         note: "※ 注意有時人馬會跳到樹上來，發現薩爾達並觸發敵意後此方法就無法繼續使用。",
       },
+    ],
+    notes: [
+      { text: "亦可將萊尼爾引出森林，掉入池塘內也能擊破。" },
     ],
     videos: [
       { id: "eWfciKd6-cc", title: "番外01 - 初學者適用！4種「1星借物」也能擊倒人馬的方法！", publishedAt: "2024-10-06" },

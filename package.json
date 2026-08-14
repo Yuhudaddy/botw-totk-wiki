@@ -15,12 +15,14 @@
     "media:check": "rclone check public/type-videos r2:botw-totk-wiki-media/type-videos --exclude .DS_Store",
     "media:verify": "node scripts/media-manifest.mjs --verify",
     "media:verify-refs": "node --experimental-strip-types scripts/media-manifest.mjs --verify-references",
-    "ja:draft": "node --experimental-strip-types scripts/gen-ja-draft.mjs"
+    "ja:draft": "node --experimental-strip-types scripts/gen-ja-draft.mjs",
+    "og:gen": "node scripts/gen-og-image.mjs"
   },
   "engines": {
     "node": ">=22.6"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.1.0",
     "astro": "^6.4.7",
     "tailwindcss": "^4.1.0"

@@ -17,6 +17,13 @@ const secretLetterVoices = {
   D: href("/entrance-voice/D.wav"),
   a: href("/entrance-voice/a.wav"),
 };
+
+// 入口頁不走 BaseLayout（它有自己的整頁版面），所以社群分享標籤要在這裡各補一份。
+// 這頁是網址最短、最常被貼出去分享的一頁，缺了縮圖影響最大。
+const entranceDescription =
+  "Advanced game guides and mechanics for The Legend of Zelda, Super Smash Bros., and beyond.";
+const canonicalUrl = new URL(href("/"), Astro.site).href;
+const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
 ---
 
 <!doctype html>
@@ -24,13 +31,25 @@ const secretLetterVoices = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta
-      name="description"
-      content="Advanced game guides and mechanics for The Legend of Zelda, Super Smash Bros., and beyond."
-    />
+    <meta name="description" content={entranceDescription} />
     <meta name="theme-color" content="#1a0d07" />
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
+    <link rel="canonical" href={canonicalUrl} />
     <title>Yuda's Channel · Game Wiki</title>
+
+    <meta property="og:title" content="Yuda's Channel · Game Wiki" />
+    <meta property="og:description" content={entranceDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Yuda's Channel · Game Wiki" />
+    <meta name="twitter:description" content={entranceDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

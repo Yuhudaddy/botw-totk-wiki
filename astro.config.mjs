@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
+import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
 // 部署在 GitHub Pages 的專案頁：https://yuhudaddy.github.io/dazotikuy/
@@ -9,6 +10,14 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://yuhudaddy.github.io",
   base: "/dazotikuy",
+  integrations: [
+    // 產生 sitemap-index.xml／sitemap-0.xml，供 Google Search Console 提交。
+    // 海洋入口是彩蛋，不希望被搜尋引擎收錄後直接被搜出來，故排除在外
+    // （該頁本身的 canonical 也已指向正式入口 "/"，兩道保險）。
+    sitemap({
+      filter: (page) => !page.includes("/entrance-ocean"),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
