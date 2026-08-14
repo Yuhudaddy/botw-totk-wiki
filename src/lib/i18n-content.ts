@@ -117,6 +117,14 @@ function mergeContent(zh: TypeContent, ja: TypeContentJa): TypeContent {
     merged.faqLink = { ...zh.faqLink, label: pick(ja.faqLink.label, zh.faqLink.label) };
   }
 
+  if (zh.flowMap && ja.flowMap) {
+    merged.flowMap = {
+      ...zh.flowMap,
+      title: pick(ja.flowMap.title, zh.flowMap.title),
+      note: pick(ja.flowMap.note, zh.flowMap.note),
+    };
+  }
+
   if (zh.applications && ja.applications) {
     merged.applications = {
       ...zh.applications,

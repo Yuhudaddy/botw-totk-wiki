@@ -449,7 +449,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     </div>
 
     {hasMedia && (
-      <div class="demo-lightbox" id="demo-lightbox" hidden>
+      <div class="demo-lightbox" id="demo-lightbox" data-default-title={t.demoImageAlt} hidden>
         <button
           class="demo-lightbox-backdrop"
           type="button"
@@ -540,10 +540,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         點擊步驟前的單選按鈕（.flow-step-radio）會在這張地圖上顯示該步驟的行為 */}
     {content?.flowMap && (
       <div class="prose-custom mt-10 border-t border-border-soft pt-10">
-        <h2>{content.flowMap.title ?? "參照流程地圖"}</h2>
+        <h2>{content.flowMap.title ?? t.sectionFlowMap}</h2>
         <FlowMapViewer
           defaultLayer={content.flowMap.defaultLayer}
           note={content.flowMap.note}
+          lang={lang}
         />
         <div class="mt-3 text-[13px] leading-[1.6] text-muted">
           <div class="mb-1.5 text-[12px] font-medium text-ink">{t.sectionControls}</div>
@@ -858,7 +859,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             </h2>
           </div>
           {content.videos.length > VIDEOS_PER_PAGE && (
-            <span id="vid-page-label" class="whitespace-nowrap text-[13px] text-muted"></span>
+            <span
+              id="vid-page-label"
+              class="whitespace-nowrap text-[13px] text-muted"
+              data-page-label-template={t.videoPageLabel}
+            ></span>
           )}
         </div>
         <div id="related-videos">
@@ -2125,7 +2130,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     function openLightbox(trigger: HTMLButtonElement, sourceImg: HTMLImageElement) {
       if (!lightbox || !lightboxImage || !lightboxTitle || !sourceImg.currentSrc) return;
       lastTrigger = trigger;
-      lightboxTitle.textContent = sourceImg.alt || "快速示意圖";
+      lightboxTitle.textContent = sourceImg.alt || lightbox.dataset.defaultTitle || "快速示意圖";
       lightboxImage.src = sourceImg.currentSrc;
       lightboxImage.alt = sourceImg.alt;
       lightbox.hidden = false;
@@ -2216,6 +2221,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     const nextBtn = document.getElementById("vid-next") as HTMLButtonElement | null;
     const pageInfo = document.getElementById("vid-page-info");
     const pageLabel = document.getElementById("vid-page-label");
+    const pageLabelTemplate = pageLabel?.dataset.pageLabelTemplate ?? "第 {page} 頁，共 {total} 頁";
     const totalPages = Math.ceil(rows.length / PER_PAGE);
     let page = 1;
 
@@ -2225,7 +2231,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       rows.forEach((r, i) => (r.style.display = i >= start && i < end ? "" : "none"));
       if (prevBtn) prevBtn.disabled = page === 1;
       if (nextBtn) nextBtn.disabled = page === totalPages;
-      const label = `第 ${page} 頁，共 ${totalPages} 頁`;
+      const label = pageLabelTemplate
+        .replace("{page}", String(page))
+        .replace("{total}", String(totalPages));
       if (pageInfo) pageInfo.textContent = label;
       if (pageLabel) pageLabel.textContent = label;
     }

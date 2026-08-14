@@ -181,6 +181,18 @@ if (content.closing) {
   out.push(`  // closing：${content.closing}`);
   out.push(`  // closing: "",`);
 }
+if (content.flowMap && (content.flowMap.title || content.flowMap.note)) {
+  out.push(`  // ── 參照流程地圖（flowMap，只翻 title／note，defaultLayer 不翻）──`);
+  if (content.flowMap.title) {
+    collectHints(content.flowMap.title);
+    out.push(`  // flowMap.title：${content.flowMap.title}`);
+  }
+  if (content.flowMap.note) {
+    collectHints(content.flowMap.note);
+    out.push(`  // flowMap.note：${content.flowMap.note}`);
+  }
+  out.push(`  // flowMap: { title: "", note: "" },`);
+}
 
 if (content.methods?.length) {
   out.push(`  methods: {`);

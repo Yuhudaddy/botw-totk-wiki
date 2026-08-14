@@ -46,6 +46,15 @@ const zh = {
   sectionIntro: "簡介與說明",
   sectionModel: "地圖模型",
   sectionControls: "操作方式",
+  sectionFlowMap: "參照流程地圖",
+  flowMapToggleLayers: "切換地圖圖層",
+  flowMapStatusDefault: "點擊步驟前的圓形按鈕，在地圖上顯示該步驟的行為",
+  /** {n} 會被替換成步驟編號 */
+  flowMapStatusStepTemplate: "目前顯示：步驟 {n}",
+  flowMapStatusSelected: "目前顯示：選取的步驟",
+  flowMapOverview: "總覽",
+  flowMapLayerSurface: "地面",
+  flowMapLayerSky: "空島",
 
   // 空狀態
   emptyDemo: "示意內容準備中",
@@ -70,6 +79,8 @@ const zh = {
   model3dLegend: "色彩圖例",
   videoPrevPage: "← 上一頁",
   videoNextPage: "下一頁 →",
+  /** {page}／{total} 會被替換成目前頁碼／總頁數 */
+  videoPageLabel: "第 {page} 頁，共 {total} 頁",
 
   // 頁尾
   footerTagline: "薩爾達傳說 BotW / TotK 技巧與 Glitch 攻略",
@@ -134,6 +145,14 @@ const ja: Record<keyof typeof zh, string> = {
   sectionIntro: "概要と解説",
   sectionModel: "マップモデル",
   sectionControls: "操作方法",
+  sectionFlowMap: "参照フローマップ",
+  flowMapToggleLayers: "マップレイヤーを切り替える",
+  flowMapStatusDefault: "手順の前にある丸いボタンを押すと、マップ上にその手順の内容が表示されます",
+  flowMapStatusStepTemplate: "現在の表示：手順 {n}",
+  flowMapStatusSelected: "現在の表示：選択中の手順",
+  flowMapOverview: "全体表示",
+  flowMapLayerSurface: "地上",
+  flowMapLayerSky: "空島",
 
   emptyDemo: "デモ映像を準備中",
   emptyVideos: "動画を整理中です。しばらくお待ちください。",
@@ -155,6 +174,7 @@ const ja: Record<keyof typeof zh, string> = {
   model3dLegend: "カラー凡例",
   videoPrevPage: "← 前へ",
   videoNextPage: "次へ →",
+  videoPageLabel: "{page} / {total} ページ",
 
   footerTagline: "ゼルダの伝説 BotW / TotK テクニック・グリッチ攻略",
   footerCredit: "個人 YouTube チャンネルの内容をまとめたものです",

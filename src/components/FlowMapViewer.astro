@@ -10,6 +10,8 @@
 //   ・CustomEvent "flowmap:reset"：清除標記並回到總覽
 // 座標系：遊戲內座標 (X, Z)，X 向東為正、Z 向南為正，
 // 範圍 X: -6000~6000、Z: -5000~5000；圖片上緣為北（Z = -5000）。
+import { uiStrings, type Lang } from "../data/ui-strings";
+
 interface FlowMapLayer {
   id: string;    // 圖層識別字，對應 FlowMapStepAction.layer
   label: string; // 切換按鈕文字
@@ -19,12 +21,16 @@ interface Props {
   layers?: FlowMapLayer[];
   defaultLayer?: string; // 初始圖層 id，預設第一層
   note?: string;         // 地圖下方的灰色備註
+  /** 頁面語言；日文攻略頁傳 "ja"，其餘沿用中文 */
+  lang?: Lang;
 }
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const { lang = "zh" } = Astro.props;
+const t = uiStrings[lang];
 const {
   layers = [
-    { id: "surface", label: "地面", image: "/flow-map/totk/surface.webp" },
-    { id: "sky", label: "空島", image: "/flow-map/totk/sky.webp" },
+    { id: "surface", label: t.flowMapLayerSurface, image: "/flow-map/totk/surface.webp" },
+    { id: "sky", label: t.flowMapLayerSky, image: "/flow-map/totk/sky.webp" },
   ],
   defaultLayer,
   note,
@@ -43,9 +49,15 @@ const config = {
 
 <link rel="stylesheet" href={`${BASE}/vendor/leaflet/leaflet.css`} />
 
-<div class="flow-map" data-flow-map data-config={JSON.stringify(config)}>
+<div
+  class="flow-map"
+  data-flow-map
+  data-config={JSON.stringify(config)}
+  data-status-step-template={t.flowMapStatusStepTemplate}
+  data-status-selected={t.flowMapStatusSelected}
+>
   <div class="flow-map-toolbar">
-    <div class="flow-map-layers" role="group" aria-label="切換地圖圖層">
+    <div class="flow-map-layers" role="group" aria-label={t.flowMapToggleLayers}>
       {resolvedLayers.map((l) => (
         <button
           type="button"
@@ -58,9 +70,9 @@ const config = {
       ))}
     </div>
     <span class="flow-map-status" data-flow-status aria-live="polite">
-      點擊步驟前的圓形按鈕，在地圖上顯示該步驟的行為
+      {t.flowMapStatusDefault}
     </span>
-    <button type="button" class="flow-map-overview-btn" data-flow-overview>總覽</button>
+    <button type="button" class="flow-map-overview-btn" data-flow-overview>{t.flowMapOverview}</button>
   </div>
   <div class="flow-map-canvas" data-flow-canvas></div>
   {note && <p class="flow-map-note">{note}</p>}
@@ -81,6 +93,8 @@ const config = {
     const statusEl = root.querySelector<HTMLElement>("[data-flow-status]");
     const layerBtns = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-flow-layer]"));
     const defaultStatus = statusEl?.textContent ?? "";
+    const statusStepTemplate = root.dataset.statusStepTemplate ?? "目前顯示：步驟 {n}";
+    const statusSelected = root.dataset.statusSelected ?? "目前顯示：選取的步驟";
 
     // 1 個地圖單位（latlng）= 10 遊戲單位；圖片上緣為北（z = minZ）
     const W = (config.maxX - config.minX) / 10;
@@ -194,7 +208,10 @@ const config = {
       }
 
       if (statusEl) {
-        statusEl.textContent = detail.stepNo != null ? `目前顯示：步驟 ${detail.stepNo}` : "目前顯示：選取的步驟";
+        statusEl.textContent =
+          detail.stepNo != null
+            ? statusStepTemplate.replace("{n}", String(detail.stepNo))
+            : statusSelected;
       }
     }
 
