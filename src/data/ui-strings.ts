@@ -77,10 +77,10 @@ const zh = {
 
 // ja 必須涵蓋 zh 的每一個 key（型別強制），確保不會漏翻而在頁面上顯示 undefined
 const ja: Record<keyof typeof zh, string> = {
-  navTypes: "テーマ別解説",
+  navTypes: "テーマ別",
   navVideos: "動画検索",
-  navResources: "データベース",
-  navAbout: "この祠について",
+  navResources: "資料",
+  navAbout: "この祠",
 
   searchPlaceholder: "テクニックを検索…",
   searchLabel: "検索",
