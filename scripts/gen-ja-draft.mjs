@@ -134,6 +134,54 @@ out.push(`// ${id} 的日文翻譯草稿（由 scripts/gen-ja-draft.mjs 產生�
 out.push(`// 把需要翻譯的欄位取消註解、填入日文即可；沒填的自動沿用中文。`);
 out.push(`"${id}": {`);
 
+// 頁面層級的原理說明（TypeContent.principle／principleItems／principleSections／
+// principleNote／intro／closing）。這些只存在於頁面層級、不在任何 method 底下，
+// 之前的版本完全沒有輸出這一塊——像 totk-06 的 principleSections 就整段落在這個缺口。
+if (content.intro) {
+  collectHints(content.intro);
+  out.push(`  // intro：${content.intro}`);
+  out.push(`  // intro: "",`);
+}
+if (content.principle) {
+  collectHints(content.principle);
+  out.push(`  // principle：`);
+  out.push(`  //   ${content.principle}`);
+  out.push(`  // principle: "",`);
+}
+if (content.principleItems?.length) {
+  out.push(`  // principleItems（共 ${content.principleItems.length} 條）：`);
+  content.principleItems.forEach((it) => {
+    collectHints(it);
+    out.push(`  //   - ${it}`);
+  });
+  out.push(`  // principleItems: [],`);
+}
+if (content.principleSections?.length) {
+  out.push(`  // principleSections（共 ${content.principleSections.length} 段）：`);
+  content.principleSections.forEach((s, i) => {
+    collectHints(s.title ?? "");
+    collectHints(s.text ?? "");
+    out.push(`  //   [${i}] ${s.title ?? "（無標題）"}`);
+    if (s.text) out.push(`  //       ${s.text}`);
+    (s.items ?? []).forEach((it) => {
+      const text = stepText(it);
+      collectHints(text);
+      out.push(`  //       - ${text}`);
+    });
+  });
+  out.push(`  // principleSections: [],`);
+}
+if (content.principleNote) {
+  collectHints(content.principleNote);
+  out.push(`  // principleNote：${content.principleNote}`);
+  out.push(`  // principleNote: "",`);
+}
+if (content.closing) {
+  collectHints(content.closing);
+  out.push(`  // closing：${content.closing}`);
+  out.push(`  // closing: "",`);
+}
+
 if (content.methods?.length) {
   out.push(`  methods: {`);
   for (const m of content.methods) {
@@ -176,6 +224,13 @@ if (content.notes?.length) {
   content.notes.forEach((n, i) => {
     collectHints(n.text);
     out.push(`    // [${i}] ${n.text}`);
+    if (n.sub?.length) {
+      out.push(`    //   sub（縮排子清單，共 ${n.sub.length} 條）：`);
+      n.sub.forEach((s) => {
+        collectHints(s);
+        out.push(`    //     - ${s}`);
+      });
+    }
     out.push(`    null,`);
   });
   out.push(`  ],`);
