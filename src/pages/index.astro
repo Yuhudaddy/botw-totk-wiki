@@ -24,6 +24,14 @@ const entranceDescription =
   "Advanced game guides and mechanics for The Legend of Zelda, Super Smash Bros., and beyond.";
 const canonicalUrl = new URL(href("/"), Astro.site).href;
 const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
+
+// 搜尋結果與瀏覽器分頁上顯示的名稱。神廟名稱擺最前面——這是站的招牌，
+// 也是使用者希望在 Google 上被看到的名字。這串不影響畫面上的任何文字。
+//
+// ※ 這頁的標題會被頁尾的語言切換 script 依語言覆寫（見下方 i18n 的 docTitle），
+//   所以這裡改了、那邊三個語言版本也要一起改，否則載入後又被蓋回舊字串。
+//   靜態值用英文版，因為入口頁預設語言就是英文。
+const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
 ---
 
 <!doctype html>
@@ -39,9 +47,9 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
     <link rel="canonical" href={canonicalUrl} />
-    <title>Yuda's Channel · Game Wiki</title>
+    <title>{entranceTitle}</title>
 
-    <meta property="og:title" content="Yuda's Channel · Game Wiki" />
+    <meta property="og:title" content={entranceTitle} />
     <meta property="og:description" content={entranceDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
@@ -50,7 +58,7 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content={SITE.title} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Yuda's Channel · Game Wiki" />
+    <meta name="twitter:title" content={entranceTitle} />
     <meta name="twitter:description" content={entranceDescription} />
     <meta name="twitter:image" content={ogImageUrl} />
 
@@ -1682,7 +1690,7 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
         var I18N = {
           zh: {
             htmlLang: "zh-Hant-TW",
-            docTitle: "Yuda 的頻道・遊戲攻略 Wiki",
+            docTitle: "Dazotikuy Shrine · Yuda 的頻道・遊戲攻略 Wiki",
             metaDescription: "收錄薩爾達傳說、大亂鬥特別版等系列的進階攻略技巧與程錯解說。",
             skip: "跳到主要內容",
             brand: "Dazotikuy Shrine",
@@ -1702,7 +1710,7 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
           },
           en: {
             htmlLang: "en",
-            docTitle: "Yuda's Channel · Game Wiki",
+            docTitle: "Dazotikuy Shrine · Yuda's Channel Game Wiki",
             metaDescription:
               "Advanced game guides and mechanics for The Legend of Zelda, Super Smash Bros., and beyond.",
             skip: "Skip to main content",
@@ -1724,7 +1732,7 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
           },
           ja: {
             htmlLang: "ja",
-            docTitle: "Yudaのチャンネル・ゲーム攻略Wiki",
+            docTitle: "Dazotikuy Shrine · Yudaのチャンネル・ゲーム攻略Wiki",
             metaDescription:
               "ゼルダの伝説やスマブラSPなど、上級テクニックとバグ解説をまとめたWikiです。",
             skip: "メインコンテンツへスキップ",
