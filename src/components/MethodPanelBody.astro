@@ -5,14 +5,17 @@
 import { href } from "../lib/url";
 import type { TypeMethod } from "../data/type-content";
 import { parseAccent, parseStep, stepParts } from "../lib/method-format";
+import { uiStrings, type Lang } from "../data/ui-strings";
 
 interface Props {
   method: TypeMethod;
   mapGroup?: string; // 「參照流程地圖」單選按鈕的群組識別字（呼叫端以 method 索引組成，
                      // 每個分頁／子分頁一組，避免不同分頁的 radio 互相搶選取狀態）。
                      // 未傳或 method 沒有 mapFlow 時不渲染單選按鈕
+  lang?: Lang;
 }
-const { method: m, mapGroup } = Astro.props;
+const { method: m, mapGroup, lang = "zh" } = Astro.props;
+const t = uiStrings[lang];
 ---
 
 {/* 白標題與適合／難易度標籤可同時存在：有 name 時標題在上、標籤列接在下方。
@@ -27,7 +30,7 @@ const { method: m, mapGroup } = Astro.props;
   <div class="mb-3 flex flex-wrap items-center gap-2">
     {m.tags && m.tags.length > 0 && (
       <>
-        <span class="text-[13px] text-ink">適合</span>
+        <span class="text-[13px] text-ink">{t.tagsLabel}</span>
         {m.tags.map((tag) => (
           <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
             {tag}
@@ -37,12 +40,12 @@ const { method: m, mapGroup } = Astro.props;
     )}
     {m.difficulty && (
       <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
-        難易度：{m.difficulty}
+        {t.difficultyLabel}{m.difficulty}
       </span>
     )}
     {m.timeCost && (
       <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
-        耗時度：{m.timeCost}
+        {t.timeCostLabel}{m.timeCost}
       </span>
     )}
   </div>
@@ -64,7 +67,7 @@ const { method: m, mapGroup } = Astro.props;
     ) : null;
     const tagsNode = sec.tags && sec.tags.length > 0 && (
       <div class="mb-3 flex flex-wrap items-center gap-2">
-        <span class="text-[13px] text-ink">適合</span>
+        <span class="text-[13px] text-ink">{t.tagsLabel}</span>
         {sec.tags.map((tag) => (
           <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
             {tag}
@@ -96,8 +99,8 @@ const { method: m, mapGroup } = Astro.props;
                     class="flow-step-radio"
                     name={`flow-steps-${mapGroup}`}
                     data-map={JSON.stringify({ ...mapAction, stepNo: idx + 1 })}
-                    aria-label={`在參照流程地圖上顯示步驟 ${idx + 1}`}
-                    title="在地圖上顯示此步驟"
+                    aria-label={t.mapStepAriaLabelTemplate.replace("{n}", String(idx + 1))}
+                    title={t.mapStepTitle}
                   />
                 )}
                 {parseStep(text).map((seg) =>
@@ -160,7 +163,7 @@ const { method: m, mapGroup } = Astro.props;
                   <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
                     <polygon points="6,4 20,12 6,20"></polygon>
                   </svg>
-                  <span>教學影片</span>
+                  <span>{t.tutorialVideoLink}</span>
                 </a>
               )}
             </div>
@@ -182,7 +185,7 @@ const { method: m, mapGroup } = Astro.props;
                 <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
                   <polygon points="6,4 20,12 6,20"></polygon>
                 </svg>
-                <span>教學影片</span>
+                <span>{t.tutorialVideoLink}</span>
               </a>
             )}
           </div>
@@ -216,8 +219,8 @@ const { method: m, mapGroup } = Astro.props;
               class="flow-step-radio"
               name={`flow-steps-${mapGroup}`}
               data-map={JSON.stringify({ ...mapAction, stepNo: idx + 1 })}
-              aria-label={`在參照流程地圖上顯示步驟 ${idx + 1}`}
-              title="在地圖上顯示此步驟"
+              aria-label={t.mapStepAriaLabelTemplate.replace("{n}", String(idx + 1))}
+              title={t.mapStepTitle}
             />
           )}
           {parseStep(text).map((seg) =>

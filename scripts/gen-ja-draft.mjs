@@ -144,11 +144,19 @@ if (content.methods?.length) {
       out.push(`      // name: ${m.name}`);
       out.push(`      // name: "",`);
     }
+    if (m.tags?.length) {
+      m.tags.forEach((tag) => collectHints(tag));
+      out.push(`      // tags（適合標籤，逐條對應）：${JSON.stringify(m.tags)}`);
+    }
     if (m.sections?.length) {
       out.push(`      sections: [`);
       m.sections.forEach((s, i) => {
         collectHints(s.title ?? "");
         out.push(`        // [${i}] ${s.title ?? "（無標題）"}`);
+        if (s.tags?.length) {
+          s.tags.forEach((tag) => collectHints(tag));
+          out.push(`        // tags（適合標籤，逐條對應）：${JSON.stringify(s.tags)}`);
+        }
         emitSteps(s.steps, 8);
         emitNote(s.note, 8);
         out.push(`        null,  // ← 不翻這段就留 null；要翻改成 { title: "", steps: [...] }`);

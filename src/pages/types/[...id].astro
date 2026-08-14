@@ -207,12 +207,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                     </div>
                     {m.subTabs.map((sub, j) => (
                       <div class="subtab-panel" id={`subpanel-${i}-${j}`} role="tabpanel" aria-labelledby={`subtab-${i}-${j}`} tabindex="0" data-subpanel={j} hidden={j !== 0}>
-                        <MethodPanelBody method={sub} mapGroup={`${i}-${j}`} />
+                        <MethodPanelBody method={sub} mapGroup={`${i}-${j}`} lang={lang} />
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <MethodPanelBody method={m} mapGroup={String(i)} />
+                  <MethodPanelBody method={m} mapGroup={String(i)} lang={lang} />
                 )}
               </div>
             ))}

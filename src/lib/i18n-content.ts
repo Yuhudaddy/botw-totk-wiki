@@ -24,6 +24,7 @@ function mergeMethod(zh: TypeMethod, ja: TypeMethodJa | undefined): TypeMethod {
     tab: pick(ja.tab, zh.tab),
     name: pick(ja.name, zh.name),
     intro: pick(ja.intro, zh.intro),
+    tags: pick(ja.tags, zh.tags),
     steps: pick(ja.steps, zh.steps),
     bullets: pick(ja.bullets, zh.bullets),
     note: pick(ja.note, zh.note),
@@ -39,6 +40,7 @@ function mergeMethod(zh: TypeMethod, ja: TypeMethodJa | undefined): TypeMethod {
         ...section,
         title: pick(jaSection.title, section.title),
         intro: pick(jaSection.intro, section.intro),
+        tags: pick(jaSection.tags, section.tags),
         steps: pick(jaSection.steps, section.steps),
         note: pick(jaSection.note, section.note),
       };

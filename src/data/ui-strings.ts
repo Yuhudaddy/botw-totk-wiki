@@ -27,6 +27,15 @@ const zh = {
   // 麵包屑
   breadcrumbHome: "首頁",
 
+  // 「適合」標籤：分頁／區塊標題旁邊列出適用版本的小標籤（例：適合 ～Ver.1.1.1）
+  tagsLabel: "適合",
+  difficultyLabel: "難易度：",
+  timeCostLabel: "耗時度：",
+  tutorialVideoLink: "教學影片",
+  /** 流程地圖步驟單選鈕的 aria-label；${n} 會被替換成步驟編號 */
+  mapStepAriaLabelTemplate: "在參照流程地圖上顯示步驟 {n}",
+  mapStepTitle: "在地圖上顯示此步驟",
+
   // 區塊標題
   sectionMethods: "流程步驟",
   sectionPrinciple: "原理說明",
@@ -90,6 +99,12 @@ const ja: Record<keyof typeof zh, string> = {
   langJa: "日本語",
 
   breadcrumbHome: "ホーム",
+  tagsLabel: "対応",
+  difficultyLabel: "難易度：",
+  timeCostLabel: "所要時間：",
+  tutorialVideoLink: "チュートリアル動画",
+  mapStepAriaLabelTemplate: "参照フローマップで手順 {n} を表示",
+  mapStepTitle: "マップでこの手順を表示",
 
   sectionMethods: "セットアップ",
   sectionPrinciple: "解説",
