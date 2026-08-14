@@ -1,13 +1,22 @@
 ---
 // 贊助入口：右上角導覽列按鈕，點擊在下方彈出小視窗，導向 YouTube 訂閱與 Portaly 贊助。
 import { SITE } from "../data/site";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+interface Props {
+  /** 頁面語言；日文攻略頁傳 "ja"，其餘沿用中文 */
+  lang?: Lang;
+}
+
+const { lang = "zh" } = Astro.props;
+const t = uiStrings[lang];
 ---
 
 <div class="relative">
   <button
     id="support-toggle"
     type="button"
-    aria-label="支持本站"
+    aria-label={t.supportToggle}
     aria-haspopup="true"
     aria-expanded="false"
     class="ring-hover flex h-9 w-9 items-center justify-center rounded-[9px] bg-sand font-serif text-[15px] font-semibold text-ink-2 shadow-[0_0_0_1px_var(--ring)] cursor-pointer"
@@ -21,29 +30,29 @@ import { SITE } from "../data/site";
     class="support-popover pointer-events-none absolute right-0 top-[calc(100%+10px)] z-50 w-[290px] rounded-xl border border-border-strong bg-surface p-5 opacity-0 shadow-lg transition-opacity duration-150"
   >
     <div class="flex flex-col gap-2">
-      <p class="text-[13px] leading-[1.5] text-text">好用就給個訂閱吧！</p>
+      <p class="text-[13px] leading-[1.5] text-text">{t.supportSubscribeHint}</p>
       <a
         href={`${SITE.youtube}?sub_confirmation=1`}
         target="_blank"
         rel="noopener"
-        title="訂閱 Yuda 的 YouTube 頻道"
+        title={t.supportSubscribeTitle}
         data-support-ripple="subscribe"
         class="support-btn support-btn-subscribe block rounded-lg border border-border-strong bg-transparent px-3 py-2 text-center text-[13px] font-medium text-ink no-underline"
       >
-        訂閱 Yuda
+        {t.supportSubscribe}
       </a>
     </div>
     <div class="mt-4 flex flex-col gap-2">
-      <p class="text-[13px] leading-[1.5] text-text">幫 Yukito 買奶粉！</p>
+      <p class="text-[13px] leading-[1.5] text-text">{t.supportSponsorHint}</p>
       <a
         href="https://portaly.cc/yuhudaddy/support"
         target="_blank"
         rel="noopener"
-        title="贊助 Yuda"
+        title={t.supportSponsorTitle}
         data-support-ripple="sponsor"
         class="support-btn support-btn-sponsor block rounded-lg border border-transparent bg-[var(--brand)] px-3 py-2 text-center text-[13px] font-medium text-white no-underline"
       >
-        贊助 Yuda
+        {t.supportSponsor}
       </a>
     </div>
   </div>

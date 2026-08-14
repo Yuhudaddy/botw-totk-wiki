@@ -434,7 +434,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               <button type="button" id="demo-extra-trigger" class="demo-image-trigger" aria-label={t.zoomFlowImage}>
                 <img
                   id="demo-extra-image"
-                  alt="流程圖解"
+                  alt={t.flowImageAlt}
                   loading="lazy"
                   class="w-full rounded-xl"
                 />
@@ -498,7 +498,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           <>
             <details class="model3d-legend mt-4" open>
               <summary class="cursor-pointer text-[12px] font-medium text-ink select-none">
-                色彩圖例
+                {t.model3dLegend}
               </summary>
               <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1.5">
                 {content.model3d.legend.map((item) => (
@@ -910,7 +910,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               type="button"
               class={`whitespace-nowrap rounded-[10px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
-              ← 上一頁
+              {t.videoPrevPage}
             </button>
             <span id="vid-page-info" class="whitespace-nowrap text-[12px] sm:text-sm text-muted"></span>
             <button
@@ -918,7 +918,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               type="button"
               class={`whitespace-nowrap rounded-[10px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
-              下一頁 →
+              {t.videoNextPage}
             </button>
           </div>
         )}

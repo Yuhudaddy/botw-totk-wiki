@@ -66,6 +66,25 @@ const zh = {
   closeAppList: "關閉應用一覽",
   closePreview: "關閉預覽",
   demoImageAlt: "快速示意圖",
+  flowImageAlt: "流程圖解",
+  model3dLegend: "色彩圖例",
+  videoPrevPage: "← 上一頁",
+  videoNextPage: "下一頁 →",
+
+  // 頁尾
+  footerTagline: "薩爾達傳說 BotW / TotK 技巧與 Glitch 攻略",
+  footerCredit: "內容整理自個人 YouTube 頻道",
+  footerYoutube: "YouTube 頻道",
+  footerDiscord: "Discord 社群",
+
+  // 贊助按鈕
+  supportToggle: "支持本站",
+  supportSubscribeHint: "好用就給個訂閱吧！",
+  supportSubscribeTitle: "訂閱 Yuda 的 YouTube 頻道",
+  supportSubscribe: "訂閱 Yuda",
+  supportSponsorHint: "幫 Yukito 買奶粉！",
+  supportSponsorTitle: "贊助 Yuda",
+  supportSponsor: "贊助 Yuda",
 
   // 3D 模型操作說明
   model3dRotate: "拖曳（左鍵／單指）：旋轉視角",
@@ -132,6 +151,23 @@ const ja: Record<keyof typeof zh, string> = {
   closeAppList: "応用一覧を閉じる",
   closePreview: "プレビューを閉じる",
   demoImageAlt: "クイックデモ",
+  flowImageAlt: "フロー図",
+  model3dLegend: "カラー凡例",
+  videoPrevPage: "← 前へ",
+  videoNextPage: "次へ →",
+
+  footerTagline: "ゼルダの伝説 BotW / TotK テクニック・グリッチ攻略",
+  footerCredit: "個人 YouTube チャンネルの内容をまとめたものです",
+  footerYoutube: "YouTube チャンネル",
+  footerDiscord: "Discord コミュニティ",
+
+  supportToggle: "このサイトを応援する",
+  supportSubscribeHint: "役に立ったらチャンネル登録を！",
+  supportSubscribeTitle: "Yuda の YouTube チャンネルを登録",
+  supportSubscribe: "チャンネル登録",
+  supportSponsorHint: "Yukito にミルクを買ってあげる！",
+  supportSponsorTitle: "Yuda を支援する",
+  supportSponsor: "支援する",
 
   model3dRotate: "ドラッグ（左クリック／1本指）：視点を回転",
   model3dPan: "右ドラッグ（または2本指ドラッグ）：視点を平行移動",
