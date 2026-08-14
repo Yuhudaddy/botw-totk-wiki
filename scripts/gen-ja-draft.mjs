@@ -194,38 +194,60 @@ if (content.flowMap && (content.flowMap.title || content.flowMap.note)) {
   out.push(`  // flowMap: { title: "", note: "" },`);
 }
 
+/** 一個 method（分頁）內部的欄位，遞迴用於 subTabs（子分頁）；indent 是 sections/steps 之類欄位的縮排層級 */
+function emitMethodBody(m, indent) {
+  const pad = " ".repeat(indent);
+  if (m.name) {
+    collectHints(m.name);
+    out.push(`${pad}// name: ${m.name}`);
+    out.push(`${pad}// name: "",`);
+  }
+  if (m.group) {
+    collectHints(m.group);
+    out.push(`${pad}// group（分頁分組標籤）: ${m.group}`);
+    out.push(`${pad}// group: "",`);
+  }
+  if (m.tags?.length) {
+    m.tags.forEach((tag) => collectHints(tag));
+    out.push(`${pad}// tags（適合標籤，逐條對應）：${JSON.stringify(m.tags)}`);
+  }
+  if (m.sections?.length) {
+    out.push(`${pad}sections: [`);
+    m.sections.forEach((s, i) => {
+      collectHints(s.title ?? "");
+      out.push(`${pad}  // [${i}] ${s.title ?? "（無標題）"}`);
+      if (s.tags?.length) {
+        s.tags.forEach((tag) => collectHints(tag));
+        out.push(`${pad}  // tags（適合標籤，逐條對應）：${JSON.stringify(s.tags)}`);
+      }
+      emitSteps(s.steps, indent + 4);
+      emitNote(s.note, indent + 4);
+      out.push(`${pad}  null,  // ← 不翻這段就留 null；要翻改成 { title: "", steps: [...] }`);
+    });
+    out.push(`${pad}],`);
+  }
+  emitSteps(m.steps, indent);
+  emitNote(m.note, indent);
+  emitPrinciple(m, indent);
+  // 子分頁：與最外層 methods 同一套結構（一樣以中文 tab 當 key），只是縮排多一層
+  if (m.subTabs?.length) {
+    out.push(`${pad}subTabs: {`);
+    m.subTabs.forEach((sub) => {
+      out.push(`${pad}  // ── 子分頁：${sub.tab}${sub.name ? `（${sub.name}）` : ""} ──`);
+      out.push(`${pad}  ${JSON.stringify(sub.tab)}: {`);
+      emitMethodBody(sub, indent + 4);
+      out.push(`${pad}  },`);
+    });
+    out.push(`${pad}},`);
+  }
+}
+
 if (content.methods?.length) {
   out.push(`  methods: {`);
   for (const m of content.methods) {
     out.push(`    // ── 分頁：${m.tab}${m.name ? `（${m.name}）` : ""} ──`);
     out.push(`    ${JSON.stringify(m.tab)}: {`);
-    if (m.name) {
-      collectHints(m.name);
-      out.push(`      // name: ${m.name}`);
-      out.push(`      // name: "",`);
-    }
-    if (m.tags?.length) {
-      m.tags.forEach((tag) => collectHints(tag));
-      out.push(`      // tags（適合標籤，逐條對應）：${JSON.stringify(m.tags)}`);
-    }
-    if (m.sections?.length) {
-      out.push(`      sections: [`);
-      m.sections.forEach((s, i) => {
-        collectHints(s.title ?? "");
-        out.push(`        // [${i}] ${s.title ?? "（無標題）"}`);
-        if (s.tags?.length) {
-          s.tags.forEach((tag) => collectHints(tag));
-          out.push(`        // tags（適合標籤，逐條對應）：${JSON.stringify(s.tags)}`);
-        }
-        emitSteps(s.steps, 8);
-        emitNote(s.note, 8);
-        out.push(`        null,  // ← 不翻這段就留 null；要翻改成 { title: "", steps: [...] }`);
-      });
-      out.push(`      ],`);
-    }
-    emitSteps(m.steps, 6);
-    emitNote(m.note, 6);
-    emitPrinciple(m, 6);
+    emitMethodBody(m, 6);
     out.push(`    },`);
   }
   out.push(`  },`);

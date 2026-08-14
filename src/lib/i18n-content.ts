@@ -23,6 +23,7 @@ function mergeMethod(zh: TypeMethod, ja: TypeMethodJa | undefined): TypeMethod {
     ...zh,
     tab: pick(ja.tab, zh.tab),
     name: pick(ja.name, zh.name),
+    group: pick(ja.group, zh.group),
     intro: pick(ja.intro, zh.intro),
     tags: pick(ja.tags, zh.tags),
     steps: pick(ja.steps, zh.steps),
