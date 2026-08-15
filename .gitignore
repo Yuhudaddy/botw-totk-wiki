@@ -65,7 +65,9 @@ docs/
 # 成品是 public/flow-map/ 下的 webp，暫存不需要進版控）
 .tmp-flowmap-tiles/
 
-# 示範影片改存放在 Cloudflare R2（repo 曾以每月約 1.2GB 的速度膨脹）。
-# 本機仍保留檔案供 astro dev 預覽；新增／更新影片後記得 npm run media:push。
+# 示範影片存放在 Cloudflare R2，訪客瀏覽器直連 media.dazotikuy.com，
+# 不再打包進網站（放在 public/ 底下的話，astro build 會不分青紅皂白整包
+# 複製進 dist/，即使沒有任何 HTML 引用也一樣——這是它被搬出 public/ 的原因）。
+# 本機保留檔案只是當 media:push 的上傳來源；新增／更新影片後記得跑它。
 # 換新環境／clone 後用 npm run media:pull 取回。
-public/type-videos/
+media-source/type-videos/

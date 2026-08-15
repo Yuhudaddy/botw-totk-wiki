@@ -1,130 +1,129 @@
-14419720	botw-active rush/ATR.mp4
-20711944	botw-active rush/DR.mp4
-14355950	botw-active rush/QFR.mp4
-13633192	botw-active rush/TCR.mp4
-26501676	botw-apparatus storage/快讀.mp4
-18876712	botw-apparatus storage/慢讀.mp4
-7293568	botw-blss/BLSS.mp4
-17041480	botw-btb/BTB.mp4
-22285000	botw-cOHO/過場必殺劍.mp4
-7534617	botw-clip/Viewpoint Displacement Clip.mov
-18614536	botw-clip/cryonis clip.mp4
-25431112	botw-clip/horse jump clip.mp4
-23333704	botw-clip/impact clip.mp4
-18876712	botw-clip/skew clip.mp4
-9962728	botw-endlag cancel/Crouch Cancel.mp4
-13108840	botw-endlag cancel/Item Hold Cancel.mp4
-22547176	botw-endlag cancel/Jump Cancel.mp4
+12982998	botw-active rush/ATR.mp4
+19348024	botw-active rush/DR.mp4
+14361130	botw-active rush/QFR.mp4
+12182993	botw-active rush/TCR.mp4
+26514484	botw-apparatus storage/快讀.mp4
+17564701	botw-apparatus storage/慢讀.mp4
+7298563	botw-blss/BLSS.mp4
+15487825	botw-btb/BTB.mp4
+20736840	botw-cOHO/過場必殺劍.mp4
+7535842	botw-clip/Viewpoint Displacement Clip.mov
+17296914	botw-clip/cryonis clip.mp4
+23954290	botw-clip/horse jump clip.mp4
+22006081	botw-clip/impact clip.mp4
+17389300	botw-clip/skew clip.mp4
+8516929	botw-endlag cancel/Crouch Cancel.mp4
+11757957	botw-endlag cancel/Item Hold Cancel.mp4
+21176521	botw-endlag cancel/Jump Cancel.mp4
 13476749	botw-endlag cancel/Landing Cancel.mp4
-11535784	botw-endlag cancel/Stasis Cancel.mp4
-31198984	botw-endlag cancel/Swap Cancel.mp4
-7551342	botw-equipment duplication/未加載複製法.mp4
-32509864	botw-equipment duplication/落弓過載法.mp4
-6553550	botw-flying machine/flying carts.mp4
-12846664	botw-horse slide/horizontal horse slide.mp4
-29500497	botw-horse slide/vertical horse slide.mp4
-51779534	botw-infinite ancient parts/Infinite Ancient Parts backup.MP4
-51213304	botw-infinite ancient parts/Infinite Ancient Parts.MP4
+10197298	botw-endlag cancel/Stasis Cancel.mp4
+29862195	botw-endlag cancel/Swap Cancel.mp4
+7555894	botw-equipment duplication/未加載複製法.mp4
+30973077	botw-equipment duplication/落弓過載法.mp4
+6558251	botw-flying machine/flying carts.mp4
+11471569	botw-horse slide/horizontal horse slide.mp4
+29515345	botw-horse slide/vertical horse slide.mp4
+51230263	botw-infinite ancient parts/Infinite Ancient Parts.MP4
 197220	botw-ist/BDIC.png
 2754381	botw-ist/DC&PE.png
 194208	botw-ist/FDIC.png
 231909	botw-ist/IST.png
 273579	botw-ist/WMC.png
 15508542	botw-launch/木箱擊飛.MP4
-27004168	botw-launch/靜止擊飛.mp4
-28315048	botw-launch/靜止隨飛.mp4
-20955532	botw-lynel/共通.mp4
-15624255	botw-lynel/持劍.mp4
-22951479	botw-lynel/持大劍.mp4
-12591950	botw-lynel/持槍.mp4
+25646783	botw-launch/靜止擊飛.mp4
+26971304	botw-launch/靜止隨飛.mp4
+20961647	botw-lynel/共通.mp4
+15628645	botw-lynel/持劍.mp4
+22958237	botw-lynel/持大劍.mp4
+12595356	botw-lynel/持槍.mp4
 16551464	botw-moonjump/MWW.mp4
-26479816	botw-moonjump/地滑.mp4
-17303656	botw-moonjump/月步.mp4
-11011432	botw-sbr/DSBR.mp4
-15730600	botw-sbr/SBR.mp4
-14419720	botw-sbr/SSBR.mp4
-17828008	botw-sbr/TSBR.mp4
-15468424	botw-sneakstrike/低聲潛行.mp4
-16254952	botw-sneakstrike/炸彈轉移.mp4
-18090184	botw-sneakstrike/限定敵意.mp4
-26741992	botw-stasis reset/Stasis Reset.mp4
-5213462	botw-super launch/擊飛加速.mp4
+25055745	botw-moonjump/地滑.mp4
+15871320	botw-moonjump/月步.mp4
+9638013	botw-sbr/DSBR.mp4
+14176959	botw-sbr/SBR.mp4
+13106437	botw-sbr/SSBR.mp4
+16311492	botw-sbr/TSBR.mp4
+13984823	botw-sneakstrike/低聲潛行.mp4
+14864464	botw-sneakstrike/炸彈轉移.mp4
+16682304	botw-sneakstrike/限定敵意.mp4
+25312607	botw-stasis reset/Stasis Reset.mp4
+5216963	botw-super launch/擊飛加速.mp4
 10388681	botw-windbomb/前跳.MP4
 13960042	botw-windbomb/後跳.MP4
 13865344	botw-windbomb/擊上.MP4
 9439464	botw-windbomb/空中.MP4
 10438806	botw-windbomb/跑跳.MP4
-53879305	entrance/bottle-message.mp4
-39763835	eow-lynel/20260710_breaking spam.mp4
-35085288	eow-lynel/20260710_techniques.mp4
-21552220	ssbu-slingshot/20260709_Slingshot.mp4
-34963519	totk-cull/20260709_Aerocull.mp4
-17563813	totk-cull/20260709_Pyrocull.mp4
-34669336	totk-cull/20260709_Vortacull.mp4
-38207131	totk-cull/20260710_Cull Storage.mp4
-12622444	totk-cull/20260710_Permacull.mp4
-11881870	totk-cull/20260710_Portacull.mp4
-76785984	totk-di/DI.mp4
-31750866	totk-di/GDI.mp4
-30670769	totk-di/Torch Batch DI.mp4
-41796637	totk-di/Void Dip.mp4
+53895591	entrance/bottle-message.mp4
+39778743	eow-lynel/20260710_breaking spam.mp4
+35097968	eow-lynel/20260710_techniques.mp4
+21558806	ssbu-slingshot/20260709_Slingshot.mp4
+34974197	totk-cull/20260709_Aerocull.mp4
+17570113	totk-cull/20260709_Pyrocull.mp4
+34679898	totk-cull/20260709_Vortacull.mp4
+38207126	totk-cull/20260710_Cull Storage.mp4
+12627080	totk-cull/20260710_Permacull.mp4
+11886742	totk-cull/20260710_Portacull.mp4
+76805924	totk-di/DI.mp4
+31763830	totk-di/GDI.mp4
+30682597	totk-di/Torch Batch DI.mp4
+41807453	totk-di/Void Dip.mp4
 23131936	totk-duplication/BID.mp4
 4069285	totk-duplication/DUD.mp4
-8389672	totk-duplication/MSD.mp4
+7705383	totk-duplication/MSD.mp4
 15084727	totk-duplication/MTD.mp4
 26568059	totk-duplication/SID.mp4
 11781934	totk-duplication/ZISD.mp4
-9438376	totk-duplication/ZSD.mp4
-21139297	totk-endlag cancel/Hopback Cancel.mp4
-12322312	totk-endlag cancel/Item Hold Cancel.mp4
-24906760	totk-endlag cancel/Jump Cancel.mp4
-24644584	totk-endlag cancel/Rune Cancel.mp4
-4767319	totk-endlag cancel/Shield Swap.mp4
-12060136	totk-endlag cancel/Swap Cancel.mp4
-12060136	totk-fuse mechanics/Cold Fuse.mp4
-20187592	totk-fuse mechanics/Fuse Entangle.mp4
-22285000	totk-fuse mechanics/Pseudo Fuse.mp4
+8857270	totk-duplication/ZSD.mp4
+21146985	totk-endlag cancel/Hopback Cancel.mp4
+10771445	totk-endlag cancel/Item Hold Cancel.mp4
+23543557	totk-endlag cancel/Jump Cancel.mp4
+23278474	totk-endlag cancel/Rune Cancel.mp4
+4770200	totk-endlag cancel/Shield Swap.mp4
+10700666	totk-endlag cancel/Swap Cancel.mp4
+10531770	totk-fuse mechanics/Cold Fuse.mp4
+18630896	totk-fuse mechanics/Fuse Entangle.mp4
+20885292	totk-fuse mechanics/Pseudo Fuse.mp4
 17396518	totk-gas/20240818_cull area_gas.MP4
-22520259	totk-gas/20260720_drop swap_gas.mp4
-35513530	totk-gas/20260720_mineru fe_gas.mp4
-32404576	totk-gas/20260720_zuggle_gas.mp4
-32618162	totk-lsw/Intangible LSW.mp4
-24778542	totk-lsw/Physical LSW.mp4
-19663240	totk-lynel/人馬_共通.mp4
-18090184	totk-lynel/人馬_持劍.mp4
-19925416	totk-lynel/人馬_持槍.mp4
-24644584	totk-lynel/人馬_持雙手劍.mp4
-29363752	totk-lynel/人馬_無傷打法.mp4
+22529303	totk-gas/20260720_drop swap_gas.mp4
+35526086	totk-gas/20260720_mineru fe_gas.mp4
+32416512	totk-gas/20260720_zuggle_gas.mp4
+32632778	totk-lsw/Intangible LSW.mp4
+24789342	totk-lsw/Physical LSW.mp4
+18259208	totk-lynel/人馬_共通.mp4
+16543108	totk-lynel/人馬_持劍.mp4
+18410394	totk-lynel/人馬_持槍.mp4
+23245265	totk-lynel/人馬_持雙手劍.mp4
+27797543	totk-lynel/人馬_無傷打法.mp4
 17098777	totk-mnf/R1.mp4
 14838852	totk-mnf/SLD.mp4
-29149577	totk-moobe/moobe SLD.mp4
-27502979	totk-moobe/moobe drop.mp4
-18916594	totk-moobe/moobe.mp4
-41686024	totk-overload/Fuse Overload.mp4
-38798395	totk-overload/GDI Chain.mp4
-20220837	totk-overload/Invizuggle Overload.mp4
-37279730	totk-overload/Super Fuse Overload.mp4
-33296392	totk-pocket rockets/Overload IPR.mp4
-7246428	totk-pocket rockets/PR.mp4
-35989058	totk-pocket rockets/UPR.mp4
-11286022	totk-sbr/Bomb SBR.mp4
-24449414	totk-sbr/SBR.mp4
-29888104	totk-sdc/纏桿_FS.mp4
-56251558	totk-sdc/纏桿_Like Like SDC.mp4
-33034216	totk-sdc/纏桿_Mineru FE.mp4
+29164329	totk-moobe/moobe SLD.mp4
+27516219	totk-moobe/moobe drop.mp4
+18925430	totk-moobe/moobe.mp4
+40344589	totk-overload/Fuse Overload.mp4
+38813227	totk-overload/GDI Chain.mp4
+20229509	totk-overload/Invizuggle Overload.mp4
+37289445	totk-overload/Super Fuse Overload.mp4
+31858021	totk-pocket rockets/Overload IPR.mp4
+7251312	totk-pocket rockets/PR.mp4
+35997394	totk-pocket rockets/UPR.mp4
+11290686	totk-sbr/Bomb SBR.mp4
+24457982	totk-sbr/SBR.mp4
+28500372	totk-sdc/纏桿_FS.mp4
+56270397	totk-sdc/纏桿_Like Like SDC.mp4
+31614389	totk-sdc/纏桿_Mineru FE.mp4
 38818823	totk-sdc/纏桿_String Feory.mp4
-24120232	totk-sdc/纏桿_Zuggle Overload.mp4
+22767010	totk-sdc/纏桿_Zuggle Overload.mp4
 31788605	totk-smuggle zuggle/Arrow Smuggle.mp4
-25431112	totk-smuggle zuggle/Sluggle.mp4
-14310914	totk-smuggle zuggle/Smuggle.mp4
-36180328	totk-smuggle zuggle/Wuggle.mp4
-17303656	totk-smuggle zuggle/Zoggle.mp4
-19408450	totk-smuggle zuggle/Zuggle Drop.mp4
-26479816	totk-smuggle zuggle/Zuggle.mp4
-22431763	totk-sneakstrike/20260710_sneakstrike_totk.mp4
-30674632	totk-sneakstrike/20260729_normal sneakstrike_totk.mp4
-30412456	totk-transfer/PSLOT.mp4
-35131624	totk-transfer/Recall Lock.mp4
+24041948	totk-smuggle zuggle/Sluggle.mp4
+14317706	totk-smuggle zuggle/Smuggle.mp4
+34821360	totk-smuggle zuggle/Wuggle.mp4
+15743455	totk-smuggle zuggle/Zoggle.mp4
+19415498	totk-smuggle zuggle/Zuggle Drop.mp4
+25090050	totk-smuggle zuggle/Zuggle.mp4
+22439919	totk-sneakstrike/20260710_sneakstrike_totk.mp4
+29189023	totk-sneakstrike/20260729_normal sneakstrike_totk.mp4
+28907682	totk-transfer/PSLOT.mp4
+33822566	totk-transfer/Recall Lock.mp4
 15195497	totk-transfer/SLD.mp4
 46572	totk-transfer/SLD_Explain.png
-24382408	totk-transfer/ZLOT.mp4
+22974547	totk-transfer/ZLOT.mp4

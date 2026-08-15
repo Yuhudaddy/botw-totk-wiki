@@ -1,6 +1,6 @@
 ---
 import { SITE } from "../data/site";
-import { href } from "../lib/url";
+import { href, MEDIA_BASE } from "../lib/url";
 
 const wikiHomeUrl = href("/home");
 // 左上角 Logo 指回原版入口（"/"），與該頁的 Logo 互為往返
@@ -352,7 +352,7 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
     <div class="bottle-letter" id="bottle-letter" role="region" hidden>
       <figure class="letter-paper">
         <span class="letter-seal" aria-hidden="true"></span>
-        <video id="bottle-video" playsinline controls preload="none" src={href("/type-videos/entrance/bottle-message.mp4")}></video>
+        <video id="bottle-video" playsinline controls preload="none" src={`${MEDIA_BASE}/entrance/bottle-message.mp4`}></video>
         <p class="letter-fallback" hidden></p>
       </figure>
     </div>

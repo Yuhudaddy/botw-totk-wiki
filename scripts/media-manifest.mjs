@@ -9,7 +9,7 @@
 //                                                     比對 type-content.ts 實際引用的影片/圖片是否都在清單裡
 //                                                     （不需要網路，CI 一開始就能跑，比下載 R2 快很多）
 //
-// 清單格式：每行「位元組大小 \t 相對於 public/type-videos/ 的路徑」，依路徑排序。
+// 清單格式：每行「位元組大小 \t 相對於 media-source/type-videos/ 的路徑」，依路徑排序。
 // 記錄大小是為了同時擋下「檔案在、但下載被截斷」這種比缺檔更難察覺的狀況。
 import { readdirSync, statSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -18,7 +18,7 @@ import { dirname, join, relative } from "node:path";
 // 用 import.meta.url 推導專案根目錄，不依賴執行時的工作目錄（cwd）——
 // 從子目錄下執行這支腳本時，路徑一樣會算對。
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const MEDIA_DIR = join(ROOT, "public/type-videos");
+const MEDIA_DIR = join(ROOT, "media-source/type-videos");
 const MANIFEST = join(ROOT, "media-manifest.txt");
 
 // macOS 會在每個資料夾留下 .DS_Store，它不是網站素材，一律排除。

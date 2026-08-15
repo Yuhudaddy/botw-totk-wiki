@@ -45,39 +45,6 @@ jobs:
       - name: 型別檢查
         run: npm run check
 
-      # 示範影片存放在 Cloudflare R2、不進版控（避免 repo 每月膨脹逾 1GB）。
-      - name: 安裝 rclone
-        run: sudo apt-get update && sudo apt-get install -y rclone
-
-      # secret 沒設或改名時值會是空字串，rclone 會靜默退回 AWS S3 預設端點，
-      # 錯誤訊息只會提到 AWS、完全查不到跟 R2 有關的線索。先在這裡斷言擋掉。
-      - name: 檢查 R2 憑證已設定
-        run: |
-          if [ -z "${{ secrets.R2_ACCESS_KEY_ID }}" ] || [ -z "${{ secrets.R2_SECRET_ACCESS_KEY }}" ] || [ -z "${{ secrets.R2_ENDPOINT }}" ]; then
-            echo "::error::R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_ENDPOINT 有未設定的 secret"
-            exit 1
-          fi
-
-      # 用 sync（非 copy）：R2 是唯一真實來源，本機／CI 端要跟它完全一致。
-      # copy 只增不刪，若 R2 被清空或物件被誤刪，copy 會「成功」複製 0 個檔案
-      # （exit 0），後面的驗證比對的是「舊快取 + 這次沒抓到東西」，一樣會通過，
-      # 等於 R2 壞了也沒人知道。sync 會讓本機也跟著清空，下一步立刻報「缺少
-      # 124 個檔案」而失敗——R2 才會是真正意義上的唯一真實來源。
-      # CI 是拋棄式環境，sync 的刪除行為在這裡是安全的（不是刪你電腦上的檔案）。
-      - name: 從 R2 取回示範影片
-        run: rclone sync r2:botw-totk-wiki-media/type-videos public/type-videos --transfers 8 --stats-one-line --stats 30s
-        env:
-          RCLONE_CONFIG_R2_TYPE: s3
-          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
-          RCLONE_CONFIG_R2_REGION: auto
-          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-
-      # 寧可建置失敗讓維護者收到通知，也不要默默部署一個缺影片的網站。
-      - name: 驗證影片素材齊全
-        run: npm run media:verify
-
       - name: 抓取 YouTube 熱門影片
         run: node scripts/fetch-youtube.mjs
         env:
