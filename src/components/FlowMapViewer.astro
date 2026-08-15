@@ -550,6 +550,13 @@ const config = {
     height: clamp(320px, 44vw, 560px);
     background: var(--surface);
     outline: none;
+    /* Leaflet 內部圖層自帶 z-index（圖磚 200、標記 600、控制項 1000），而地圖容器
+       只有 position: relative、沒有 z-index，不會建立堆疊脈絡——那些數字會直接跑到
+       根層級跟 sticky header（z-50）比大小，捲動時地圖就蓋在 header 上面。
+       isolate 把它們全部關進這個容器自己的脈絡裡，對外只以 z-index: auto 參與排序。
+       注意：只隔離畫布，不要隔離外層 .flow-map，否則實景照片（fixed, z-2000）
+       會被一起關進來，反而蓋不過 header。 */
+    isolation: isolate;
   }
   .flow-map-note {
     margin: 0;
