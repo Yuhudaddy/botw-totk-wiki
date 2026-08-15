@@ -2,7 +2,7 @@
 
 [繁體中文](#繁體中文) | [English](#english) | [日本語](#日本語)
 
-線上網址：<https://yuhudaddy.github.io/dazotikuy/>
+線上網址：<https://www.dazotikuy.com/>
 
 ---
 
