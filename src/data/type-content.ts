@@ -2180,8 +2180,8 @@ export const typeContent: Record<string, TypeContent> = {
   "botw-28": {
     videoFolder: "botw-infinite ancient parts",
     // 4 隻動態廢棄守護者的所在地（座標取自 objmap，y 是高度、地圖用不到所以不填）。
-    // routes 是「推離原生格 2 格外」的建議移動方向，座標來自 Yuda 在 objmap 畫的路線
-    // （原始檔 docs/botw-28-objmap_save.json，要改路線時匯回 objmap 重畫即可）。
+    // routes 是「推離原生格 2 格外」的建議移動方向，座標來自 Yuda 在 objmap 畫的路線；
+    // 現在直接維護在下方 pins.routes，網站不需要保存 objmap 的 JSON 工作檔。
     flowMap: {
       title: "動態守護者位置",
       game: "botw",
