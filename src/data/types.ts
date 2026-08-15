@@ -63,6 +63,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "25", zh: "裝置儲存", en: "Apparatus Storage" },
       { no: "26", zh: "下馬滑行", en: "Horse Slide" },
       { no: "27", zh: "飛行礦車", en: "Flying Carts" },
+      { no: "28", zh: "無限古代素材", en: "Infinite Ancient Parts" },
     ],
   },
   {

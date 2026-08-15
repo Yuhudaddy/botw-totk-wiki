@@ -17,10 +17,19 @@ interface FlowMapLayer {
   label: string; // 切換按鈕文字
   image: string; // 底圖路徑（相對於 BASE_URL）
 }
+/** 常駐標記：不隨步驟切換而清除，用於「這個技巧有哪幾個固定地點」這類頁面 */
+interface FlowMapPin {
+  x: number;
+  z: number;
+  label?: string;  // 標籤文字；省略時只畫點
+  layer?: string;  // 只在指定圖層顯示；省略時所有圖層都顯示
+}
 interface Props {
   layers?: FlowMapLayer[];
   defaultLayer?: string; // 初始圖層 id，預設第一層
   note?: string;         // 地圖下方的灰色備註
+  /** 常駐標記（依序編號 ①②③…），與步驟標記各自獨立，不會被步驟切換清掉 */
+  pins?: FlowMapPin[];
   /** 頁面語言；日文攻略頁傳 "ja"，其餘沿用中文 */
   lang?: Lang;
 }
@@ -34,6 +43,7 @@ const {
   ],
   defaultLayer,
   note,
+  pins = [],
 } = Astro.props;
 const resolvedLayers = layers.map((l) => ({
   ...l,
@@ -41,6 +51,7 @@ const resolvedLayers = layers.map((l) => ({
 }));
 const config = {
   layers: resolvedLayers,
+  pins,
   defaultLayer: defaultLayer ?? resolvedLayers[0]?.id,
   // 地圖涵蓋範圍（遊戲座標）。換成實際底圖時若涵蓋範圍不同，再從 Props 開放設定
   minX: -6000, maxX: 6000, minZ: -5000, maxZ: 5000,
@@ -57,7 +68,13 @@ const config = {
   data-status-selected={t.flowMapStatusSelected}
 >
   <div class="flow-map-toolbar">
-    <div class="flow-map-layers" role="group" aria-label={t.flowMapToggleLayers}>
+    {/* 只有一個圖層時（例：曠野只有地面）不顯示切換鈕，避免看起來像壞掉的單顆按鈕 */}
+    <div
+      class="flow-map-layers"
+      role="group"
+      aria-label={t.flowMapToggleLayers}
+      hidden={resolvedLayers.length < 2}
+    >
       {resolvedLayers.map((l) => (
         <button
           type="button"
@@ -129,6 +146,39 @@ const config = {
 
     // 步驟標記（Pin／軌跡）集中放在一個 layerGroup，換步驟時整組清掉
     const marks = L.layerGroup().addTo(map);
+    // 常駐標記獨立一組：不隨步驟切換清除，只在圖層切換時決定顯示與否
+    const staticMarks = L.layerGroup().addTo(map);
+
+    // 常駐標記畫成編號圓標（①②③…），和步驟用的小圓點在視覺上分得開
+    const staticPins: { x: number; z: number; label?: string; layer?: string }[] =
+      config.pins ?? [];
+    function renderStaticPins() {
+      staticMarks.clearLayers();
+      staticPins.forEach((p, i) => {
+        if (p.layer && p.layer !== activeLayerId) return;
+        const ll = toLatLng(p.x, p.z);
+        L.marker(ll, {
+          interactive: false,
+          icon: L.divIcon({
+            className: "flow-map-pin",
+            html: `<span class="flow-map-pin-dot">${i + 1}</span>`,
+            iconSize: [26, 26],
+            iconAnchor: [13, 13],
+          }),
+        }).addTo(staticMarks);
+        if (p.label) {
+          L.marker(ll, {
+            interactive: false,
+            icon: L.divIcon({
+              className: "flow-map-pin-label",
+              html: `<span>${p.label}</span>`,
+              iconSize: [0, 0],
+              iconAnchor: [0, -16],
+            }),
+          }).addTo(staticMarks);
+        }
+      });
+    }
 
     function setLayer(id: string) {
       const layer = layerById.get(id);
@@ -136,7 +186,10 @@ const config = {
       activeLayerId = id;
       overlay.setUrl(layer.image);
       layerBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.flowLayer === id)));
+      renderStaticPins(); // 常駐標記可能只屬於某個圖層
     }
+
+    renderStaticPins();
 
     // 軌跡箭頭：divIcon 不隨縮放改變大小，放在每段線段的中點指向前進方向。
     // 螢幕座標 y 向下＝lat 減少，所以 dy 取負
@@ -328,5 +381,42 @@ const config = {
   .flow-map :global(.flow-map-arrow) {
     background: none;
     border: none;
+  }
+
+  /* 常駐標記：編號圓標（步驟標記是小圓點，兩者要一眼分得出來） */
+  .flow-map :global(.flow-map-pin) {
+    background: none;
+    border: none;
+  }
+  .flow-map :global(.flow-map-pin-dot) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    border: 2px solid var(--ink);
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.45);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .flow-map :global(.flow-map-pin-label) {
+    background: none;
+    border: none;
+    white-space: nowrap;
+  }
+  .flow-map :global(.flow-map-pin-label span) {
+    display: inline-block;
+    transform: translateX(-50%);
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 12px;
   }
 </style>

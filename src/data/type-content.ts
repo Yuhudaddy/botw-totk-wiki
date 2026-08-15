@@ -137,10 +137,14 @@ export interface TypeContent {
   }; // C 區改放可拖曳旋轉的 3D 模型（取代快速示意）
   flowMap?: {
     title?: string;                    // 區塊標題，預設「參照流程地圖」
+    game?: "totk" | "botw";            // 底圖來源，預設 totk（曠野只有地面一層，切換鈕會自動隱藏）
     defaultLayer?: "surface" | "sky";  // 初始圖層，預設 surface
     note?: string;                     // 地圖下方的灰色備註
+    pins?: { x: number; z: number; label?: string; layer?: string }[];
+                                       // 常駐標記（依序顯示 ①②③…）：不隨步驟切換清除，
+                                       // 用於「這個技巧有哪幾個固定地點」這種非流程式的頁面
   }; // 「參照流程地圖」容器：位於主體格線之下、注意事項之上（與 model3d 同層級，可並存）。
-     // 底圖放在 public/flow-map/totk/{surface,sky}.webp；步驟端的資料放在各 method 的 mapFlow
+     // 底圖放在 public/flow-map/{totk,botw}/*.webp；步驟端的資料放在各 method 的 mapFlow
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
   notes?: TypeNote[];         // 注意事項
   closing?: string;           // 注意事項下方的結語
@@ -2160,6 +2164,69 @@ export const typeContent: Record<string, TypeContent> = {
         title: "回應06(new) - 22個冷知識與小技巧（22 Trivia & Tips）",
         desc: "礦車上坡時會輕量化！調整重量適合天跳！",
         at: 127, publishedAt: "2018-12-10" },
+    ],
+  },
+
+  "botw-28": {
+    showEmptyMedia: true,
+    // 4 隻動態廢棄守護者的所在地（座標取自 objmap，y 是高度、地圖用不到所以不填）
+    flowMap: {
+      title: "動態守護者位置",
+      game: "botw",
+      note: "※ 全地圖只有這 4 隻是動態守護者（可在 objmap 查找 FldObj_RuinGuardian*Dynamic Static:0）。座標為遊戲內 (X, Z)。",
+      pins: [
+        { x: 732.77, z: -1494.6, label: "① (733, -1495)" },
+        { x: 90.46, z: -462.33, label: "② (90, -462)" },
+        { x: 2254.58, z: -6.44, label: "③ (2255, -6)" },
+        { x: -1366.2, z: 3674.04, label: "④ (-1366, 3674)" },
+      ],
+    },
+    methods: [
+      {
+        tab: "步驟",
+        name: "無限古代素材（Infinite Ancient Parts）",
+        tags: ["All Versions"],
+        steps: [
+          "用磁吸能力吸著較大的金屬裝備或是寶箱，把__動態廢棄守護者__翻面，確認掉落的素材是自己想要的",
+          "將廢棄守護者推離至原守護者__地圖單元格 2 格__外的邊緣",
+          "林克移動到地圖單元格 2 格外，畫面開始延遲時回到守護者旁撿取素材",
+          {
+            text: "以下方式可以安全存檔：",
+            sub: [
+              "和克洛格對話觸發自動存檔",
+              "把守護者底部翻回去朝下阻止繼續生成素材後手動存檔",
+            ],
+          },
+        ],
+        note: "※ Nintendo Switch 2 Edition 版可以直接暫停手動存檔。",
+      },
+    ],
+    principleSections: [
+      {
+        text: "最早利用一些特殊方法（DLC 關卡）來重置判定，在炸彈神廟旁邊的守護者就能無限噴出素材，但在 Ver.1.3.1 版被修正。2019/4/30 由 【おとを布】 玩家在 X 上分享。地圖上的廢棄守護者幾乎都是靜態物件，遊戲啟動時就會被讀取，惟有 4 隻動態守護者（可查找 FldObj_RuinGuardian*Dynamic Static:0），會因為林克的位置而動態載入或卸載。",
+      },
+      {
+        title: "為何這 4 個廢棄守護者會一直噴材料？",
+        collapsible: true,
+        text: "遊戲以林克為中心維持載入周圍 3 × 3 的__地圖單元格（Map Unit Grid）__，當林克移動超過動態守護者原生位置格外 2 格時（DistanceToCurrentMapUnit >= 2），動態守護者原本區域配置的資料會被系統釋放（Freed），並且被附近新載入的地圖物件覆蓋，系統在執行掉落檢查函數 isWaitRevivalForDrop 時，讀取到了被覆蓋的新物件資料。由於新資料的判定旗標預設為未設定（Unset），導致函數持續回傳 false（判定為尚未完成掉落）。系統因此不斷重複呼叫 Actor::createDrops 生成函式，形成素材噴泉。",
+      },
+      {
+        title: "掉落物內容會固定嗎？",
+        collapsible: true,
+        text: "掉落物種類與數量是在守護者 Actor 初始化的瞬間透過 RNG 計算（隨機數生成運算）並寫入陣列，後續的 createDrops 只是重複生成既有清單，不會重置。",
+      },
+      {
+        title: "已經被撿過素材的守護者為何也能觸發？",
+        collapsible: true,
+        text: "守護者本體的原始旗標在資料被覆蓋後已無意義，只要覆蓋該位址的新物件旗標為 Unset，就能強制重啟噴發機制。",
+      },
+    ],
+    notes: [
+      { text: "由於 Nintendo Switch 1 的效能，在無限複製完後必須用一些特殊方式降低負載或自動存檔來保存已經獲得過材料的紀錄。" },
+    ],
+    videos: [
+      { id: "96QrIaDLJj8", title: "回應20 - 怕當機？絕不失敗的「無限古代素材」！", at: 194 },
+      { id: "2mk_PaSJMQw", title: "番外33「無限古代素材／動態物件(Infinite Ancient Parts/Dynamic Objects)」" },
     ],
   },
 
@@ -4254,7 +4321,7 @@ export const typeContent: Record<string, TypeContent> = {
 
   "totk-19": {
     flowMap: {
-      note: "※ 底圖已換成實際地圖；各步驟的座標待補（改為分階段的區塊之後，步驟單選按鈕需等 mapFlow 支援 sections 才會出現）。",
+      note: "※ 底圖已換成實際地圖。分階段區塊的步驟單選按鈕已支援（sections 各自讀自己的 mapFlow），目前只有第三階段步驟 5 的座標經過實際確認並顯示按鈕，其餘步驟待 Yuda 補齊座標後依序填入。",
     },
     methods: [
       {
