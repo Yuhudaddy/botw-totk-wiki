@@ -3790,7 +3790,7 @@ export const typeContentJa: Record<string, TypeContentJa> = {
   "botw-28": {
     flowMap: {
       title: "動的ガーディアンの位置",
-      note: "※ マップ全体でこの 4 体だけが動的ガーディアン（objmap で FldObj_RuinGuardian*Dynamic Static:0 を検索）。座標はゲーム内の (X, Z)。",
+      note: "※ マップ全体でこの 4 体だけが動的ガーディアン（objmap で FldObj_RuinGuardian*Dynamic Static:0 を検索）。座標はゲーム内の (X, Z)。マーカーをクリックすると推奨ルートを表示、選択後に「実景写真」でその地点の写真を確認できます。",
     },
     methods: {
       步驟: {

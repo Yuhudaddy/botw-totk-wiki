@@ -53,8 +53,14 @@ const zh = {
   flowMapStatusStepTemplate: "目前顯示：步驟 {n}",
   flowMapStatusSelected: "目前顯示：選取的步驟",
   flowMapOverview: "總覽",
+  flowMapDemoImage: "示意圖",
+  flowMapDemoImageHint: "先點地圖上的標記，才能查看該地點的示意圖",
+  flowMapGrid: "格線",
   flowMapLayerSurface: "地面",
   flowMapLayerSky: "空島",
+  /** {n} 會被替換成標記編號 */
+  flowMapPinAriaTemplate: "查看標記 {n} 的建議路線",
+  flowMapPinClose: "關閉照片",
 
   // 空狀態
   emptyDemo: "示意內容準備中",
@@ -157,8 +163,13 @@ const ja: Record<keyof typeof zh, string> = {
   flowMapStatusStepTemplate: "現在の表示：手順 {n}",
   flowMapStatusSelected: "現在の表示：選択中の手順",
   flowMapOverview: "全体表示",
+  flowMapDemoImage: "実景写真",
+  flowMapDemoImageHint: "マップ上のマーカーを選ぶと、その地点の実景写真を確認できます",
+  flowMapGrid: "グリッド",
   flowMapLayerSurface: "地上",
   flowMapLayerSky: "空島",
+  flowMapPinAriaTemplate: "マーカー {n} の推奨ルートを表示",
+  flowMapPinClose: "写真を閉じる",
 
   emptyDemo: "デモ映像を準備中",
   emptyVideos: "動画を整理中です。しばらくお待ちください。",

@@ -140,9 +140,19 @@ export interface TypeContent {
     game?: "totk" | "botw";            // 底圖來源，預設 totk（曠野只有地面一層，切換鈕會自動隱藏）
     defaultLayer?: "surface" | "sky";  // 初始圖層，預設 surface
     note?: string;                     // 地圖下方的灰色備註
-    pins?: { x: number; z: number; label?: string; layer?: string }[];
+    grid?: boolean;                    // 顯示「格線」按鈕：疊上地圖單元格（A～J × 1～8）參考層
+    pins?: {
+      x: number; z: number;
+      label?: string;
+      layer?: string;
+      image?: string;                  // 點擊 Pin 後彈出的實景圖檔名；有值才會變成可點擊
+      caption?: string;                // 彈出視窗的說明文字
+      routes?: { to: { x: number; z: number }; alt?: boolean; label?: string }[];
+                                       // 從該 Pin 出發的建議移動路線（可多條）；alt 為次要路線，用不同顏色
+    }[];
                                        // 常駐標記（依序顯示 ①②③…）：不隨步驟切換清除，
                                        // 用於「這個技巧有哪幾個固定地點」這種非流程式的頁面
+    pinImageFolder?: string;           // pins[].image 的所在資料夾（public/ 底下），例："botw-dynamic_ruinguardian"
   }; // 「參照流程地圖」容器：位於主體格線之下、注意事項之上（與 model3d 同層級，可並存）。
      // 底圖放在 public/flow-map/{totk,botw}/*.webp；步驟端的資料放在各 method 的 mapFlow
   methods?: TypeMethod[];     // A 區流程步驟（分頁）
@@ -2168,23 +2178,51 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-28": {
-    showEmptyMedia: true,
-    // 4 隻動態廢棄守護者的所在地（座標取自 objmap，y 是高度、地圖用不到所以不填）
+    videoFolder: "botw-infinite ancient parts",
+    // 4 隻動態廢棄守護者的所在地（座標取自 objmap，y 是高度、地圖用不到所以不填）。
+    // routes 是「推離原生格 2 格外」的建議移動方向，座標來自 Yuda 在 objmap 畫的路線
+    // （原始檔 docs/botw-28-objmap_save.json，要改路線時匯回 objmap 重畫即可）。
     flowMap: {
       title: "動態守護者位置",
       game: "botw",
-      note: "※ 全地圖只有這 4 隻是動態守護者（可在 objmap 查找 FldObj_RuinGuardian*Dynamic Static:0）。座標為遊戲內 (X, Z)。",
+      grid: true,
+      pinImageFolder: "botw-dynamic_ruinguardian",
+      note: "※ 全地圖只有這 4 隻是動態守護者（可在 objmap 查找 FldObj_RuinGuardian*Dynamic Static:0）。座標為遊戲內 (X, Z)；點擊標記顯示建議移動方向，選取後再按「示意圖」查看該處實景。",
       pins: [
-        { x: 732.77, z: -1494.6, label: "① (733, -1495)" },
-        { x: 90.46, z: -462.33, label: "② (90, -462)" },
-        { x: 2254.58, z: -6.44, label: "③ (2255, -6)" },
-        { x: -1366.2, z: 3674.04, label: "④ (-1366, 3674)" },
+        {
+          x: 732.77, z: -1494.6, label: "① F-3 (733, -1495)",
+          image: "FldObj_RuinGuardian_A_Dynamic_Static0_1.jpeg",
+          caption: "地圖單元格 F-3。往南推離 2 格至 (952, 0)。",
+          routes: [{ to: { x: 952, z: 0 } }],
+        },
+        {
+          x: 90.46, z: -462.33, label: "② F-4 (90, -462)",
+          image: "FldObj_RuinGuardian_A_Dynamic_Static0_2.jpeg",
+          caption: "地圖單元格 F-4。往西推離 2 格至 (-1002, -396)。",
+          routes: [{ to: { x: -1002, z: -396 } }],
+        },
+        {
+          x: 2254.58, z: -6.44, label: "③ H-4 (2255, -6)",
+          image: "FldObj_RuinGuardian_A_Dynamic_Static0_3.jpeg",
+          caption: "地圖單元格 H-4。往西推離 2 格至 (996, 180)。",
+          routes: [{ to: { x: 996, z: 180 } }],
+        },
+        {
+          x: -1366.2, z: 3674.04, label: "④ D-8 (-1366, 3674)",
+          image: "FldObj_RuinGuardianSnow_A_Dynamic_Static0.jpeg",
+          caption: "地圖單元格 D-8（雪區）。可往東推離 2 格至 (0, 3356)，或往西至 (-3002, 3954)。",
+          routes: [
+            { to: { x: 0, z: 3356 } },
+            { to: { x: -3002, z: 3954 }, alt: true },
+          ],
+        },
       ],
     },
     methods: [
       {
         tab: "步驟",
         name: "無限古代素材（Infinite Ancient Parts）",
+        video: "Infinite Ancient Parts.MP4",
         tags: ["All Versions"],
         steps: [
           "用磁吸能力吸著較大的金屬裝備或是寶箱，把__動態廢棄守護者__翻面，確認掉落的素材是自己想要的",

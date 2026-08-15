@@ -60,6 +60,14 @@ const videoBase = content?.videoFolder
 const imageBase = content?.imageFolder
   ? `${BASE}/type-videos/${content.imageFolder}`
   : null;
+// 流程地圖的常駐標記：資料層只寫圖檔名，這裡補上資料夾與 BASE_URL
+const pinImageBase = content?.flowMap?.pinImageFolder
+  ? `${BASE}/${content.flowMap.pinImageFolder}`
+  : BASE;
+const flowMapPins = content?.flowMap?.pins?.map((p) => ({
+  ...p,
+  image: p.image ? `${pinImageBase}/${p.image}` : undefined,
+}));
 const hasAnyVideo = content?.methods?.some((m) => m.video || (m.videos && m.videos.length > 0)) ?? false;
 const hasAnyImage = content?.methods?.some((m) => m.image || m.extraImage) ?? false;
 const hasMedia = hasAnyVideo || hasAnyImage || content?.showEmptyMedia;
@@ -548,7 +556,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             : undefined}
           defaultLayer={content.flowMap.defaultLayer}
           note={content.flowMap.note}
-          pins={content.flowMap.pins}
+          grid={content.flowMap.grid}
+          pins={flowMapPins}
           lang={lang}
         />
         <div class="mt-3 text-[13px] leading-[1.6] text-muted">

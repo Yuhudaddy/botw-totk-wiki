@@ -23,6 +23,10 @@ interface FlowMapPin {
   z: number;
   label?: string;  // 標籤文字；省略時只畫點
   layer?: string;  // 只在指定圖層顯示；省略時所有圖層都顯示
+  image?: string;  // 實景圖網址；有值時 Pin 變成可點擊（滑鼠與鍵盤皆可），點擊後彈出圖片
+  caption?: string;
+  /** 從該 Pin 出發的建議路線；有值時「路線」按鈕會在選取此 Pin 後啟用 */
+  routes?: { to: { x: number; z: number }; alt?: boolean; label?: string }[];
 }
 interface Props {
   layers?: FlowMapLayer[];
@@ -30,6 +34,8 @@ interface Props {
   note?: string;         // 地圖下方的灰色備註
   /** 常駐標記（依序編號 ①②③…），與步驟標記各自獨立，不會被步驟切換清掉 */
   pins?: FlowMapPin[];
+  /** 顯示「格線」按鈕：疊上地圖單元格（A～J × 1～8）參考層 */
+  grid?: boolean;
   /** 頁面語言；日文攻略頁傳 "ja"，其餘沿用中文 */
   lang?: Lang;
 }
@@ -44,7 +50,9 @@ const {
   defaultLayer,
   note,
   pins = [],
+  grid = false,
 } = Astro.props;
+const hasImages = pins.some((p) => p.image);
 const resolvedLayers = layers.map((l) => ({
   ...l,
   image: `${BASE}${l.image.startsWith("/") ? l.image : `/${l.image}`}`,
@@ -52,6 +60,8 @@ const resolvedLayers = layers.map((l) => ({
 const config = {
   layers: resolvedLayers,
   pins,
+  grid,
+  pinAriaTemplate: t.flowMapPinAriaTemplate,
   defaultLayer: defaultLayer ?? resolvedLayers[0]?.id,
   // 底圖涵蓋範圍（遊戲座標）。兩款遊戲的 objmap 圖磚規則相同，這組數字對 totk／botw 通用。
   //
@@ -97,10 +107,48 @@ const config = {
     <span class="flow-map-status" data-flow-status aria-live="polite">
       {t.flowMapStatusDefault}
     </span>
-    <button type="button" class="flow-map-overview-btn" data-flow-overview>{t.flowMapOverview}</button>
+    <div class="flow-map-actions">
+      {hasImages && (
+        // 先點地圖上的標記才知道要開哪一張圖，所以初始為停用；aria-disabled 而非 disabled，
+        // 讓鍵盤使用者仍能聚焦讀到 title 的說明，不會變成「摸不到的按鈕」
+        <button
+          type="button"
+          class="flow-map-overview-btn"
+          data-flow-demo-image
+          aria-disabled="true"
+          title={t.flowMapDemoImageHint}
+        >{t.flowMapDemoImage}</button>
+      )}
+      {grid && (
+        <button
+          type="button"
+          class="flow-map-overview-btn"
+          data-flow-grid
+          aria-pressed="false"
+        >{t.flowMapGrid}</button>
+      )}
+      <button type="button" class="flow-map-overview-btn" data-flow-overview>{t.flowMapOverview}</button>
+    </div>
   </div>
   <div class="flow-map-canvas" data-flow-canvas></div>
   {note && <p class="flow-map-note">{note}</p>}
+
+  {/* Pin 實景圖：窄螢幕改成置中的對話框，寬螢幕則由 Leaflet popup 貼在 Pin 上 */}
+  <div class="flow-map-photo" data-flow-photo hidden>
+    <button type="button" class="flow-map-photo-backdrop" tabindex="-1" aria-hidden="true" data-flow-photo-close></button>
+    <div class="flow-map-photo-dialog" role="dialog" aria-modal="true" aria-labelledby="flow-map-photo-title">
+      <div class="flow-map-photo-head">
+        <h3 id="flow-map-photo-title"></h3>
+        <button type="button" data-flow-photo-close aria-label={t.flowMapPinClose}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="flow-map-photo-body"><img src="" alt="" /></div>
+      <p class="flow-map-photo-caption"></p>
+    </div>
+  </div>
 </div>
 
 {/* Leaflet 以傳統 script 同步載入（非 module），確保執行順序早於下方的
@@ -157,19 +205,63 @@ const config = {
     // 常駐標記獨立一組：不隨步驟切換清除，只在圖層切換時決定顯示與否
     const staticMarks = L.layerGroup().addTo(map);
 
+    // 地圖單元格（Map Unit Grid）：A～J × 1～8，每格 1000 遊戲單位，
+    // 遊玩區域為 X -5000~5000、Z -4000~4000（底圖比這個範圍再大一圈）
+    const gridLayer = L.layerGroup();
+    let gridOn = false;
+    const COLS = "ABCDEFGHIJ";
+    function buildGrid() {
+      for (let c = 0; c < 10; c++) {
+        for (let r = 0; r < 8; r++) {
+          const x0 = -5000 + c * 1000, z0 = -4000 + r * 1000;
+          const nw = toLatLng(x0, z0), se = toLatLng(x0 + 1000, z0 + 1000);
+          L.rectangle([nw, se], {
+            color: "#ffffff", weight: 1, opacity: 0.35,
+            fillColor: "#ffffff", fillOpacity: 0.06,
+            interactive: false,
+          }).addTo(gridLayer);
+          L.marker(toLatLng(x0 + 500, z0 + 500), {
+            interactive: false,
+            icon: L.divIcon({
+              className: "flow-map-grid-label",
+              html: `<span>${COLS[c]}${r + 1}</span>`,
+              iconSize: [0, 0], iconAnchor: [0, 0],
+            }),
+          }).addTo(gridLayer);
+        }
+      }
+    }
+    buildGrid();
+
+    // 路線層：選取某個 Pin 後才知道要畫哪一條
+    const routeLayer = L.layerGroup().addTo(map);
+    let selectedPin: number | null = null;
+
     // 常駐標記畫成編號圓標（①②③…），和步驟用的小圓點在視覺上分得開
-    const staticPins: { x: number; z: number; label?: string; layer?: string }[] =
-      config.pins ?? [];
+    const staticPins: {
+      x: number; z: number; label?: string; layer?: string;
+      image?: string; caption?: string;
+      routes?: { to: { x: number; z: number }; alt?: boolean; label?: string }[];
+    }[] = config.pins ?? [];
+    const pinAriaTemplate: string = config.pinAriaTemplate ?? "查看標記 {n} 的建議路線";
+
     function renderStaticPins() {
       staticMarks.clearLayers();
       staticPins.forEach((p, i) => {
         if (p.layer && p.layer !== activeLayerId) return;
         const ll = toLatLng(p.x, p.z);
+        const clickable = !!(p.image || p.routes?.length);
+        // 有圖或有路線才做成可聚焦的按鈕；都沒有的維持純標記，避免點了沒反應
+        const inner = clickable
+          ? `<button type="button" class="flow-map-pin-dot is-clickable" data-pin-index="${i}"
+               aria-label="${pinAriaTemplate.replace("{n}", String(i + 1))}">${i + 1}</button>`
+          : `<span class="flow-map-pin-dot">${i + 1}</span>`;
         L.marker(ll, {
-          interactive: false,
+          interactive: clickable,
+          keyboard: false,
           icon: L.divIcon({
             className: "flow-map-pin",
-            html: `<span class="flow-map-pin-dot">${i + 1}</span>`,
+            html: inner,
             iconSize: [26, 26],
             iconAnchor: [13, 13],
           }),
@@ -186,6 +278,14 @@ const config = {
           }).addTo(staticMarks);
         }
       });
+      markSelectedPin();
+    }
+
+    function markSelectedPin() {
+      root!.querySelectorAll<HTMLElement>(".flow-map-pin-dot").forEach((el) => {
+        const idx = Number(el.dataset.pinIndex);
+        el.classList.toggle("is-selected", selectedPin !== null && idx === selectedPin);
+      });
     }
 
     function setLayer(id: string) {
@@ -201,7 +301,8 @@ const config = {
 
     // 軌跡箭頭：divIcon 不隨縮放改變大小，放在每段線段的中點指向前進方向。
     // 螢幕座標 y 向下＝lat 減少，所以 dy 取負
-    function addSegmentArrow(a: [number, number], b: [number, number]) {
+    // target 預設為步驟軌跡的 marks；路線功能有自己的圖層，畫在別處才能各自獨立清除
+    function addSegmentArrow(a: [number, number], b: [number, number], target: any = marks) {
       const dx = b[1] - a[1];
       const dy = -(b[0] - a[0]);
       const deg = (Math.atan2(dy, dx) * 180) / Math.PI;
@@ -214,7 +315,7 @@ const config = {
           iconSize: [14, 14],
           iconAnchor: [7, 7],
         }),
-      }).addTo(marks);
+      }).addTo(target);
     }
 
     function show(detail: {
@@ -289,7 +390,109 @@ const config = {
       btn.addEventListener("click", () => setLayer(btn.dataset.flowLayer ?? ""))
     );
     root.querySelector<HTMLButtonElement>("[data-flow-overview]")?.addEventListener("click", () => {
+      routeLayer.clearLayers();
+      selectedPin = null;
+      markSelectedPin();
+      enableDemoBtn(false);
       map.fitBounds(bounds);
+    });
+
+    // ── 格線 ──────────────────────────────────────────────
+    const gridBtn = root.querySelector<HTMLButtonElement>("[data-flow-grid]");
+    gridBtn?.addEventListener("click", () => {
+      gridOn = !gridOn;
+      if (gridOn) gridLayer.addTo(map); else gridLayer.remove();
+      gridBtn.setAttribute("aria-pressed", String(gridOn));
+    });
+
+    // ── 路線：點 pin 直接顯示，不需要另外開關 ──────────────────
+    function drawRoutes(idx: number) {
+      routeLayer.clearLayers();
+      const p = staticPins[idx];
+      if (!p?.routes?.length) return;
+      const pts: [number, number][] = [];
+      p.routes.forEach((r) => {
+        const a = toLatLng(p.x, p.z), b = toLatLng(r.to.x, r.to.z);
+        pts.push(a, b);
+        const color = r.alt ? inkColor : accent;
+        L.polyline([a, b], { color, weight: 3.5, opacity: 0.95 }).addTo(routeLayer);
+        addSegmentArrow(a, b, routeLayer);      // 箭頭沿用步驟軌跡的樣式，但畫進路線自己的圖層才能被 routeLayer.clearLayers() 清乾淨
+        L.circleMarker(b, {
+          radius: 5, color, weight: 2, fillColor: color, fillOpacity: 0.9, interactive: false,
+        }).addTo(routeLayer);
+      });
+      // 起終點都框進畫面，pad 留白避免箭頭貼邊
+      if (pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.35), { maxZoom: 3 });
+    }
+
+    // ── 示意圖：選了 pin 之後才能點，開啟該處實景照 ──────────────
+    const demoBtn = root.querySelector<HTMLButtonElement>("[data-flow-demo-image]");
+    function enableDemoBtn(on: boolean) {
+      if (!demoBtn) return;
+      demoBtn.setAttribute("aria-disabled", String(!on));
+      demoBtn.classList.toggle("is-disabled", !on);
+    }
+    enableDemoBtn(false); // 初始狀態就要反灰，不能只靠 aria-disabled（那只影響輔助技術，不影響外觀）
+
+    const photo = root.querySelector<HTMLElement>("[data-flow-photo]");
+    const photoImg = photo?.querySelector("img") as HTMLImageElement | null;
+    const photoTitle = photo?.querySelector("h3");
+    const photoCaption = photo?.querySelector<HTMLElement>(".flow-map-photo-caption");
+    let photoTrigger: HTMLElement | null = null;
+
+    function closePhoto() {
+      if (!photo) return;
+      photo.hidden = true;
+      if (photoImg) { photoImg.src = ""; photoImg.alt = ""; }
+      document.documentElement.style.overflow = "";
+      photoTrigger?.focus();
+    }
+    function openPhoto(idx: number, trigger: HTMLElement) {
+      const p = staticPins[idx];
+      if (!photo || !photoImg || !p?.image) return;
+      photoTrigger = trigger;
+      if (photoTitle) photoTitle.textContent = p.label ?? String(idx + 1);
+      photoImg.src = p.image;
+      photoImg.alt = p.caption ?? p.label ?? "";
+      if (photoCaption) {
+        photoCaption.textContent = p.caption ?? "";
+        photoCaption.hidden = !p.caption;
+      }
+      photo.hidden = false;
+      document.documentElement.style.overflow = "hidden";
+      photo.querySelector<HTMLButtonElement>(".flow-map-photo-head button")?.focus();
+    }
+    demoBtn?.addEventListener("click", () => {
+      if (demoBtn.getAttribute("aria-disabled") === "true" || selectedPin === null) return;
+      openPhoto(selectedPin, demoBtn);
+    });
+
+    // ── Pin 點擊 → 直接顯示該點的建議路線，並讓「示意圖」按鈕可用 ──────
+    // 事件委派：Pin 是每次 renderStaticPins 重建的，逐顆綁定會在切圖層後失效
+    root.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>(".flow-map-pin-dot.is-clickable");
+      if (!btn) return;
+      const idx = Number(btn.dataset.pinIndex);
+      selectedPin = idx;
+      markSelectedPin();
+      drawRoutes(idx);
+      enableDemoBtn(!!staticPins[idx]?.image);
+    });
+
+    photo?.querySelectorAll<HTMLButtonElement>("[data-flow-photo-close]")
+      .forEach((b) => b.addEventListener("click", closePhoto));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && photo && !photo.hidden) closePhoto();
+    });
+    // 焦點鎖在對話框內：宣告了 aria-modal="true"，Tab 不該跑到背景
+    photo?.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab" || photo.hidden) return;
+      const f = Array.from(photo.querySelectorAll<HTMLElement>("button, a[href], [tabindex]"))
+        .filter((el) => el.tabIndex >= 0);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
   }
 </script>
@@ -417,6 +620,95 @@ const config = {
     border: none;
     white-space: nowrap;
   }
+  .flow-map-actions { display: flex; gap: 6px; }
+  .flow-map-overview-btn.is-disabled { opacity: 0.42; cursor: not-allowed; }
+  .flow-map-overview-btn[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* 可點擊的 Pin：滑鼠與鍵盤都要有明確回饋 */
+  .flow-map :global(.flow-map-pin-dot.is-clickable) {
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 0;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  .flow-map :global(.flow-map-pin-dot.is-clickable:hover) {
+    transform: scale(1.15);
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.55);
+  }
+  .flow-map :global(.flow-map-pin-dot.is-clickable:focus-visible) {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .flow-map :global(.flow-map-pin-dot.is-selected) {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent), 0 2px 8px rgb(0 0 0 / 0.5);
+  }
+
+  /* 地圖單元格標籤：薄薄一層，不要搶走底圖 */
+  .flow-map :global(.flow-map-grid-label) { background: none; border: none; }
+  .flow-map :global(.flow-map-grid-label span) {
+    display: inline-block;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.55);
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Pin 實景照片：窄螢幕置中對話框 */
+  .flow-map-photo[hidden] { display: none; }
+  .flow-map-photo {
+    /* Leaflet 內部圖層 z-index 最高到 1000（縮放控制項），這裡必須蓋過去，
+       否則地圖的控制項／pin／路線會疊在視窗上面 */
+    position: fixed; inset: 0; z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .flow-map-photo-backdrop {
+    position: absolute; inset: 0;
+    background: rgb(0 0 0 / 0.66);
+    border: none; padding: 0; cursor: pointer;
+  }
+  .flow-map-photo-dialog {
+    position: relative;
+    max-width: min(920px, 100%);
+    max-height: 100%;
+    display: flex; flex-direction: column;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgb(0 0 0 / 0.5);
+  }
+  .flow-map-photo-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 14px 12px 18px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .flow-map-photo-head h3 { margin: 0; font-size: 15px; color: var(--ink); }
+  .flow-map-photo-head button {
+    flex: none; width: 32px; height: 32px;
+    display: grid; place-items: center;
+    background: none; border: 1px solid var(--border-soft); border-radius: 8px;
+    color: var(--muted); cursor: pointer;
+  }
+  .flow-map-photo-head button:hover { color: var(--ink); border-color: var(--border-strong); }
+  .flow-map-photo-head svg { width: 16px; height: 16px; }
+  .flow-map-photo-body { min-height: 0; overflow: auto; }
+  .flow-map-photo-body img { display: block; width: 100%; height: auto; }
+  .flow-map-photo-caption {
+    margin: 0; padding: 10px 18px 14px;
+    font-size: 13px; line-height: 1.6; color: var(--muted);
+  }
+  .flow-map-photo-caption[hidden] { display: none; }
+
   .flow-map :global(.flow-map-pin-label span) {
     display: inline-block;
     transform: translateX(-50%);
