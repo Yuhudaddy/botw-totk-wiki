@@ -44,6 +44,8 @@ const zh = {
   sectionTerms: "名詞說明",
   sectionVideos: "相關影片 · Videos",
   sectionIntro: "簡介與說明",
+  /** 沒有填寫 principle 時的預設說明句；{name} 會被替換成技巧中文名稱 */
+  principleFallbackTemplate: "本系列說明「{name}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。",
   sectionModel: "地圖模型",
   sectionControls: "操作方式",
   sectionFlowMap: "參照流程地圖",
@@ -155,6 +157,7 @@ const ja: Record<keyof typeof zh, string> = {
   sectionTerms: "用語解説",
   sectionVideos: "関連動画 · Videos",
   sectionIntro: "概要と解説",
+  principleFallbackTemplate: "このシリーズでは「{name}」の基本概念と適用範囲を解説する。操作前にゲームのバージョンを確認すること。一部のテクニックは特定のバージョンでのみ使用可能。",
   sectionModel: "マップモデル",
   sectionControls: "操作方法",
   sectionFlowMap: "参照フローマップ",

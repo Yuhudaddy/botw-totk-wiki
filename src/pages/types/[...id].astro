@@ -342,7 +342,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                       )
                 )
               ) : (
-                `本系列說明「${item.zh}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。`
+                t.principleFallbackTemplate.replace("{name}", item.zh)
               )}
             </p>
           )}
