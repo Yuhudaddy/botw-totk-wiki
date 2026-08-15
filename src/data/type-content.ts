@@ -5185,7 +5185,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "Cull Detach Zuggle (R0&R1)",
+        tab: "Cull Delay Zuggle (R0&R1)",
         group: "有過載（Overloading）",
         tags: ["Ver.1.2.0+"],
         difficulty: "★★☆☆☆",
@@ -5278,7 +5278,7 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        tab: "Cull Detach (R1)",
+        tab: "Cull Detach SLD (R1)",
         group: "無過載（Overload-less）",
         tags: ["Ver.1.2.0+"],
         difficulty: "★★★☆☆",
