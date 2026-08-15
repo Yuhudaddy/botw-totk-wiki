@@ -23,7 +23,8 @@
 6553550	botw-flying machine/flying carts.mp4
 12846664	botw-horse slide/horizontal horse slide.mp4
 29500497	botw-horse slide/vertical horse slide.mp4
-51779534	botw-infinite ancient parts/Infinite Ancient Parts.MP4
+51779534	botw-infinite ancient parts/Infinite Ancient Parts backup.MP4
+51213304	botw-infinite ancient parts/Infinite Ancient Parts.MP4
 197220	botw-ist/BDIC.png
 2754381	botw-ist/DC&PE.png
 194208	botw-ist/FDIC.png
