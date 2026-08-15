@@ -183,7 +183,8 @@ const config = {
 
     const map = L.map(canvas, {
       crs: L.CRS.Simple,
-      minZoom: -1,
+      // 手機版總覽需要比 -1 更小的縮放，才能把 12:10 的完整地圖塞進窄而矮的畫布。
+      minZoom: -2,
       maxZoom: 5,
       zoomSnap: 0.25,
       attributionControl: false,
