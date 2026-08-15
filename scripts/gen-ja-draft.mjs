@@ -193,6 +193,50 @@ if (content.flowMap && (content.flowMap.title || content.flowMap.note)) {
   }
   out.push(`  // flowMap: { title: "", note: "" },`);
 }
+if (content.toolCta) {
+  const cta = content.toolCta;
+  out.push(`  // ── 工具導引卡片（toolCta，只翻文字，path／url 不翻）──`);
+  out.push(`  toolCta: {`);
+  if (cta.kicker) {
+    collectHints(cta.kicker);
+    out.push(`    // kicker：${cta.kicker}`);
+    out.push(`    // kicker: "",`);
+  }
+  collectHints(cta.title);
+  out.push(`    // title：${cta.title}`);
+  out.push(`    // title: "",`);
+  collectHints(cta.description);
+  out.push(`    // description：${cta.description}`);
+  out.push(`    // description: "",`);
+  collectHints(cta.primary.label);
+  out.push(`    // primary.label：${cta.primary.label}`);
+  out.push(`    // primary: { label: "" },`);
+  if (cta.secondary) {
+    collectHints(cta.secondary.label);
+    out.push(`    // secondary.label：${cta.secondary.label}`);
+    out.push(`    // secondary: { label: "" },`);
+  }
+  out.push(`  },`);
+}
+if (content.model3d) {
+  out.push(`  // ── 3D 模型（model3d，只翻 alt／posterAlt／legend[].label，座標與檔案路徑不翻）──`);
+  if (content.model3d.alt) {
+    collectHints(content.model3d.alt);
+    out.push(`  // model3dAlt：${content.model3d.alt}`);
+    out.push(`  // model3dAlt: "",`);
+  }
+  if (content.model3d.posterAlt) {
+    collectHints(content.model3d.posterAlt);
+    out.push(`  // model3dPosterAlt：${content.model3d.posterAlt}`);
+    out.push(`  // model3dPosterAlt: "",`);
+  }
+  if (content.model3d.legend?.length) {
+    content.model3d.legend.forEach((item) => collectHints(item.label));
+    out.push(`  // model3dLegend（依序對應中文版 legend 的 label，共 ${content.model3d.legend.length} 項）：`);
+    content.model3d.legend.forEach((item, i) => out.push(`  //   [${i}] ${item.label}`));
+    out.push(`  // model3dLegend: [],`);
+  }
+}
 
 /** 一個 method（分頁）內部的欄位，遞迴用於 subTabs（子分頁）；indent 是 sections/steps 之類欄位的縮排層級 */
 function emitMethodBody(m, indent) {
@@ -284,6 +328,11 @@ if (content.applications) {
         collectHints(g.intro);
         out.push(`      // intro：${g.intro}`);
         out.push(`      // intro: "",`);
+      }
+      if (g.columns?.length) {
+        g.columns.forEach((c) => collectHints(c));
+        out.push(`      // columns：${g.columns.join(" / ")}`);
+        out.push(`      // columns: [],`);
       }
       emitNote(g.note, 6);
       out.push(`      items: [`);

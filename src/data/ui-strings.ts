@@ -72,6 +72,8 @@ const zh = {
   // 無障礙標籤
   zoomDemoImage: "放大快速示意圖",
   zoomFlowImage: "放大流程圖解",
+  applicationsLabel: "應用一覽",
+  toolCtaKicker: "相關工具",
   closeAppList: "關閉應用一覽",
   closePreview: "關閉預覽",
   demoImageAlt: "快速示意圖",
@@ -102,6 +104,10 @@ const zh = {
   model3dPan: "右鍵拖曳（或雙指拖曳）：平移視角",
   model3dZoom: "滾輪／捏合：縮放",
   model3dButtons: "右上角圓形按鈕：總覽／俯視／重置視角",
+  model3dOverviewLabel: "總覽",
+  model3dTopLabel: "俯視",
+  model3dResetLabel: "重置視角",
+  model3dPickInfo: "點擊模型中的房間或地標，可顯示名稱",
 
   // 流程地圖操作說明
   flowMapPan: "拖曳（左鍵／單指）：平移地圖",
@@ -167,6 +173,8 @@ const ja: Record<keyof typeof zh, string> = {
 
   zoomDemoImage: "デモ画像を拡大",
   zoomFlowImage: "フロー図を拡大",
+  applicationsLabel: "応用一覧",
+  toolCtaKicker: "関連ツール",
   closeAppList: "応用一覧を閉じる",
   closePreview: "プレビューを閉じる",
   demoImageAlt: "クイックデモ",
@@ -193,6 +201,10 @@ const ja: Record<keyof typeof zh, string> = {
   model3dPan: "右ドラッグ（または2本指ドラッグ）：視点を平行移動",
   model3dZoom: "ホイール／ピンチ：ズーム",
   model3dButtons: "右上の丸ボタン：全体／真上／視点リセット",
+  model3dOverviewLabel: "全体表示",
+  model3dTopLabel: "真上から",
+  model3dResetLabel: "視点をリセット",
+  model3dPickInfo: "モデル内の部屋やランドマークをクリックすると名前が表示されます",
 
   flowMapPan: "ドラッグ（左クリック／1本指）：マップを移動",
   flowMapZoom: "ホイール／ピンチ：ズーム",

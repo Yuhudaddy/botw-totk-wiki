@@ -89,6 +89,31 @@ function mergeContent(zh: TypeContent, ja: TypeContentJa): TypeContent {
     closing: pick(ja.closing, zh.closing),
   };
 
+  if (zh.model3d) {
+    merged.model3d = {
+      ...zh.model3d,
+      alt: pick(ja.model3dAlt, zh.model3d.alt),
+      posterAlt: pick(ja.model3dPosterAlt, zh.model3d.posterAlt),
+      legend: zh.model3d.legend?.map((item, i) => ({
+        ...item,
+        label: pick(ja.model3dLegend?.[i] ?? undefined, item.label),
+      })),
+    };
+  }
+
+  if (zh.toolCta) {
+    merged.toolCta = {
+      ...zh.toolCta,
+      kicker: pick(ja.toolCta?.kicker, zh.toolCta.kicker),
+      title: pick(ja.toolCta?.title, zh.toolCta.title),
+      description: pick(ja.toolCta?.description, zh.toolCta.description),
+      primary: { ...zh.toolCta.primary, label: pick(ja.toolCta?.primary?.label, zh.toolCta.primary.label) },
+      secondary: zh.toolCta.secondary
+        ? { ...zh.toolCta.secondary, label: pick(ja.toolCta?.secondary?.label, zh.toolCta.secondary.label) }
+        : undefined,
+    };
+  }
+
   if (zh.methods) {
     merged.methods = zh.methods.map((method) => mergeMethod(method, ja.methods?.[method.tab]));
   }
@@ -141,6 +166,7 @@ function mergeContent(zh: TypeContent, ja: TypeContentJa): TypeContent {
               title: pick(jaGroup.title, group.title),
               intro: pick(jaGroup.intro, group.intro),
               note: pick(jaGroup.note, group.note),
+              columns: pick(jaGroup.columns, group.columns),
               items: jaGroup.items
                 ? group.items.map((item, j) => {
                     const jaItem = jaGroup.items?.[j];

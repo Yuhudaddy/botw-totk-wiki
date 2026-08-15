@@ -350,7 +350,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 <rect x="3.5" y="4.5" width="17" height="15" rx="2"></rect>
                 <path d="M3.5 9.5h17M9 9.5v10" stroke-linecap="round"></path>
               </svg>
-              {content.applications.label ?? "應用一覽"}
+              {content.applications.label ?? t.applicationsLabel}
             </button>
           )}
         </div>
@@ -359,7 +359,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           <aside class="tool-cta" aria-label={content.toolCta.title}>
             <div class="tool-cta-kicker">
               <span class="tool-cta-dot" aria-hidden="true"></span>
-              {content.toolCta.kicker ?? "相關工具"}
+              {content.toolCta.kicker ?? t.toolCtaKicker}
             </div>
             <h2 class="tool-cta-title">{content.toolCta.title}</h2>
             <p class="tool-cta-desc">{content.toolCta.description}</p>
@@ -478,6 +478,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       <div class="prose-custom mt-10 border-t border-border-soft pt-10">
         <h2>{t.sectionModel}</h2>
         <Model3DViewer
+          lang={lang}
           src={content.model3d.src}
           alt={content.model3d.alt}
           poster={content.model3d.poster}
@@ -542,8 +543,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       <div class="prose-custom mt-10 border-t border-border-soft pt-10">
         <h2>{content.flowMap.title ?? t.sectionFlowMap}</h2>
         <FlowMapViewer
+          layers={content.flowMap.game === "botw"
+            ? [{ id: "surface", label: t.flowMapLayerSurface, image: "/flow-map/botw/surface.webp" }]
+            : undefined}
           defaultLayer={content.flowMap.defaultLayer}
           note={content.flowMap.note}
+          pins={content.flowMap.pins}
           lang={lang}
         />
         <div class="mt-3 text-[13px] leading-[1.6] text-muted">
@@ -612,7 +617,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 <rect x="3.5" y="4.5" width="17" height="15" rx="2"></rect>
                 <path d="M3.5 9.5h17M9 9.5v10" stroke-linecap="round"></path>
               </svg>
-              {content.applications.label ?? "應用一覽"}
+              {content.applications.label ?? t.applicationsLabel}
             </button>
           )}
         </div>
@@ -636,7 +641,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <div class="applications-head">
           <div>
             <span>{item.zh} · {item.en}</span>
-            <h2 id="applications-title">{content.applications.title ?? content.applications.label ?? "應用一覽"}</h2>
+            <h2 id="applications-title">{content.applications.title ?? content.applications.label ?? t.applicationsLabel}</h2>
           </div>
           <button type="button" data-applications-close aria-label={t.closeAppList}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">

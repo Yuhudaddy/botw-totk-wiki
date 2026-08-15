@@ -2,7 +2,9 @@
 // 可拖曳旋轉／縮放的 3D 模型檢視器，包裝 Google 的 <model-viewer> web component。
 // 函式庫自行架設在 public/vendor/model-viewer.min.js（不依賴外部 CDN），
 // 模型檔（.glb）放在 public/ 下由呼叫端指定路徑。
+import { uiStrings, type Lang } from "../data/ui-strings";
 interface Props {
+  lang?: Lang;
   src: string;          // GLB 檔路徑（相對於 BASE_URL），例："/tots-model/model/tots-model.glb"
   alt: string;
   poster?: string;      // 低解析度封面圖路徑（相對於 BASE_URL）。不給值則沿用 model-viewer
@@ -34,12 +36,13 @@ interface Props {
 }
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const {
-  src, alt, poster, posterAlt, height, aspectRatio, mobileAspectRatio, autoRotate = false,
+  lang = "zh", src, alt, poster, posterAlt, height, aspectRatio, mobileAspectRatio, autoRotate = false,
   minZoomDistance = 60, maxZoomDistance = 2500,
   cameraOrbit, cameraTarget, layoutSrc,
   overviewOrbit, overviewTarget, topOrbit, topTarget,
   transparencyMaterials, transparencyOpacity = 0.2,
 } = Astro.props;
+const t = uiStrings[lang];
 const resolvedTopTarget = topTarget ?? overviewTarget;
 const layoutUrl = layoutSrc
   ? `${BASE}${layoutSrc.startsWith("/") ? layoutSrc : `/${layoutSrc}`}`
@@ -100,21 +103,21 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
   </model-viewer>
   <div class="model3d-controls">
     {overviewOrbit && (
-      <button type="button" class="model3d-btn model3d-overview" aria-label="總覽" title="總覽">
+      <button type="button" class="model3d-btn model3d-overview" aria-label={t.model3dOverviewLabel} title={t.model3dOverviewLabel}>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path>
         </svg>
       </button>
     )}
     {topOrbit && (
-      <button type="button" class="model3d-btn model3d-top" aria-label="俯視" title="俯視">
+      <button type="button" class="model3d-btn model3d-top" aria-label={t.model3dTopLabel} title={t.model3dTopLabel}>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
           <ellipse cx="12" cy="12" rx="9" ry="5"></ellipse>
           <ellipse cx="12" cy="12" rx="3.4" ry="1.9"></ellipse>
         </svg>
       </button>
     )}
-    <button type="button" class="model3d-btn model3d-reset" aria-label="重置視角" title="重置視角">
+    <button type="button" class="model3d-btn model3d-reset" aria-label={t.model3dResetLabel} title={t.model3dResetLabel}>
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 12a9 9 0 1 0 3-6.7"></path>
         <path d="M3 4v5h5"></path>
@@ -135,8 +138,8 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
     )}
   </div>
   {layoutUrl && (
-    <div class="model3d-pick-info" data-hint="點擊模型中的房間或地標，可顯示名稱">
-      點擊模型中的房間或地標，可顯示名稱
+    <div class="model3d-pick-info" data-hint={t.model3dPickInfo}>
+      {t.model3dPickInfo}
     </div>
   )}
 </div>
