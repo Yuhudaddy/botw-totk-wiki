@@ -1,6 +1,18 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { href } from "../../lib/url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /resources/ist-simulator、日文 /ja/resources/ist-simulator
+export function getStaticPaths() {
+  return [
+    { params: { istPath: "resources/ist-simulator" }, props: { lang: "zh" as Lang } },
+    { params: { istPath: "ja/resources/ist-simulator" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
 
 const IST_URL = "https://ist.pistonite.app";
 const DOCS_URL = "https://skybook.pistonite.dev/zh/";
@@ -126,9 +138,11 @@ const commandGroups = [
 ---
 
 <BaseLayout
-  title="轉存格(IST)模擬器使用指南"
-  description="轉存格（IST）模擬器的繁體中文快速使用指南：腳本輸入方式、常用指令、物品語法與可直接複製的範例。"
+  title={t.istTitle}
+  description={t.istDescription}
   active="resources"
+  lang={lang}
+  altPath="/resources/ist-simulator"
 >
   <div class="ist-guide">
     <section class="ist-hero" aria-labelledby="ist-title">
@@ -166,10 +180,10 @@ const commandGroups = [
       </div>
 
       <div class="ist-wrap ist-hero-inner">
-        <nav class="ist-breadcrumb" aria-label="麵包屑">
-          <a href={href("/home")}>首頁</a>
+        <nav class="ist-breadcrumb" aria-label={t.breadcrumbLabel}>
+          <a href={href("/home", lang)}>{t.breadcrumbHome}</a>
           <span>/</span>
-          <a href={href("/resources#botw")}>資料網站</a>
+          <a href={href("/resources#botw", lang)}>{t.navResources}</a>
           <span>/</span>
           <span aria-current="page">IST 模擬器</span>
         </nav>
@@ -179,7 +193,10 @@ const commandGroups = [
             <span class="ist-status-dot" aria-hidden="true"></span>
             Breath of the Wild · Script Simulator
           </div>
-          <h1 id="ist-title">轉存格<span>(IST)</span>模擬器</h1>
+          <h1 id="ist-title">
+            {/* 中文版把 (IST) 包在 span 裡做視覺區隔；日文版標題是整句，不拆 */}
+            {lang === "zh" ? (<Fragment>轉存格<span>(IST)</span>模擬器</Fragment>) : t.istTitle}
+          </h1>
           <p>
             它不是靠按鈕操作，而是把遊戲流程寫成腳本。輸入取得物品、裝備、存讀檔等指令，
             模擬器就會逐行算出背包狀態。

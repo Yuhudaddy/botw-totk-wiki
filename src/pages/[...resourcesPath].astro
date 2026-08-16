@@ -3,6 +3,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { href } from "../lib/url";
 import { resourceGames, RESOURCES_CREDIT, type ResourceKind } from "../data/resources";
 import { GAME_LOGOS } from "../data/gameLogos";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /resources、日文 /ja/resources
+export function getStaticPaths() {
+  return [
+    { params: { resourcesPath: "resources" }, props: { lang: "zh" as Lang } },
+    { params: { resourcesPath: "ja/resources" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
+// 日文版遊戲名稱：目前只有曠野之息／王國之淚有日文簡稱（resources.ts 的 g.ja），
+// 其餘遊戲的日文頁沿用中文名稱，等資料層翻譯補齊後這裡不用再改。
+const groupShortLabel = (g: (typeof resourceGames)[number]) =>
+  (lang === "ja" && g.ja) || g.shortLabel || g.label;
 
 // 各類型圖示（stroke 線稿，吃 currentColor）
 const KIND_ICONS: Record<ResourceKind, string> = {
@@ -68,26 +84,28 @@ function sourceLabel(url: string): string {
 ---
 
 <BaseLayout
-  title="資料網站"
-  description="曠野之息與王國之淚的地圖、數據表、文件與工具連結總整理。"
+  title={t.navResources}
+  description={t.resourcesDescription}
   active="resources"
+  lang={lang}
+  altPath="/resources"
 >
   {/* 標題 */}
   <section class="border-b border-border-soft">
     <div class="r-res-hero mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
-        <a href={href("/home")} class="no-underline text-muted">首頁</a>
+        <a href={href("/home", lang)} class="no-underline text-muted">{t.breadcrumbHome}</a>
         <span>/</span>
-        <span class="text-ink">資料網站</span>
+        <span class="text-ink">{t.navResources}</span>
       </div>
       <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
-        Resource Library · 資料庫
+        {t.resourcesEyebrow}
       </div>
       <h1 class="r-res-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
-        資料網站
+        {t.navResources}
       </h1>
       <p class="r-res-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
-        攻略本上找不到、最完整的遊戲資料庫。
+        {t.resourcesIntro}
       </p>
     </div>
   </section>
@@ -113,7 +131,7 @@ function sourceLabel(url: string): string {
             <div class="min-w-0">
               <div class="truncate text-[10px] font-bold tracking-[1.5px] text-accent">{g.shortEn ?? g.en}</div>
               <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
-                {g.shortLabel ?? g.label}
+                {groupShortLabel(g)}
               </div>
             </div>
           </button>
@@ -144,16 +162,16 @@ function sourceLabel(url: string): string {
         <input
           id="res-search"
           type="text"
-          placeholder="搜尋資源…"
+          placeholder={t.resourcesSearchPlaceholder}
           autocomplete="off"
           class="w-full bg-transparent py-2 pl-2.5 pr-3 text-sm text-ink outline-none placeholder:text-muted"
         />
       </div>
-      <div id="res-count" class="font-mono text-[12px] text-muted"></div>
+      <div id="res-count" class="font-mono text-[12px] text-muted" data-count-tpl={t.resourcesCountTemplate}></div>
       <div class="ml-auto flex items-center gap-1.5">
         <a
           href="#"
-          title="站長推薦"
+          title={t.resourcesKindRecommended}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="star"
         >
@@ -171,7 +189,7 @@ function sourceLabel(url: string): string {
         </a>
         <a
           href="#"
-          title="互動地圖"
+          title={t.resourcesKindMap}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="map"
         >
@@ -189,7 +207,7 @@ function sourceLabel(url: string): string {
         </a>
         <a
           href="#"
-          title="數據表格"
+          title={t.resourcesKindData}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="sheet"
         >
@@ -207,7 +225,7 @@ function sourceLabel(url: string): string {
         </a>
         <a
           href="#"
-          title="機制文件"
+          title={t.resourcesKindDoc}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="doc"
         >
@@ -225,7 +243,7 @@ function sourceLabel(url: string): string {
         </a>
         <a
           href="#"
-          title="攻略網站"
+          title={t.resourcesKindSite}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="site"
         >
@@ -262,9 +280,9 @@ function sourceLabel(url: string): string {
               stroke="none"
               set:html={GAME_LOGOS[g.game].svg}
             />
-            <p class="font-serif text-xl font-medium text-ink">資源整理中</p>
+            <p class="font-serif text-xl font-medium text-ink">{t.resourcesEmptyTitle}</p>
             <p class="text-sm text-muted">
-              {g.shortLabel ?? g.label}的地圖與資料連結還在蒐集彙整，敬請期待。
+              {t.resourcesEmptyHintTemplate.replace("{game}", groupShortLabel(g))}
             </p>
           </div>
         )}
@@ -273,11 +291,14 @@ function sourceLabel(url: string): string {
           const allItems = g.categories.flatMap((c) =>
             c.items.map((item) => {
               // 根據分類名稱推斷語言
-              let lang = "en";
-              if (c.label.includes("中文") || c.id.includes("zh")) lang = "zh";
+              // 這裡比對的 "中文"／"日文" 是 resources.ts 分類名稱的判斷依據（資料層），
+              // 不是顯示給使用者的文字，翻譯它會讓語言判斷失效，故保持中文原樣。
+              // 變數名用 itemLang 而非 lang，避免遮蔽頁面語言的 lang prop。
+              let itemLang = "en";
+              if (c.label.includes("中文") || c.id.includes("zh")) itemLang = "zh";
               else if (c.label.includes("日文") || c.id.includes("ja") || c.en.includes("日本語"))
-                lang = "ja";
-              return { ...item, lang, starOnly: false };
+                itemLang = "ja";
+              return { ...item, lang: itemLang, starOnly: false };
             })
           );
           // 每個遊戲的清單最後補上 Hsin-Po 的個人網站，但不在預設清單裡顯示，
@@ -339,7 +360,7 @@ function sourceLabel(url: string): string {
                             : "bg-sand text-lang-tag"
                       }`}
                     >
-                      {item.lang === "zh" ? "中文" : item.lang === "ja" ? "日文" : "英文"}
+                      {item.lang === "zh" ? t.resourcesLangZh : item.lang === "ja" ? t.resourcesLangJa : t.resourcesLangEn}
                     </span>
                     <span class="hidden font-mono text-[11px] text-muted sm:inline">
                       {sourceLabel(item.externalUrl ?? item.url)}
@@ -510,7 +531,11 @@ function sourceLabel(url: string): string {
 
       const empty = lib.querySelector<HTMLElement>(".res-empty");
       if (empty) empty.classList.toggle("hidden", visibleTotal > 0);
-      if (countEl) countEl.textContent = q || activeKind ? `${visibleTotal} 筆符合` : "";
+      if (countEl) {
+        // 模板由伺服器端寫進 data 屬性（這段 script 沒有 define:vars，拿不到 t）
+        const tpl = countEl.dataset.countTpl ?? "{n} 筆符合";
+        countEl.textContent = q || activeKind ? tpl.replace("{n}", String(visibleTotal)) : "";
+      }
     }
 
     function setGame(game: string, animate = true) {

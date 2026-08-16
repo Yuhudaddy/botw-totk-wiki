@@ -1,10 +1,17 @@
-// 內部連結一律經過這裡，自動加上 base path（/dazotikuy）。
-// 用法：href("/botw") → "/dazotikuy/botw"
+// 內部連結一律經過這裡，自動加上 base path。
+// 用法：href("/botw") → "/botw"；href("/botw", "ja") → "/ja/botw"
+//
+// 語言前綴集中在這裡處理，是因為日文頁若各自拼字串，只要有一頁忘記加 /ja，
+// 訪客一點連結就會掉回中文站——這種漏接不會編譯失敗、也不容易一眼看出來。
+// 頁面端只要老實把自己的 lang 傳進來，就不可能漏。
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-export function href(path = "/"): string {
+export function href(path = "/", lang: "zh" | "ja" = "zh"): string {
   if (!path.startsWith("/")) path = "/" + path;
-  const out = BASE + path;
+  // 中文是預設語言，不帶前綴；日文統一走 /ja/ 開頭（語言擺路徑最前面，
+  // 一條規則吃遍全站，也是 hreflang／搜尋引擎辨識語言版本最容易處理的形式）。
+  const prefix = lang === "ja" ? "/ja" : "";
+  const out = BASE + prefix + path;
   return out === "" ? "/" : out;
 }
 

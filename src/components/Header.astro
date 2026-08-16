@@ -10,10 +10,12 @@ import LangToggle from "./LangToggle.astro";
 interface Props {
   active?: string;
   lang?: Lang;
+  /** 這一頁對應到另一語言的路徑（不含語言前綴），交給 LangToggle 決定要不要顯示切換鈕 */
+  altPath?: string;
 }
-const { active = "", lang = "zh" } = Astro.props;
+const { active = "", lang = "zh", altPath } = Astro.props;
 const t = uiStrings[lang];
-const videosUrl = href("/videos");
+const videosUrl = href("/videos", lang);
 
 // 導覽列文字改查表：navItems 的 match 同時當語言字串的 key（navTypes 等）
 const navLabelKey = {
@@ -28,7 +30,7 @@ const navLabelKey = {
   <div
     class="r-navbar mx-auto flex h-16 max-w-[1244px] items-center gap-[26px] px-8"
   >
-    <a href={href("/home")} class="flex items-center gap-2.5 no-underline">
+    <a href={href("/home", lang)} class="flex items-center gap-2.5 no-underline">
       <BrandMark />
       <span class="font-serif text-lg font-medium text-ink">{SITE.shortTitle}</span>
     </a>
@@ -40,7 +42,7 @@ const navLabelKey = {
           const key = navLabelKey[n.match as keyof typeof navLabelKey];
           return (
             <a
-              href={href(n.path)}
+              href={href(n.path, lang)}
               class={`ring-hover rounded-lg px-3 py-2 text-[15px] no-underline ${
                 isActive
                   ? "bg-sand font-medium text-ink"
@@ -88,7 +90,7 @@ const navLabelKey = {
         </button>
       </div>
       <SupportButton lang={lang} />
-      <LangToggle lang={lang} />
+      <LangToggle lang={lang} altPath={altPath} />
       <ThemeToggle />
     </div>
   </div>

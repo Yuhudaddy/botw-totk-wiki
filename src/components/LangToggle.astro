@@ -1,58 +1,40 @@
 ---
 // 中／日語言切換鈕。樣式與 ThemeToggle、SupportButton 一致（同一排的圓角方鈕）。
 //
-// 運作方式：日文版攻略頁的網址是中文版加上 /ja 區段
-//   中文 /dazotikuy/types/totk-11
-//   日文 /dazotikuy/types/ja/totk-11
-// 點擊時就地改寫網址的這一段，讓使用者留在同一篇攻略、只換語言。
+// 運作方式：日文版網址是中文版加上 /ja 前綴
+//   中文 /types/totk-11
+//   日文 /ja/types/totk-11
+// 點擊時就地增刪網址開頭的 /ja，讓使用者留在同一頁、只換語言。
 //
-// 目前只有攻略頁有日文版，其他頁面（首頁、影片索引等）沒有對應網址，
-// 硬切過去會 404，所以按鈕只在攻略頁顯示——由 client script 依網址判斷，
-// 不在攻略頁就把自己隱藏起來。
+// 按鈕由伺服器端算好目標網址（data-target），不在瀏覽器端拼字串——
+// 頁面知道自己有沒有日文版，瀏覽器不知道。沒有日文版的頁面不會渲染這顆按鈕，
+// 也就不可能發生「按下去 404」。
 import { uiStrings, type Lang } from "../data/ui-strings";
+import { href } from "../lib/url";
 
 interface Props {
   lang?: Lang;
+  /** 這一頁對應到另一語言的路徑（不含語言前綴與 base），例如 "/types/totk-11"。
+   *  沒給就代表這一頁還沒有另一語言版本，按鈕不顯示。 */
+  altPath?: string;
 }
-const { lang = "zh" } = Astro.props;
+const { lang = "zh", altPath } = Astro.props;
 const t = uiStrings[lang];
+const targetLang: Lang = lang === "zh" ? "ja" : "zh";
+const target = altPath ? href(altPath, targetLang) : null;
 ---
 
-<button
-  id="lang-toggle"
-  type="button"
-  data-lang={lang}
-  aria-label={t.langLabel}
-  title={lang === "zh" ? t.langJa : t.langZh}
-  hidden
-  class="ring-hover flex h-9 min-w-9 items-center justify-center rounded-[9px] bg-sand px-2 text-[13px] font-medium text-ink-2 shadow-[0_0_0_1px_var(--ring)] cursor-pointer"
->
-  {lang === "zh" ? "日" : "中"}
-</button>
-
-<script is:inline>
-  (function () {
-    var btn = document.getElementById("lang-toggle");
-    if (!btn) return;
-
-    // 只有 /types/ 底下的攻略頁有日文版，其餘頁面不顯示這顆按鈕
-    var path = window.location.pathname;
-    var marker = "/types/";
-    var at = path.indexOf(marker);
-    if (at === -1) return;
-
-    var rest = path.slice(at + marker.length);
-    // 攻略列表頁（/types/ 本身）與其他手寫頁面沒有日文版，一併排除
-    if (!rest || rest === "index.html") return;
-
-    var isJa = rest.indexOf("ja/") === 0;
-    var target = isJa
-      ? path.replace(marker + "ja/", marker)
-      : path.replace(marker, marker + "ja/");
-
-    btn.hidden = false;
-    btn.addEventListener("click", function () {
-      window.location.href = target;
-    });
-  })();
-</script>
+{
+  target && (
+    <a
+      id="lang-toggle"
+      href={target}
+      data-lang={lang}
+      aria-label={t.langLabel}
+      title={lang === "zh" ? t.langJa : t.langZh}
+      class="ring-hover flex h-9 min-w-9 items-center justify-center rounded-[9px] bg-sand px-2 text-[13px] font-medium text-ink-2 no-underline shadow-[0_0_0_1px_var(--ring)] cursor-pointer"
+    >
+      {lang === "zh" ? "日" : "中"}
+    </a>
+  )
+}

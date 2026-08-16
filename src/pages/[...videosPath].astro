@@ -1,7 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import youtubeData from "../data/youtube.json";
-import { gameLabels, gameList } from "../data/types";
+import { gameList, gameListFor } from "../data/types";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /videos、日文 /ja/videos。檔名用 rest 參數才有辦法讓同一份模板
+// 產出兩種完整路徑（詳見 [...typePath].astro 開頭的說明）。
+export function getStaticPaths() {
+  return [
+    { params: { videosPath: "videos" }, props: { lang: "zh" as Lang } },
+    { params: { videosPath: "ja/videos" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -11,29 +24,31 @@ const rawAll: any[] =
   gameList.flatMap(({ id }) =>
     ((youtubeData as any)[id] ?? []).map((v: any) => ({ ...v, game: id }))
   );
+// 日文頁只有曠野之息／王國之淚有翻譯，其餘遊戲名稱沿用中文（見 types.ts 的 gameLabelFor）
+const gameLabelMap = Object.fromEntries(gameListFor(lang).map(({ id, label }) => [id, label]));
 const videos = rawAll.map((v: any) => ({
   ytId: v.id,
   title: v.title,
   game: v.game ?? "",
-  gameLabel: gameLabels[v.game as keyof typeof gameLabels] ?? "",
-  search: [v.title, v.meta ?? "", gameLabels[v.game as keyof typeof gameLabels] ?? "", v.game ?? ""]
+  gameLabel: gameLabelMap[v.game as keyof typeof gameLabelMap] ?? "",
+  search: [v.title, v.meta ?? "", gameLabelMap[v.game as keyof typeof gameLabelMap] ?? "", v.game ?? ""]
     .join(" ")
     .toLowerCase(),
 }));
 
 // 篩選鈕：只顯示實際有影片的遊戲，避免出現永遠 0 筆的空按鈕
 const presentGames = new Set(videos.map((v) => v.game).filter(Boolean));
-const facets = gameList
+const facets = gameListFor(lang)
   .filter(({ id }) => presentGames.has(id))
   .map(({ id, label }) => ({ key: id, label }));
 ---
 
-<BaseLayout title="影片索引" active="videos">
+<BaseLayout title={t.navVideos} active="videos" lang={lang} altPath="/videos">
   <section class="mx-auto max-w-[1244px] px-8 pb-[84px] pt-12">
-    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">影片索引 · Video Index</div>
-    <h1 class="mb-2.5 mt-3.5 font-serif text-[26px] sm:text-[34px] font-medium text-ink">搜尋影片</h1>
+    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{t.videosEyebrow}</div>
+    <h1 class="mb-2.5 mt-3.5 font-serif text-[26px] sm:text-[34px] font-medium text-ink">{t.videosHeading}</h1>
     <p class="mb-7 max-w-[60ch] text-[12px] sm:text-base leading-[1.6] text-text">
-      輸入關鍵字搜尋教學頁與相關影片。多個關鍵字以空格分隔可疊加篩選，例如「偷襲 曠野」。
+      {t.videosIntro}
     </p>
 
     {/* 搜尋框 */}
@@ -47,7 +62,7 @@ const facets = gameList
       <input
         id="idx-search"
         type="search"
-        placeholder="搜尋教學或影片，例如「轉存格」「偷襲 曠野」…"
+        placeholder={t.videosSearchPlaceholder}
         class="w-full rounded-xl border border-border-strong bg-surface py-[13px] pl-11 pr-4 text-[15px] text-ink outline-none focus:border-brand"
       />
     </div>
@@ -55,7 +70,7 @@ const facets = gameList
     {/* 遊戲篩選 */}
     <div id="idx-facets" class="mb-9 flex flex-wrap gap-2.5">
       <button type="button" data-game="" class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm">
-        全部
+        {t.videosFilterAll}
       </button>
       {
         facets.map((f) => (
@@ -71,8 +86,8 @@ const facets = gameList
 
     {/* 空狀態 */}
     <div id="idx-empty" class="hidden py-[60px] text-center text-muted">
-      <p class="mb-2 font-serif text-[22px] text-ink">找不到符合的內容</p>
-      <p class="text-[15px]">換個關鍵字，或清除篩選試試。</p>
+      <p class="mb-2 font-serif text-[22px] text-ink">{t.videosEmptyTitle}</p>
+      <p class="text-[15px]">{t.videosEmptyHint}</p>
     </div>
   </section>
 </BaseLayout>
@@ -251,7 +266,13 @@ const facets = gameList
   }
 </style>
 
-<script define:vars={{ videos, facets, BASE }}>
+<script define:vars={{ videos, facets, BASE, i18n: {
+  filterLabel: t.videosFilterLabel,
+  totalHint: t.videosTotalHintTemplate,
+  resultCount: t.videosResultCountTemplate,
+  viewList: t.videosViewList,
+  viewGrid: t.videosViewGrid,
+} }}>
   (function () {
     var search = document.getElementById("idx-search");
     var facetBox = document.getElementById("idx-facets");
@@ -379,7 +400,7 @@ const facets = gameList
       if (!pills) return "";
       return (
         '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px;">' +
-        '<span style="font-size:12px;color:var(--muted);">目前篩選：</span>' +
+        '<span style="font-size:12px;color:var(--muted);">' + i18n.filterLabel + '</span>' +
         pills +
         "</div>"
       );
@@ -389,10 +410,10 @@ const facets = gameList
     function viewToggleHTML() {
       return (
         '<div style="display:flex;gap:5px;">' +
-        '<button class="view-btn" data-view="list" data-active="' + (viewMode === "list" ? "true" : "false") + '" title="列表">' +
+        '<button class="view-btn" data-view="list" data-active="' + (viewMode === "list" ? "true" : "false") + '" title="' + i18n.viewList + '">' +
         '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>' +
         "</button>" +
-        '<button class="view-btn" data-view="grid" data-active="' + (viewMode === "grid" ? "true" : "false") + '" title="格狀">' +
+        '<button class="view-btn" data-view="grid" data-active="' + (viewMode === "grid" ? "true" : "false") + '" title="' + i18n.viewGrid + '">' +
         '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>' +
         "</button>" +
         "</div>"
@@ -415,7 +436,7 @@ const facets = gameList
 
       /* 預設狀態：僅顯示統計提示 */
       if (!hasFilter) {
-        html += '<div style="font-size:13px;color:var(--muted);margin-bottom:10px;">共 ' + totalVideos + ' 支影片，輸入關鍵字開始搜尋。</div>';
+        html += '<div style="font-size:13px;color:var(--muted);margin-bottom:10px;">' + i18n.totalHint.replace('{n}', totalVideos) + '</div>';
       }
 
       /* 搜尋結果：影片 */
@@ -430,7 +451,7 @@ const facets = gameList
         html +=
           '<div class="idx-bucket-title" style="margin:0;color:var(--muted);">' +
           '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>' +
-          "影片（" + mv.length + "）</div>";
+          i18n.resultCount.replace('{n}', mv.length) + "</div>";
         html += viewToggleHTML();
         html += "</div>";
 

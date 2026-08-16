@@ -3,6 +3,10 @@ import { SITE } from "../data/site";
 import { href, MEDIA_BASE } from "../lib/url";
 
 const wikiHomeUrl = href("/home");
+// 進站按鈕的目的地跟著入口頁選的語言走，做法與 index.astro 相同：
+// href 屬性本身仍是 wikiHomeUrl（SSR 首繪、JS 未執行時的保底值），
+// applyLang() 會依 data-lang 覆寫成對應語言。
+const wikiHomeUrlJa = href("/home", "ja");
 // 左上角 Logo 指回原版入口（"/"），與該頁的 Logo 互為往返
 const originEntranceUrl = href("/");
 // 這頁是首頁的另一種皮膚（標題與描述都相同），權重集中回 "/"，避免被判重複內容
@@ -375,7 +379,12 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         </p>
 
         <div class="hero-actions ocean-reveal ocean-reveal-four" aria-label="Entrance actions">
-          <a class="hero-action hero-action-primary" href={wikiHomeUrl}>
+          <a
+            class="hero-action hero-action-primary"
+            href={wikiHomeUrl}
+            data-href-zh={wikiHomeUrl}
+            data-href-ja={wikiHomeUrlJa}
+          >
             <span>Enter Shrine</span>
             <span class="action-icon" aria-hidden="true">
               <svg class="action-default" viewBox="0 0 24 24" fill="none">
@@ -2456,6 +2465,15 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
           var actionLabels = document.querySelectorAll(".hero-action > span:first-child");
           if (actionLabels[0]) actionLabels[0].textContent = t.enter;
           if (actionLabels[1]) actionLabels[1].textContent = t.channel;
+
+          // 進站按鈕的目的地跟著語言走：日文 → /ja/home，中文／英文 → /home
+          var enterLink = document.querySelector(".hero-action-primary");
+          if (enterLink) {
+            var dest = lang === "ja"
+              ? enterLink.getAttribute("data-href-ja")
+              : enterLink.getAttribute("data-href-zh");
+            if (dest) enterLink.setAttribute("href", dest);
+          }
 
           if (langButton) langButton.setAttribute("aria-label", t.langLabel);
 

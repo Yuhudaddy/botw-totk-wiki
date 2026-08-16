@@ -1,48 +1,64 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { href } from "../../../lib/url";
-import { GAME_LOGOS } from "../../../data/gameLogos";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { GAME_LOGOS } from "../data/gameLogos";
+import { uiStrings, type Lang } from "../data/ui-strings";
 
-const MAP_URL = "https://objmap-totk.zeldamods.org/";
+// 中文 /resources/object-map/botw、日文 /ja/resources/object-map/botw
+export function getStaticPaths() {
+  return [
+    { params: { objBotwPath: "resources/object-map/botw" }, props: { lang: "zh" as Lang } },
+    { params: { objBotwPath: "ja/resources/object-map/botw" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
+
+const MAP_URL = "https://objmap.zeldamods.org/";
 
 const queryExamples = [
   {
     label: "基本名稱",
-    query: "Construct",
+    query: "Bokoblin",
     description: "同時搜尋顯示名稱與遊戲內部資料。",
   },
   {
     label: "完整片語",
-    query: '"Soldier Construct"',
+    query: '"Blue Bokoblin"',
     description: "用引號包住完整名稱，避免拆成多個關鍵字。",
   },
   {
     label: "同時符合",
-    query: 'Gleeok "King Gleeok"',
+    query: 'Lizalfos "Royal Bow"',
     description: "空格等同 AND，只留下同時符合兩個條件的結果。",
   },
   {
     label: "排除結果",
-    query: 'Gleeok NOT "King Gleeok"',
-    description: "保留 Gleeok，但排除含有 King Gleeok 的項目。",
+    query: 'Lynel NOT "Lynel Bow"',
+    description: "保留萊尼爾，但排除含有 Lynel Bow 的項目。",
   },
   {
     label: "萬用字元",
-    query: "TBox_* scale:0",
-    description: "搜尋不隨世界等級變化的 TBox 系列寶箱物件。",
+    query: "TBox_* hard:0",
+    description: "搜尋一般模式中的 TBox 系列寶箱物件。",
   },
 ];
 
-// 王淚版只支援以下 6 個欄位（官方 Help 的 Available columns，並已逐一實測）。
-// 曠野版另有的 drop / equip / onehit / lastboss / hard / no_rankup / bonus
-// 在王淚會直接回報「Could not understand search query」，因此不列在這裡。
 const fieldFilters = [
-  { field: "map", value: "Surface_D-5", use: "限定地圖或地圖單位（Surface／Depths／Sky）" },
+  { field: "map", value: "MainField/E-4", use: "限定地圖或地圖單位" },
   { field: "static", value: "1", use: "1 為 Static，0 為 Dynamic" },
-  { field: "actor", value: "Enemy_Zonau_Golem_Junior", use: "依遊戲內部 Actor 名稱搜尋" },
-  { field: "name", value: '"Soldier Construct"', use: "依玩家看見的物件名稱搜尋" },
-  { field: "data", value: "IsGround", use: "搜尋物件內部資料" },
+  { field: "actor", value: "Weapon_Sword_001", use: "依遊戲內部 Actor 名稱搜尋" },
+  { field: "name", value: '"Traveler\'s Sword"', use: "依玩家看見的物件名稱搜尋" },
+  { field: "data", value: "IsGet_", use: "搜尋物件內部資料" },
+  { field: "drop", value: "Arrow", use: "搜尋掉落物或寶箱內容" },
+  { field: "equip", value: "Bow", use: "搜尋敵人持有的裝備" },
+  { field: "onehit", value: "1", use: "限定一擊必殺之劍挑戰物件" },
+  { field: "lastboss", value: "1", use: "限定進入城堡主殿後的物件" },
+  { field: "hard", value: "0", use: "排除大師模式專屬物件" },
+  { field: "no_rankup", value: "1", use: "不會隨世界等級升級" },
   { field: "scale", value: "0", use: "不會隨世界等級變化" },
+  { field: "bonus", value: "2", use: "指定最低附加效果等級" },
 ];
 
 const mapTools = [
@@ -70,16 +86,18 @@ const mapTools = [
 ---
 
 <BaseLayout
-  title="Léo 王淚物件地圖使用指南"
-  description="TotK Object Map 搜尋語法、欄位篩選與地圖工具使用指南。"
+  title={t.objMapBotwTitle}
+  description={t.objMapBotwDescription}
   active="resources"
+  lang={lang}
+  altPath="/resources/object-map/botw"
 >
   <div class="obj-guide">
     <div class="obj-hero-shell">
       <div class="obj-hero-canvas" aria-hidden="true">
         <img
           class="obj-hero-map"
-          src={href("/resource-guides/totk-object-map.jpg")}
+          src={href("/resource-guides/botw-object-map.jpg")}
           alt=""
           width="960"
           height="332"
@@ -98,20 +116,20 @@ const mapTools = [
       </div>
 
       <div class="obj-hero-inner">
-        <nav class="obj-breadcrumb" aria-label="麵包屑">
-          <a href={href("/home")}>首頁</a>
+        <nav class="obj-breadcrumb" aria-label={t.breadcrumbLabel}>
+          <a href={href("/home", lang)}>{t.breadcrumbHome}</a>
           <span>/</span>
-          <a href={href("/resources#totk")}>資料網站</a>
+          <a href={href("/resources#botw", lang)}>{t.navResources}</a>
           <span>/</span>
           <span aria-current="page">物件地圖</span>
         </nav>
 
         <div class="obj-hero-content">
           <div class="obj-kicker">
-            <svg viewBox={GAME_LOGOS.totk.viewBox} aria-hidden="true" set:html={GAME_LOGOS.totk.svg} />
-            <span>Tears of the Kingdom · Object Map Guide</span>
+            <svg viewBox={GAME_LOGOS.botw.viewBox} aria-hidden="true" set:html={GAME_LOGOS.botw.svg} />
+            <span>Breath of the Wild · Object Map Guide</span>
           </div>
-          <h1 id="guide-title">Léo 王淚物件地圖</h1>
+          <h1 id="guide-title">{t.objMapBotwTitle}</h1>
           <p>不只搜尋名稱。用欄位、條件與布林語法，把海拉魯縮小成你真正需要的答案。</p>
 
           <div class="obj-hero-meta">
@@ -122,19 +140,19 @@ const mapTools = [
 
           <div class="obj-hero-actions">
             <a class="obj-primary-action" href={MAP_URL} target="_blank" rel="noopener">
-              <span>開啟王淚物件地圖</span>
+              <span>前往曠野物件地圖</span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
               </svg>
             </a>
-            <a class="obj-secondary-action" href={href("/resources#totk")}>回到資料網站</a>
+            <a class="obj-secondary-action" href={href("/resources#botw", lang)}>{t.subpageBackToResources}</a>
           </div>
         </div>
 
         <div class="obj-coordinate" aria-hidden="true">
           <span>SCAN AREA</span>
-          <strong>SKY MAP</strong>
-          <span>X 1888 · Y -1218 · Z -1203.69</span>
+          <strong>MAIN FIELD</strong>
+          <span>X 817.79 · Y 115.95 · Z -1100.66</span>
         </div>
       </div>
     </section>
@@ -167,8 +185,12 @@ const mapTools = [
             </p>
             <div class="obj-step-examples">
               <div class="obj-step-example">
-                <code>Areaculling</code>
-                <span>隱藏區</span>
+                <code>Airwall</code>
+                <span>空氣牆</span>
+              </div>
+              <div class="obj-step-example">
+                <code>FldObj_RuinGuardian*Dynamic static:0</code>
+                <span>能觸發無限古代素材的動態廢棄守護者</span>
               </div>
             </div>
           </article>
@@ -186,11 +208,11 @@ const mapTools = [
           <article>
             <span class="obj-step-no">03</span>
             <h3>篩選</h3>
-            <p>加入 <code>欄位:</code> 可以篩選出更細節的結果，如「在哪張地圖」「會不會升級」</p>
+            <p>加入 <code>欄位:</code> 可以篩選出更細節的結果，如「裝備了什麼」「會不會升級」</p>
             <div class="obj-step-examples">
               <div class="obj-step-example">
-                <code>static:1</code>
-                <span>位於 Static 地圖單位的物件，0 則為 Dynamic</span>
+                <code>Moblin scale:0 equip:^Lynel</code>
+                <span>不會升級、裝備著名稱是 Lynel 開頭裝備的莫力布林</span>
               </div>
             </div>
           </article>
@@ -238,13 +260,13 @@ const mapTools = [
             <span>沒有裝備萊尼爾之弓</span>
             <code>NOT "Lynel Bow"</code>
           </button>
-          <button type="button" class="obj-token" data-query-token="scale:0" aria-pressed="false">
-            <span>不隨世界等級變化</span>
-            <code>scale:0</code>
+          <button type="button" class="obj-token" data-query-token="no_rankup:1" aria-pressed="false">
+            <span>不會升級</span>
+            <code>no_rankup:1</code>
           </button>
-          <button type="button" class="obj-token" data-query-token="static:1" aria-pressed="false">
-            <span>固定配置</span>
-            <code>static:1</code>
+          <button type="button" class="obj-token" data-query-token="hard:0" aria-pressed="false">
+            <span>普通模式</span>
+            <code>hard:0</code>
           </button>
         </div>
       </div>
@@ -257,7 +279,7 @@ const mapTools = [
             <span>SEARCH RECIPES · 語法參考</span>
             <h2 id="recipes-title">基本的搜尋語法</h2>
           </div>
-          <p>點擊每列右側圖示即可複製</p>
+          <p>點擊右側圖示即可複製</p>
         </div>
 
         <div class="obj-recipe-list">
@@ -287,12 +309,13 @@ const mapTools = [
             欄位語法固定使用 <code>COLUMN:QUERY</code>。不同欄位可以放在同一條搜尋式中，逐步縮小結果。
           </p>
           <div class="obj-filter-formula">
-            <code>^Construct scale:0 static:1</code>
-            <span>名稱開頭符合 + 不隨世界等級變化 + 固定配置</span>
+            <code>^Bokoblin scale:0 hard:0</code>
+            <span>名稱開頭符合 + 不升級 + 一般模式</span>
           </div>
         </div>
 
-        {/* 鍵帽牆＋檢視面板：欄位橫向排列一眼可見，說明固定顯示在下方面板。
+        {/* 鍵帽牆＋檢視面板：13 個欄位原本各是一列手風琴，收合也要 1200px 以上，
+            但點開只有一行範例。改成橫向鍵帽後整組一眼可見，說明固定顯示在下方面板。
             面板內容由 JS 從鍵帽自身的 data-* 換入，無 JS 時仍會顯示第一個欄位。 */}
         <div class="obj-filter-board">
           <div class="obj-filter-keys" role="tablist" aria-label="欄位篩選">
@@ -363,9 +386,8 @@ const mapTools = [
         <ul>
           <li>物件地圖會顯示未探索地區、內部名稱與任務物件，可能包含劇情或探索上的雷。</li>
           <li>搜尋結果預設有顯示數量上限；條件太寬時，請加入欄位或關鍵字再搜尋。</li>
-          <li>名稱中含有空格或特殊字元時，請用雙引號包住整個名稱，例如 <code>"Soldier Construct"</code>。</li>
-          <li>王淚版可用的欄位只有上方列出的 6 個；曠野版才有的 <code>hard:</code>、<code>equip:</code>、<code>drop:</code> 等欄位在這裡會直接回報無法解析搜尋式。</li>
-          <li>天空、地表與地底是三個獨立圖層，畫面上的圖層切換不會改變搜尋範圍；要限定範圍請用 <code>map:</code> 指定 Surface／Depths／Sky。</li>
+          <li>名稱中含有單引號時，請用雙引號包住整個名稱，例如 <code>"Traveler's Shield"</code>。</li>
+          <li>Master Mode、LastBoss Mode 等顯示設定不一定會改變搜尋結果，仍應在搜尋式中加入對應欄位。</li>
         </ul>
       </div>
     </section>
@@ -375,7 +397,7 @@ const mapTools = [
         <span>READY TO SEARCH</span>
         <h2>開始探索海拉魯</h2>
         <a href={MAP_URL} target="_blank" rel="noopener">
-          開啟王淚物件地圖
+          前往曠野物件地圖
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
           </svg>
@@ -864,7 +886,8 @@ const mapTools = [
       text-decoration-thickness: 2px;
     }
 
-    /* 每張卡片的範例：程式碼＋備註成對，之後要補多組範例時直接往容器裡加 */
+    /* 每張卡片的範例：程式碼＋備註成對，卡片一有兩組（Airwall／FldObj_RuinGuardian）
+       卡片二三各一組，所以用一個可重複的容器包起來，而不是固定寫死一組 */
     .obj-step-examples {
       display: flex;
       flex-direction: column;
@@ -1044,7 +1067,7 @@ const mapTools = [
       font-size: 11px;
     }
 
-    /* 取代原本固定顯示關鍵字的 code：改成可選的下拉選單，
+    /* 取代原本固定顯示「Lynel」的 code：改成可選的下拉選單，
        視覺上比照同一列右側 code chip 的字體與強調色 */
     .obj-base-select {
       flex: none;
@@ -1686,7 +1709,7 @@ const mapTools = [
     // 提示文字要跟著同一個斷點換方向用詞，不然窄螢幕會出現「請點擊右側內容」
     // 但右側其實什麼都沒有的錯誤指示
     const stackedQuery = window.matchMedia("(max-width: 960px)");
-    // 還沒選基本關鍵字、也沒點任何條件時顯示的提示文字
+    // 還沒選基本關鍵字、也沒點任何條件時顯示的提示文字（取代原本預設就秀出 Lynel 的做法）
     function queryPlaceholderText() {
       return stackedQuery.matches ? "請點擊下方內容" : "請點擊右側內容";
     }

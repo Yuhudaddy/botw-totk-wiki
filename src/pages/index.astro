@@ -4,6 +4,10 @@ import { href } from "../lib/url";
 
 // 入口頁本身就在 "/"，兩顆按鈕與站內導引一律指向攻略首頁 "/home"
 const wikiHomeUrl = href("/home");
+// 進站按鈕的目的地跟著入口頁選的語言走：日文 → 日文站，中文／英文 → 中文站
+// （站內目前沒有英文版，英文選項先併入中文站）。href 屬性本身仍是 wikiHomeUrl
+// （SSR 首繪、JS 未執行時的保底值），applyLang() 會依 data-lang 覆寫成對應語言。
+const wikiHomeUrlJa = href("/home", "ja");
 // 左上角 Logo 是通往 entrance-ocean 的隱藏門：預設不可點，
 // 解開標題彩蛋（依序點擊 Dazotikuy 的 y→u→D→a，倒拼出 Yuda）後才會亮起、變成連結
 const oceanEntranceUrl = href("/entrance-ocean");
@@ -249,7 +253,12 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
             </p>
 
             <div class="hero-actions" aria-label="Entrance actions">
-              <a class="hero-action hero-action-primary magnetic" href={wikiHomeUrl}>
+              <a
+                class="hero-action hero-action-primary magnetic"
+                href={wikiHomeUrl}
+                data-href-zh={wikiHomeUrl}
+                data-href-ja={wikiHomeUrlJa}
+              >
                 <span>Enter Shrine</span>
                 <span class="action-icon" aria-hidden="true">
                   <svg class="action-symbol action-symbol-default" viewBox="0 0 24 24" fill="none">
@@ -1804,6 +1813,15 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
           var actionLabels = document.querySelectorAll(".hero-action > span:first-child");
           if (actionLabels[0]) actionLabels[0].textContent = t.enter;
           if (actionLabels[1]) actionLabels[1].textContent = t.channel;
+
+          // 進站按鈕的目的地跟著語言走：日文 → /ja/home，中文／英文 → /home
+          var enterLink = document.querySelector(".hero-action-primary");
+          if (enterLink) {
+            var dest = lang === "ja"
+              ? enterLink.getAttribute("data-href-ja")
+              : enterLink.getAttribute("data-href-zh");
+            if (dest) enterLink.setAttribute("href", dest);
+          }
 
           if (langButton) langButton.setAttribute("aria-label", t.langLabel);
           langOptions.forEach(function (option) {

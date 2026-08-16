@@ -17,6 +17,7 @@ export interface TypeGroup {
   game: GameId;
   label: string;
   en: string;
+  ja?: string; // 日文版標題用的簡稱（例：botw → ブレワイ）；未填的遊戲日文頁沿用 label
   shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
   shortEn?: string; // 門扉卡片空間有限時使用的英文縮寫（未填則用 en）
   items: TypeItem[];
@@ -32,6 +33,7 @@ export const typeGroups: TypeGroup[] = [
     game: "botw",
     label: "曠野之息",
     en: "Breath of the Wild",
+    ja: "ブレワイ",
     shortEn: "Zelda BoTW",
     items: [
       { no: "01", zh: "風彈", en: "Windbomb", shortZh: "擊飛", shortEn: "Launch", family: "launch" },
@@ -70,6 +72,7 @@ export const typeGroups: TypeGroup[] = [
     game: "totk",
     label: "王國之淚",
     en: "Tears of the Kingdom",
+    ja: "ティアキン",
     shortEn: "Zelda ToTK",
     items: [
       { no: "01", zh: "基礎小程錯", en: "Basic Glitches", videosOnly: true },
@@ -161,3 +164,14 @@ export const gameList: { id: GameId; label: string }[] = typeGroups.map((g) => (
   id: g.game,
   label: g.shortLabel ?? g.label,
 }));
+
+/** 依語言選字的遊戲名稱；日文只有曠野之息／王國之淚有 ja，其餘遊戲沿用中文 label。 */
+export function gameLabelFor(g: TypeGroup, lang: "zh" | "ja", short = false): string {
+  if (lang === "ja" && g.ja) return g.ja;
+  return short ? (g.shortLabel ?? g.label) : g.label;
+}
+
+/** gameList 的語言感知版本，供篩選鈕等需要固定順序清單的地方使用。 */
+export function gameListFor(lang: "zh" | "ja"): { id: GameId; label: string }[] {
+  return typeGroups.map((g) => ({ id: g.game, label: gameLabelFor(g, lang, true) }));
+}

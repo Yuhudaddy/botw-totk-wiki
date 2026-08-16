@@ -5,11 +5,23 @@ import { href } from "../lib/url";
 import { quickNav, SITE } from "../data/site";
 import { typeGroups } from "../data/types";
 import youtubeData from "../data/youtube.json";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /home、日文 /ja/home
+export function getStaticPaths() {
+  return [
+    { params: { homePath: "home" }, props: { lang: "zh" as Lang } },
+    { params: { homePath: "ja/home" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
 
 const featured = youtubeData.featured;
 ---
 
-<BaseLayout active="home">
+<BaseLayout active="home" lang={lang} altPath="/home">
   {/* ===== 首頁導覽 ===== */}
   <section class="home-hero-shell">
     <div class="home-hero mx-auto max-w-[1244px] px-8 pt-[40px]">
@@ -17,32 +29,32 @@ const featured = youtubeData.featured;
         <div class="home-hero-copy">
           <div class="home-kicker">
             <span class="home-kicker-line"></span>
-            技巧索引 · The Technique & Glitch Index
+            {t.homeEyebrow}
           </div>
 
           <h1 class="home-title font-serif text-ink">
-            <span>Yuda頻道的</span>
-            <span>攻略百科</span>
+            <span>{t.homeHeadingLine1}</span>
+            <span>{t.homeHeadingLine2}</span>
           </h1>
 
           <p class="home-description text-text">
-            攻略來源和解說出自 Yuda 的 YouTube 頻道
+            {t.homeHeroLeadPrefix}
             <a href={SITE.youtube} target="_blank" rel="noopener">@zb_yuhudaddy</a>。
           </p>
 
-          <div class="home-actions" aria-label="快速瀏覽系列">
-            <a href={href("/videos?game=totk")} class="home-action home-action-primary">
-              瀏覽王國之淚
+          <div class="home-actions" aria-label={t.homeQuickBrowseLabel}>
+            <a href={href("/videos?game=totk", lang)} class="home-action home-action-primary">
+              {t.homeBrowseTotk}
               <span aria-hidden="true">→</span>
             </a>
-            <a href={href("/videos?game=botw")} class="home-action home-action-secondary">
-              瀏覽曠野之息
+            <a href={href("/videos?game=botw", lang)} class="home-action home-action-secondary">
+              {t.homeBrowseBotw}
               <span aria-hidden="true">→</span>
             </a>
           </div>
 
           {/* 由 typeGroups 產生，新增遊戲時會自動出現，不需手動補 */}
-          <div class="home-series" aria-label="收錄遊戲系列">
+          <div class="home-series" aria-label={t.homeSeriesLabel}>
             {typeGroups.map((group) => <span>{group.game.toUpperCase()}</span>)}
           </div>
         </div>
@@ -68,10 +80,10 @@ const featured = youtubeData.featured;
       <aside class="home-latest" aria-labelledby="latest-heading">
         <div class="home-latest-header">
           <div>
-            <p id="latest-heading">最新整理</p>
+            <p id="latest-heading">{t.homeLatestHeading}</p>
             <span>LATEST</span>
           </div>
-          <a href={href("/videos")} class="home-latest-all">全部影片 <span aria-hidden="true">→</span></a>
+          <a href={href("/videos", lang)} class="home-latest-all">{t.homeLatestAll} <span aria-hidden="true">→</span></a>
         </div>
         <ol class="home-latest-list">
           {
@@ -97,13 +109,13 @@ const featured = youtubeData.featured;
       </aside>
     </div>
 
-    <nav class="home-section-nav" aria-label="首頁段落">
+    <nav class="home-section-nav" aria-label={t.homeSectionNavLabel}>
       <div class="mx-auto flex max-w-[1244px] items-center px-8">
         <span class="home-section-id">HOME / 01</span>
         <div class="home-section-links">
-          <a href="#featured">最近熱門</a>
-          <a href="#explore">從哪開始</a>
-          <a href="#about">關於本站</a>
+          <a href="#featured">{t.homeNavFeatured}</a>
+          <a href="#explore">{t.homeNavExplore}</a>
+          <a href="#about">{t.homeNavAbout}</a>
         </div>
       </div>
     </nav>
@@ -113,11 +125,11 @@ const featured = youtubeData.featured;
   <section id="featured" class="home-section mx-auto max-w-[1244px] px-8 py-[84px]">
     <div class="home-section-heading">
       <div>
-        <div class="home-section-kicker">近期整理 · Featured</div>
-        <h2 class="home-section-title font-serif text-ink">最近熱門</h2>
+        <div class="home-section-kicker">{t.homeFeaturedKicker}</div>
+        <h2 class="home-section-title font-serif text-ink">{t.homeFeaturedTitle}</h2>
       </div>
-      <a href={href("/videos")} class="home-text-link">
-        查看全部影片 <span aria-hidden="true">→</span>
+      <a href={href("/videos", lang)} class="home-text-link">
+        {t.homeFeaturedAll} <span aria-hidden="true">→</span>
       </a>
     </div>
     <div class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
@@ -129,10 +141,10 @@ const featured = youtubeData.featured;
   <section id="explore" class="home-explore border-y border-border-soft bg-surface">
     <div class="mx-auto grid max-w-[1244px] grid-cols-[0.72fr_1.28fr] gap-16 px-8 py-[84px]">
       <div class="home-explore-intro">
-        <div class="home-section-kicker">快速導覽 · Explore</div>
-        <h2 class="home-section-title font-serif text-ink">從哪開始</h2>
+        <div class="home-section-kicker">{t.homeExploreKicker}</div>
+        <h2 class="home-section-title font-serif text-ink">{t.homeExploreTitle}</h2>
         <p class="mt-5 max-w-[25ch] text-[15px] leading-[1.8] text-text">
-          依遊戲、主題與操作目的挑一個入口；每一頁都會持續補上實作步驟與對應影片。
+          {t.homeExploreIntro}
         </p>
       </div>
 
@@ -148,7 +160,7 @@ const featured = youtubeData.featured;
                 {/* 桌面（有滑鼠）hover 感應區：左右各半，觸控裝置隱藏改用下方按鈕 */}
                 {q.links.map((l, i) => (
                   <a
-                    href={href(l.path)}
+                    href={href(l.path, lang)}
                     class={`home-nav-zone home-nav-zone-${i + 1}`}
                     data-tone={l.tone}
                     aria-label={l.label}
@@ -168,7 +180,7 @@ const featured = youtubeData.featured;
                 )}
                 <div class="home-nav-links">
                   {q.links.map((l) => (
-                    <a href={href(l.path)} class="home-nav-link-btn">
+                    <a href={href(l.path, lang)} class="home-nav-link-btn">
                       {l.label}
                       <span aria-hidden="true">→</span>
                     </a>
@@ -176,7 +188,7 @@ const featured = youtubeData.featured;
                 </div>
               </div>
             ) : (
-              <a href={href(q.path!)} class="home-nav-card">
+              <a href={href(q.path!, lang)} class="home-nav-card">
                 <span class="home-nav-no">{q.no}</span>
                 <span class="home-nav-series">{q.series}</span>
                 <span class="home-nav-title font-serif text-ink">{q.title}</span>
@@ -193,13 +205,13 @@ const featured = youtubeData.featured;
   <section id="about" class="mx-auto max-w-[1244px] px-8 py-[76px]">
     <div class="home-about">
       <div class="home-about-meta">
-        <div class="home-section-kicker">關於本站 · Note</div>
-        <span>持續整理中</span>
+        <div class="home-section-kicker">{t.homeAboutKicker}</div>
+        <span>{t.homeAboutBadge}</span>
       </div>
       <p class="home-about-copy text-text">
-        本站為個人攻略筆記，內容會持續補充。技巧多與特定遊戲版本相關，請務必確認每篇頁面標註的「適用版本」。歡迎到
-        <a href={SITE.youtube} target="_blank" rel="noopener">YouTube 頻道</a>
-        訂閱與留言交流。
+        {t.homeAboutCopyBefore}
+        <a href={SITE.youtube} target="_blank" rel="noopener">{t.homeAboutYoutubeLink}</a>
+        {t.homeAboutCopyAfter}
       </p>
     </div>
   </section>

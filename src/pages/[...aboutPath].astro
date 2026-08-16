@@ -1,17 +1,29 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE } from "../data/site";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /about、日文 /ja/about
+export function getStaticPaths() {
+  return [
+    { params: { aboutPath: "about" }, props: { lang: "zh" as Lang } },
+    { params: { aboutPath: "ja/about" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
 ---
 
-<BaseLayout title="關於神廟" active="about">
+<BaseLayout title={t.navAbout} active="about" lang={lang} altPath="/about">
   <section class="mx-auto max-w-[820px] px-8 pb-[84px] pt-12">
-    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">關於神廟 · About Dazotikuy</div>
-    <h1 class="mb-2 mt-3.5 font-serif text-[26px] sm:text-[34px] font-medium text-ink">關於 達妯・提庫依神廟</h1>
+    <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{t.aboutEyebrow}</div>
+    <h1 class="mb-2 mt-3.5 font-serif text-[26px] sm:text-[34px] font-medium text-ink">{t.aboutHeading}</h1>
     <p class="mb-6 text-[13px] text-muted">本神廟名稱的由來為 Yukito's Dad 的倒反詞，本站資訊來自本神廟的導師 Yuda 的 YouTube 頻道。</p>
 
     {/* 簡介 */}
     <div class="rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
-      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">本站簡介 · Profile</div>
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionProfile}</div>
       <p class="text-base leading-[1.9] text-text">
         曾為日本社畜，玩遊戲玩到研究遊戲的玩家。喜歡把學會的東西筆記下來，做成影片放在頻道上做紀錄，剛好作為專門分享說明書和攻略本上找不到的內容的遊戲頻道，給需要的玩家和同好。<br />
         2023/11/30 兒子（Yukito）出生，小孩子21:00~23:00才睡，影片更新速度降低請見諒。<br />
@@ -21,7 +33,7 @@ import { SITE } from "../data/site";
 
     {/* 主要遊玩 */}
     <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
-      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">主要遊玩 · Main Games</div>
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionGames}</div>
       <ol class="space-y-1.5 text-[15px] leading-[1.8] text-text">
         <li>① 薩爾達傳說（2017年《曠野之息》以後的作品）</li>
         <li>② 寶可夢</li>
@@ -35,7 +47,7 @@ import { SITE } from "../data/site";
 
     {/* 語言 */}
     <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
-      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">語言 · Languages</div>
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionLanguages}</div>
       <ul class="space-y-1.5 text-[15px] leading-[1.8] text-text">
         <li>・ 主要語言為中文（繁體中文／簡體中文），粵語不太會。</li>
         <li>・ Speak English（I always discuss glitches with English-speakers）</li>
@@ -45,7 +57,7 @@ import { SITE } from "../data/site";
 
     {/* 關於 Yuhu */}
     <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
-      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">關於 Yuhu</div>
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionYuhu}</div>
       <p class="text-[15px] leading-[1.8] text-text">
         大頭貼的黃金長毛臘腸狗是 Yuhu。<br />
         她的生日在《曠野之息》影片的
@@ -60,7 +72,7 @@ import { SITE } from "../data/site";
 
     {/* 連結 */}
     <div class="mt-8">
-      <div class="mb-4 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">連結 · Links</div>
+      <div class="mb-4 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionLinks}</div>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 
         {/* YouTube */}

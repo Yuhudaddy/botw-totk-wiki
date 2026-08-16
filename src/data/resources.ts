@@ -35,6 +35,7 @@ export interface ResourceGame {
   game: "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
   label: string;
   en: string;
+  ja?: string; // 日文版標題用的簡稱（例：botw → ブレワイ）；未填的遊戲日文頁沿用 label
   shortLabel?: string; // 門扉卡片空間有限時使用的縮寫（未填則用 label）
   shortEn?: string; // 門扉卡片空間有限時使用的英文縮寫（未填則用 en）
   categories: ResourceCategory[]; // 空陣列 = 尚未整理，頁面顯示「整理中」
@@ -50,6 +51,7 @@ export const resourceGames: ResourceGame[] = [
     game: "botw",
     label: "曠野之息",
     en: "Breath of the Wild",
+    ja: "ブレワイ",
     shortEn: "Zelda BoTW",
     categories: [
       {
@@ -273,6 +275,7 @@ export const resourceGames: ResourceGame[] = [
     game: "totk",
     label: "王國之淚",
     en: "Tears of the Kingdom",
+    ja: "ティアキン",
     shortEn: "Zelda ToTK",
     categories: [
       {

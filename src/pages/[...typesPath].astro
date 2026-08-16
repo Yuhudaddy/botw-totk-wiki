@@ -3,12 +3,32 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { href } from "../lib/url";
 import { typeGroups } from "../data/types";
 import { GAME_LOGOS } from "../data/gameLogos";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /types、日文 /ja/types
+export function getStaticPaths() {
+  return [
+    { params: { typesPath: "types" }, props: { lang: "zh" as Lang } },
+    { params: { typesPath: "ja/types" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
+// 日文版遊戲名稱：目前只有曠野之息／王國之淚有日文簡稱（types.ts 的 group.ja），
+// 其餘遊戲的日文頁沿用中文名稱，等資料層翻譯補齊後這裡不用再改。
+const groupLabel = (group: (typeof typeGroups)[number]) =>
+  (lang === "ja" && group.ja) || group.label;
+const groupShortLabel = (group: (typeof typeGroups)[number]) =>
+  (lang === "ja" && group.ja) || group.shortLabel || group.label;
 ---
 
 <BaseLayout
-  title="主題解說"
-  description="依系列瀏覽 Yuda 頻道的曠野之息與王國之淚攻略內容。"
+  title={t.navTypes}
+  description={t.typesDescription}
   active="types"
+  lang={lang}
+  altPath="/types"
 >
   {/* 標題 */}
   <section class="border-b border-border-soft">
@@ -16,22 +36,22 @@ import { GAME_LOGOS } from "../data/gameLogos";
       <div class="r-types-hero-content">
         <div>
           <div class="mb-[22px] flex items-center gap-2.5 text-[13px] text-muted">
-            <a href={href("/home")} class="no-underline text-muted">首頁</a>
+            <a href={href("/home", lang)} class="no-underline text-muted">{t.breadcrumbHome}</a>
             <span>/</span>
-            <span class="text-ink">主題解說</span>
+            <span class="text-ink">{t.navTypes}</span>
           </div>
           <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
-            Browse by Series · 系列索引
+            {t.typesEyebrow}
           </div>
           <h1 class="r-types-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
-            主題解說
+            {t.navTypes}
           </h1>
           <p class="r-types-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
-            各遊戲的各種主題的攻略、原理、步驟說明。
+            {t.typesIntro}
           </p>
         </div>
-        <a href={href("/types/glossary")} class="r-terminology-link ring-hover no-underline">
-          <span>術語對照</span>
+        <a href={href("/types/glossary", lang)} class="r-terminology-link ring-hover no-underline">
+          <span>{t.typesGlossaryLink}</span>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"></path>
           </svg>
@@ -61,7 +81,7 @@ import { GAME_LOGOS } from "../data/gameLogos";
             <div class="min-w-0">
               <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{group.shortEn ?? group.en}</div>
               <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
-                {group.shortLabel ?? group.label}
+                {groupShortLabel(group)}
               </div>
             </div>
           </button>
@@ -92,15 +112,15 @@ import { GAME_LOGOS } from "../data/gameLogos";
                 {group.en}
               </div>
               <h2 class="r-type-group-title mt-1 truncate font-serif text-[28px] font-medium text-ink">
-                {group.label}
+                {groupLabel(group)}
               </h2>
             </div>
           </div>
           <a
-            href={href(`/videos?game=${group.game}`)}
+            href={href(`/videos?game=${group.game}`, lang)}
             class="whitespace-nowrap text-sm text-accent no-underline"
           >
-            全部影片 →
+            {t.typesAllVideos}
           </a>
         </div>
 
@@ -108,7 +128,7 @@ import { GAME_LOGOS } from "../data/gameLogos";
           <div class="r-type-grid grid grid-cols-[repeat(auto-fill,minmax(248px,1fr))] gap-[18px]">
             {group.items.filter((item) => !item.hideFromGrid).map((item) => (
               <a
-                href={href(`/types/${group.game}-${item.no}`)}
+                href={href(`/types/${group.game}-${item.no}`, lang)}
                 class="group flex min-w-0 flex-col rounded-2xl border border-border-soft bg-surface px-4 py-3.5 no-underline transition-colors hover:border-brand"
               >
                 <div class="flex min-w-0 items-baseline gap-2">
@@ -128,9 +148,9 @@ import { GAME_LOGOS } from "../data/gameLogos";
               stroke="none"
               set:html={GAME_LOGOS[group.game].svg}
             />
-            <p class="font-serif text-xl font-medium text-ink">內容整理中</p>
+            <p class="font-serif text-xl font-medium text-ink">{t.typesEmptyTitle}</p>
             <p class="text-sm text-muted">
-              {group.shortLabel ?? group.label}的主題解說還在整理，敬請期待。
+              {t.typesEmptyHintTemplate.replace("{game}", groupShortLabel(group))}
             </p>
           </div>
         )}

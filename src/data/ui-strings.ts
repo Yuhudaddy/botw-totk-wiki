@@ -43,6 +43,8 @@ const zh = {
   sectionNotes: "注意事項",
   sectionTerms: "名詞說明",
   sectionVideos: "相關影片 · Videos",
+  /** {item.zh} 之後的固定字尾，組成「○○ 相關影片」這種標題；技巧名稱本身不翻譯 */
+  relatedVideosSuffix: "相關影片",
   sectionIntro: "簡介與說明",
   /** 沒有填寫 principle 時的預設說明句；{name} 會被替換成技巧中文名稱 */
   principleFallbackTemplate: "本系列說明「{name}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。",
@@ -124,6 +126,132 @@ const zh = {
   flowMapSteps:
     "點擊流程步驟前的圓形按鈕：地圖顯示該步驟的地點與移動軌跡（再點一次取消）",
 
+  // 兩個手寫攻略專頁（Q&A／Zuggle 深入解說）
+  // 同樣只收容器層：內文是深度技術問答與機制解說，翻錯比不翻更糟，
+  // 交由站長本人補上，目前日文頁的問答內容沿用中文。
+  faqTitle: "轉存格常見問題 Q&A",
+  faqDescription: "《轉存格》IST、DIC、WMC、PE 37個常見問題與 Yuda 的解答，整理自會員質問箱。",
+  zuggleTitle: "深入了解 Zuggle",
+  zuggleDescription: "Zuggle 系列技巧的原理、變體與實務應用深入解說。",
+
+  // 資料網站的三個子頁（IST 模擬器／藍圖分享／物件地圖）
+  // 只收「容器層」：標題、麵包屑、回上頁按鈕。工具本身的操作說明與教學內容
+  // 是攻略知識（含 PE／Smuggle 等社群專有名詞），翻錯比不翻更糟，
+  // 交由站長本人補上日文版，目前日文頁的教學內文沿用中文。
+  breadcrumbLabel: "麵包屑",
+  subpageBackToResources: "回到資料網站",
+  istTitle: "轉存格(IST)模擬器",
+  istDescription: "轉存格（IST）模擬器的繁體中文快速使用指南：腳本輸入方式、常用指令、物品語法與可直接複製的範例。",
+  schematicsTitle: "藍圖分享",
+  schematicsDescription: "《薩爾達傳說 王國之淚》藍圖 QR Code 分享庫，依實用與有趣分類整理。",
+  schematicsBackToTotk: "回到王國之淚資料",
+  objMapBotwTitle: "Léo 曠野物件地圖",
+  objMapBotwDescription: "BotW Object Map 搜尋語法、欄位篩選與地圖工具使用指南。",
+  objMapTotkTitle: "Léo 王淚物件地圖",
+  objMapTotkDescription: "TotK Object Map 搜尋語法、欄位篩選與地圖工具使用指南。",
+
+  // 資料網站頁（/resources）
+  resourcesDescription: "曠野之息與王國之淚的地圖、數據表、文件與工具連結總整理。",
+  resourcesEyebrow: "Resource Library · 資料庫",
+  resourcesIntro: "攻略本上找不到、最完整的遊戲資料庫。",
+  resourcesSearchPlaceholder: "搜尋資源…",
+  resourcesKindRecommended: "站長推薦",
+  resourcesKindMap: "互動地圖",
+  resourcesKindData: "數據表格",
+  resourcesKindDoc: "機制文件",
+  resourcesKindSite: "攻略網站",
+  resourcesEmptyTitle: "資源整理中",
+  /** {game} 會被替換成遊戲名稱 */
+  resourcesEmptyHintTemplate: "{game}的地圖與資料連結還在蒐集彙整，敬請期待。",
+  /** 搜尋結果計數（client script 用，透過 data 屬性傳遞）；{n} 為符合筆數 */
+  resourcesCountTemplate: "{n} 筆符合",
+  resourcesLangZh: "中文",
+  resourcesLangJa: "日文",
+  resourcesLangEn: "英文",
+
+  // 首頁（/home）
+  homeEyebrow: "技巧索引 · The Technique & Glitch Index",
+  homeHeadingLine1: "Yuda頻道的",
+  homeHeadingLine2: "攻略百科",
+  /** 這句後面會接 YouTube 頻道連結，因此拆成前後兩段，不是單一字串 */
+  homeHeroLeadPrefix: "攻略來源和解說出自 Yuda 的 YouTube 頻道",
+  homeQuickBrowseLabel: "快速瀏覽系列",
+  homeBrowseTotk: "瀏覽王國之淚",
+  homeBrowseBotw: "瀏覽曠野之息",
+  homeSeriesLabel: "收錄遊戲系列",
+  homeLatestHeading: "最新整理",
+  homeLatestAll: "全部影片",
+  homeSectionNavLabel: "首頁段落",
+  homeNavFeatured: "最近熱門",
+  homeNavExplore: "從哪開始",
+  homeNavAbout: "關於本站",
+  homeFeaturedKicker: "近期整理 · Featured",
+  homeFeaturedTitle: "最近熱門",
+  homeFeaturedAll: "查看全部影片",
+  homeExploreKicker: "快速導覽 · Explore",
+  homeExploreTitle: "從哪開始",
+  homeExploreIntro: "依遊戲、主題與操作目的挑一個入口；每一頁都會持續補上實作步驟與對應影片。",
+  homeAboutKicker: "關於本站 · Note",
+  homeAboutBadge: "持續整理中",
+  /** 這段中間夾著 YouTube 連結，故拆成前後兩半 */
+  homeAboutCopyBefore:
+    "本站為個人攻略筆記，內容會持續補充。技巧多與特定遊戲版本相關，請務必確認每篇頁面標註的「適用版本」。歡迎到",
+  homeAboutYoutubeLink: "YouTube 頻道",
+  homeAboutCopyAfter: "訂閱與留言交流。",
+
+  // 術語對照頁（/types/glossary）
+  glossaryDescription: "對照本站六款遊戲的縮寫、英文原名、日文與中文譯名。",
+  glossaryEyebrow: "Reference Index · 術語對照",
+  glossaryIntro: "對照各遊戲的縮寫、英文原名、日文與中文譯名；點開條目可看說明與對應的主題頁。",
+  glossaryFilterLabel: "依遊戲篩選術語",
+  glossaryFilterAll: "全部",
+  glossarySearchPlaceholder: "搜尋縮寫、英文、日文或中文…",
+  /** {n} 會被替換成條目數量 */
+  glossaryCountTemplate: "共 {n} 條",
+  /** 篩選後的計數；{shown} 為符合筆數、{total} 為總筆數 */
+  glossaryCountFilteredTemplate: "{shown} / {total} 條",
+  glossaryColAbbr: "縮寫",
+  glossaryColZh: "中文",
+  glossaryEmpty: "找不到符合條件的術語，請改用其他關鍵字或遊戲標籤。",
+  glossaryRailLabel: "字母跳轉",
+
+  // 關於頁（/about）
+  // 只收「容器層」的標題：自我介紹的內文是站長本人的語氣與人格，
+  // 交由本人親自撰寫日文版，不由翻譯代筆（頁面上那段內文目前中日共用）。
+  aboutEyebrow: "關於神廟 · About Dazotikuy",
+  aboutHeading: "關於 達妯・提庫依神廟",
+  aboutSectionProfile: "本站簡介 · Profile",
+  aboutSectionGames: "主要遊玩 · Main Games",
+  aboutSectionLanguages: "語言 · Languages",
+  aboutSectionYuhu: "關於 Yuhu",
+  aboutSectionLinks: "連結 · Links",
+
+  // 主題解說列表頁（/types）
+  typesDescription: "依系列瀏覽 Yuda 頻道的曠野之息與王國之淚攻略內容。",
+  typesEyebrow: "Browse by Series · 系列索引",
+  typesIntro: "各遊戲的各種主題的攻略、原理、步驟說明。",
+  typesGlossaryLink: "術語對照",
+  typesAllVideos: "全部影片 →",
+  typesEmptyTitle: "內容整理中",
+  /** {game} 會被替換成遊戲名稱 */
+  typesEmptyHintTemplate: "{game}的主題解說還在整理，敬請期待。",
+
+  // 影片索引頁（/videos）
+  videosEyebrow: "影片索引 · Video Index",
+  videosHeading: "搜尋影片",
+  videosIntro: "輸入關鍵字搜尋教學頁與相關影片。多個關鍵字以空格分隔可疊加篩選，例如「偷襲 曠野」。",
+  videosSearchPlaceholder: "搜尋教學或影片，例如「轉存格」「偷襲 曠野」…",
+  videosFilterAll: "全部",
+  videosEmptyTitle: "找不到符合的內容",
+  videosEmptyHint: "換個關鍵字，或清除篩選試試。",
+  /** 動態渲染用（透過 define:vars 傳進 client script）；{n} 會被替換成影片總數 */
+  videosTotalHintTemplate: "共 {n} 支影片，輸入關鍵字開始搜尋。",
+  videosFilterLabel: "目前篩選：",
+  /** {n} 會被替換成搜尋結果數量 */
+  videosResultCountTemplate: "影片（{n}）",
+  videosViewList: "列表",
+  videosViewGrid: "格狀",
+
   // 其他
   askOnYoutube: "如有疑問，歡迎前往 YouTube 頻道留言詢問。",
 } as const;
@@ -156,6 +284,7 @@ const ja: Record<keyof typeof zh, string> = {
   sectionNotes: "注意事項",
   sectionTerms: "用語解説",
   sectionVideos: "関連動画 · Videos",
+  relatedVideosSuffix: "関連動画",
   sectionIntro: "概要と解説",
   principleFallbackTemplate: "このシリーズでは「{name}」の基本概念と適用範囲を解説する。操作前にゲームのバージョンを確認すること。一部のテクニックは特定のバージョンでのみ使用可能。",
   sectionModel: "マップモデル",
@@ -226,6 +355,110 @@ const ja: Record<keyof typeof zh, string> = {
     "マップ上部のボタン：レイヤー切り替え（地上／空島）、「全体」で全体表示に戻る",
   flowMapSteps:
     "手順の前にある丸ボタンをクリック：その手順の地点と移動ルートをマップに表示（もう一度で解除）",
+
+  faqTitle: "インベントリ転送 よくある質問 Q&A",
+  faqDescription: "インベントリ転送（IST・DIC・WMC・PE）に関する37件のよくある質問と Yuda の回答。メンバー質問箱より。",
+  zuggleTitle: "Zuggle 詳細解説",
+  zuggleDescription: "Zuggle 系テクニックの仕組み・派生・実践的な応用の詳細解説。",
+
+  breadcrumbLabel: "パンくずリスト",
+  subpageBackToResources: "資料一覧に戻る",
+  istTitle: "インベントリ転送（IST）シミュレーター",
+  istDescription: "インベントリ転送（IST）シミュレーターの使い方ガイド：スクリプトの入力方法、よく使うコマンド、アイテム記法、コピーして使えるサンプル。",
+  schematicsTitle: "ブループリント共有",
+  schematicsDescription: "『ゼルダの伝説 ティアーズ オブ ザ キングダム』のブループリント QR コード集。実用・おもしろの分類で整理。",
+  schematicsBackToTotk: "ティアキンの資料に戻る",
+  objMapBotwTitle: "Léo ブレワイ オブジェクトマップ",
+  objMapBotwDescription: "BotW Object Map の検索記法・フィールド絞り込み・マップツールの使い方ガイド。",
+  objMapTotkTitle: "Léo ティアキン オブジェクトマップ",
+  objMapTotkDescription: "TotK Object Map の検索記法・フィールド絞り込み・マップツールの使い方ガイド。",
+
+  resourcesDescription: "ブレワイ・ティアキンのマップ、データ表、解析資料、ツールのリンク集。",
+  resourcesEyebrow: "Resource Library · 資料庫",
+  resourcesIntro: "攻略本には載っていない、最も充実したゲームデータベース。",
+  resourcesSearchPlaceholder: "資料を検索…",
+  resourcesKindRecommended: "管理人おすすめ",
+  resourcesKindMap: "インタラクティブマップ",
+  resourcesKindData: "データ表",
+  resourcesKindDoc: "解析資料",
+  resourcesKindSite: "攻略サイト",
+  resourcesEmptyTitle: "準備中",
+  resourcesEmptyHintTemplate: "{game}のマップ・資料リンクは収集中です。しばらくお待ちください。",
+  resourcesCountTemplate: "{n} 件該当",
+  resourcesLangZh: "中国語",
+  resourcesLangJa: "日本語",
+  resourcesLangEn: "英語",
+
+  homeEyebrow: "テクニック索引 · The Technique & Glitch Index",
+  homeHeadingLine1: "Yuda チャンネルの",
+  homeHeadingLine2: "攻略事典",
+  homeHeroLeadPrefix: "攻略の出典と解説は Yuda の YouTube チャンネルより",
+  homeQuickBrowseLabel: "シリーズをすばやく閲覧",
+  homeBrowseTotk: "ティアキンを見る",
+  homeBrowseBotw: "ブレワイを見る",
+  homeSeriesLabel: "収録シリーズ",
+  homeLatestHeading: "最新の整理",
+  homeLatestAll: "すべての動画",
+  homeSectionNavLabel: "ページ内セクション",
+  homeNavFeatured: "最近の人気",
+  homeNavExplore: "どこから始める",
+  homeNavAbout: "このサイトについて",
+  homeFeaturedKicker: "最近の整理 · Featured",
+  homeFeaturedTitle: "最近の人気",
+  homeFeaturedAll: "すべての動画を見る",
+  homeExploreKicker: "クイックナビ · Explore",
+  homeExploreTitle: "どこから始める",
+  homeExploreIntro:
+    "ゲーム・テーマ・目的から入口を選んでください。各ページには手順と対応する動画を順次追加していきます。",
+  homeAboutKicker: "このサイトについて · Note",
+  homeAboutBadge: "随時更新中",
+  homeAboutCopyBefore:
+    "当サイトは個人の攻略ノートで、内容は随時追加していきます。テクニックはゲームのバージョンに依存するものが多いため、各ページに記載の「対応バージョン」を必ずご確認ください。ご質問は",
+  homeAboutYoutubeLink: "YouTube チャンネル",
+  homeAboutCopyAfter: "の登録・コメントでお気軽にどうぞ。",
+
+  glossaryDescription: "当サイトで扱う6作品の略称・英語名・日本語名・中国語名の対照表です。",
+  glossaryEyebrow: "Reference Index · 用語対照",
+  glossaryIntro: "各ゲームの略称・英語名・日本語名・中国語名の対照表。項目を開くと解説と対応するテーマページを表示します。",
+  glossaryFilterLabel: "ゲームで絞り込む",
+  glossaryFilterAll: "すべて",
+  glossarySearchPlaceholder: "略称・英語・日本語・中国語で検索…",
+  glossaryCountTemplate: "全 {n} 件",
+  glossaryCountFilteredTemplate: "{shown} / {total} 件",
+  glossaryColAbbr: "略称",
+  glossaryColZh: "中国語",
+  glossaryEmpty: "条件に合う用語が見つかりません。別のキーワードやゲームタグをお試しください。",
+  glossaryRailLabel: "アルファベット移動",
+
+  aboutEyebrow: "この祠について · About Dazotikuy",
+  aboutHeading: "ダゾティクイの祠について",
+  aboutSectionProfile: "サイト紹介 · Profile",
+  aboutSectionGames: "主なプレイ作品 · Main Games",
+  aboutSectionLanguages: "言語 · Languages",
+  aboutSectionYuhu: "Yuhu について",
+  aboutSectionLinks: "リンク · Links",
+
+  typesDescription: "Yuda チャンネルのブレワイ・ティアキン攻略をシリーズ別に閲覧できます。",
+  typesEyebrow: "Browse by Series · シリーズ索引",
+  typesIntro: "各ゲームのテーマ別攻略・仕組み・手順の解説。",
+  typesGlossaryLink: "用語対照",
+  typesAllVideos: "すべての動画 →",
+  typesEmptyTitle: "準備中",
+  typesEmptyHintTemplate: "{game}のテーマ解説は準備中です。しばらくお待ちください。",
+
+  videosEyebrow: "動画検索 · Video Index",
+  videosHeading: "動画を探す",
+  videosIntro:
+    "キーワードで解説ページと関連動画を検索できます。スペース区切りで複数指定すると絞り込みが重なります（例：「不意打ち ブレワイ」）。",
+  videosSearchPlaceholder: "解説や動画を検索（例：「インベントリ転送」「不意打ち ブレワイ」）…",
+  videosFilterAll: "すべて",
+  videosEmptyTitle: "該当する内容が見つかりません",
+  videosEmptyHint: "キーワードを変えるか、絞り込みを解除してみてください。",
+  videosTotalHintTemplate: "全 {n} 本の動画があります。キーワードを入力して検索してください。",
+  videosFilterLabel: "絞り込み中：",
+  videosResultCountTemplate: "動画（{n}）",
+  videosViewList: "リスト",
+  videosViewGrid: "グリッド",
 
   askOnYoutube:
     "ご不明な点は YouTube チャンネルのコメントでお気軽にお尋ねください。",

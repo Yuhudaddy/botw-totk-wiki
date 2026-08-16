@@ -1,42 +1,50 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import MethodPanelBody from "../../components/MethodPanelBody.astro";
-import Model3DViewer from "../../components/Model3DViewer.astro";
-import FlowMapViewer from "../../components/FlowMapViewer.astro";
-import LaunchFamilyNav from "../../components/LaunchFamilyNav.astro";
-import { href, ytThumb, ytWatch, MEDIA_BASE } from "../../lib/url";
-import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../../data/types";
-import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../../data/type-content";
-import { uiStrings, type Lang } from "../../data/ui-strings";
-import { resolveTypeContent } from "../../lib/i18n-content";
-import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml, principleSectionsHtml } from "../../lib/method-format";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import MethodPanelBody from "../components/MethodPanelBody.astro";
+import Model3DViewer from "../components/Model3DViewer.astro";
+import FlowMapViewer from "../components/FlowMapViewer.astro";
+import LaunchFamilyNav from "../components/LaunchFamilyNav.astro";
+import { href, ytThumb, ytWatch, MEDIA_BASE } from "../lib/url";
+import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../data/types";
+import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../data/type-content";
+import { uiStrings, type Lang } from "../data/ui-strings";
+import { resolveTypeContent } from "../lib/i18n-content";
+import { parseAccent, parseStep, stepParts, parseName, principleHtml, principleExtraHtml, principleSectionsHtml } from "../lib/method-format";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 // 同一份模板產出中日兩種路徑：
-//   中文 /types/totk-11、日文 /types/ja/totk-11
-// 用 rest 參數（[...id]）才吃得到帶斜線的 ja/xxx；中文網址維持原樣不變。
+//   中文 /types/totk-11、日文 /ja/types/totk-11
+// 語言擺在路徑最前面（而不是 /types/ja/...），是因為 home／videos／resources
+// 這些頁面沒有共同的父路徑，語言前綴才是唯一能一條規則吃遍全站的形式；
+// hreflang 與搜尋引擎辨識語言版本，也是對前綴形式支援最好。
+//
+// 這個檔案放在 src/pages/ 根層級而非 types/ 底下，才有辦法自由決定完整路徑
+// （放在 types/ 底下的話，Astro 會固定幫你補上 /types 前綴，就只能產出
+// /types/ja/... 這種語言夾在中間的形式）。
+//
 // 日文版是漸進式的：ui-strings 決定外殼文字，攻略內文尚未翻譯時沿用中文，
 // 所以日文頁在翻譯補齊前會是「外殼日文、內文中文」的混合狀態。
 export function getStaticPaths() {
   const paths: {
-    params: { id: string };
+    params: { typePath: string };
     props: { group: TypeGroup; item: TypeItem; lang: Lang };
   }[] = [];
   for (const group of typeGroups) {
     for (const item of group.items) {
       const base = `${group.game}-${item.no}`;
-      paths.push({ params: { id: base }, props: { group, item, lang: "zh" } });
-      paths.push({ params: { id: `ja/${base}` }, props: { group, item, lang: "ja" } });
+      paths.push({ params: { typePath: `types/${base}` }, props: { group, item, lang: "zh" } });
+      paths.push({ params: { typePath: `ja/types/${base}` }, props: { group, item, lang: "ja" } });
     }
   }
   return paths;
 }
 
 const { group, item, lang } = Astro.props;
-// params.id 在日文版是 "ja/totk-11"，查 typeContent 要用去掉語言前綴的原始 id
-const { id: routeId } = Astro.params as { id: string };
-const id = routeId.replace(/^ja\//, "");
+// params.typePath 形如 "types/totk-11" 或 "ja/types/totk-11"，
+// 查 typeContent 要用去掉語言與 types/ 前綴的原始 id
+const { typePath: routeId } = Astro.params as { typePath: string };
+const id = routeId.replace(/^ja\//, "").replace(/^types\//, "");
 const t = uiStrings[lang];
 const gameLabelMap: Record<string, string> = {
   botw: "曠野之息",
@@ -44,7 +52,11 @@ const gameLabelMap: Record<string, string> = {
   eow: "智慧的再現",
   ssbu: "大亂鬥特別版",
 };
-const gameLabel = gameLabelMap[group.game] ?? group.label;
+// 日文版標題用簡稱：目前只有曠野之息／王國之淚有日文版，其餘遊戲沿用中文
+// （見 types.ts 的 TypeGroup.ja，之後補齊資料層翻譯時這裡不用再改）。
+const gameLabelJaMap: Record<string, string> = { botw: "ブレワイ", totk: "ティアキン" };
+const gameLabel =
+  (lang === "ja" && gameLabelJaMap[group.game]) || gameLabelMap[group.game] || group.label;
 // 日文版會把 type-content.ja.ts 的翻譯疊加上來；沒翻到的欄位自動沿用中文
 const content = resolveTypeContent(id, lang);
 // [[文字|tab:分頁名]] 的跳轉目標一律以「中文版的 tab」為準：分頁標籤被翻成日文後，
@@ -111,14 +123,15 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   description={`${item.zh}（${item.en}）攻略說明，${gameLabel}系列。`}
   active="types"
   lang={lang}
+  altPath={`/types/${id}`}
 >
   {/* 麵包屑 + 標題 */}
   <section class="border-b border-border-soft">
     <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
-        <a href={href("/home")} class="no-underline text-muted">{t.breadcrumbHome}</a>
+        <a href={href("/home", lang)} class="no-underline text-muted">{t.breadcrumbHome}</a>
         <span>/</span>
-        <a href={href("/types")} class="no-underline text-muted">{t.navTypes}</a>
+        <a href={href("/types", lang)} class="no-underline text-muted">{t.navTypes}</a>
         {family && (
           <>
             <span>/</span>
@@ -136,7 +149,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           {item.zh}
         </h1>
         <a
-          href={href(`/types#${group.game}`)}
+          href={href(`/types#${group.game}`, lang)}
           class="whitespace-nowrap text-sm text-accent no-underline"
         >
           ← 回到{gameLabel}系列
@@ -283,7 +296,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                           <li>
                             {parseStep(text).map((seg) =>
                               seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                                : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
                                 : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                             )}
                             {sub.length > 0 && (
@@ -292,7 +305,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                                   <li>
                                     {parseStep(d).map((seg) =>
                                       seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                                        : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                                        : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
                                         : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                                     )}
                                   </li>
@@ -372,7 +385,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             <h2 class="tool-cta-title">{content.toolCta.title}</h2>
             <p class="tool-cta-desc">{content.toolCta.description}</p>
             <div class="tool-cta-actions">
-              <a class="tool-cta-primary" href={href(content.toolCta.primary.path)}>
+              <a class="tool-cta-primary" href={href(content.toolCta.primary.path, lang)}>
                 {content.toolCta.primary.label}
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="flex-none" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"></path>
@@ -581,7 +594,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             <li>
               {parseStep(n.text).map((seg) =>
                 seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                  : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                  : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
                   : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
               )}
               {n.sub && n.sub.length > 0 && (
@@ -590,7 +603,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                     <li>
                       {parseStep(s).map((seg) =>
                         seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                          : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
                           : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                       )}
                     </li>
@@ -611,7 +624,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <div class="mt-6 flex flex-wrap items-center gap-3">
           {content?.faqLink && (
             <a
-              href={href(content.faqLink.path)}
+              href={href(content.faqLink.path, lang)}
               class="faq-btn inline-flex items-center gap-2 no-underline"
             >
               {content.faqLink.label}
@@ -791,7 +804,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               {t.sectionVideos}
             </div>
             <h2 class="mt-2 font-serif text-[26px] font-medium text-ink">
-              {item.zh} 相關影片
+              {item.zh} {t.relatedVideosSuffix}
             </h2>
           </div>
         )}
@@ -869,7 +882,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               {t.sectionVideos}
             </div>
             <h2 class="mt-2 font-serif text-[26px] font-medium text-ink">
-              {item.zh} 相關影片
+              {item.zh} {t.relatedVideosSuffix}
             </h2>
           </div>
           {content.videos.length > VIDEOS_PER_PAGE && (

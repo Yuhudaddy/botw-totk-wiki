@@ -1,20 +1,34 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { href } from "../../lib/url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /types/totk-09-zuggle、日文 /ja/types/totk-09-zuggle
+export function getStaticPaths() {
+  return [
+    { params: { zugglePath: "types/totk-09-zuggle" }, props: { lang: "zh" as Lang } },
+    { params: { zugglePath: "ja/types/totk-09-zuggle" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
 ---
 
 <BaseLayout
-  title="Zuggle 技術原理 · 王國之淚"
-  description="Zuggle（並列）的技術原理統整修正版，涵蓋核心定義、正常流程對照、mPendingDrop 行為與 Smuggle 的差異。"
+  title={t.zuggleTitle}
+  description={t.zuggleDescription}
   active="types"
+  lang={lang}
+  altPath="/types/totk-09-zuggle"
 >
   {/* 麵包屑 + 標題 */}
   <section class="border-b border-border-soft">
     <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
-        <a href={href("/home")} class="no-underline text-muted">首頁</a>
+        <a href={href("/home", lang)} class="no-underline text-muted">{t.breadcrumbHome}</a>
         <span>/</span>
-        <a href={href("/types")} class="no-underline text-muted">主題解說</a>
+        <a href={href("/types", lang)} class="no-underline text-muted">{t.navTypes}</a>
         <span>/</span>
         <a href={href("/types/totk-09")} class="no-underline text-muted">黏手與並列</a>
         <span>/</span>

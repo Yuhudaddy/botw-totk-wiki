@@ -1,6 +1,18 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { href } from "../../lib/url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /types/botw-02-faq、日文 /ja/types/botw-02-faq
+export function getStaticPaths() {
+  return [
+    { params: { faqPath: "types/botw-02-faq" }, props: { lang: "zh" as Lang } },
+    { params: { faqPath: "ja/types/botw-02-faq" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
 
 interface FaqItem {
   no: number;
@@ -308,17 +320,19 @@ const faqs: FaqItem[] = [
 ---
 
 <BaseLayout
-  title="轉存格常見問題 Q&A · 曠野之息"
-  description="《轉存格》IST、DIC、WMC、PE 37個常見問題與 Yuda 的解答，整理自會員質問箱。"
+  title={t.faqTitle}
+  description={t.faqDescription}
   active="types"
+  lang={lang}
+  altPath="/types/botw-02-faq"
 >
   {/* 麵包屑 + 標題 */}
   <section class="border-b border-border-soft">
     <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
-        <a href={href("/home")} class="no-underline text-muted">首頁</a>
+        <a href={href("/home", lang)} class="no-underline text-muted">{t.breadcrumbHome}</a>
         <span>/</span>
-        <a href={href("/types")} class="no-underline text-muted">主題解說</a>
+        <a href={href("/types", lang)} class="no-underline text-muted">{t.navTypes}</a>
         <span>/</span>
         <a href={href("/types/botw-02")} class="no-underline text-muted">轉存格</a>
         <span>/</span>

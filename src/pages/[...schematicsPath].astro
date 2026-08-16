@@ -1,9 +1,21 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { href } from "../../lib/url";
-import { GAME_LOGOS } from "../../data/gameLogos";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { href } from "../lib/url";
+import { GAME_LOGOS } from "../data/gameLogos";
 import { existsSync, readdirSync } from "node:fs";
 import { extname, join, parse } from "node:path";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+// 中文 /resources/practical-schematics、日文 /ja/resources/practical-schematics
+export function getStaticPaths() {
+  return [
+    { params: { schematicsPath: "resources/practical-schematics" }, props: { lang: "zh" as Lang } },
+    { params: { schematicsPath: "ja/resources/practical-schematics" }, props: { lang: "ja" as Lang } },
+  ];
+}
+
+const { lang } = Astro.props;
+const t = uiStrings[lang];
 
 interface Schematic {
   id: string;
@@ -235,9 +247,11 @@ const schematicsPerPage = 12;
 ---
 
 <BaseLayout
-  title="藍圖分享"
-  description="《薩爾達傳說 王國之淚》藍圖 QR Code 分享庫，依實用與有趣分類整理。"
+  title={t.schematicsTitle}
+  description={t.schematicsDescription}
   active="resources"
+  lang={lang}
+  altPath="/resources/practical-schematics"
 >
   <div class="schematics-page">
     <section class="schematics-hero" aria-labelledby="schematics-title">
@@ -254,10 +268,10 @@ const schematicsPerPage = 12;
       </div>
 
       <div class="schematics-hero-inner">
-        <nav class="schematics-breadcrumb" aria-label="麵包屑">
-          <a href={href("/home")}>首頁</a>
+        <nav class="schematics-breadcrumb" aria-label={t.breadcrumbLabel}>
+          <a href={href("/home", lang)}>{t.breadcrumbHome}</a>
           <span>/</span>
-          <a href={href("/resources#totk")}>資料網站</a>
+          <a href={href("/resources#totk", lang)}>{t.navResources}</a>
           <span>/</span>
           <span aria-current="page">藍圖分享</span>
         </nav>
@@ -268,7 +282,7 @@ const schematicsPerPage = 12;
               <svg viewBox={GAME_LOGOS.totk.viewBox} aria-hidden="true" set:html={GAME_LOGOS.totk.svg} />
               <span>Tears of the Kingdom · Blueprint Gallery</span>
             </div>
-            <h1 id="schematics-title">藍圖分享</h1>
+            <h1 id="schematics-title">{t.schematicsTitle}</h1>
             <p>把值得留下的建造收進同一座資料庫。每張藍圖保留 QR Code、名稱與製作者，查找時不必再翻遍散落的圖片。</p>
             <div class="schematics-meta" aria-label="藍圖資料欄位">
               <span>QR Code</span>
@@ -285,9 +299,9 @@ const schematicsPerPage = 12;
         <span>ARCHIVE / TOTK</span>
         <strong>{String(schematicCount).padStart(2, "0")} BLUEPRINTS</strong>
       </div>
-      <a href={href("/resources#totk")}>
+      <a href={href("/resources#totk", lang)}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
-        回到王國之淚資料
+        {t.schematicsBackToTotk}
       </a>
     </div>
 
