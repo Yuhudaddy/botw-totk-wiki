@@ -1200,6 +1200,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Unload",
+        hideDemo: true,
         sections: [
           {
             title: "未加載穿門法（Unload Clipping）",
@@ -1779,7 +1780,6 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "botw-22": {
-    showEmptyMedia: true,
     methods: [
       {
         tab: "Menu",
@@ -3052,6 +3052,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Flicker Cull",
+        hideDemo: true,
         tags: ["All Versions"],
         steps: [
           "準備虛幽化裝備到隱藏區",
@@ -3777,6 +3778,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "Constraint",
+        hideDemo: true,
         sections: [
           {
             title: "束制過載（Constraint Overload）",
@@ -4041,6 +4043,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "DS",
         name: "扭蛋機儲存（Dispenser Storage）",
+        hideDemo: true,
         tags: ["All Versions"],
         steps: [
           "把一個不太會滑動的重物放進左納烏裝置產生器（Dispenser）",
@@ -4638,6 +4641,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "無 Zelda Notes",
         name: "序章逃脫（Prologue Escape）",
+        hideDemo: true,
         sections: [
           {
             title: "自行準備藍圖（Non-provided Schematics）",
@@ -4903,6 +4907,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "WST",
         name: "沐彼詞綴轉移（Moobe WST）",
+        hideDemo: true,
         tags: ["Switch 1"],
         steps: [
           "裝備想要的詞綴的裝備（譬如攻擊力+10），攀爬在任意一個地方",
