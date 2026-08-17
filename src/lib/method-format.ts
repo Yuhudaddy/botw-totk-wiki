@@ -29,9 +29,10 @@ function escapeHtml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// 把步驟文字解析成片段：[[文字|type-id]] 會變成連結（橙字＋底線）；[[文字|tab:分頁名]] 會變成同頁切換分頁的按鈕；其餘沿用 __文字__ 的橙色規則
+// 把步驟文字解析成片段：[[文字|type-id]] 會變成連結（橙字＋底線）；[[文字|tab:分頁名]] 會變成同頁切換分頁的按鈕；
+// [[文字|https://...]] 會變成外部連結（新分頁開啟，不套用站內 base path／語言前綴）；其餘沿用 __文字__ 的橙色規則
 export function parseStep(text: string) {
-  const segments: { text: string; accent: boolean; href?: string; jumpTab?: string }[] = [];
+  const segments: { text: string; accent: boolean; href?: string; external?: boolean; jumpTab?: string }[] = [];
   const linkRe = /\[\[([^\]|]+)\|([^\]]+)\]\]/g;
   let last = 0;
   let m: RegExpExecArray | null;
@@ -40,6 +41,8 @@ export function parseStep(text: string) {
     const target = m[2];
     if (target.startsWith("tab:")) {
       segments.push({ text: m[1], accent: true, jumpTab: target.slice(4) });
+    } else if (/^https?:\/\//.test(target)) {
+      segments.push({ text: m[1], accent: true, href: target, external: true });
     } else {
       segments.push({ text: m[1], accent: true, href: target });
     }
@@ -61,7 +64,9 @@ export function principleHtml(text: string) {
       ? `<u style="text-decoration-color: white; text-underline-offset: 3px;">${escapeHtml(seg.text)}</u>`
       : parseStep(seg.text).map((s) =>
           s.href
-            ? `<a href="${PRINCIPLE_BASE}/types/${escapeHtml(s.href)}" class="accent-link">${escapeHtml(s.text)}</a>`
+            ? s.external
+              ? `<a href="${escapeHtml(s.href)}" class="accent-link" target="_blank" rel="noopener noreferrer">${escapeHtml(s.text)}</a>`
+              : `<a href="${PRINCIPLE_BASE}/types/${escapeHtml(s.href)}" class="accent-link">${escapeHtml(s.text)}</a>`
             : s.accent
               ? `<span class="accent-text">${escapeHtml(s.text)}</span>`
               : escapeHtml(s.text)
@@ -106,7 +111,9 @@ export function principleExtraHtml(extra?: { title?: string; items: TypeStep[] }
     const { text, sub } = stepParts(it);
     const mainHtml = parseStep(text).map((s) =>
       s.href
-        ? `<a href="${PRINCIPLE_BASE}/types/${escapeHtml(s.href)}" class="accent-link">${escapeHtml(s.text)}</a>`
+        ? s.external
+          ? `<a href="${escapeHtml(s.href)}" class="accent-link" target="_blank" rel="noopener noreferrer">${escapeHtml(s.text)}</a>`
+          : `<a href="${PRINCIPLE_BASE}/types/${escapeHtml(s.href)}" class="accent-link">${escapeHtml(s.text)}</a>`
         : s.accent
           ? `<span class="accent-text">${escapeHtml(s.text)}</span>`
           : escapeHtml(s.text)

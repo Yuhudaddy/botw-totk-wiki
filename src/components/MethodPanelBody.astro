@@ -105,7 +105,9 @@ const t = uiStrings[lang];
                 )}
                 {parseStep(text).map((seg) =>
                   seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                    : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                    : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
                     : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                 )}
                 {sub.length > 0 && (
@@ -114,7 +116,9 @@ const t = uiStrings[lang];
                       <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
                         {parseStep(d).map((seg) =>
                           seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                            : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                            : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
                             : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                         )}
                       </li>
@@ -133,7 +137,9 @@ const t = uiStrings[lang];
                 <p class="text-[13px] leading-[1.7] text-muted">
                   {parseStep(n).map((seg) =>
                     seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                      : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                      : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
                       : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                   )}
                 </p>
@@ -143,7 +149,9 @@ const t = uiStrings[lang];
             <p class="mt-4 text-[13px] leading-[1.7] text-muted">
               {parseStep(sec.note).map((seg) =>
                 seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                  : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                  : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
                   : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
               )}
             </p>
@@ -225,7 +233,9 @@ const t = uiStrings[lang];
           )}
           {parseStep(text).map((seg) =>
             seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-              : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+              : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
               : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
           )}
           {sub.length > 0 && (
@@ -234,7 +244,9 @@ const t = uiStrings[lang];
                 <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
                   {parseStep(d).map((seg) =>
                     seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                      : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+                      : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
                       : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                   )}
                 </li>
@@ -253,7 +265,9 @@ const t = uiStrings[lang];
         <p class="text-[13px] leading-[1.7] text-muted">
           {parseStep(n).map((seg) =>
             seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-              : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+              : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
               : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
           )}
         </p>
@@ -263,7 +277,9 @@ const t = uiStrings[lang];
     <p class="mt-4 text-[13px] leading-[1.7] text-muted">
       {parseStep(m.note).map((seg) =>
         seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-          : seg.href ? <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>
+          : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`)} class="accent-link">{seg.text}</a>)
           : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
       )}
     </p>

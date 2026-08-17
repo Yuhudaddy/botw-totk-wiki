@@ -41,6 +41,9 @@ export interface TypeMethod {
   image?: string;     // 快速示意圖片檔名（與 video 擇一），例："IST.png"
   extraImage?: string; // 快速示意影片下方額外顯示的圖片（與 video 並存，例如流程圖解），例："SLD_Explain.png"；
                         // 讀取路徑沿用 imageFolder，與 image 共用同一個資料夾設定
+  hideDemo?: boolean;  // 切到這個分頁時，「快速示意」整個區塊（含標題）完全不顯示，不落入「示意內容準備中」
+                        // 的空狀態。用於該分頁沒有示意媒體、且刻意不想準備（例如請玩家自行參考相關影片）
+                        // 的情形；只影響該分頁自己，頁面上其他有 video/image 的分頁不受影響。
   note?: string | string[]; // 步驟下方的灰色備註（可多行）
   principle?: string;       // 此分頁的原理說明（覆蓋 TypeContent.principle）
   principleSections?: { title?: string; text?: string; items?: TypeStep[]; collapsible?: boolean }[];
@@ -1381,6 +1384,7 @@ export const typeContent: Record<string, TypeContent> = {
         sections: [
           {
             title: "盾跳馬複製法（Shield Jump Dismount Duplication）",
+            tags: ["Nintendo Switch 1"],
             steps: [
               "在馬的前方準備一個高台，高台高度約為林克騎馬時的高度高一點",
               "騎上馬後，移動至前後腳呈現前低後高的狀態",
@@ -1391,6 +1395,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "馬滑複製法（Horse Slide Duplication）",
+            tags: ["Nintendo Switch 1"],
             steps: [
               "馬放在前低後高的斜坡上，按住 ZL 從側邊往前按 X 跳上馬",
               "筆直地往前跑一段距離，直到馬的精力用完的瞬間按下跳躍鍵",
@@ -2803,8 +2808,9 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "虛幽化裝備（DI Equipment）",
+            tags: ["Ver.1.2.1+"],
             steps: [
-              "丟切卸 Smuggle 虛化裝備，並裝上任意同類型裝備",
+              "在阿卡萊隱藏區，丟切卸 Smuggle 虛化裝備，並裝上任意同類型裝備",
               "將要儲存的目標（如：操縱桿）放在隱藏區靠牆",
               "用步驟 1 的裝備對目標進行餘料儲存",
               "技能切換成倒轉乾坤",
@@ -2813,6 +2819,21 @@ export const typeContent: Record<string, TypeContent> = {
               "丟棄步驟 2 的裝備並正常裝備起來，卸掉該裝備解除虛幽化就能釋放儲存的隱藏（純虛化的裝備，丟出來的時候就會釋放）",
             ],
             note: "※ 此法也能用在一般裝備，步驟 6 的地方最後不要卸掉裝備，改為「切換裝備」。",
+          },
+          {
+            title: "過載 + 虛幽化裝備（Overload + DI Equipment）",
+            tags: ["Ver.1.2.1+"],
+            steps: [
+              "在阿卡萊隱藏區，丟切卸 Smuggle 虛化武器，並裝備任意武器",
+              "切換武器過載掉落一把武器，並將其餘料到盾牌上",
+              "將操縱桿放置隱藏區靠牆",
+              "站在隱藏區內，倒轉乾坤操縱桿",
+              "操縱桿尚未離開隱藏區牆壁時，走出隱藏區並餘料建造在武器上",
+            ],
+            note: [
+              "※ 以上步驟盾牌和武器可以交換。",
+              "※ 步驟 5 之後可以切換武器再丟棄，把虛化武器撿起來再丟棄可以解除 Zuggle Drop。",
+            ],
           },
         ],
       },
@@ -2908,7 +2929,7 @@ export const typeContent: Record<string, TypeContent> = {
                 text: "完成「氣流隱藏」",
                 sub: [
                   "(1) 纏桿在風場內：步驟 9 的纏桿裝備丟在地上，跳越過左納烏裝置會觸發「物理隱藏」",
-                  "(2) 纏桿裝備在風場內：纏桿遠離隱藏區，站在一些物件（如左納烏）上會間斷性產生「無形隱藏」",
+                  "(2) 纏桿裝備在風場內：纏桿遠離隱藏區，站在一些物件（如左納烏）上會間斷性產生「無形隱藏」（一般風扇沒有此效果）",
                 ],
               },
             ],
@@ -2928,6 +2949,23 @@ export const typeContent: Record<string, TypeContent> = {
               "再丟→切步驟 9 的纏桿裝備，閃藏之後釋放一個「物理隱藏」",
             ],
           },
+        ],
+      },
+      {
+        tab: "Flicker Cull",
+        tags: ["All Versions"],
+        steps: [
+          "準備虛幽化裝備到隱藏區",
+          "事先準備一個__纏桿裝備（Fused SDC）__",
+          "丟出一個操縱桿，用步驟 1 的虛幽化裝備，觸發糾纏該裝備且[[儲存隱藏|totk-08#Cull Storage]]的操縱桿 A，並且把它靠牆",
+          "用究極手把一顆蘋果和操縱桿 A 黏合，離開隱藏區確認蘋果有消失，表示成功儲存隱藏",
+          "用究極手將步驟 2 的纏桿裝備靠牆，並和操縱桿 A 黏合",
+          "啟動一個火龍頭朝下對準操縱桿 A 持續近距離對 A 噴火",
+          "離開隱藏區，開關暫停、快速選單、L 鍵技能輪盤都會觸發一瞬間的 R0 + R1 隱藏",
+        ],
+        note: [
+          "※ 步驟 1 之後亦可以先觸發[[並列過載|totk-11#Zuggle]]方便作業。",
+          "※ 此流程不能離開火龍頭能啟動的範圍，無限距離的流程較為繁雜，可參考[[此連結|https://discord.com/channels/1086729144307564648/1113557914444111873/1532164395386404944]]。",
         ],
       },
     ],
@@ -2971,6 +3009,7 @@ export const typeContent: Record<string, TypeContent> = {
         items: [
           "多數程錯（如 Zuggle）的原理都是利用 Pause 狀態切換瞬間的空隙（物理隱藏和無形隱藏的時機略有不同），讓「裝備欄」與「場上實際物件」的狀態不同步（__Desync__）",
           "Resync（重新裝備／交換）能修正這種不同步，但修正的是林克的裝備狀態，並不等於直接把物件解除隱藏（__Uncull__）",
+          "mulberry 玩家於 2026/7 上旬發現將儲存隱藏的道具 A 放到隱藏區內，用究極手將其他物品 B 與 A 黏合，藉由卸掉 A 的母物件破壞隱藏儲存，可以讓 B 解除隱藏，藉此來手動控制隱藏（R0 或 R1）。",
         ],
       },
     ],
@@ -3031,6 +3070,7 @@ export const typeContent: Record<string, TypeContent> = {
         sections: [
           {
             title: "法一：地圖並列（Map Zuggle）",
+            collapsible: true,
             tags: ["～Ver.1.1.1"],
             steps: [
               "背對牆壁，按住 L 選到地圖",
@@ -3044,6 +3084,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "法二：米涅魯糾纏並列（Mineru Parented Zuggle）",
+            collapsible: true,
             tags: ["Ver.1.2.0+"],
             steps: [
               "觸發纏桿，並將纏桿餘料在武器上裝備起來",
@@ -3069,6 +3110,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "法三：再同步並列（Swap Resync Zuggle）",
+            collapsible: true,
             tags: ["Ver.1.2.0+"],
             steps: [
               "觸發纏桿，並將纏桿餘料在武器上裝備起來",
@@ -3095,6 +3137,7 @@ export const typeContent: Record<string, TypeContent> = {
           },
           {
             title: "法四：米涅魯地圖並列（Mineru Map Zuggle）",
+            collapsible: true,
             tags: ["All Versions"],
             steps: [
               "觸發纏桿，並將纏桿餘料在米涅魯上",
@@ -3115,6 +3158,25 @@ export const typeContent: Record<string, TypeContent> = {
               "按 + 號打開背包，丟棄裝備中的武器(盾牌)",
             ],
             note: "※ 若要 Zuggle 武器，上述順序的武器和盾牌可以對調。",
+          },
+          {
+            title: "法五：延遲解藏並列（Cull Delay Zuggle）",
+            collapsible: true,
+            tags: ["All Versions"],
+            steps: [
+              "準備一個纏桿武器，放在隱藏區外",
+              "盾牌 S 準備一個糾纏 S 並且[[儲存隱藏|totk-08#Cull Storage]]的操縱桿（或其他道具），放在隱藏區",
+              "走進隱藏區將步驟 1 的裝備，用究極手將其與步驟 2 的道具黏合",
+              "離開隱藏區，林克會因為步驟 1 的纏桿武器全面隱藏",
+              "丟棄多數非目標的裝備__延後丟棄序列（Buffer Drop）__（武器、其他盾牌、弓都可以）",
+              "丟棄裝備中的武器，並切換裝備另一把武器",
+              "快速關開暫停",
+              "卸掉再裝備裝備中的盾牌 S 破壞操縱桿的隱藏儲存後，讀取檔案",
+            ],
+            note: [
+              "※ 步驟 7 關開暫停要多快，和步驟 5 丟棄的數量有關，每丟一個增加 1 幀。",
+              "※ 由於步驟 4 的隱藏是 R0 + R1，因此此步驟也能 SLD。忽略步驟 5，步驟 7 可以更餘裕的關開暫停。",
+            ],
           },
         ],
       },
@@ -4366,6 +4428,7 @@ export const typeContent: Record<string, TypeContent> = {
   },
 
   "totk-19": {
+    videoFolder: "totk-prologue escape",
     flowMap: {
       note: "※ 底圖已換成實際地圖。分階段區塊的步驟單選按鈕已支援（sections 各自讀自己的 mapFlow），目前只有第三階段步驟 5 的座標經過實際確認並顯示按鈕，其餘步驟待 Yuda 補齊座標後依序填入。",
     },
@@ -4373,6 +4436,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "有 Zelda Notes",
         name: "序章逃脫（Prologue Escape）",
+        video: "prologue escape.mp4",
         sections: [
           {
             title: "使用提供的藍圖（Provided Schematics）",
@@ -5065,6 +5129,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Cull Zuggle (R0)",
         group: "有過載（Overloading）",
+        hideDemo: true,
         subTabs: [
           {
             tab: "In Bound",
@@ -5187,6 +5252,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Cull Delay Zuggle (R0&R1)",
         group: "有過載（Overloading）",
+        hideDemo: true,
         tags: ["Ver.1.2.0+"],
         difficulty: "★★☆☆☆",
         timeCost: "★★★★☆",
@@ -5214,6 +5280,7 @@ export const typeContent: Record<string, TypeContent> = {
               "※ 操作過程出現「套裝分離」「按 A 無法操作操縱桿」「究極手拖曳物品時視角異常」，可以脫掉套裝或流程中尚未用到的裝備先卸掉。",
               "※ 負載量過高導致空手撿起裝備，意外變成「過載撿拾（Overload Pickup）」，背對牆壁丟棄失敗就可以附著回林克身上。",
               "※ 步驟 12 也可以用 Drop Zuggle，但避免在序章過載撿拾，以 Drop Purgatorify 為佳。另外若用到「臨時過載（Temporary Overload）」，切記不要丟切到 S2（會變成 Drop Zuggle，在序章丟武器不會隱藏），可以先讓 W1 或 S1 處於 Zuggle Drop 的狀態增加負載量",
+              "※ 步驟 12 也可以直接 Drop Smuggle 或 Drop Purgatorify W1，不過在序章的步驟 3 必須改為卸掉武器（空手狀態）並撿起腳下的 W1。",
             ],
           },
           {
@@ -5228,6 +5295,7 @@ export const typeContent: Record<string, TypeContent> = {
               "卸掉裝備中的盾牌並重新裝備，丟棄裝備中的武器，讀取阿卡萊的手動存檔",
               "丟棄裝備中的武器，裝備武器之後撿起 Zuggle Drop 的序章大師劍",
             ],
+            note: "※ 由於此為 R0 + R1 隱藏，因此也通用 Cull Detach SLD 流程在序章的做法，步驟 5 可以不需要在丟切大師劍前丟棄大量裝備，步驟 6 也不需要急著關開暫停，最後讀檔的位置必須是馬拉克古奇神廟內。",
           },
         ],
       },
@@ -5280,6 +5348,7 @@ export const typeContent: Record<string, TypeContent> = {
       {
         tab: "Cull Detach SLD (R1)",
         group: "無過載（Overload-less）",
+        hideDemo: true,
         tags: ["Ver.1.2.0+"],
         difficulty: "★★★☆☆",
         timeCost: "★★★☆☆",

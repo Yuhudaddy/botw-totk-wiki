@@ -207,7 +207,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             </div>
             )}
             {content.methods.map((m, i) => (
-              <div class="method-panel" id={hasMethodTabs ? `method-panel-${i}` : undefined} role={hasMethodTabs ? "tabpanel" : undefined} aria-labelledby={hasMethodTabs ? `method-tab-${i}` : undefined} tabindex={hasMethodTabs ? 0 : undefined} data-panel={i} data-video={m.video ?? ""} data-videos={m.videos ? JSON.stringify(m.videos) : ""} data-image={m.image ?? ""} data-extra-image={m.extraImage ?? ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
+              <div class="method-panel" id={hasMethodTabs ? `method-panel-${i}` : undefined} role={hasMethodTabs ? "tabpanel" : undefined} aria-labelledby={hasMethodTabs ? `method-tab-${i}` : undefined} tabindex={hasMethodTabs ? 0 : undefined} data-panel={i} data-video={m.video ?? ""} data-videos={m.videos ? JSON.stringify(m.videos) : ""} data-image={m.image ?? ""} data-extra-image={m.extraImage ?? ""} data-hide-demo={m.hideDemo ? "1" : ""} data-principle={principleHtml(m.principle ?? "")} data-principle-sections={principleSectionsHtml(m.principleSections)} data-principle-extra={principleExtraHtml(m.principleExtra)} hidden={i !== 0}>
                 {m.subTabs ? (
                   <div class="subtab-group">
                     <div role="tablist" class="subtab-tabs mb-4 flex flex-wrap gap-2">
@@ -296,7 +296,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                           <li>
                             {parseStep(text).map((seg) =>
                               seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                                : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
+                                : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
                                 : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                             )}
                             {sub.length > 0 && (
@@ -305,7 +307,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                                   <li>
                                     {parseStep(d).map((seg) =>
                                       seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                                        : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
+                                        : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
                                         : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                                     )}
                                   </li>
@@ -405,9 +409,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           </aside>
         )}
 
-        {/* C: 快速示意（影片或圖片，隨分頁切換） */}
+        {/* C: 快速示意（影片或圖片，隨分頁切換）。整塊在頁面層級渲染一次；個別分頁若設了
+             hideDemo，JS 在切分頁時會把這個 wrapper 整個隱藏（見下方 updateMedia） */}
         {!content?.model3d && hasMedia && (
-          <div class="prose-custom">
+          <div class="prose-custom" id="demo-section">
             <h2>{t.sectionDemo}</h2>
             <div
               id="demo-media-wrap"
@@ -594,7 +599,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             <li>
               {parseStep(n.text).map((seg) =>
                 seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                  : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
+                  : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
                   : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
               )}
               {n.sub && n.sub.length > 0 && (
@@ -603,7 +610,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                     <li>
                       {parseStep(s).map((seg) =>
                         seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
-                          : seg.href ? <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>
+                          : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
                           : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
                       )}
                     </li>
@@ -1978,6 +1987,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     const panels = Array.from(root.querySelectorAll<HTMLElement>(".method-panel"));
     const panelByIndex = new Map(panels.map((p) => [Number(p.dataset.panel), p]));
 
+    const demoSection = document.getElementById("demo-section");
     const mediaWrap = document.getElementById("demo-media-wrap");
     const videoEl = document.getElementById("demo-video") as HTMLVideoElement | null;
     const imageTrigger = document.getElementById("demo-image-trigger") as HTMLButtonElement | null;
@@ -2001,6 +2011,18 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     function updateMedia(index: number) {
       if (!mediaWrap) return;
       const panel = panelByIndex.get(index);
+
+      // 該分頁明確要求不顯示快速示意（例如只想請玩家自行看相關影片），整塊區域
+      // （含「快速示意」標題）都不出現，跟「示意內容準備中」的空狀態不同
+      if (demoSection) {
+        demoSection.hidden = panel?.dataset.hideDemo === "1";
+      }
+      if (panel?.dataset.hideDemo === "1") {
+        videoEl?.pause();
+        videoStackEl?.querySelectorAll("video").forEach((v) => (v as HTMLVideoElement).pause());
+        return;
+      }
+
       const image = panel?.dataset.image ?? "";
       const video = panel?.dataset.video ?? "";
       const extraImage = panel?.dataset.extraImage ?? "";

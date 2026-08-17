@@ -224,6 +224,7 @@ const zh = {
   aboutSectionGames: "主要遊玩 · Main Games",
   aboutSectionLanguages: "語言 · Languages",
   aboutSectionYuhu: "關於 Yuhu",
+  aboutSectionShoutouts: "特別感謝 SHOUTOUTS",
   aboutSectionLinks: "連結 · Links",
 
   // 主題解說列表頁（/types）
@@ -436,6 +437,7 @@ const ja: Record<keyof typeof zh, string> = {
   aboutSectionGames: "主なプレイ作品 · Main Games",
   aboutSectionLanguages: "言語 · Languages",
   aboutSectionYuhu: "Yuhu について",
+  aboutSectionShoutouts: "スペシャルサンクス SHOUTOUTS",
   aboutSectionLinks: "リンク · Links",
 
   typesDescription: "Yuda チャンネルのブレワイ・ティアキン攻略をシリーズ別に閲覧できます。",

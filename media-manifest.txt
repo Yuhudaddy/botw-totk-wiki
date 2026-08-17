@@ -106,6 +106,7 @@
 31858021	totk-pocket rockets/Overload IPR.mp4
 7251312	totk-pocket rockets/PR.mp4
 35997394	totk-pocket rockets/UPR.mp4
+43279763	totk-prologue escape/prologue escape.mp4
 11290686	totk-sbr/Bomb SBR.mp4
 24457982	totk-sbr/SBR.mp4
 28500372	totk-sdc/纏桿_FS.mp4

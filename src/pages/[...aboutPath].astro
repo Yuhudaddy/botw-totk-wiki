@@ -70,6 +70,32 @@ const t = uiStrings[lang];
       </p>
     </div>
 
+    {/* 特別感謝 */}
+    <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
+      <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionShoutouts}</div>
+      <ul class="space-y-1.5 text-[15px] leading-[1.8] text-text">
+        {lang === "ja" ? (
+          <>
+            <li>・ Breath of the Wild Speedrunning（Discordコミュニティ）</li>
+            <li>・ Tears of the Kingdom Speedrunning（Discordコミュニティ）</li>
+            <li>・ The Hyrule Engineering Club（Discordコミュニティ）</li>
+            <li>・ Totk グリッチ鯖（Discordコミュニティ）</li>
+            <li>・ ハイラル道場（Discordコミュニティ）</li>
+            <li>・ X（旧Twitter）のゼルダ関連プレイヤー（オカメいんこさん、ぴりかんてんさん など）</li>
+          </>
+        ) : (
+          <>
+            <li>・ Breath of the Wild Speedrunning（Discord 社群）</li>
+            <li>・ Tears of the Kingdom Speedrunning（Discord 社群）</li>
+            <li>・ The Hyrule Engineering Club（Discord 社群）</li>
+            <li>・ Totk グリッチ鯖（Discord 社群）</li>
+            <li>・ ハイラル道場（Discord 社群）</li>
+            <li>・ X 平台薩爾達相關玩家（オカメいんこさん、ぴりかんてん等）</li>
+          </>
+        )}
+      </ul>
+    </div>
+
     {/* 連結 */}
     <div class="mt-8">
       <div class="mb-4 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionLinks}</div>
