@@ -1570,7 +1570,13 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         font-family: "Noto Serif JP", "Noto Serif TC", serif;
       }
 
-      :root[data-lang="ja"] .hero-title em { order: 1; }
+      :root[data-lang="ja"] .hero-title em {
+        order: 1;
+        /* background-clip: text 的漸層只畫到 padding-box 範圍內，日文濁音（如「ダ」
+           的濁点）超出這個範圍就沒有背景可以透出來，視覺上像被切掉。中英文無此
+           問題，只加在日文版。 */
+        padding-top: 0.25em;
+      }
       :root[data-lang="ja"] .hero-title-prefix { order: 2; margin: 0.6rem 0 0; }
 
       .hero-support {

@@ -432,7 +432,7 @@ const ja: Record<keyof typeof zh, string> = {
   glossaryRailLabel: "アルファベット移動",
 
   aboutEyebrow: "この祠について · About Dazotikuy",
-  aboutHeading: "ダゾティクイの祠について",
+  aboutHeading: "ダゾ・ティクイの祠について",
   aboutSectionProfile: "サイト紹介 · Profile",
   aboutSectionGames: "主なプレイ作品 · Main Games",
   aboutSectionLanguages: "言語 · Languages",
