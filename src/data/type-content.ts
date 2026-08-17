@@ -2353,7 +2353,7 @@ export const typeContent: Record<string, TypeContent> = {
         tags: ["Nintendo Switch 2"],
         steps: [
           "[[轉存格|botw-02]]重複繼承屬性箭，觸發無效箭格頁",
-          "利用無效箭格頁，移動游標，按 A 打開讀取檔案的視窗，移動游標到 Zelda Notes 上按 A 打開視窗",
+          "利用無效箭格頁，游標移動到武器或弓箭頁籤的第四列，右搖桿往右 → 左搖桿往下，游標脫頁之後，右搖桿移動到重要道具頁籤，第一列對應讀取按鈕，左搖桿移動游標到右側盲選按 A 打開讀取檔案的視窗，移動游標到 Zelda Notes 上按 A 打開視窗",
           "游標在「讀取」和「放入」之後，按 A 讀檔並同時放入道具",
           "讀取前點擊 B 退出，接著在畫面中按 A → B 打開背包",
         ],
@@ -2362,7 +2362,7 @@ export const typeContent: Record<string, TypeContent> = {
     ],
     principleSections: [
       {
-        text: "利用__同幀輸入（Same-Frame Inputs）__，讓系統在同一幀上發生兩件事情可以用來殘留選單，或是用「無效箭格頁」(Arrow Prompt Entanglement)，也可以讓游標停在不存在的頁籤中，進而讓畫面與打開的視窗不同步。2025/8/14 【WinnerBoi77】玩家分享用 Zelda Notes 殘留暫停選單介面的方法。",
+        text: "利用__同幀輸入（Same-Frame Inputs）__，讓系統在同一幀上發生兩件事情可以用來殘留選單，或是用「無效箭格頁」(Arrow Prompt Entanglement)，也可以讓游標停在不存在的頁籤中，進而讓畫面與打開的視窗不同步。2025/8/14 【WinnerBoi77】 玩家分享用 Zelda Notes 殘留暫停選單介面的方法。",
       },
     ],
     notes: [
