@@ -2281,6 +2281,105 @@ export const typeContent: Record<string, TypeContent> = {
     ],
   },
 
+  "botw-29": {
+    methods: [
+      {
+        tab: "Item Prompt",
+        name: "道具視窗儲存（Item Prompt Storage）",
+        tags: ["All Versions"],
+        steps: [
+          "按 + 號，游標停在傳送標記器上（有被使用過）",
+          "按 - 號進入圖鑑，游標停在未被登錄的圖片上",
+          "快速按下 Y → +，畫面會切換到重要道具頁籤的傳送標記器上",
+          "右下角藍色變更提示消失前，輸入 A → A → 上 → A，放置傳送標記器",
+          "游標移動到想要殘留視窗的道具的__左邊那一格__，右下角藍色變更提示消失、自動跳出暫停畫面前的瞬間，左搖桿 ⇨ → A 打開視窗",
+        ],
+        note: [
+          "※ 配合無效箭格頁籤可以殘留系統頁面的選項（如：存檔視窗）。",
+          "※ 步驟 5 不一定要左邊那一格，主要是最後一步一定要是「方向鍵＋A」。",
+        ],
+      },
+      {
+        tab: "Menu",
+        name: "選單儲存（Menu Storage）",
+        tags: ["All Versions"],
+        sections: [
+          {
+            title: "階段一：地圖游標儲存（Map Cursor Storage）",
+            collapsible: true,
+            steps: [
+              "移動到城堡城門前，小地圖會切換的位置",
+              "移動超過地圖轉換線之前按 - 號進入地圖，點擊 L 到希卡道具介面",
+              "快速輸入 R → B → Y",
+              "成功的話右下角會出現選擇游標",
+            ],
+          },
+          {
+            title: "階段二：地圖儲存（Map Storage）",
+            collapsible: true,
+            steps: [
+              "地圖游標停在右側選項後讀取檔案",
+              "讀檔完 1 秒內按 A",
+              "按 B 取消變更",
+            ],
+          },
+          {
+            title: "階段三：冒險筆記選擇框儲存（Quest Prompt Storage）",
+            collapsible: true,
+            steps: [
+              "游標移動到地圖上任意冒險筆記的標記",
+              "快速輸入 A → L → L，利用相機殘留冒險筆記的對話框",
+            ],
+          },
+          {
+            title: "階段四：選單儲存（Menu Storage）",
+            collapsible: true,
+            steps: [
+              "移動到女神像或邪神像前出現 A 鍵對話的判定，游標移動到「打開冒險筆記」",
+              "按 A 同時與神像對話並進入冒險筆記的選單",
+              "按 A 選擇選項結束對話",
+              "此時只要不要按 B 都可以保持選單開啟的情形下移動林克",
+            ],
+          },
+        ],
+        note: [
+          "※ 選單(Menu)是指「暫停(Pause)」畫面之後的「背包(Inventory)」、「地圖(Map)」、「系統畫面(System)」等等。",
+          "※ 階段四之後移動到觸發過場，在劇情中讀檔可以觸發「過場繼承(Cutscene Transfer)」，或觀看一次回憶關閉暫停會觸發「逆回憶儲存（Reverse Memory Storage）」，去溺水之後就能觸發「溺水儲存（Aqua Reverse Memory Storage）」。",
+        ],
+      },
+      {
+        tab: "Zelda Notes",
+        name: "薩筆選單儲存（Zelda Notes Inventory Storage）",
+        tags: ["Nintendo Switch 2"],
+        steps: [
+          "[[轉存格|botw-02]]重複繼承屬性箭，觸發無效箭格頁",
+          "利用無效箭格頁，移動游標，按 A 打開讀取檔案的視窗，移動游標到 Zelda Notes 上按 A 打開視窗",
+          "游標在「讀取」和「放入」之後，按 A 讀檔並同時放入道具",
+          "讀取前點擊 B 退出，接著在畫面中按 A → B 打開背包",
+        ],
+        note: "※ 在介面內切換套裝後按 L 打開相機拍照並刪除，會殘留套裝模型在世界(Overworld)，打開地圖之後關閉儲存介面可以保留套裝模型。",
+      },
+    ],
+    principleSections: [
+      {
+        text: "利用__同幀輸入（Same-Frame Inputs）__，讓系統在同一幀上發生兩件事情可以用來殘留選單，或是用「無效箭格頁」(Arrow Prompt Entanglement)，也可以讓游標停在不存在的頁籤中，進而讓畫面與打開的視窗不同步。2025/8/14 【WinnerBoi77】玩家分享用 Zelda Notes 殘留暫停選單介面的方法。",
+      },
+    ],
+    notes: [
+      { text: "過程中常常伴隨轉存格的操作，若選單狀況不是理想的狀況，務必不要手動儲存。" },
+      { text: "前置作業完成後，利用「過場繼承(CST)」讀取部分神廟內的檔案可以開場就在導師前面，用於神廟速通。" },
+    ],
+    videos: [
+      { id: "0A1lCk4-1yg", title: "番外57 - 兩隻雷咒你受得了嗎？『過場繼承(CST)』" },
+      { id: "n32P1K0vcUk", title: "番外56 - 同位操作（Prompt Entanglement）詳細解說", at: 624 },
+      { id: "OWqiJ2GkLtg", title: "番外55 - 破關後的世界！《完治世界(Healed World)》與《存檔視窗殘留(SPS)》解說", at: 115 },
+      { id: "hPp7mvGvJPc", title: "無敵＋無限精力！「溺水儲存／阿姆斯狀態(ARMS)」", at: 387 },
+      { id: "jOofy1OH9M0", title: "指法14 - 光弓繼承的前置動作！「回憶儲存(Memory Storage)」" },
+      { id: "iGAZdS6_d_U", title: "番外48 - 繼承光弓！「DLC3 - 光弓的考驗」解說" },
+      { id: "G-5C_Z4CNh4", title: "回應28 - 零耐久移植 & 手持視窗殘留", at: 6 },
+    ],
+  },
+
   "totk-01": {
     intro: "收錄《王國之淚》各種必備的小程錯，許多大型的程錯都是由這些小程錯拼湊而成的路線流程，從餘料糾纏、纏桿、隱藏，到並列裝備與各式繼承技術，每集針對單一技術做示範。每支影片標注適用版本，查詢前請確認你的遊戲版本。",
     videos: [
