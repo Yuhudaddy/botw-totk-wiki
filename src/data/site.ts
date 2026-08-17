@@ -28,7 +28,7 @@ export interface QuickNavItem {
 }
 export const quickNav: QuickNavItem[] = [
   { no: "01", series: "風彈系列", seriesJa: "ウインドボムシリーズ", title: "風彈是 Bug 嗎？", titleJa: "ウインドボムってバグ？", path: "/types/botw-01" },
-  { no: "02", series: "轉存格系列", seriesJa: "引き継ぎ枠シリーズ", title: "救救我的背包！", titleJa: "アイテム欄を救って！", path: "/types/botw-02" },
+  { no: "02", series: "轉存格系列", seriesJa: "引き継ぎ枠シリーズ", title: "救救我的背包！", titleJa: "私のポーチを救って！", path: "/types/botw-02" },
   { no: "03", series: "萊尼爾系列", seriesJa: "ライネルシリーズ", title: "打不贏人馬！", titleJa: "ライネルに勝てない！", path: "/types/botw-03" },
   // path 的搜尋字串固定比對中文影片標題（見翻譯進度追蹤 Artifact），不隨語言切換
   { no: "04", series: "被更新系列", seriesJa: "アプデ潰されシリーズ", title: "新版不能用了？", titleJa: "最新版で使えない？", path: "/videos?search=差在哪裡" },
@@ -37,14 +37,14 @@ export const quickNav: QuickNavItem[] = [
     series: "物件地圖",
     seriesJa: "オブジェクトマップ",
     title: "東西在哪呢？",
-    titleJa: "アイテムはどこ？",
+    titleJa: "あのアイテムはどこなの？",
     links: [
       // labelJa 與 ui-strings.ts 的 objMapBotwTitle/objMapTotkTitle 保持同一套字串
       { label: "Léo 曠野物件地圖", labelJa: "Léo ブレワイ オブジェクトマップ", path: "/resources/object-map/botw", word: "曠野", wordJa: "ブレワイ", tone: "botw" },
       { label: "Léo 王淚物件地圖", labelJa: "Léo ティアキン オブジェクトマップ", path: "/resources/object-map/totk", word: "王淚", wordJa: "ティアキン", tone: "totk" },
     ],
   },
-  { no: "06", series: "藍圖分享", seriesJa: "ブループリント共有", title: "有好用藍圖嗎？", titleJa: "使える設計図ある？", path: "/resources/practical-schematics" },
+  { no: "06", series: "藍圖分享", seriesJa: "ブループリント共有", title: "有好用藍圖嗎？", titleJa: "使えるブルプリある？", path: "/resources/practical-schematics" },
 ];
 
 export const SITE = {
