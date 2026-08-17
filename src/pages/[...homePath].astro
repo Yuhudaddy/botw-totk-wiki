@@ -150,12 +150,14 @@ const featured = youtubeData.featured;
 
       <div class="home-nav-grid">
         {
-          quickNav.map((q) =>
-            q.links ? (
+          quickNav.map((q) => {
+            const series = lang === "ja" ? (q.seriesJa ?? q.series) : q.series;
+            const title = lang === "ja" ? (q.titleJa ?? q.title) : q.title;
+            return q.links ? (
               <div class="home-nav-card home-nav-card-multi">
                 <div class="home-nav-card-meta">
                   <span class="home-nav-no">{q.no}</span>
-                  <span class="home-nav-series">{q.series}</span>
+                  <span class="home-nav-series">{series}</span>
                 </div>
                 {/* 桌面（有滑鼠）hover 感應區：左右各半，觸控裝置隱藏改用下方按鈕 */}
                 {q.links.map((l, i) => (
@@ -163,10 +165,10 @@ const featured = youtubeData.featured;
                     href={href(l.path, lang)}
                     class={`home-nav-zone home-nav-zone-${i + 1}`}
                     data-tone={l.tone}
-                    aria-label={l.label}
+                    aria-label={lang === "ja" ? (l.labelJa ?? l.label) : l.label}
                   />
                 ))}
-                <span class="home-nav-title font-serif text-ink">{q.title}</span>
+                <span class="home-nav-title font-serif text-ink">{title}</span>
                 {q.links.map(
                   (l, i) =>
                     l.word && (
@@ -174,14 +176,14 @@ const featured = youtubeData.featured;
                         class={`home-nav-word home-nav-word-${i + 1} home-nav-word-${l.tone} font-serif`}
                         aria-hidden="true"
                       >
-                        {l.word}
+                        {lang === "ja" ? (l.wordJa ?? l.word) : l.word}
                       </span>
                     )
                 )}
                 <div class="home-nav-links">
                   {q.links.map((l) => (
                     <a href={href(l.path, lang)} class="home-nav-link-btn">
-                      {l.label}
+                      {lang === "ja" ? (l.labelJa ?? l.label) : l.label}
                       <span aria-hidden="true">→</span>
                     </a>
                   ))}
@@ -190,12 +192,12 @@ const featured = youtubeData.featured;
             ) : (
               <a href={href(q.path!, lang)} class="home-nav-card">
                 <span class="home-nav-no">{q.no}</span>
-                <span class="home-nav-series">{q.series}</span>
-                <span class="home-nav-title font-serif text-ink">{q.title}</span>
+                <span class="home-nav-series">{series}</span>
+                <span class="home-nav-title font-serif text-ink">{title}</span>
                 <span class="home-nav-arrow" aria-hidden="true">→</span>
               </a>
-            )
-          )
+            );
+          })
         }
       </div>
     </div>

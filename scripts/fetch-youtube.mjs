@@ -146,20 +146,23 @@ const all = allVideos.map((v) => ({
   game: gameOf.get(v.id),
 }));
 
-// ── 6. 精選：30 天內觀看數最高的 6 部 ────────────────────────────────────────
-const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-const recent = allVideos.filter((v) => v.snippet.publishedAt >= thirtyDaysAgo);
+// ── 6. 精選：90 天內觀看數最高的 6 部 ────────────────────────────────────────
+// 原本用 30 天窗、門檻 3 部，但頻道發片頻率沒那麼高，幾乎每次都不足額，
+// 導致精選長期卡在 oldFeatured（見下方 8.）。放寬時間窗、降低門檻，
+// 讓「這次確實有抓到新片」時就採用新結果，減少觸發 fallback 的機率。
+const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+const recent = allVideos.filter((v) => v.snippet.publishedAt >= ninetyDaysAgo);
 const featured = recent
   .sort((a, b) => parseInt(b.statistics.viewCount) - parseInt(a.statistics.viewCount))
   .slice(0, 6)
   .map(toVideo);
 
-if (featured.length < 6) console.warn(`30天內只找到 ${featured.length} 部影片，精選可能不足`);
+if (featured.length < 6) console.warn(`90天內只找到 ${featured.length} 部影片，精選可能不足`);
 
 // ── 7. 最新：最近上傳的 4 部 ─────────────────────────────────────────────────
 const latest = allVideos.slice(0, 4).map(toVideo);
 
-// ── 8. 寫入（保留 featured 若 30 天內影片不足時改用舊值）──────────────────────
+// ── 8. 寫入（保留 featured 若 90 天內完全沒有影片時改用舊值）──────────────────
 const outPath = join(__dirname, '../src/data/youtube.json');
 let oldFeatured = [];
 try {
@@ -168,7 +171,7 @@ try {
 } catch {}
 
 const out = {
-  featured: featured.length >= 3 ? featured : oldFeatured,
+  featured: featured.length >= 1 ? featured : oldFeatured,
   latest,
   ...byGame,
   all,

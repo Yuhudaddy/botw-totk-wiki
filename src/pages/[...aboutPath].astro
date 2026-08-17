@@ -19,15 +19,29 @@ const t = uiStrings[lang];
   <section class="mx-auto max-w-[820px] px-8 pb-[84px] pt-12">
     <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{t.aboutEyebrow}</div>
     <h1 class="mb-2 mt-3.5 font-serif text-[26px] sm:text-[34px] font-medium text-ink">{t.aboutHeading}</h1>
-    <p class="mb-6 text-[13px] text-muted">本神廟名稱的由來為 Yukito's Dad 的倒反詞，本站資訊來自本神廟的導師 Yuda 的 YouTube 頻道。</p>
+    <p class="mb-6 text-[13px] text-muted">
+      {lang === "ja"
+        ? "この祠の名前は Yukito's Dad の逆さ言葉に由来する。当サイトの情報は、この祠の導師 Yuda の YouTube チャンネルより。"
+        : "本神廟名稱的由來為 Yukito's Dad 的倒反詞，本站資訊來自本神廟的導師 Yuda 的 YouTube 頻道。"}
+    </p>
 
     {/* 簡介 */}
     <div class="rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
       <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionProfile}</div>
       <p class="text-base leading-[1.9] text-text">
-        曾為日本社畜，玩遊戲玩到研究遊戲的玩家。喜歡把學會的東西筆記下來，做成影片放在頻道上做紀錄，剛好作為專門分享說明書和攻略本上找不到的內容的遊戲頻道，給需要的玩家和同好。<br />
-        2023/11/30 兒子（Yukito）出生，小孩子21:00~23:00才睡，影片更新速度降低請見諒。<br />
-        本站有任何疑問可以到以下社群平台或軟體詢問或反應。
+        {lang === "ja" ? (
+          <>
+            かつて日本で社畜をしていた、ゲームを遊ぶうちに研究するようになったプレイヤー。覚えたことをノートにまとめ、動画にしてチャンネルに記録するのが好きで、それがちょうど説明書や攻略本には載っていない内容を専門に紹介するゲームチャンネルとなり、必要としているプレイヤーや同好の士に向けて発信している。<br />
+            2023/11/30 息子（Yukito）誕生。子どもが21:00~23:00まで寝てくれないため、動画更新のペースが落ちているのはご容赦を。<br />
+            当サイトについて質問があれば、以下のSNSやアプリから気軽にどうぞ。
+          </>
+        ) : (
+          <>
+            曾為日本社畜，玩遊戲玩到研究遊戲的玩家。喜歡把學會的東西筆記下來，做成影片放在頻道上做紀錄，剛好作為專門分享說明書和攻略本上找不到的內容的遊戲頻道，給需要的玩家和同好。<br />
+            2023/11/30 兒子（Yukito）出生，小孩子21:00~23:00才睡，影片更新速度降低請見諒。<br />
+            本站有任何疑問可以到以下社群平台或軟體詢問或反應。
+          </>
+        )}
       </p>
     </div>
 
@@ -35,13 +49,27 @@ const t = uiStrings[lang];
     <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
       <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionGames}</div>
       <ol class="space-y-1.5 text-[15px] leading-[1.8] text-text">
-        <li>① 薩爾達傳說（2017年《曠野之息》以後的作品）</li>
-        <li>② 寶可夢</li>
-        <li>③ 無雙遊戲</li>
-        <li>④ 洛克人X系列</li>
-        <li>⑤ 瑪利歐系列</li>
-        <li>⑥ 星際火狐</li>
-        <li>⑦ 自己愛的懷舊遊戲</li>
+        {lang === "ja" ? (
+          <>
+            <li>① ゼルダの伝説（2017年『ブレス オブ ザ ワイルド』以降の作品）</li>
+            <li>② ポケットモンスター</li>
+            <li>③ 無双ゲーム</li>
+            <li>④ ロックマンXシリーズ</li>
+            <li>⑤ マリオシリーズ</li>
+            <li>⑥ スターフォックス</li>
+            <li>⑦ 自分の好きなレトロゲーム</li>
+          </>
+        ) : (
+          <>
+            <li>① 薩爾達傳說（2017年《曠野之息》以後的作品）</li>
+            <li>② 寶可夢</li>
+            <li>③ 無雙遊戲</li>
+            <li>④ 洛克人X系列</li>
+            <li>⑤ 瑪利歐系列</li>
+            <li>⑥ 星際火狐</li>
+            <li>⑦ 自己愛的懷舊遊戲</li>
+          </>
+        )}
       </ol>
     </div>
 
@@ -49,9 +77,19 @@ const t = uiStrings[lang];
     <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
       <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionLanguages}</div>
       <ul class="space-y-1.5 text-[15px] leading-[1.8] text-text">
-        <li>・ 主要語言為中文（繁體中文／簡體中文），粵語不太會。</li>
-        <li>・ Speak English（I always discuss glitches with English-speakers）</li>
-        <li>・ 日本語可（在日でしたので。）</li>
+        {lang === "ja" ? (
+          <>
+            <li>・ 主に中国語（繁体字／簡体字）を話す。広東語はあまり得意ではない。</li>
+            <li>・ 英語も話せる（英語話者とはいつも glitch について議論している）</li>
+            <li>・ 日本語も話せる（日本に住んでいたので）</li>
+          </>
+        ) : (
+          <>
+            <li>・ 主要語言為中文（繁體中文／簡體中文），粵語不太會。</li>
+            <li>・ Speak English（I always discuss glitches with English-speakers）</li>
+            <li>・ 日本語可（在日でしたので。）</li>
+          </>
+        )}
       </ul>
     </div>
 
@@ -59,14 +97,29 @@ const t = uiStrings[lang];
     <div class="mt-5 rounded-2xl border border-border-strong bg-surface px-[30px] py-7">
       <div class="mb-3 text-[11px] font-bold uppercase tracking-[1.4px] text-accent">{t.aboutSectionYuhu}</div>
       <p class="text-[15px] leading-[1.8] text-text">
-        大頭貼的黃金長毛臘腸狗是 Yuhu。<br />
-        她的生日在《曠野之息》影片的
-        <a
-          href="https://www.youtube.com/watch?v=sa90NVj6AYQ"
-          target="_blank"
-          rel="noopener"
-          class="text-brand underline underline-offset-2 hover:opacity-80"
-        >番外11(新)</a>。
+        {lang === "ja" ? (
+          <>
+            アイコンの金色の長毛ダックスフンドが Yuhu。<br />
+            彼女の誕生日は『ブレス オブ ザ ワイルド』動画の
+            <a
+              href="https://www.youtube.com/watch?v=sa90NVj6AYQ"
+              target="_blank"
+              rel="noopener"
+              class="text-brand underline underline-offset-2 hover:opacity-80"
+            >番外11(新)</a>にて。
+          </>
+        ) : (
+          <>
+            大頭貼的黃金長毛臘腸狗是 Yuhu。<br />
+            她的生日在《曠野之息》影片的
+            <a
+              href="https://www.youtube.com/watch?v=sa90NVj6AYQ"
+              target="_blank"
+              rel="noopener"
+              class="text-brand underline underline-offset-2 hover:opacity-80"
+            >番外11(新)</a>。
+          </>
+        )}
       </p>
     </div>
 
