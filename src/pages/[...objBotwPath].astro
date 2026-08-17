@@ -20,45 +20,55 @@ const MAP_URL = "https://objmap.zeldamods.org/";
 const queryExamples = [
   {
     label: "基本名稱",
+    labelJa: "基本の名前",
     query: "Bokoblin",
     description: "同時搜尋顯示名稱與遊戲內部資料。",
+    descriptionJa: "表示名と内部データを同時に検索する。",
   },
   {
     label: "完整片語",
+    labelJa: "完全一致のフレーズ",
     query: '"Blue Bokoblin"',
     description: "用引號包住完整名稱，避免拆成多個關鍵字。",
+    descriptionJa: "名前全体を引用符で囲み、複数のキーワードに分割されるのを防ぐ。",
   },
   {
     label: "同時符合",
+    labelJa: "複数条件を同時に満たす",
     query: 'Lizalfos "Royal Bow"',
     description: "空格等同 AND，只留下同時符合兩個條件的結果。",
+    descriptionJa: "スペースは AND と同じ意味になり、両方の条件を満たす結果だけが残る。",
   },
   {
     label: "排除結果",
+    labelJa: "結果を除外",
     query: 'Lynel NOT "Lynel Bow"',
     description: "保留萊尼爾，但排除含有 Lynel Bow 的項目。",
+    descriptionJa: "ライネルは残しつつ、Lynel Bow を含む項目を除外する。",
   },
   {
     label: "萬用字元",
+    labelJa: "ワイルドカード",
     query: "TBox_* hard:0",
     description: "搜尋一般模式中的 TBox 系列寶箱物件。",
+    descriptionJa: "ノーマルモードの TBox 系統の宝箱オブジェクトを検索する。",
   },
 ];
 
 const fieldFilters = [
-  { field: "map", value: "MainField/E-4", use: "限定地圖或地圖單位" },
-  { field: "static", value: "1", use: "1 為 Static，0 為 Dynamic" },
-  { field: "actor", value: "Weapon_Sword_001", use: "依遊戲內部 Actor 名稱搜尋" },
-  { field: "name", value: '"Traveler\'s Sword"', use: "依玩家看見的物件名稱搜尋" },
-  { field: "data", value: "IsGet_", use: "搜尋物件內部資料" },
-  { field: "drop", value: "Arrow", use: "搜尋掉落物或寶箱內容" },
-  { field: "equip", value: "Bow", use: "搜尋敵人持有的裝備" },
-  { field: "onehit", value: "1", use: "限定一擊必殺之劍挑戰物件" },
-  { field: "lastboss", value: "1", use: "限定進入城堡主殿後的物件" },
-  { field: "hard", value: "0", use: "排除大師模式專屬物件" },
-  { field: "no_rankup", value: "1", use: "不會隨世界等級升級" },
-  { field: "scale", value: "0", use: "不會隨世界等級變化" },
-  { field: "bonus", value: "2", use: "指定最低附加效果等級" },
+  { field: "map", value: "MainField/E-4", use: "限定地圖或地圖單位", useJa: "地図またはマップユニットを限定" },
+  { field: "static", value: "1", use: "1 為 Static，0 為 Dynamic", useJa: "1 が Static、0 が Dynamic" },
+  { field: "actor", value: "Weapon_Sword_001", use: "依遊戲內部 Actor 名稱搜尋", useJa: "ゲーム内部の Actor 名で検索" },
+  { field: "name", value: '"Traveler\'s Sword"', use: "依玩家看見的物件名稱搜尋", useJa: "プレイヤーに表示される物体名で検索" },
+  { field: "data", value: "IsGet_", use: "搜尋物件內部資料", useJa: "物体の内部データを検索" },
+  { field: "drop", value: "Arrow", use: "搜尋掉落物或寶箱內容", useJa: "ドロップ品や宝箱の中身を検索" },
+  { field: "equip", value: "Bow", use: "搜尋敵人持有的裝備", useJa: "敵が装備している武具を検索" },
+  { field: "onehit", value: "1", use: "限定一擊必殺之劍挑戰物件", useJa: "一撃必殺の剣の試練オブジェクトを限定" },
+  { field: "lastboss", value: "1", use: "限定進入城堡主殿後的物件", useJa: "城の本殿に入った後のオブジェクトを限定" },
+  { field: "hard", value: "0", use: "排除大師模式專屬物件", useJa: "マスターモード専用オブジェクトを除外" },
+  { field: "no_rankup", value: "1", use: "不會隨世界等級升級", useJa: "ワールドレベルで強化されない" },
+  { field: "scale", value: "0", use: "不會隨世界等級變化", useJa: "ワールドレベルで変化しない" },
+  { field: "bonus", value: "2", use: "指定最低附加效果等級", useJa: "付加効果の最低ランクを指定" },
 ];
 
 const mapTools = [
@@ -66,21 +76,25 @@ const mapTools = [
     no: "01",
     title: "Add to map",
     text: "搜尋完成後，把整組結果加入地圖。不同搜尋可以保留為不同顏色的群組。",
+    textJa: "検索が終わったら、結果一式を地図に追加する。検索ごとに異なる色のグループとして残せる。",
   },
   {
     no: "02",
     title: "Filter",
     text: "控制地名、神廟、塔、商店、克洛格與可見地圖區域，降低畫面上的資訊量。",
+    textJa: "地名、祠、塔、店、コログの実など表示する範囲を絞り込み、画面上の情報量を減らす。",
   },
   {
     no: "03",
     title: "Go to coordinates",
     text: "輸入座標直接前往目標位置，適合搭配遊戲內座標或研究資料使用。",
+    textJa: "座標を入力して目的の位置へ直接移動する。ゲーム内座標や調査データと組み合わせるのに向いている。",
   },
   {
     no: "04",
     title: "Object Display",
     text: "可切換內部 Actor 名稱、Hash ID、高度、位置與物件卸載範圍等進階資訊。",
+    textJa: "内部の Actor 名、Hash ID、高度、座標、オブジェクトのアンロード範囲といった詳細情報を切り替えて表示できる。",
   },
 ];
 ---
@@ -121,7 +135,7 @@ const mapTools = [
           <span>/</span>
           <a href={href("/resources#botw", lang)}>{t.navResources}</a>
           <span>/</span>
-          <span aria-current="page">物件地圖</span>
+          <span aria-current="page">{lang === "ja" ? "オブジェクトマップ" : "物件地圖"}</span>
         </nav>
 
         <div class="obj-hero-content">
@@ -130,17 +144,21 @@ const mapTools = [
             <span>Breath of the Wild · Object Map Guide</span>
           </div>
           <h1 id="guide-title">{t.objMapBotwTitle}</h1>
-          <p>不只搜尋名稱。用欄位、條件與布林語法，把海拉魯縮小成你真正需要的答案。</p>
+          <p>
+            {lang === "ja"
+              ? "名前検索だけじゃない。フィールド、条件、そしてブール構文を使って、ハイラル全体を本当に欲しい答えまで絞り込む。"
+              : "不只搜尋名稱。用欄位、條件與布林語法，把海拉魯縮小成你真正需要的答案。"}
+          </p>
 
           <div class="obj-hero-meta">
             <span>Created by Léo Lam</span>
-            <span>English interface</span>
-            <span>Advanced object data</span>
+            <span>{lang === "ja" ? "英語インターフェース" : "English interface"}</span>
+            <span>{lang === "ja" ? "詳細なオブジェクトデータ" : "Advanced object data"}</span>
           </div>
 
           <div class="obj-hero-actions">
             <a class="obj-primary-action" href={MAP_URL} target="_blank" rel="noopener">
-              <span>前往曠野物件地圖</span>
+              <span>{lang === "ja" ? "ブレワイのオブジェクトマップを開く" : "前往曠野物件地圖"}</span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
               </svg>
@@ -157,13 +175,13 @@ const mapTools = [
       </div>
     </section>
 
-    <nav class="obj-section-nav" aria-label="本頁章節">
+    <nav class="obj-section-nav" aria-label={lang === "ja" ? "ページ内セクション" : "本頁章節"}>
       <div class="obj-section-nav-inner">
         <span class="obj-section-nav-label">GUIDE / 01</span>
-        <a href="#start">快速開始</a>
-        <a href="#syntax">搜尋語法</a>
-        <a href="#filters">欄位篩選</a>
-        <a href="#tools">地圖工具</a>
+        <a href="#start">{lang === "ja" ? "クイックスタート" : "快速開始"}</a>
+        <a href="#syntax">{lang === "ja" ? "検索構文" : "搜尋語法"}</a>
+        <a href="#filters">{lang === "ja" ? "フィールド絞り込み" : "欄位篩選"}</a>
+        <a href="#tools">{lang === "ja" ? "マップツール" : "地圖工具"}</a>
         <a href="#notes">注意事項</a>
       </div>
     </nav>
@@ -172,47 +190,59 @@ const mapTools = [
     <section id="start" class="obj-section obj-section-intro obj-reveal">
       <div class="obj-wrap">
         <div class="obj-section-heading">
-          <span>START HERE · 快速開始</span>
-          <h2>輸入方式</h2>
+          <span>{lang === "ja" ? "START HERE · クイックスタート" : "START HERE · 快速開始"}</span>
+          <h2>{lang === "ja" ? "入力方法" : "輸入方式"}</h2>
         </div>
 
         <div class="obj-start-grid">
           <article>
             <span class="obj-step-no">01</span>
-            <h3>英文名稱</h3>
+            <h3>{lang === "ja" ? "英語名" : "英文名稱"}</h3>
             <p>
-              參考<a class="obj-inline-link" href="https://docs.google.com/spreadsheets/d/1wLoabOgGwh6ST23-lgQG8O6oKdKwwAyb75fzwH5FYpE/edit?gid=0#gid=0" target="_blank" rel="noopener">中英文對照</a>，輸入搜尋目標的英文或 Actor 名稱。
+              {lang === "ja" ? (
+                <><a class="obj-inline-link" href="https://docs.google.com/spreadsheets/d/1wLoabOgGwh6ST23-lgQG8O6oKdKwwAyb75fzwH5FYpE/edit?gid=0#gid=0" target="_blank" rel="noopener">中英対照表</a>を参考に、検索したい対象の英語名または Actor 名を入力する。</>
+              ) : (
+                <>參考<a class="obj-inline-link" href="https://docs.google.com/spreadsheets/d/1wLoabOgGwh6ST23-lgQG8O6oKdKwwAyb75fzwH5FYpE/edit?gid=0#gid=0" target="_blank" rel="noopener">中英文對照</a>，輸入搜尋目標的英文或 Actor 名稱。</>
+              )}
             </p>
             <div class="obj-step-examples">
               <div class="obj-step-example">
                 <code>Airwall</code>
-                <span>空氣牆</span>
+                <span>{lang === "ja" ? "エアウォール" : "空氣牆"}</span>
               </div>
               <div class="obj-step-example">
                 <code>FldObj_RuinGuardian*Dynamic static:0</code>
-                <span>能觸發無限古代素材的動態廢棄守護者</span>
+                <span>{lang === "ja" ? "無限古代素材（Infinite Ancient Parts）を発生させられる、動的な壊れたガーディアン" : "能觸發無限古代素材的動態廢棄守護者"}</span>
               </div>
             </div>
           </article>
           <article>
             <span class="obj-step-no">02</span>
-            <h3>運算子</h3>
-            <p>加入錨點 <code>^</code>、前綴 <code>*</code>、片語 <code>""</code>、布林運算（<code>AND</code> / <code>NOT</code> / <code>OR</code>），查詢更細節的內容。</p>
+            <h3>{lang === "ja" ? "演算子" : "運算子"}</h3>
+            <p>{lang === "ja" ? (
+              <>アンカー <code>^</code>、前方一致 <code>*</code>、フレーズ <code>""</code>、ブール演算（<code>AND</code> / <code>NOT</code> / <code>OR</code>）を組み合わせて、より細かい内容を検索する。</>
+            ) : (
+              <>加入錨點 <code>^</code>、前綴 <code>*</code>、片語 <code>""</code>、布林運算（<code>AND</code> / <code>NOT</code> / <code>OR</code>），查詢更細節的內容。</>
+            )}</p>
             <div class="obj-step-examples">
               <div class="obj-step-example">
                 <code>^Lynel</code>
-                <span>只會出現 Lynel 作為前綴開頭的結果，如 Silver Lynel 之類 Lynel 出現在後面的結果不會出現</span>
+                <span>{lang === "ja" ? "Lynel が先頭にくる結果だけが出る。Silver Lynel のように Lynel が後ろにつく結果は出ない" : "只會出現 Lynel 作為前綴開頭的結果，如 Silver Lynel 之類 Lynel 出現在後面的結果不會出現"}</span>
               </div>
             </div>
           </article>
           <article>
             <span class="obj-step-no">03</span>
-            <h3>篩選</h3>
-            <p>加入 <code>欄位:</code> 可以篩選出更細節的結果，如「裝備了什麼」「會不會升級」</p>
+            <h3>{lang === "ja" ? "絞り込み" : "篩選"}</h3>
+            <p>{lang === "ja" ? (
+              <>「何を装備しているか」「強化されるか」など、<code>フィールド:</code> を加えるとさらに細かい結果を絞り込める</>
+            ) : (
+              <>加入 <code>欄位:</code> 可以篩選出更細節的結果，如「裝備了什麼」「會不會升級」</>
+            )}</p>
             <div class="obj-step-examples">
               <div class="obj-step-example">
                 <code>Moblin scale:0 equip:^Lynel</code>
-                <span>不會升級、裝備著名稱是 Lynel 開頭裝備的莫力布林</span>
+                <span>{lang === "ja" ? "強化されず、名前が Lynel で始まる装備を持つモリブリン" : "不會升級、裝備著名稱是 Lynel 開頭裝備的莫力布林"}</span>
               </div>
             </div>
           </article>
@@ -224,48 +254,52 @@ const mapTools = [
       <div class="obj-wrap obj-lab-layout">
         <div class="obj-lab-copy">
           <div class="obj-section-heading">
-            <span>QUERY LAB · 搜尋式組合器</span>
-            <h2>練習條件組合</h2>
+            <span>{lang === "ja" ? "QUERY LAB · クエリラボ" : "QUERY LAB · 搜尋式組合器"}</span>
+            <h2>{lang === "ja" ? "条件の組み合わせを試す" : "練習條件組合"}</h2>
           </div>
           <p>
-            點擊右邊試著了解搜尋的語法。空格代表 <code>AND</code>,
-            <code>NOT</code> 會排除符合的結果。
+            {lang === "ja" ? (
+              <>右側をクリックして検索の構文を体験してみよう。スペースは <code>AND</code> と同じ意味で、<code>NOT</code> は条件に合う結果を除外する。</>
+            ) : (
+              <>點擊右邊試著了解搜尋的語法。空格代表 <code>AND</code>,
+              <code>NOT</code> 會排除符合的結果。</>
+            )}
           </p>
 
           <div class="obj-query-output" aria-live="polite">
             <span>SEARCH QUERY</span>
-            <code id="query-output" class="is-placeholder">請點擊右側內容</code>
+            <code id="query-output" class="is-placeholder">{lang === "ja" ? "右側の内容をクリック" : "請點擊右側內容"}</code>
             <button id="copy-query" type="button" data-copy-target="query-output">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <rect x="8" y="8" width="11" height="11" rx="2"></rect>
                 <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
               </svg>
-              <span>複製搜尋式</span>
+              <span>{lang === "ja" ? "検索式をコピー" : "複製搜尋式"}</span>
             </button>
           </div>
         </div>
 
-        <div class="obj-query-controls" aria-label="搜尋條件">
+        <div class="obj-query-controls" aria-label={lang === "ja" ? "検索条件" : "搜尋條件"}>
           <div>
-            <span class="obj-control-label">基本關鍵字</span>
-            <select id="query-base" class="obj-base-select" aria-label="選擇基本關鍵字">
-              <option value="" selected disabled>請選擇…</option>
-              <option value="Bokoblin">波克布林</option>
-              <option value="Mobli*">莫力布</option>
-              <option value="Lynel">萊尼爾</option>
-              <option value={'"Lynel Bow"'}>萊尼爾之弓</option>
+            <span class="obj-control-label">{lang === "ja" ? "基本キーワード" : "基本關鍵字"}</span>
+            <select id="query-base" class="obj-base-select" aria-label={lang === "ja" ? "基本キーワードを選択" : "選擇基本關鍵字"}>
+              <option value="" selected disabled>{lang === "ja" ? "選択してください…" : "請選擇…"}</option>
+              <option value="Bokoblin">{lang === "ja" ? "ボコブリン" : "波克布林"}</option>
+              <option value="Mobli*">{lang === "ja" ? "モリブリン" : "莫力布"}</option>
+              <option value="Lynel">{lang === "ja" ? "ライネル" : "萊尼爾"}</option>
+              <option value={'"Lynel Bow"'}>{lang === "ja" ? "ライネルの弓" : "萊尼爾之弓"}</option>
             </select>
           </div>
           <button type="button" class="obj-token" data-query-token={'NOT "Lynel Bow"'} aria-pressed="false">
-            <span>沒有裝備萊尼爾之弓</span>
+            <span>{lang === "ja" ? "ライネルの弓を装備していない" : "沒有裝備萊尼爾之弓"}</span>
             <code>NOT "Lynel Bow"</code>
           </button>
           <button type="button" class="obj-token" data-query-token="no_rankup:1" aria-pressed="false">
-            <span>不會升級</span>
+            <span>{lang === "ja" ? "強化されない" : "不會升級"}</span>
             <code>no_rankup:1</code>
           </button>
           <button type="button" class="obj-token" data-query-token="hard:0" aria-pressed="false">
-            <span>普通模式</span>
+            <span>{lang === "ja" ? "ノーマルモード" : "普通模式"}</span>
             <code>hard:0</code>
           </button>
         </div>
@@ -276,19 +310,19 @@ const mapTools = [
       <div class="obj-wrap">
         <div class="obj-section-heading obj-heading-row">
           <div>
-            <span>SEARCH RECIPES · 語法參考</span>
-            <h2 id="recipes-title">基本的搜尋語法</h2>
+            <span>{lang === "ja" ? "SEARCH RECIPES · 検索構文リファレンス" : "SEARCH RECIPES · 語法參考"}</span>
+            <h2 id="recipes-title">{lang === "ja" ? "基本の検索構文" : "基本的搜尋語法"}</h2>
           </div>
-          <p>點擊右側圖示即可複製</p>
+          <p>{lang === "ja" ? "右側のアイコンをクリックするとコピーできる" : "點擊右側圖示即可複製"}</p>
         </div>
 
         <div class="obj-recipe-list">
           {queryExamples.map((item, index) => (
             <article class="obj-recipe" style={`--i:${index}`}>
-              <span class="obj-recipe-label">{item.label}</span>
+              <span class="obj-recipe-label">{lang === "ja" ? item.labelJa : item.label}</span>
               <code>{item.query}</code>
-              <p>{item.description}</p>
-              <button type="button" class="obj-copy-icon" data-copy={item.query} aria-label={`複製「${item.query}」`} title="複製搜尋式">
+              <p>{lang === "ja" ? item.descriptionJa : item.description}</p>
+              <button type="button" class="obj-copy-icon" data-copy={item.query} aria-label={lang === "ja" ? `「${item.query}」をコピー` : `複製「${item.query}」`} title={lang === "ja" ? "検索式をコピー" : "複製搜尋式"}>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <rect x="8" y="8" width="11" height="11" rx="2"></rect>
                   <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
@@ -303,14 +337,18 @@ const mapTools = [
     <section id="filters" class="obj-section obj-section-filters obj-reveal">
       <div class="obj-wrap obj-filter-layout">
         <div class="obj-section-heading obj-filter-intro">
-          <span>COLUMN FILTERS · 欄位篩選</span>
-          <h2>避免結果太籠統</h2>
+          <span>{lang === "ja" ? "COLUMN FILTERS · フィールド絞り込み" : "COLUMN FILTERS · 欄位篩選"}</span>
+          <h2>{lang === "ja" ? "結果を絞り込む" : "避免結果太籠統"}</h2>
           <p>
-            欄位語法固定使用 <code>COLUMN:QUERY</code>。不同欄位可以放在同一條搜尋式中，逐步縮小結果。
+            {lang === "ja" ? (
+              <>フィールド構文は必ず <code>COLUMN:QUERY</code> の形を使う。複数のフィールドを同じ検索式に並べて、段階的に結果を絞り込める。</>
+            ) : (
+              <>欄位語法固定使用 <code>COLUMN:QUERY</code>。不同欄位可以放在同一條搜尋式中，逐步縮小結果。</>
+            )}
           </p>
           <div class="obj-filter-formula">
             <code>^Bokoblin scale:0 hard:0</code>
-            <span>名稱開頭符合 + 不升級 + 一般模式</span>
+            <span>{lang === "ja" ? "名前が一致 + 強化なし + ノーマルモード" : "名稱開頭符合 + 不升級 + 一般模式"}</span>
           </div>
         </div>
 
@@ -318,7 +356,7 @@ const mapTools = [
             但點開只有一行範例。改成橫向鍵帽後整組一眼可見，說明固定顯示在下方面板。
             面板內容由 JS 從鍵帽自身的 data-* 換入，無 JS 時仍會顯示第一個欄位。 */}
         <div class="obj-filter-board">
-          <div class="obj-filter-keys" role="tablist" aria-label="欄位篩選">
+          <div class="obj-filter-keys" role="tablist" aria-label={lang === "ja" ? "フィールド絞り込み" : "欄位篩選"}>
             {fieldFilters.map((item, index) => (
               <button
                 type="button"
@@ -328,7 +366,7 @@ const mapTools = [
                 aria-selected={index === 0 ? "true" : "false"}
                 tabindex={index === 0 ? 0 : -1}
                 data-field={item.field}
-                data-use={item.use}
+                data-use={lang === "ja" ? item.useJa : item.use}
                 data-value={item.value}
               >
                 {item.field}:
@@ -344,13 +382,13 @@ const mapTools = [
           >
             <p>
               <code data-detail="field">{fieldFilters[0].field}:</code>
-              <span data-detail="use">{fieldFilters[0].use}</span>
+              <span data-detail="use">{lang === "ja" ? fieldFilters[0].useJa : fieldFilters[0].use}</span>
             </p>
             <div>
-              <span>範例</span>
+              <span>{lang === "ja" ? "例" : "範例"}</span>
               <code data-detail="example">{fieldFilters[0].field}:{fieldFilters[0].value}</code>
               <button type="button" data-copy={`${fieldFilters[0].field}:${fieldFilters[0].value}`}>
-                <span>複製</span>
+                <span>{lang === "ja" ? "コピー" : "複製"}</span>
               </button>
             </div>
           </div>
@@ -361,8 +399,8 @@ const mapTools = [
     <section id="tools" class="obj-section obj-reveal">
       <div class="obj-wrap">
         <div class="obj-section-heading">
-          <span>MAP WORKFLOW · 地圖工具</span>
-          <h2>呈現於地圖</h2>
+          <span>{lang === "ja" ? "MAP WORKFLOW · マップツール" : "MAP WORKFLOW · 地圖工具"}</span>
+          <h2>{lang === "ja" ? "地図上での見え方" : "呈現於地圖"}</h2>
         </div>
 
         <div class="obj-tools-list">
@@ -370,7 +408,7 @@ const mapTools = [
             <article>
               <span>{tool.no}</span>
               <h3>{tool.title}</h3>
-              <p>{tool.text}</p>
+              <p>{lang === "ja" ? tool.textJa : tool.text}</p>
             </article>
           ))}
         </div>
@@ -381,13 +419,24 @@ const mapTools = [
       <div class="obj-wrap obj-notes-layout">
         <div>
           <span class="obj-note-mark">FIELD NOTES</span>
-          <h2>使用前注意</h2>
+          <h2>{lang === "ja" ? "利用前の注意" : "使用前注意"}</h2>
         </div>
         <ul>
-          <li>物件地圖會顯示未探索地區、內部名稱與任務物件，可能包含劇情或探索上的雷。</li>
-          <li>搜尋結果預設有顯示數量上限；條件太寬時，請加入欄位或關鍵字再搜尋。</li>
-          <li>名稱中含有單引號時，請用雙引號包住整個名稱，例如 <code>"Traveler's Shield"</code>。</li>
-          <li>Master Mode、LastBoss Mode 等顯示設定不一定會改變搜尋結果，仍應在搜尋式中加入對應欄位。</li>
+          {lang === "ja" ? (
+            <>
+              <li>オブジェクトマップは未探索エリア、内部名称、クエストオブジェクトも表示するため、ストーリーや探索のネタバレを含む場合がある。</li>
+              <li>検索結果には既定の表示件数の上限がある。条件が広すぎる場合は、フィールドやキーワードを追加して再検索すること。</li>
+              <li>名前にシングルクォートが含まれる場合は、名前全体をダブルクォートで囲むこと。例：<code>"Traveler's Shield"</code>。</li>
+              <li>Master Mode、LastBoss Mode などの表示設定を切り替えても検索結果が自動で変わるとは限らない。該当するフィールドを検索式自体に加える必要がある。</li>
+            </>
+          ) : (
+            <>
+              <li>物件地圖會顯示未探索地區、內部名稱與任務物件，可能包含劇情或探索上的雷。</li>
+              <li>搜尋結果預設有顯示數量上限；條件太寬時，請加入欄位或關鍵字再搜尋。</li>
+              <li>名稱中含有單引號時，請用雙引號包住整個名稱，例如 <code>"Traveler's Shield"</code>。</li>
+              <li>Master Mode、LastBoss Mode 等顯示設定不一定會改變搜尋結果，仍應在搜尋式中加入對應欄位。</li>
+            </>
+          )}
         </ul>
       </div>
     </section>
@@ -395,9 +444,9 @@ const mapTools = [
     <section class="obj-final-cta obj-reveal">
       <div class="obj-wrap">
         <span>READY TO SEARCH</span>
-        <h2>開始探索海拉魯</h2>
+        <h2>{lang === "ja" ? "ハイラル探索をはじめよう" : "開始探索海拉魯"}</h2>
         <a href={MAP_URL} target="_blank" rel="noopener">
-          前往曠野物件地圖
+          {lang === "ja" ? "ブレワイのオブジェクトマップを開く" : "前往曠野物件地圖"}
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
           </svg>
@@ -1709,8 +1758,10 @@ const mapTools = [
     // 提示文字要跟著同一個斷點換方向用詞，不然窄螢幕會出現「請點擊右側內容」
     // 但右側其實什麼都沒有的錯誤指示
     const stackedQuery = window.matchMedia("(max-width: 960px)");
+    const isJa = document.documentElement.lang === "ja";
     // 還沒選基本關鍵字、也沒點任何條件時顯示的提示文字（取代原本預設就秀出 Lynel 的做法）
     function queryPlaceholderText() {
+      if (isJa) return stackedQuery.matches ? "下の内容をクリック" : "右側の内容をクリック";
       return stackedQuery.matches ? "請點擊下方內容" : "請點擊右側內容";
     }
 
@@ -1751,7 +1802,7 @@ const mapTools = [
         button.dataset.copied = "true";
         const label = button.querySelector("span");
         const previous = label?.textContent;
-        if (label) label.textContent = "已複製";
+        if (label) label.textContent = isJa ? "コピー済み" : "已複製";
         window.setTimeout(() => {
           delete button.dataset.copied;
           if (label && previous) label.textContent = previous;

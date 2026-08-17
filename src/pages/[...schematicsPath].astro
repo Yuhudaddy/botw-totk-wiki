@@ -29,6 +29,7 @@ interface Schematic {
 interface SchematicCategory {
   id: string;
   label: string;
+  labelJa?: string;
   en: string;
   folderNames: string[];
   items: Schematic[];
@@ -41,136 +42,178 @@ const categoryConfig = [
   {
     id: "practical",
     label: "實用",
+    labelJa: "実用",
     en: "Practical",
     folderNames: ["Pratical", "Practical"],
   },
   {
     id: "playful",
     label: "有趣",
+    labelJa: "遊び心",
     en: "Playful",
     folderNames: ["Playful"],
   },
 ];
 
-const blueprintMetadata: Record<string, { number: string; title: string; description: string; author: string }> = {
+const blueprintMetadata: Record<string, { number?: string; title: string; titleJa?: string; description: string; descriptionJa?: string; author: string }> = {
   "新藍圖 01_Zelda Notes.jpg": {
     number: "01",
     title: "人馬剋星帆",
+    titleJa: "ライネル封じの帆",
     description: "人馬會無法消滅帆而持續吼叫",
+    descriptionJa: "ライネルが帆を壊せず、ずっと咆哮し続ける",
     author: "Yuda",
   },
   "新藍圖 02_Zelda Notes.jpg": {
     number: "02",
     title: "免電上升器",
+    titleJa: "無電源上昇機",
     description: "在鍋子正下方往上爬就可以升空",
+    descriptionJa: "鍋のすぐ下からよじ登るだけで上空へ飛べる",
     author: "Kleric（Adjusted by Yuda）",
   },
   "新藍圖 03_Zelda Notes.jpg": {
     number: "03",
     title: "鍋神",
+    titleJa: "鍋の神",
     description: "除了大型魔物外都能秒殺",
+    descriptionJa: "大型の魔物以外は一撃で倒せる",
     author: "Yuda",
   },
   "新藍圖 04_Zelda Notes.jpg": {
     number: "04",
     title: "神廟升降機",
+    titleJa: "祠エレベーター",
     description: "不受地圖碰撞、可載運林克和NPC",
+    descriptionJa: "地形の当たり判定を受けず、リンクと NPC を一緒に運べる",
     author: "Yuda",
   },
   "新藍圖 05_Zelda Notes.jpg": {
     number: "05",
     title: "洞穴採集藍圖",
+    titleJa: "洞窟採集ブループリント",
     description: "可在洞穴內快速搜集材料",
+    descriptionJa: "洞窟内ですばやく素材を集められる",
     author: "Yuda",
   },
   "新藍圖 06_Zelda Notes.jpg": {
     number: "06",
     title: "瞬爆器",
+    titleJa: "瞬間爆破機",
     description: "一展開就能瞬間爆炸",
+    descriptionJa: "展開した瞬間に爆発する",
     author: "Yuda",
   },
   "脈衝雷射車_にょろ.jpg": {
     number: "07",
     title: "脈衝雷射車",
+    titleJa: "パルスレーザーカー",
     description: "間斷性光線有高速傷害",
+    descriptionJa: "断続的な光線で高速ダメージを与える",
     author: "にょろ",
   },
   "小型隨身鳥望台_Yuda.jpg": {
     number: "08",
     title: "隨身鳥望台",
+    titleJa: "携帯用バードタワー",
     description: "適用 Switch 2",
+    descriptionJa: "Switch 2 対応",
     author: "Yuda",
   },
   "巨大化左納烏組01_takkun.jpg": {
     number: "09",
     title: "巨大左納烏組",
+    titleJa: "巨大ゾナウ装置セット",
     description: "巨大化左納烏組01",
+    descriptionJa: "巨大化ゾナウ装置セット01",
     author: "takkun",
   },
   "巨大化左納烏組02_takkun.jpg": {
     number: "10",
     title: "巨大電池組",
+    titleJa: "巨大バッテリーセット",
     description: "巨大化左納烏組02",
+    descriptionJa: "巨大化ゾナウ装置セット02",
     author: "takkun",
   },
   "巨大拳擊機_cross.jpg": {
     number: "11",
     title: "巨大拳擊機",
+    titleJa: "巨大パンチマシン",
     description: "巨大拳擊機",
+    descriptionJa: "巨大パンチマシン",
     author: "cross",
   },
   "巨大MK2_NeatJungle.jpg": {
     number: "12",
     title: "巨大MK2",
+    titleJa: "巨大MK2",
     description: "巨大MK2",
+    descriptionJa: "巨大MK2",
     author: "NeatJungle",
   },
   "全範圍光掃射機_cross.jpg": {
     number: "13",
     title: "激光掃射器",
+    titleJa: "レーザー掃射機",
     description: "全範圍光掃射機",
+    descriptionJa: "全方位光線掃射機",
     author: "cross",
   },
   "血月機_Kleric.jpg": {
     number: "14",
     title: "血月機",
+    titleJa: "血の月マシン",
     description: "血月機",
+    descriptionJa: "血の月マシン",
     author: "Kleric",
   },
   "拳擊機_cross.jpg": {
     number: "15",
     title: "拳擊機",
+    titleJa: "パンチマシン",
     description: "拳擊機",
+    descriptionJa: "パンチマシン",
     author: "cross",
   },
   "脈衝雷射手_cross.jpg": {
     number: "16",
     title: "脈衝雷射手",
+    titleJa: "パルスレーザーガンナー",
     description: "脈衝雷射手",
+    descriptionJa: "パルスレーザーガンナー",
     author: "cross",
   },
   "脈衝雷射柱_Yuda.jpg": {
     number: "17",
     title: "脈衝雷射柱",
+    titleJa: "パルスレーザーポール",
     description: "脈衝雷射柱",
+    descriptionJa: "パルスレーザーポール",
     author: "Yuda",
   },
   "馬車_たはた.jpg": {
     number: "18",
     title: "馬車",
+    titleJa: "馬車",
     description: "馬車",
+    descriptionJa: "馬車",
     author: "たはた",
   },
   "高速馬車組合_dr. pu.jpg": {
     number: "19",
     title: "高速馬車組合",
+    titleJa: "高速馬車セット",
     description: "高速馬車組合",
+    descriptionJa: "高速馬車セット",
     author: "dr. pu",
   },
   "無電池抬舉飛行器_ぶれねこ.jpg": {
     number: "20",
     title: "抬舉飛行器",
+    titleJa: "リフト式飛行機",
     description: "重複抬舉就能飛上去",
+    descriptionJa: "持ち上げを繰り返すだけで空へ飛べる",
     author: "ぶれねこ",
   },
   // 以下兩張的敘述與標題不同，需另外指定；其餘鯨魚系列的敘述沿用標題，
@@ -178,20 +221,205 @@ const blueprintMetadata: Record<string, { number: string; title: string; descrip
   "雪兔號_Yuda.jpg": {
     number: "21",
     title: "雪兔號",
+    titleJa: "雪ウサギ号",
     description: "須裝備防凍",
+    descriptionJa: "防寒装備が必要",
     author: "Yuda",
   },
   "小鯨魚尾骨_Yuda.jpg": {
     number: "22",
     title: "小鯨魚尾骨",
+    titleJa: "小クジラの尾骨",
     description: "推 NPC 神器",
+    descriptionJa: "NPC を押す神アイテム",
     author: "Yuda",
   },
   "水面通島台_Yuda.jpg": {
     number: "23",
     title: "水面通島台",
+    titleJa: "水上経由の空島プラットフォーム",
     description: "水面上間接通天到空島的平台",
+    descriptionJa: "水面を経由して間接的に空島へ到達できる足場",
     author: "Yuda",
+  },
+  // 以下為 Playful 資料夾的 25 張，原本沒有結構化資料、標題直接由
+  // titleAndAuthorFromFile() 從檔名解析。title/author 在這裡明確列出後，
+  // 中文顯示結果與原本的檔名解析完全一致，只是多了 titleJa 可用。
+  // description 沿用標題本身（與原本 fallback 行為一致）。
+  "城內木條格柵門_フニー.jpg": {
+    title: "城內木條格柵門",
+    titleJa: "城内 木製格子扉",
+    description: "城內木條格柵門",
+    descriptionJa: "城内 木製格子扉",
+    author: "フニー",
+  },
+  "城內金屬格柵門_フニー.jpg": {
+    title: "城內金屬格柵門",
+    titleJa: "城内 金属格子扉",
+    description: "城內金屬格柵門",
+    descriptionJa: "城内 金属格子扉",
+    author: "フニー",
+  },
+  "城內鐵格柵_フニー.jpg": {
+    title: "城內鐵格柵",
+    titleJa: "城内 鉄格子",
+    description: "城內鐵格柵",
+    descriptionJa: "城内 鉄格子",
+    author: "フニー",
+  },
+  "城前廣場大門_フニー.jpg": {
+    title: "城前廣場大門",
+    titleJa: "城前広場の大門",
+    description: "城前廣場大門",
+    descriptionJa: "城前広場の大門",
+    author: "フニー",
+  },
+  "小鯨魚背骨_Yuda.jpg": {
+    title: "小鯨魚背骨",
+    titleJa: "小クジラの背骨",
+    description: "小鯨魚背骨",
+    descriptionJa: "小クジラの背骨",
+    author: "Yuda",
+  },
+  "小鯨魚頭骨_Yuda.jpg": {
+    title: "小鯨魚頭骨",
+    titleJa: "小クジラの頭骨",
+    description: "小鯨魚頭骨",
+    descriptionJa: "小クジラの頭骨",
+    author: "Yuda",
+  },
+  "巨大神廟馬達_フニー.jpg": {
+    title: "巨大神廟馬達",
+    titleJa: "巨大祠モーター",
+    description: "巨大神廟馬達",
+    descriptionJa: "巨大祠モーター",
+    author: "フニー",
+  },
+  "巨蛋炸彈箱_フニー.jpg": {
+    title: "巨蛋炸彈箱",
+    titleJa: "ドーム型爆弾ボックス",
+    description: "巨蛋炸彈箱",
+    descriptionJa: "ドーム型爆弾ボックス",
+    author: "フニー",
+  },
+  "時之神殿迴轉架_フニー.jpg": {
+    title: "時之神殿迴轉架",
+    titleJa: "時の神殿 回転ラック",
+    description: "時之神殿迴轉架",
+    descriptionJa: "時の神殿 回転ラック",
+    author: "フニー",
+  },
+  "格魯德吊籠電梯_takkun.jpg": {
+    title: "格魯德吊籠電梯",
+    titleJa: "ゲルド 吊りかごエレベーター",
+    description: "格魯德吊籠電梯",
+    descriptionJa: "ゲルド 吊りかごエレベーター",
+    author: "takkun",
+  },
+  "水神殿青苔水門_フニー.jpg": {
+    title: "水神殿青苔水門",
+    titleJa: "水の神殿 苔の水門",
+    description: "水神殿青苔水門",
+    descriptionJa: "水の神殿 苔の水門",
+    author: "フニー",
+  },
+  "海拉魯城大門.jpg": {
+    title: "海拉魯城大門",
+    titleJa: "ハイラル城 大門",
+    description: "海拉魯城大門",
+    descriptionJa: "ハイラル城 大門",
+    author: "製作者待補",
+  },
+  "海拉魯城的鐘_フニー.jpg": {
+    title: "海拉魯城的鐘",
+    titleJa: "ハイラル城の鐘",
+    description: "海拉魯城的鐘",
+    descriptionJa: "ハイラル城の鐘",
+    author: "フニー",
+  },
+  "烈陽迴轉架_フニー.jpg": {
+    title: "烈陽迴轉架",
+    titleJa: "烈陽 回転ラック",
+    description: "烈陽迴轉架",
+    descriptionJa: "烈陽 回転ラック",
+    author: "フニー",
+  },
+  "空島控制盤_フニー.jpg": {
+    title: "空島控制盤",
+    titleJa: "空島コントロールパネル",
+    description: "空島控制盤",
+    descriptionJa: "空島コントロールパネル",
+    author: "フニー",
+  },
+  "迷你左納烏裝置_エグゼ.jpg": {
+    title: "迷你左納烏裝置",
+    titleJa: "ミニゾナウ装置",
+    description: "迷你左納烏裝置",
+    descriptionJa: "ミニゾナウ装置",
+    author: "エグゼ",
+  },
+  "迷你帆_フニー.jpg": {
+    title: "迷你帆",
+    titleJa: "ミニ帆",
+    description: "迷你帆",
+    descriptionJa: "ミニ帆",
+    author: "フニー",
+  },
+  "迷你船_フニー.jpg": {
+    title: "迷你船",
+    titleJa: "ミニ船",
+    description: "迷你船",
+    descriptionJa: "ミニ船",
+    author: "フニー",
+  },
+  "雷之神殿鏡柱01_フニー.jpg": {
+    title: "雷之神殿鏡柱01",
+    titleJa: "雷の神殿 鏡の柱01",
+    description: "雷之神殿鏡柱01",
+    descriptionJa: "雷の神殿 鏡の柱01",
+    author: "フニー",
+  },
+  "雷之神殿鏡柱02_フニー.jpg": {
+    title: "雷之神殿鏡柱02",
+    titleJa: "雷の神殿 鏡の柱02",
+    description: "雷之神殿鏡柱02",
+    descriptionJa: "雷の神殿 鏡の柱02",
+    author: "フニー",
+  },
+  "魔像工坊門_フニー.jpg": {
+    title: "魔像工坊門",
+    titleJa: "ゴーレム工房の扉",
+    description: "魔像工坊門",
+    descriptionJa: "ゴーレム工房の扉",
+    author: "フニー",
+  },
+  "魔物基地木板_フニー.jpg": {
+    title: "魔物基地木板",
+    titleJa: "魔物基地の板",
+    description: "魔物基地木板",
+    descriptionJa: "魔物基地の板",
+    author: "フニー",
+  },
+  "鯨魚指骨_Yuda.jpg": {
+    title: "鯨魚指骨",
+    titleJa: "クジラの指骨",
+    description: "鯨魚指骨",
+    descriptionJa: "クジラの指骨",
+    author: "Yuda",
+  },
+  "鯨魚背骨_Yuda.jpg": {
+    title: "鯨魚背骨",
+    titleJa: "クジラの背骨",
+    description: "鯨魚背骨",
+    descriptionJa: "クジラの背骨",
+    author: "Yuda",
+  },
+  "齒輪迴轉架_フニー.jpg": {
+    title: "齒輪迴轉架",
+    titleJa: "歯車 回転ラック",
+    description: "齒輪迴轉架",
+    descriptionJa: "歯車 回転ラック",
+    author: "フニー",
   },
 };
 
@@ -216,21 +444,29 @@ function readCategoryItems(category: (typeof categoryConfig)[number]): Schematic
   return readdirSync(join(qrRoot, folderName))
     .filter((fileName) => imageExtensions.has(extname(fileName).toLowerCase()))
     .sort((a, b) => {
-      const aNumber = blueprintMetadata[a]?.number;
-      const bNumber = blueprintMetadata[b]?.number;
+      const aNumber = blueprintMetadata[a.normalize("NFC")]?.number;
+      const bNumber = blueprintMetadata[b.normalize("NFC")]?.number;
       if (aNumber && bNumber) return aNumber.localeCompare(bNumber, "en");
       if (aNumber) return -1;
       if (bNumber) return 1;
       return a.localeCompare(b, "zh-Hant");
     })
     .map((fileName, index) => {
-      const metadata = blueprintMetadata[fileName];
+      // macOS 的檔案系統會把檔名正規化成 NFD（濁音等假名拆成基底字元＋合併符號），
+      // 但原始碼裡打的字串預設是 NFC，兩者位元組不同會導致查表失敗（例：エグゼ／ぶれねこ）。
+      // 查表前統一轉成 NFC 再比對，qrImage 路徑仍用 readdirSync 原始回傳值，不受影響。
+      const metadata = blueprintMetadata[fileName.normalize("NFC")];
       const parsed = titleAndAuthorFromFile(fileName);
+      const title = lang === "ja" ? (metadata?.titleJa ?? metadata?.title ?? parsed.title) : (metadata?.title ?? parsed.title);
+      const description =
+        lang === "ja"
+          ? (metadata?.descriptionJa ?? metadata?.titleJa ?? metadata?.description ?? parsed.title)
+          : (metadata?.description ?? parsed.title);
       return {
         id: `${category.id}-${index + 1}`,
         number: metadata?.number ?? String(index + 1).padStart(2, "0"),
-        title: metadata?.title ?? parsed.title,
-        description: metadata?.description ?? parsed.title,
+        title,
+        description,
         author: metadata?.author ?? parsed.author,
         qrImage: `/totk-qrcode/${folderName}/${encodeURIComponent(fileName)}`,
       };
@@ -273,7 +509,7 @@ const schematicsPerPage = 12;
           <span>/</span>
           <a href={href("/resources#totk", lang)}>{t.navResources}</a>
           <span>/</span>
-          <span aria-current="page">藍圖分享</span>
+          <span aria-current="page">{lang === "ja" ? "ブループリント共有" : "藍圖分享"}</span>
         </nav>
 
         <div class="schematics-hero-grid">
@@ -283,11 +519,15 @@ const schematicsPerPage = 12;
               <span>Tears of the Kingdom · Blueprint Gallery</span>
             </div>
             <h1 id="schematics-title">{t.schematicsTitle}</h1>
-            <p>把值得留下的建造收進同一座資料庫。每張藍圖保留 QR Code、名稱與製作者，查找時不必再翻遍散落的圖片。</p>
-            <div class="schematics-meta" aria-label="藍圖資料欄位">
+            <p>
+              {lang === "ja"
+                ? "残しておきたい建造物を、ひとつのアーカイブにまとめる。ブループリントごとに QR Code・名称・制作者を保持するので、探すたびに散らばった画像をめくり直す必要がない。"
+                : "把值得留下的建造收進同一座資料庫。每張藍圖保留 QR Code、名稱與製作者，查找時不必再翻遍散落的圖片。"}
+            </p>
+            <div class="schematics-meta" aria-label={lang === "ja" ? "ブループリントのデータ項目" : "藍圖資料欄位"}>
               <span>QR Code</span>
-              <span>敘述</span>
-              <span>製作者</span>
+              <span>{lang === "ja" ? "説明" : "敘述"}</span>
+              <span>{lang === "ja" ? "制作者" : "製作者"}</span>
             </div>
           </div>
         </div>
@@ -309,14 +549,18 @@ const schematicsPerPage = 12;
       <header class="schematics-library-heading">
         <div>
           <span>QR BLUEPRINT LIBRARY</span>
-          <h2 id="library-title">藍圖分享庫</h2>
+          <h2 id="library-title">{lang === "ja" ? "ブループリント共有ライブラリ" : "藍圖分享庫"}</h2>
         </div>
-        <p>依「實用」與「有趣」分開整理，保留 QR Code、藍圖名稱與製作者，之後新增圖片時也會沿用同一套欄位。</p>
+        <p>
+          {lang === "ja"
+            ? "「実用」と「遊び心」の2つに分けて整理し、QR Code・ブループリント名・制作者を保持する。今後画像を追加するときも同じ項目を引き継ぐ。"
+            : "依「實用」與「有趣」分開整理，保留 QR Code、藍圖名稱與製作者，之後新增圖片時也會沿用同一套欄位。"}
+        </p>
       </header>
 
       <div class="schematics-toolbar">
         {/* 分類切換：滑動膠囊表示選中，桌面 hover 時中文換成英文漸層字 */}
-        <div class="schematics-tabs" role="tablist" aria-label="藍圖分類" data-schematics-tabs data-active={categories[0].id}>
+        <div class="schematics-tabs" role="tablist" aria-label={lang === "ja" ? "ブループリントの分類" : "藍圖分類"} data-schematics-tabs data-active={categories[0].id}>
           <span class="schematics-thumb" aria-hidden="true"></span>
           {
             categories.map((category, index) => (
@@ -328,7 +572,7 @@ const schematicsPerPage = 12;
                 id={`schematics-tab-${category.id}`}
                 data-schematics-tab={category.id}
               >
-                <span class="schematics-tab-zh">{category.label}</span>
+                <span class="schematics-tab-zh">{lang === "ja" ? category.labelJa : category.label}</span>
                 <span class={`schematics-tab-en schematics-tab-en-${category.id}`} aria-hidden="true">{category.en}</span>
                 <em>{String(category.items.length).padStart(2, "0")}</em>
               </button>
@@ -336,14 +580,14 @@ const schematicsPerPage = 12;
           }
         </div>
 
-        <div class="schematics-view-toggle" aria-label="圖片展示方式" data-schematics-view-toggle data-active="grid">
+        <div class="schematics-view-toggle" aria-label={lang === "ja" ? "画像の表示方法" : "圖片展示方式"} data-schematics-view-toggle data-active="grid">
           <span class="schematics-view-thumb" aria-hidden="true"></span>
-          <button type="button" aria-pressed="true" data-schematics-view="grid" aria-label="圖塊展示">
+          <button type="button" aria-pressed="true" data-schematics-view="grid" aria-label={lang === "ja" ? "グリッド表示" : "圖塊展示"}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />
             </svg>
           </button>
-          <button type="button" aria-pressed="false" data-schematics-view="list" aria-label="列表展示">
+          <button type="button" aria-pressed="false" data-schematics-view="list" aria-label={lang === "ja" ? "リスト表示" : "列表展示"}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 5h5v5H4zM4 14h5v5H4zM12 7h8M12 16h8" />
             </svg>
@@ -359,9 +603,9 @@ const schematicsPerPage = 12;
         <input
           type="text"
           id="schematics-search-input"
-          placeholder="搜尋標題…"
+          placeholder={lang === "ja" ? "タイトルを検索…" : "搜尋標題…"}
           autocomplete="off"
-          aria-label="搜尋藍圖標題"
+          aria-label={lang === "ja" ? "ブループリントのタイトルを検索" : "搜尋藍圖標題"}
         />
       </div>
 
@@ -389,26 +633,26 @@ const schematicsPerPage = 12;
                         class="schematic-qr"
                         data-preview-src={href(item.qrImage)}
                         data-preview-title={item.title}
-                        aria-label={`放大預覽 ${item.title} QR Code`}
+                        aria-label={lang === "ja" ? `${item.title} の QR Code を拡大表示` : `放大預覽 ${item.title} QR Code`}
                       >
                         <img src={href(item.qrImage)} alt={`${item.title} QR Code`} loading="lazy" />
                         <span aria-hidden="true"></span>
                       </button>
                       <dl>
                         <div>
-                          <dt>敘述</dt>
+                          <dt>{lang === "ja" ? "説明" : "敘述"}</dt>
                           <dd>{item.description}</dd>
                         </div>
                         <div>
-                          <dt>製作者</dt>
+                          <dt>{lang === "ja" ? "制作者" : "製作者"}</dt>
                           <dd>{item.author}</dd>
                         </div>
                       </dl>
                     </article>
                   ))}
                   {category.items.length > schematicsPerPage && (
-                    <nav class="schematics-pagination" aria-label={`${category.label}藍圖分頁`} data-schematics-pagination>
-                      <button type="button" data-page-action="prev" aria-label="上一頁">
+                    <nav class="schematics-pagination" aria-label={lang === "ja" ? `${category.labelJa}ブループリントのページ` : `${category.label}藍圖分頁`} data-schematics-pagination>
+                      <button type="button" data-page-action="prev" aria-label={lang === "ja" ? "前のページ" : "上一頁"}>
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
                       </button>
                       <div class="pagination-pages">
@@ -422,7 +666,7 @@ const schematicsPerPage = 12;
                           </button>
                         ))}
                       </div>
-                      <button type="button" data-page-action="next" aria-label="下一頁">
+                      <button type="button" data-page-action="next" aria-label={lang === "ja" ? "次のページ" : "下一頁"}>
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
                       </button>
                     </nav>
@@ -433,7 +677,11 @@ const schematicsPerPage = 12;
             {
               category.items.length > 0 && (
                 <div class="schematics-search-empty" data-schematics-search-empty hidden>
-                  找不到符合「<strong data-schematics-search-empty-query></strong>」的藍圖標題，換個關鍵字試試？
+                  {lang === "ja" ? (
+                    <>「<strong data-schematics-search-empty-query></strong>」に一致するブループリントのタイトルが見つからない。別のキーワードを試してみて。</>
+                  ) : (
+                    <>找不到符合「<strong data-schematics-search-empty-query></strong>」的藍圖標題，換個關鍵字試試？</>
+                  )}
                 </div>
               )
             }
@@ -445,8 +693,8 @@ const schematicsPerPage = 12;
                   </div>
                   <div>
                     <span>{category.en.toUpperCase()}</span>
-                    <h3>藍圖準備中</h3>
-                    <p>這個分類加入 QR Code 後，會在這裡依序顯示名稱與製作者。</p>
+                    <h3>{lang === "ja" ? "ブループリント準備中" : "藍圖準備中"}</h3>
+                    <p>{lang === "ja" ? "このカテゴリに QR Code が追加されると、ここに名称と制作者が順番に表示される。" : "這個分類加入 QR Code 後，會在這裡依序顯示名稱與製作者。"}</p>
                   </div>
                 </div>
               )
@@ -471,9 +719,9 @@ const schematicsPerPage = 12;
         <div class="lightbox-head">
           <div>
             <span>QR PREVIEW</span>
-            <h2 id="lightbox-title">藍圖預覽</h2>
+            <h2 id="lightbox-title">{lang === "ja" ? "ブループリントプレビュー" : "藍圖預覽"}</h2>
           </div>
-          <button type="button" data-lightbox-close aria-label="關閉預覽">
+          <button type="button" data-lightbox-close aria-label={lang === "ja" ? "プレビューを閉じる" : "關閉預覽"}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="m6 6 12 12M18 6 6 18" />
             </svg>
@@ -1554,6 +1802,7 @@ const schematicsPerPage = 12;
     const schematicsSearchInput = document.getElementById("schematics-search-input") as HTMLInputElement | null;
     let lastPreviewButton: HTMLButtonElement | null = null;
     const schematicsPerPage = 12;
+    const isJa = document.documentElement.lang === "ja";
 
     function updateSchematicPage(panel: HTMLElement, page: number) {
       const cards = Array.from(panel.querySelectorAll<HTMLElement>("[data-schematic-card]"));
@@ -1681,7 +1930,7 @@ const schematicsPerPage = 12;
       button.addEventListener("click", () => {
         if (!lightbox || !lightboxImage || !lightboxTitle) return;
 
-        const title = button.dataset.previewTitle ?? "藍圖預覽";
+        const title = button.dataset.previewTitle ?? (isJa ? "ブループリントプレビュー" : "藍圖預覽");
         const src = button.dataset.previewSrc ?? "";
         lastPreviewButton = button;
         lightboxTitle.textContent = title;
