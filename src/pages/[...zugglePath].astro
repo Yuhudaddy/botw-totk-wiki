@@ -32,145 +32,277 @@ const t = uiStrings[lang];
         <span>/</span>
         <a href={href("/types/totk-09")} class="no-underline text-muted">黏手與並列</a>
         <span>/</span>
-        <span class="text-ink">深入了解</span>
+        <span class="text-ink">{lang === "ja" ? "詳細解説" : "深入了解"}</span>
       </div>
       <div class="mb-2 flex items-center gap-2.5">
         <span class="font-mono text-[13px] text-accent">Tears of the Kingdom · 09</span>
       </div>
       <h1 class="mb-[18px] font-serif text-[29px] sm:text-[38px] font-medium leading-[1.12] text-ink">
-        Zuggle 技術原理
+        {lang === "ja" ? "Zuggle の技術原理" : "Zuggle 技術原理"}
       </h1>
-      <p class="text-[13px] sm:text-[17px] text-muted">統整修正版</p>
+      <p class="text-[13px] sm:text-[17px] text-muted">{lang === "ja" ? "整理・修正版" : "統整修正版"}</p>
     </div>
   </section>
 
   <article class="mx-auto max-w-[1244px] px-8 pb-20 pt-10">
     <div class="prose-zuggle max-w-[760px]">
-      <h2>基本資訊</h2>
-      <ul>
-        <li><strong>發現者</strong>：Zvleon</li>
-        <li><strong>發現時間</strong>：2023 年 5 月 16 日</li>
-        <li><strong>主要效果</strong>：讓多件裝備的攻擊判定（hitbox）或裝備效果異常疊加在 Link 身上，藉此堆疊武器攻擊力、盾牌效果等。</li>
-      </ul>
+      {lang === "ja" ? (
+        <>
+          <h2>基本情報</h2>
+          <ul>
+            <li><strong>発見者</strong>：Zvleon</li>
+            <li><strong>発見日時</strong>：2023年5月16日</li>
+            <li><strong>主な効果</strong>：複数の装備の攻撃判定（hitbox）や装備効果を異常な形でリンクに重複させ、武器の攻撃力や盾の効果などを積み重ねる。</li>
+          </ul>
 
-      <h2>核心定義</h2>
-      <blockquote>
-        <p>
-          Zuggle 是裝備 actor 的 <code>EquipmentUserComponent</code> 中 <code>ActorLink</code> 狀態與 actor 層 calculation dependency 狀態不同步的結果。裝備不再是正常裝備槽中的裝備，也不再處於「進行中的丟棄 / smuggle」狀態，但仍保留對 Link 的計算依賴，因此能以異常狀態附著、持續存在，並在讀檔或場景切換後依然保持。
-        </p>
-      </blockquote>
-      <p>
-        白話來說，遊戲原本要把「裝備某件武器」這件事同步記在兩個地方：
-      </p>
-      <ul>
-        <li><strong>Menu 端</strong>：選單、背包、目前裝備資料。</li>
-        <li><strong>World / actor 端</strong>：場景中的實體裝備 actor，以及它和 Link 之間的運算連結。</li>
-      </ul>
-      <p>正常丟棄、切換或解除裝備時，這兩邊應該一起更新並清理乾淨。Zuggle 發生時，這些資料沒有同步完成。</p>
+          <h2>核心定義</h2>
+          <blockquote>
+            <p>
+              Zuggle（ザグル）は、装備 actor の <code>EquipmentUserComponent</code> における <code>ActorLink</code> の状態と、actor 層の計算依存関係（calculation dependency）の状態が同期しなくなった結果である。装備はもはや正常な装備欄の装備ではなく、「ドロップ中 / スマグル」の状態でもないが、リンクへの計算依存だけは残り続けるため、異常な状態のまま付着し続け、セーブのロードやシーン切り替えを経ても保持され続ける。
+            </p>
+          </blockquote>
+          <p>
+            簡単に言うと、ゲームは本来「ある武器を装備する」という出来事を、2つの場所に同期して記録する必要がある：
+          </p>
+          <ul>
+            <li><strong>Menu 側</strong>：メニュー、インベントリ、現在の装備データ。</li>
+            <li><strong>World / actor 側</strong>：シーン内の実体としての装備 actor、およびそれとリンクとの間の計算上の連結。</li>
+          </ul>
+          <p>正常に装備を捨てたり、切り替えたり、解除したりする際は、この両方が同時に更新され、きれいに片付けられるはずである。Zuggle が発生するのは、これらのデータの同期が完了しなかった場合である。</p>
 
-      <h2>正常流程 vs. Zuggle 流程</h2>
-      <p>正常裝備一件武器、弓或盾時，裝備會透過 <code>EquipmentUserComponent</code> 裡的 <code>ActorLink</code> 連到 Link 身上。</p>
-      <p>當裝備被丟棄、切換或解除裝備時，遊戲理論上要同步完成以下幾件事：</p>
-      <ol>
-        <li>更新背包資料（<code>GameData</code>）。</li>
-        <li>更新目前裝備槽狀態。</li>
-        <li>移除或替換舊裝備的 <code>ActorLink</code>。</li>
-        <li>解除裝備 actor 對 Link 的計算依賴（calculation dependency）。</li>
-      </ol>
-      <p>
-        Zuggle 發生時，<code>ActorLink</code>、裝備狀態與丟棄佇列的更新時序彼此錯開；即使其中一部分資料已經被移除、覆蓋或判定完成，<strong>裝備 actor 對 Link 的 calculation dependency</strong> 仍可能殘留。
-      </p>
-      <p>
-        這也是為什麼 Zuggle 不能簡單歸類為「背包錯位」或「卡在 drop 佇列裡」：真正讓 Zuggle 成立的關鍵，是帳面狀態已經改變，但 actor 層的依賴關係仍殘留。
-      </p>
+          <h2>正常な流れ vs. Zuggle の流れ</h2>
+          <p>通常、武器・弓・盾を装備すると、その装備は <code>EquipmentUserComponent</code> 内の <code>ActorLink</code> を通じてリンクに接続される。</p>
+          <p>装備が捨てられたり、切り替えられたり、解除されたりする際、ゲームは理論上、以下のことを同期して完了させる必要がある：</p>
+          <ol>
+            <li>インベントリデータ（<code>GameData</code>）を更新する。</li>
+            <li>現在の装備欄の状態を更新する。</li>
+            <li>古い装備の <code>ActorLink</code> を削除または置き換える。</li>
+            <li>装備 actor のリンクに対する計算依存関係（calculation dependency）を解除する。</li>
+          </ol>
+          <p>
+            Zuggle が発生するとき、<code>ActorLink</code>、装備状態、ドロップキューの更新タイミングがそれぞれずれる。データの一部がすでに削除、上書き、あるいは処理完了していたとしても、<strong>装備 actor のリンクに対する calculation dependency</strong> だけが残り続けることがある。
+          </p>
+          <p>
+            これが、Zuggle を単純に「インベントリのズレ」や「drop キューに詰まっている状態」として片付けられない理由でもある。Zuggle を成立させている本質は、帳簿上の状態はすでに変化しているのに、actor 層の依存関係だけが残り続けている点にある。
+          </p>
 
-      <h2>Map Zuggle 的形成時序</h2>
-      <p>
-        以下以 Map Zuggle 作為說明範例。裝備被丟棄時，不會立即解除與 Link 的連結，而是先進入 <code>PouchMgr</code> 的丟棄佇列，並暫存被丟棄裝備的連結。
-      </p>
-      <ol>
-        <li>在地圖開啟前，從快速選單丟棄目前裝備。</li>
-        <li>快速重新開啟選單，切換到另一件裝備。</li>
-        <li>關閉選單，讓地圖開啟，使換裝與丟棄請求在不同時間點被處理。</li>
-        <li>再從背包丟棄目前裝備，讓兩次丟棄請求進入後續處理。</li>
-      </ol>
-      <p>
-        這個過程會讓背包資料、目前裝備狀態，以及 <code>PouchMgr</code> 暫存的裝備連結發生不同步。當後續丟棄流程判定暫存裝備與目前裝備為同一件時，遊戲可能跳過正常的解除或刪除流程。
-      </p>
-      <blockquote>
-        <p>
-          最後形成「多件裝備仍保留對 Link 的 <code>calculation dependency</code>，但 <code>EquipmentUserComponent</code> 只剩一個有效 <code>ActorLink</code>」的狀態，這就是 Map Zuggle。
-        </p>
-      </blockquote>
+          <h2>マップザグルが形成される時系列</h2>
+          <p>
+            以下ではマップザグル（Map Zuggle）を例に説明する。装備が捨てられても、リンクとの連結はすぐには解除されない。まず <code>PouchMgr</code> のドロップキューに入り、捨てられた装備の連結が一時的に保持される。
+          </p>
+          <ol>
+            <li>マップを開く前に、クイックメニューから現在の装備を捨てる。</li>
+            <li>すぐにメニューを開き直し、別の装備に切り替える。</li>
+            <li>メニューを閉じてマップを開き、装備の切り替えとドロップのリクエストが別々のタイミングで処理されるようにする。</li>
+            <li>さらにインベントリから現在の装備を捨て、2回分のドロップリクエストを後続処理に入れる。</li>
+          </ol>
+          <p>
+            この過程によって、インベントリデータ、現在の装備状態、そして <code>PouchMgr</code> が一時保持している装備の連結の間にズレが生じる。後続のドロップ処理が、一時保持中の装備と現在の装備を同一のものと判定した場合、ゲームは正常な解除や削除の処理を飛ばしてしまうことがある。
+          </p>
+          <blockquote>
+            <p>
+              最終的に「複数の装備がリンクへの <code>calculation dependency</code> を保持したままなのに、<code>EquipmentUserComponent</code> には有効な <code>ActorLink</code> が1つしか残っていない」という状態が形成される。これがマップザグルである。
+            </p>
+          </blockquote>
 
-      <h2>四個系統各自的狀態</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>系統</th><th>Zuggle 發生時的狀態</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>GameData</code>（背包 / 選單）</td><td>認為裝備已被切換、丟棄，或不再是目前裝備</td></tr>
-            <tr><td><code>PouchMgr</code>（丟棄佇列處理）</td><td>丟棄請求已處理完畢，或判定失敗後已退回背包</td></tr>
-            <tr><td><code>EquipmentUserComponent</code></td><td>目前裝備槽的 <code>ActorLink</code> 已被移除、覆蓋，或改指向另一件裝備</td></tr>
-            <tr><td>actor 層 dependency</td><td>裝備 actor 對 Link 的 calculation dependency <strong>仍殘留，沒有同步解除</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
+          <h2>4つのシステムそれぞれの状態</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>システム</th><th>Zuggle 発生時の状態</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>GameData</code>（インベントリ／メニュー）</td><td>装備がすでに切り替えられた、捨てられた、あるいは現在の装備ではなくなったと認識している</td></tr>
+                <tr><td><code>PouchMgr</code>（ドロップキュー処理）</td><td>ドロップリクエストの処理が完了している、または判定失敗によりインベントリへ差し戻されている</td></tr>
+                <tr><td><code>EquipmentUserComponent</code></td><td>現在の装備欄の <code>ActorLink</code> がすでに削除、上書き、または別の装備を指すよう変更されている</td></tr>
+                <tr><td>actor 層 dependency</td><td>装備 actor のリンクに対する calculation dependency が<strong>残り続けており、同期して解除されていない</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
 
-      <h2><code>mPendingDrop</code>：決定 Zuggle 表現形式的關鍵值</h2>
-      <p>
-        <code>dt-12345/zuggle</code> 的逆向工程說明指出，被 zuggle 的裝備身上，<code>DynamicEquipmentComponent</code> 裡有一個布林值，暫稱為 <code>mPendingDrop</code>。它用來標記「這件裝備目前是否還在等待被丟棄」，並會影響 Zuggle 之後呈現的型態。
-      </p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th><code>mPendingDrop</code></th><th>裝備行為</th><th>型態</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>true</code></td><td>忽略幾乎所有外部狀態變更請求，<strong>只接受丟棄類指令</strong></td><td>Static Zuggle（標準型）</td></tr>
-            <tr><td><code>false</code></td><td><strong>拒絕丟棄請求</strong>，但仍接受其他裝備狀態變更</td><td>Dynamic Zuggle</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <blockquote><p>※ 訂正：先前整理曾把這兩種行為寫反；正確版本以此表為準。</p></blockquote>
+          <h2><code>mPendingDrop</code>：Zuggle の現れ方を決める鍵となる値</h2>
+          <p>
+            <code>dt-12345/zuggle</code> のリバースエンジニアリング資料によると、zuggle された装備には <code>DynamicEquipmentComponent</code> 内にブール値があり、仮に <code>mPendingDrop</code> と呼ばれている。これは「この装備が現在もドロップ待ちの状態かどうか」を示すもので、Zuggle 後の現れ方に影響する。
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th><code>mPendingDrop</code></th><th>装備の挙動</th><th>型</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>true</code></td><td>ほぼすべての外部からの状態変更リクエストを無視し、<strong>ドロップ系のコマンドのみ受け付ける</strong></td><td>スタティックザグル（標準型）</td></tr>
+                <tr><td><code>false</code></td><td><strong>ドロップリクエストを拒否する</strong>が、他の装備状態の変更は引き続き受け付ける</td><td>ダイナミックザグル</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <blockquote><p>※ 訂正：以前の整理ではこの2つの挙動を逆に書いていた。正しい内容はこの表を基準とする。</p></blockquote>
 
-      <h2>Zuggle 與 Smuggle 的差異</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th></th><th>狀態性質</th><th>一句話定義</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Smuggle</strong></td>
-              <td>丟棄 / 裝備處理仍在進行中</td>
-              <td>裝備仍保留 active drop / smuggle relation，系統還把它當成正在丟棄中的裝備</td>
-            </tr>
-            <tr>
-              <td><strong>Zuggle</strong></td>
-              <td>丟棄 / 裝備處理已被結案、覆蓋或遺忘，但依賴沒清</td>
-              <td>選單與裝備槽的帳面狀態已改變，但裝備 actor 對 Link 的 calculation dependency 沒有同步解除</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p>簡單說：</p>
-      <blockquote>
-        <p><strong>Smuggle 抓的是「正在丟棄中」那個階段的矛盾；Zuggle 抓的是「丟棄 / 裝備流程已經跑完或被覆蓋」之後，依賴關係仍然殘留的落差。</strong></p>
-      </blockquote>
-      <p>※「active / 已結束」是整理時的歸納講法，方便理解，但不是原始資料中的正式術語。</p>
+          <h2>Zuggle と Smuggle の違い</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th></th><th>状態の性質</th><th>一言での定義</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Smuggle</strong></td>
+                  <td>ドロップ／装備の処理がまだ進行中</td>
+                  <td>装備は active drop / smuggle relation を保持したままで、システムはそれをまだドロップ中の装備として扱っている</td>
+                </tr>
+                <tr>
+                  <td><strong>Zuggle</strong></td>
+                  <td>ドロップ／装備の処理はすでに終了、上書き、または見失われているが、依存関係は片付いていない</td>
+                  <td>メニューと装備欄の帳簿上の状態はすでに変化しているが、装備 actor のリンクに対する calculation dependency が同期して解除されていない</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>簡単に言うと：</p>
+          <blockquote>
+            <p><strong>Smuggle が捉えているのは「ドロップ中」という段階における矛盾であり、Zuggle が捉えているのは「ドロップ／装備の処理がすでに終わった、または上書きされた」後にも依存関係だけが残り続けているというズレである。</strong></p>
+          </blockquote>
+          <p>※「active／終了済み」は整理する際の分かりやすさのための表現であり、元データにおける正式な用語ではない。</p>
 
-      <h2>一句話總結</h2>
-      <p>Zuggle 的本質，是把「丟棄或切換裝備」這個看似單一的動作拆成兩條沒有同步完成的路徑：</p>
-      <ul>
-        <li><strong>Menu / GameData / PouchMgr</strong> 這條「帳面狀態」路徑。</li>
-        <li><strong>EquipmentUserComponent / actor dependency</strong> 這條「實體依賴」路徑。</li>
-      </ul>
-      <p>
-        當帳面狀態已經被處理、覆蓋或結案，但實體 actor 對 Link 的 calculation dependency 沒有同步解除時，系統就會留下一件「選單或裝備槽不再正常承認，但世界端仍異常依附 Link」的裝備。
-      </p>
-      <p>而 <code>mPendingDrop</code> 則決定這件殘留裝備之後更接近 Static Zuggle，還是 Dynamic Zuggle。</p>
+          <h2>一言でまとめると</h2>
+          <p>Zuggle の本質は、「装備を捨てる、あるいは切り替える」という一見単一に見える動作を、同期が完了しない2本の経路に分裂させてしまうことにある：</p>
+          <ul>
+            <li><strong>Menu / GameData / PouchMgr</strong> という「帳簿上の状態」の経路。</li>
+            <li><strong>EquipmentUserComponent / actor dependency</strong> という「実体の依存関係」の経路。</li>
+          </ul>
+          <p>
+            帳簿上の状態がすでに処理、上書き、または終了しているのに、実体としての actor のリンクに対する calculation dependency が同期して解除されていない場合、システムには「メニューや装備欄ではもう正常に認識されないが、ワールド側では依然として異常にリンクへ付着し続けている」装備が残ることになる。
+          </p>
+          <p>そして <code>mPendingDrop</code> が、この残留した装備がスタティックザグルとダイナミックザグルのどちらに近づくかを決定する。</p>
+        </>
+      ) : (
+        <>
+          <h2>基本資訊</h2>
+          <ul>
+            <li><strong>發現者</strong>：Zvleon</li>
+            <li><strong>發現時間</strong>：2023 年 5 月 16 日</li>
+            <li><strong>主要效果</strong>：讓多件裝備的攻擊判定（hitbox）或裝備效果異常疊加在 Link 身上，藉此堆疊武器攻擊力、盾牌效果等。</li>
+          </ul>
+
+          <h2>核心定義</h2>
+          <blockquote>
+            <p>
+              Zuggle 是裝備 actor 的 <code>EquipmentUserComponent</code> 中 <code>ActorLink</code> 狀態與 actor 層 calculation dependency 狀態不同步的結果。裝備不再是正常裝備槽中的裝備，也不再處於「進行中的丟棄 / smuggle」狀態，但仍保留對 Link 的計算依賴，因此能以異常狀態附著、持續存在，並在讀檔或場景切換後依然保持。
+            </p>
+          </blockquote>
+          <p>
+            白話來說，遊戲原本要把「裝備某件武器」這件事同步記在兩個地方：
+          </p>
+          <ul>
+            <li><strong>Menu 端</strong>：選單、背包、目前裝備資料。</li>
+            <li><strong>World / actor 端</strong>：場景中的實體裝備 actor，以及它和 Link 之間的運算連結。</li>
+          </ul>
+          <p>正常丟棄、切換或解除裝備時，這兩邊應該一起更新並清理乾淨。Zuggle 發生時，這些資料沒有同步完成。</p>
+
+          <h2>正常流程 vs. Zuggle 流程</h2>
+          <p>正常裝備一件武器、弓或盾時，裝備會透過 <code>EquipmentUserComponent</code> 裡的 <code>ActorLink</code> 連到 Link 身上。</p>
+          <p>當裝備被丟棄、切換或解除裝備時，遊戲理論上要同步完成以下幾件事：</p>
+          <ol>
+            <li>更新背包資料（<code>GameData</code>）。</li>
+            <li>更新目前裝備槽狀態。</li>
+            <li>移除或替換舊裝備的 <code>ActorLink</code>。</li>
+            <li>解除裝備 actor 對 Link 的計算依賴（calculation dependency）。</li>
+          </ol>
+          <p>
+            Zuggle 發生時，<code>ActorLink</code>、裝備狀態與丟棄佇列的更新時序彼此錯開；即使其中一部分資料已經被移除、覆蓋或判定完成，<strong>裝備 actor 對 Link 的 calculation dependency</strong> 仍可能殘留。
+          </p>
+          <p>
+            這也是為什麼 Zuggle 不能簡單歸類為「背包錯位」或「卡在 drop 佇列裡」：真正讓 Zuggle 成立的關鍵，是帳面狀態已經改變，但 actor 層的依賴關係仍殘留。
+          </p>
+
+          <h2>Map Zuggle 的形成時序</h2>
+          <p>
+            以下以 Map Zuggle 作為說明範例。裝備被丟棄時，不會立即解除與 Link 的連結，而是先進入 <code>PouchMgr</code> 的丟棄佇列，並暫存被丟棄裝備的連結。
+          </p>
+          <ol>
+            <li>在地圖開啟前，從快速選單丟棄目前裝備。</li>
+            <li>快速重新開啟選單，切換到另一件裝備。</li>
+            <li>關閉選單，讓地圖開啟，使換裝與丟棄請求在不同時間點被處理。</li>
+            <li>再從背包丟棄目前裝備，讓兩次丟棄請求進入後續處理。</li>
+          </ol>
+          <p>
+            這個過程會讓背包資料、目前裝備狀態，以及 <code>PouchMgr</code> 暫存的裝備連結發生不同步。當後續丟棄流程判定暫存裝備與目前裝備為同一件時，遊戲可能跳過正常的解除或刪除流程。
+          </p>
+          <blockquote>
+            <p>
+              最後形成「多件裝備仍保留對 Link 的 <code>calculation dependency</code>，但 <code>EquipmentUserComponent</code> 只剩一個有效 <code>ActorLink</code>」的狀態，這就是 Map Zuggle。
+            </p>
+          </blockquote>
+
+          <h2>四個系統各自的狀態</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>系統</th><th>Zuggle 發生時的狀態</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>GameData</code>（背包 / 選單）</td><td>認為裝備已被切換、丟棄，或不再是目前裝備</td></tr>
+                <tr><td><code>PouchMgr</code>（丟棄佇列處理）</td><td>丟棄請求已處理完畢，或判定失敗後已退回背包</td></tr>
+                <tr><td><code>EquipmentUserComponent</code></td><td>目前裝備槽的 <code>ActorLink</code> 已被移除、覆蓋，或改指向另一件裝備</td></tr>
+                <tr><td>actor 層 dependency</td><td>裝備 actor 對 Link 的 calculation dependency <strong>仍殘留，沒有同步解除</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2><code>mPendingDrop</code>：決定 Zuggle 表現形式的關鍵值</h2>
+          <p>
+            <code>dt-12345/zuggle</code> 的逆向工程說明指出，被 zuggle 的裝備身上，<code>DynamicEquipmentComponent</code> 裡有一個布林值，暫稱為 <code>mPendingDrop</code>。它用來標記「這件裝備目前是否還在等待被丟棄」，並會影響 Zuggle 之後呈現的型態。
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th><code>mPendingDrop</code></th><th>裝備行為</th><th>型態</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>true</code></td><td>忽略幾乎所有外部狀態變更請求，<strong>只接受丟棄類指令</strong></td><td>Static Zuggle（標準型）</td></tr>
+                <tr><td><code>false</code></td><td><strong>拒絕丟棄請求</strong>，但仍接受其他裝備狀態變更</td><td>Dynamic Zuggle</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <blockquote><p>※ 訂正：先前整理曾把這兩種行為寫反；正確版本以此表為準。</p></blockquote>
+
+          <h2>Zuggle 與 Smuggle 的差異</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th></th><th>狀態性質</th><th>一句話定義</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Smuggle</strong></td>
+                  <td>丟棄 / 裝備處理仍在進行中</td>
+                  <td>裝備仍保留 active drop / smuggle relation，系統還把它當成正在丟棄中的裝備</td>
+                </tr>
+                <tr>
+                  <td><strong>Zuggle</strong></td>
+                  <td>丟棄 / 裝備處理已被結案、覆蓋或遺忘，但依賴沒清</td>
+                  <td>選單與裝備槽的帳面狀態已改變，但裝備 actor 對 Link 的 calculation dependency 沒有同步解除</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>簡單說：</p>
+          <blockquote>
+            <p><strong>Smuggle 抓的是「正在丟棄中」那個階段的矛盾；Zuggle 抓的是「丟棄 / 裝備流程已經跑完或被覆蓋」之後，依賴關係仍然殘留的落差。</strong></p>
+          </blockquote>
+          <p>※「active / 已結束」是整理時的歸納講法，方便理解，但不是原始資料中的正式術語。</p>
+
+          <h2>一句話總結</h2>
+          <p>Zuggle 的本質，是把「丟棄或切換裝備」這個看似單一的動作拆成兩條沒有同步完成的路徑：</p>
+          <ul>
+            <li><strong>Menu / GameData / PouchMgr</strong> 這條「帳面狀態」路徑。</li>
+            <li><strong>EquipmentUserComponent / actor dependency</strong> 這條「實體依賴」路徑。</li>
+          </ul>
+          <p>
+            當帳面狀態已經被處理、覆蓋或結案，但實體 actor 對 Link 的 calculation dependency 沒有同步解除時，系統就會留下一件「選單或裝備槽不再正常承認，但世界端仍異常依附 Link」的裝備。
+          </p>
+          <p>而 <code>mPendingDrop</code> 則決定這件殘留裝備之後更接近 Static Zuggle，還是 Dynamic Zuggle。</p>
+        </>
+      )}
     </div>
 
     <div class="mt-12 max-w-[760px] border-t border-border-soft pt-8">
@@ -178,7 +310,7 @@ const t = uiStrings[lang];
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M19 12H5M12 19l-7-7 7-7"></path>
         </svg>
-        返回黏手與並列頁面
+        {lang === "ja" ? "黏手與並列のページに戻る" : "返回黏手與並列頁面"}
       </a>
     </div>
   </article>

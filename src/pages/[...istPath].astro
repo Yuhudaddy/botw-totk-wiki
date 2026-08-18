@@ -22,9 +22,12 @@ const examples = [
   {
     id: "starter",
     label: "背包起點",
+    labelJa: "インベントリの起点",
     eyebrow: "STARTER SCRIPT",
     title: "建立物品、裝備，再讀回存檔",
+    titleJa: "アイテムを作成・装備してからセーブをロードする",
     result: "讀檔後：海利亞盾仍在裝備中，手持狀態已回復",
+    resultJa: "ロード後：ハイリアの盾は装備されたまま、手持ち状態も復元される",
     lines: [
       { command: "get", value: "1 pot-lid 5 apple 1 hylian-shield" },
       { command: "equip", value: "shield" },
@@ -37,9 +40,12 @@ const examples = [
   {
     id: "equipment",
     label: "裝備測試",
+    labelJa: "装備テスト",
     eyebrow: "EQUIPMENT FLOW",
     title: "取得弓箭並模擬主世界操作",
+    titleJa: "弓矢を入手し、オーバーワールドの操作をシミュレートする",
     result: "射出 3 箭後解除弓箭裝備",
+    resultJa: "矢を3本放った後、弓の装備を解除する",
     lines: [
       { command: "get", value: "1 royal-bow 10 arrow" },
       { command: "equip", value: "bow" },
@@ -50,9 +56,12 @@ const examples = [
   {
     id: "entangle",
     label: "PE 基礎",
+    labelJa: "PE の基礎",
     eyebrow: "PROMPT ENTANGLEMENT",
     title: "準備糾纏目標與手持素材",
+    titleJa: "エンタングルの対象と手持ち素材を用意する",
     result: "以鍋蓋為 PE 目標，模擬手持蘋果的 Smuggle 狀態",
+    resultJa: "鍋蓋を PE の対象にし、リンゴを手持ちした Smuggle 状態をシミュレートする",
     lines: [
       { command: "get", value: "1 pot-lid 2 apple" },
       { command: "save", value: "" },
@@ -67,71 +76,86 @@ const quickCommands = [
   {
     command: "get 1 pot-lid 5 apple",
     name: "取得物品",
+    nameJa: "アイテムを取得",
     description: "直接把指定數量的物品加入背包，可在同一行連續列出多種物品。",
+    descriptionJa: "指定した数量のアイテムをそのままインベントリに追加する。同じ行に複数の種類を並べて書ける。",
   },
   {
     command: "hold 5 apple",
     name: "手持素材",
+    nameJa: "素材を手持ち",
     description: "模擬在素材頁手持物品；不指定數量時預設手持 1 個。",
+    descriptionJa: "素材ページでアイテムを手持ちしている状態をシミュレートする。数量を指定しない場合は既定で1個になる。",
   },
   {
     command: "equip shield",
     name: "裝備物品",
+    nameJa: "アイテムを装備",
     description: "裝備第一個符合條件的武器、弓或盾；也可直接指定物品名稱。",
+    descriptionJa: "条件に一致する最初の武器・弓・盾を装備する。アイテム名を直接指定することもできる。",
   },
   {
     command: "drop all but 1 shield",
     name: "丟棄物品",
+    nameJa: "アイテムを捨てる",
     description: "丟棄符合條件的項目；all but 可保留指定數量。",
+    descriptionJa: "条件に一致する項目を捨てる。all but を使うと指定した数量だけ残せる。",
   },
   {
     command: "save-as test",
     name: "建立命名存檔",
+    nameJa: "名前付きセーブを作成",
     description: "將目前狀態儲存為 test，之後可使用 reload test 讀取。",
+    descriptionJa: "現在の状態を test という名前で保存する。後で reload test でロードできる。",
   },
   {
     command: "dnp pot-lid",
     name: "丟下再撿回",
+    nameJa: "捨ててから拾い直す",
     description: "Drop and Pick-up 的縮寫，常用於測試裝備排序與狀態變化。",
+    descriptionJa: "Drop and Pick-up の略。装備順や状態変化のテストによく使う。",
   },
 ];
 
 const syntaxRows = [
-  { token: "1 apple", label: "數量＋物品", note: "數量可省略，預設為 1" },
-  { token: "all shields", label: "全部符合項目", note: "類別可用複數，如 weapons、bows、materials" },
-  { token: "apple[slot=2]", label: "指定第幾個", note: "選取第二個符合條件的蘋果" },
-  { token: "pot-lid[durability=3]", label: "加入屬性", note: "屬性寫在中括號，耐久也可寫 dura" },
+  { token: "1 apple", label: "數量＋物品", labelJa: "数量＋アイテム", note: "數量可省略，預設為 1", noteJa: "数量は省略可能で、既定値は1" },
+  { token: "all shields", label: "全部符合項目", labelJa: "条件に一致する全項目", note: "類別可用複數，如 weapons、bows、materials", noteJa: "カテゴリは複数形で指定できる（weapons、bows、materials など）" },
+  { token: "apple[slot=2]", label: "指定第幾個", labelJa: "何番目かを指定", note: "選取第二個符合條件的蘋果", noteJa: "条件に一致する2番目のリンゴを選択する" },
+  { token: "pot-lid[durability=3]", label: "加入屬性", labelJa: "属性を追加", note: "屬性寫在中括號，耐久也可寫 dura", noteJa: "属性は角括弧内に書く。耐久値は dura とも書ける" },
 ];
 
 const commandGroups = [
   {
     title: "背包",
+    titleJa: "インベントリ",
     items: [
-      ["get ITEM_LIST", "憑空取得物品"],
-      ["pick-up ITEM_LIST", "撿回先前掉落的物品"],
-      ["hold ITEM_LIST", "手持素材，最多 5 格"],
-      ["unhold", "取消目前手持"],
-      ["eat ITEM_LIST", "吃掉素材或料理"],
+      ["get ITEM_LIST", "憑空取得物品", "アイテムを無から取得する"],
+      ["pick-up ITEM_LIST", "撿回先前掉落的物品", "以前に落としたアイテムを拾い直す"],
+      ["hold ITEM_LIST", "手持素材，最多 5 格", "素材を手持ちする。最大5枠まで"],
+      ["unhold", "取消目前手持", "現在の手持ちを解除する"],
+      ["eat ITEM_LIST", "吃掉素材或料理", "素材や料理を食べる"],
     ],
   },
   {
     title: "裝備",
+    titleJa: "装備",
     items: [
-      ["equip ITEM_LIST", "裝備符合條件的項目"],
-      ["unequip ITEM_LIST", "解除指定裝備"],
-      ["drop ITEM_LIST", "丟棄指定物品或裝備"],
-      ["dnp ITEM_LIST", "丟下後立刻撿回"],
-      [":dpad equip ITEM", "用快捷選單切換裝備"],
+      ["equip ITEM_LIST", "裝備符合條件的項目", "条件に一致する項目を装備する"],
+      ["unequip ITEM_LIST", "解除指定裝備", "指定した装備を解除する"],
+      ["drop ITEM_LIST", "丟棄指定物品或裝備", "指定したアイテムや装備を捨てる"],
+      ["dnp ITEM_LIST", "丟下後立刻撿回", "捨ててすぐに拾い直す"],
+      [":dpad equip ITEM", "用快捷選單切換裝備", "クイックメニューで装備を切り替える"],
     ],
   },
   {
     title: "存檔與世界",
+    titleJa: "セーブとワールド",
     items: [
-      ["save", "建立手動存檔"],
-      ["save-as NAME", "建立命名存檔"],
-      ["reload [NAME]", "讀取目前或命名存檔"],
-      ["new-game", "回到新遊戲狀態"],
-      ["pause / unpause", "開啟或關閉背包"],
+      ["save", "建立手動存檔", "手動セーブを作成する"],
+      ["save-as NAME", "建立命名存檔", "名前付きセーブを作成する"],
+      ["reload [NAME]", "讀取目前或命名存檔", "現在のセーブ、または名前付きセーブをロードする"],
+      ["new-game", "回到新遊戲狀態", "ニューゲームの状態に戻す"],
+      ["pause / unpause", "開啟或關閉背包", "インベントリを開く／閉じる"],
     ],
   },
 ];
@@ -185,7 +209,7 @@ const commandGroups = [
           <span>/</span>
           <a href={href("/resources#botw", lang)}>{t.navResources}</a>
           <span>/</span>
-          <span aria-current="page">IST 模擬器</span>
+          <span aria-current="page">{lang === "ja" ? "IST シミュレーター" : "IST 模擬器"}</span>
         </nav>
 
         <div class="ist-hero-content">
@@ -198,23 +222,27 @@ const commandGroups = [
             {lang === "zh" ? (<Fragment>轉存格<span>(IST)</span>模擬器</Fragment>) : t.istTitle}
           </h1>
           <p>
-            它不是靠按鈕操作，而是把遊戲流程寫成腳本。輸入取得物品、裝備、存讀檔等指令，
-            模擬器就會逐行算出背包狀態。
+            {lang === "ja" ? (
+              <>ボタン操作ではなく、ゲームの流れをスクリプトとして書く。アイテム取得、装備、セーブ／ロードなどのコマンドを入力すると、シミュレーターが1行ずつインベントリの状態を計算してくれる。</>
+            ) : (
+              <>它不是靠按鈕操作，而是把遊戲流程寫成腳本。輸入取得物品、裝備、存讀檔等指令，
+              模擬器就會逐行算出背包狀態。</>
+            )}
           </p>
           <div class="ist-hero-meta">
             <span>Developed by Piston</span>
-            <span>Web App</span>
-            <span>Script driven</span>
+            <span>{lang === "ja" ? "ウェブアプリ" : "Web App"}</span>
+            <span>{lang === "ja" ? "スクリプト駆動" : "Script driven"}</span>
           </div>
           <div class="ist-hero-actions">
             <a class="ist-primary-action" href={IST_URL} target="_blank" rel="noopener">
-              開啟 IST 模擬器
+              {lang === "ja" ? "IST シミュレーターを開く" : "開啟 IST 模擬器"}
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path>
               </svg>
             </a>
             <a class="ist-secondary-action" href={DOCS_URL} target="_blank" rel="noopener">
-              中文官方文件
+              {lang === "ja" ? "公式ドキュメント（中国語）" : "中文官方文件"}
             </a>
           </div>
         </div>
@@ -222,18 +250,18 @@ const commandGroups = [
         <div class="ist-hero-readout" aria-hidden="true">
           <span>SIMULATION</span>
           <strong>READY</strong>
-          <span>LANG / ZH-HANT</span>
+          <span>{lang === "ja" ? "LANG / JA" : "LANG / ZH-HANT"}</span>
         </div>
       </div>
     </section>
 
-    <nav class="ist-section-nav" aria-label="本頁章節">
+    <nav class="ist-section-nav" aria-label={lang === "ja" ? "ページ内セクション" : "本頁章節"}>
       <div class="ist-wrap ist-section-nav-inner">
         <span>IST / QUICK GUIDE</span>
-        <a href="#start">快速開始</a>
-        <a href="#workbench">腳本範例</a>
-        <a href="#syntax">物品語法</a>
-        <a href="#commands">指令速查</a>
+        <a href="#start">{lang === "ja" ? "クイックスタート" : "快速開始"}</a>
+        <a href="#workbench">{lang === "ja" ? "スクリプト例" : "腳本範例"}</a>
+        <a href="#syntax">{lang === "ja" ? "アイテム構文" : "物品語法"}</a>
+        <a href="#commands">{lang === "ja" ? "コマンド早見表" : "指令速查"}</a>
         <a href="#notes">注意事項</a>
       </div>
     </nav>
@@ -242,32 +270,32 @@ const commandGroups = [
       <div class="ist-wrap">
         <div class="ist-heading">
           <span>01 · START HERE</span>
-          <h2>先知道它怎麼「跑」。</h2>
-          <p>沒有執行按鈕。腳本變更後會自動重新模擬，游標停在哪一行，右側就顯示該行執行後的狀態。</p>
+          <h2>{lang === "ja" ? "まず「どう動くか」を知ろう。" : "先知道它怎麼「跑」。"}</h2>
+          <p>{lang === "ja" ? "実行ボタンはない。スクリプトを変更すると自動で再シミュレートされ、カーソルが置かれている行の実行後の状態が右側に表示される。" : "沒有執行按鈕。腳本變更後會自動重新模擬，游標停在哪一行，右側就顯示該行執行後的狀態。"}</p>
         </div>
 
         <ol class="ist-steps">
           <li>
             <span class="ist-step-no">01</span>
             <div>
-              <h3>在腳本編輯器輸入</h3>
-              <p>通常一行一個動作；也能用分號把多個動作寫在同一行。</p>
+              <h3>{lang === "ja" ? "スクリプトエディタに入力する" : "在腳本編輯器輸入"}</h3>
+              <p>{lang === "ja" ? "通常は1行につき1つの動作。セミコロンで複数の動作を同じ行にまとめて書くこともできる。" : "通常一行一個動作；也能用分號把多個動作寫在同一行。"}</p>
               <code>get 1 pot-lid 5 apple</code>
             </div>
           </li>
           <li>
             <span class="ist-step-no">02</span>
             <div>
-              <h3>移動文字游標</h3>
-              <p>模擬器會自動計算，不必尋找「執行」。把游標移到想檢查的指令即可。</p>
+              <h3>{lang === "ja" ? "テキストカーソルを移動する" : "移動文字游標"}</h3>
+              <p>{lang === "ja" ? "シミュレーターが自動で計算するので「実行」を探す必要はない。確認したいコマンドにカーソルを移動するだけでいい。" : "模擬器會自動計算，不必尋找「執行」。把游標移到想檢查的指令即可。"}</p>
               <code>hold apple; drop</code>
             </div>
           </li>
           <li>
             <span class="ist-step-no">03</span>
             <div>
-              <h3>查看右側背包</h3>
-              <p>右側預覽是該行執行後的結果；往上移動游標，也能回看前面的狀態。</p>
+              <h3>{lang === "ja" ? "右側のインベントリを見る" : "查看右側背包"}</h3>
+              <p>{lang === "ja" ? "右側のプレビューはその行を実行した後の結果。カーソルを上に戻せば、それ以前の状態も見返せる。" : "右側預覽是該行執行後的結果；往上移動游標，也能回看前面的狀態。"}</p>
               <code>save → reload</code>
             </div>
           </li>
@@ -279,8 +307,12 @@ const commandGroups = [
             <path d="M12 11v5M12 8h.01"></path>
           </svg>
           <p>
-            預設為<strong>自動儲存</strong>模式，腳本會留在目前瀏覽器。臨時測試可切成「不儲存」；
-            從分享連結開啟時通常會是「唯讀」。
+            {lang === "ja" ? (
+              <>既定では<strong>自動セーブ</strong>モードになっており、スクリプトは今のブラウザに残る。一時的なテストなら「保存しない」に切り替えられる。共有リンクから開いた場合は通常「読み取り専用」になる。</>
+            ) : (
+              <>預設為<strong>自動儲存</strong>模式，腳本會留在目前瀏覽器。臨時測試可切成「不儲存」；
+              從分享連結開啟時通常會是「唯讀」。</>
+            )}
           </p>
         </div>
       </div>
@@ -291,12 +323,12 @@ const commandGroups = [
         <div class="ist-heading ist-heading-row">
           <div>
             <span>02 · SCRIPT WORKBENCH</span>
-            <h2>從一段能跑的腳本開始。</h2>
+            <h2>{lang === "ja" ? "動くスクリプトから始めよう。" : "從一段能跑的腳本開始。"}</h2>
           </div>
-          <p>切換情境後，複製整段貼進 IST 左側編輯器。右邊的文字是這組腳本預期要觀察的重點。</p>
+          <p>{lang === "ja" ? "シーンを切り替えたら、その内容を丸ごとコピーして IST 左側のエディタに貼り付ける。右側の文章はそのスクリプトで確認すべきポイント。" : "切換情境後，複製整段貼進 IST 左側編輯器。右邊的文字是這組腳本預期要觀察的重點。"}</p>
         </div>
 
-        <div class="ist-preset-tabs" role="tablist" aria-label="腳本範例">
+        <div class="ist-preset-tabs" role="tablist" aria-label={lang === "ja" ? "スクリプト例" : "腳本範例"}>
           {examples.map((example, index) => (
             <button
               type="button"
@@ -306,7 +338,7 @@ const commandGroups = [
               aria-selected={index === 0 ? "true" : "false"}
               data-example-tab={example.id}
             >
-              {example.label}
+              {lang === "ja" ? example.labelJa : example.label}
             </button>
           ))}
         </div>
@@ -316,20 +348,20 @@ const commandGroups = [
             <div class="ist-panel-bar">
               <div>
                 <span class="ist-window-dot"></span>
-                <strong>腳本編輯器</strong>
+                <strong>{lang === "ja" ? "スクリプトエディタ" : "腳本編輯器"}</strong>
               </div>
               <button
                 id="copy-active-script"
                 type="button"
                 class="ist-copy-button"
-                aria-label="複製目前腳本"
-                title="複製目前腳本"
+                aria-label={lang === "ja" ? "現在のスクリプトをコピー" : "複製目前腳本"}
+                title={lang === "ja" ? "現在のスクリプトをコピー" : "複製目前腳本"}
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <rect x="8" y="8" width="11" height="11" rx="2"></rect>
                   <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
                 </svg>
-                <span>複製腳本</span>
+                <span>{lang === "ja" ? "スクリプトをコピー" : "複製腳本"}</span>
               </button>
             </div>
 
@@ -347,7 +379,7 @@ const commandGroups = [
               >
                 <div class="ist-code-meta">
                   <span>{example.eyebrow}</span>
-                  <strong>{example.title}</strong>
+                  <strong>{lang === "ja" ? example.titleJa : example.title}</strong>
                 </div>
                 <ol class="ist-code-lines">
                   {example.lines.map((line) => (
@@ -360,16 +392,16 @@ const commandGroups = [
             ))}
           </div>
 
-          <aside class="ist-inspector" aria-label="模擬結果說明">
+          <aside class="ist-inspector" aria-label={lang === "ja" ? "シミュレーション結果の説明" : "模擬結果說明"}>
             <div class="ist-panel-bar">
               <div>
                 <span class="ist-window-dot ist-window-dot-cyan"></span>
-                <strong>狀態檢查</strong>
+                <strong>{lang === "ja" ? "状態チェック" : "狀態檢查"}</strong>
               </div>
               <span class="ist-live-label"><i></i> AUTO</span>
             </div>
             <div class="ist-inspector-body">
-              <span class="ist-inspector-label">游標所在行執行後</span>
+              <span class="ist-inspector-label">{lang === "ja" ? "カーソル行の実行後" : "游標所在行執行後"}</span>
               <div class="ist-inventory-preview" aria-hidden="true">
                 <span>47</span>
                 <span>40</span>
@@ -377,14 +409,14 @@ const commandGroups = [
                 <span class="is-selected">01</span>
               </div>
               {examples.map((example, index) => (
-                <p data-example-result={example.id} hidden={index !== 0}>{example.result}</p>
+                <p data-example-result={example.id} hidden={index !== 0}>{lang === "ja" ? example.resultJa : example.result}</p>
               ))}
               <div class="ist-flow">
-                <span>輸入腳本</span>
+                <span>{lang === "ja" ? "スクリプトを入力" : "輸入腳本"}</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
-                <span>自動模擬</span>
+                <span>{lang === "ja" ? "自動シミュレート" : "自動模擬"}</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
-                <span>查看狀態</span>
+                <span>{lang === "ja" ? "状態を確認" : "查看狀態"}</span>
               </div>
             </div>
           </aside>
@@ -397,9 +429,9 @@ const commandGroups = [
         <div class="ist-heading ist-heading-row">
           <div>
             <span>03 · COMMAND RECIPES</span>
-            <h2>六條最常用的指令。</h2>
+            <h2>{lang === "ja" ? "よく使う6つのコマンド。" : "六條最常用的指令。"}</h2>
           </div>
-          <p>每列都可以直接複製。ITEM_LIST 可以接數量、物品名稱、類別與屬性條件。</p>
+          <p>{lang === "ja" ? "各行はそのままコピーできる。ITEM_LIST には数量、アイテム名、カテゴリ、属性条件を続けられる。" : "每列都可以直接複製。ITEM_LIST 可以接數量、物品名稱、類別與屬性條件。"}</p>
         </div>
 
         <div class="ist-command-list">
@@ -407,16 +439,16 @@ const commandGroups = [
             <article>
               <span class="ist-command-index">{String(index + 1).padStart(2, "0")}</span>
               <div>
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
+                <h3>{lang === "ja" ? item.nameJa : item.name}</h3>
+                <p>{lang === "ja" ? item.descriptionJa : item.description}</p>
               </div>
               <code>{item.command}</code>
               <button
                 type="button"
                 class="ist-icon-button"
                 data-copy={item.command}
-                aria-label={`複製「${item.command}」`}
-                title="複製指令"
+                aria-label={lang === "ja" ? `「${item.command}」をコピー` : `複製「${item.command}」`}
+                title={lang === "ja" ? "コマンドをコピー" : "複製指令"}
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <rect x="8" y="8" width="11" height="11" rx="2"></rect>
@@ -433,10 +465,15 @@ const commandGroups = [
       <div class="ist-wrap ist-syntax-layout">
         <div class="ist-heading">
           <span>04 · ITEM SYNTAX</span>
-          <h2>物品不是參數表，是一句短句。</h2>
+          <h2>{lang === "ja" ? "アイテムはパラメータ表ではなく、一つの短い文。" : "物品不是參數表，是一句短句。"}</h2>
           <p>
-            基本格式為 <code>指令 數量 物品名稱 [屬性=值]</code>。物品名稱使用英文，
-            多個詞以連字號連接，例如 <code>pot-lid</code>。
+            {lang === "ja" ? (
+              <>基本形式は <code>コマンド 数量 アイテム名 [属性=値]</code>。アイテム名は英語表記で、
+              複数の単語はハイフンでつなぐ。例：<code>pot-lid</code>。</>
+            ) : (
+              <>基本格式為 <code>指令 數量 物品名稱 [屬性=值]</code>。物品名稱使用英文，
+              多個詞以連字號連接，例如 <code>pot-lid</code>。</>
+            )}
           </p>
           <div class="ist-formula">
             <span>COMMAND</span>
@@ -448,14 +485,14 @@ const commandGroups = [
           {syntaxRows.map((row) => (
             <div>
               <code>{row.token}</code>
-              <strong>{row.label}</strong>
-              <span>{row.note}</span>
+              <strong>{lang === "ja" ? row.labelJa : row.label}</strong>
+              <span>{lang === "ja" ? row.noteJa : row.note}</span>
               <button
                 type="button"
                 class="ist-icon-button"
                 data-copy={row.token}
-                aria-label={`複製「${row.token}」`}
-                title="複製語法"
+                aria-label={lang === "ja" ? `「${row.token}」をコピー` : `複製「${row.token}」`}
+                title={lang === "ja" ? "構文をコピー" : "複製語法"}
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <rect x="8" y="8" width="11" height="11" rx="2"></rect>
@@ -472,19 +509,19 @@ const commandGroups = [
       <div class="ist-wrap">
         <div class="ist-heading">
           <span>05 · COMMAND INDEX</span>
-          <h2>常用指令速查。</h2>
-          <p>這裡先收錄日常模擬會用到的核心指令；進階系統操作請以官方指令參考為準。</p>
+          <h2>{lang === "ja" ? "よく使うコマンド早見表。" : "常用指令速查。"}</h2>
+          <p>{lang === "ja" ? "ここでは日常のシミュレーションで使う中核コマンドのみ収録している。高度なシステム操作は公式のコマンドリファレンスを参照すること。" : "這裡先收錄日常模擬會用到的核心指令；進階系統操作請以官方指令參考為準。"}</p>
         </div>
 
         <div class="ist-reference-grid">
           {commandGroups.map((group) => (
             <section>
-              <h3>{group.title}</h3>
+              <h3>{lang === "ja" ? group.titleJa : group.title}</h3>
               <dl>
-                {group.items.map(([command, description]) => (
+                {group.items.map(([command, description, descriptionJa]) => (
                   <>
                     <dt><code>{command}</code></dt>
-                    <dd>{description}</dd>
+                    <dd>{lang === "ja" ? descriptionJa : description}</dd>
                   </>
                 ))}
               </dl>
@@ -495,11 +532,19 @@ const commandGroups = [
         <div class="ist-prefixes">
           <div>
             <code>:</code>
-            <p><strong>註解指令</strong>用於直接控制模擬狀態，例如 <code>:smug</code>、<code>:dpad</code>、<code>:slots</code>。</p>
+            {lang === "ja" ? (
+              <p><strong>コメントコマンド</strong>はシミュレーションの状態を直接操作するのに使う。例：<code>:smug</code>、<code>:dpad</code>、<code>:slots</code>。</p>
+            ) : (
+              <p><strong>註解指令</strong>用於直接控制模擬狀態，例如 <code>:smug</code>、<code>:dpad</code>、<code>:slots</code>。</p>
+            )}
           </div>
           <div>
             <code>!</code>
-            <p><strong>高階指令</strong>會直接操作底層狀態，例如 <code>!break</code>、<code>!remove</code>、<code>!system</code>。</p>
+            {lang === "ja" ? (
+              <p><strong>上級コマンド</strong>は内部の状態を直接操作する。例：<code>!break</code>、<code>!remove</code>、<code>!system</code>。</p>
+            ) : (
+              <p><strong>高階指令</strong>會直接操作底層狀態，例如 <code>!break</code>、<code>!remove</code>、<code>!system</code>。</p>
+            )}
           </div>
         </div>
       </div>
@@ -509,14 +554,26 @@ const commandGroups = [
       <div class="ist-wrap ist-notes-layout">
         <div class="ist-heading">
           <span>06 · FIELD NOTES</span>
-          <h2>最容易卡住的地方。</h2>
+          <h2>{lang === "ja" ? "つまずきやすいポイント。" : "最容易卡住的地方。"}</h2>
         </div>
         <ul>
-          <li><strong>它會自動執行。</strong>沒有 Run 按鈕，指令改完就會重新模擬。</li>
-          <li><strong>右側不是最終結果。</strong>它顯示的是文字游標所在指令「執行後」的狀態。</li>
-          <li><strong>get 和 pick-up 不同。</strong><code>get</code> 是直接取得；<code>pick-up</code> 只能撿回已經掉在地上的物品。</li>
-          <li><strong>物品名稱使用英文。</strong>若不確定名稱，可用左下物品搜尋器查找並複製。</li>
-          <li><strong>先從短腳本開始。</strong>發生錯誤時，把游標移到出錯行附近，逐行確認是哪個條件不成立。</li>
+          {lang === "ja" ? (
+            <>
+              <li><strong>自動で実行される。</strong>Run ボタンはなく、コマンドを変更すると再シミュレートされる。</li>
+              <li><strong>右側は最終結果ではない。</strong>表示されているのはテキストカーソルがある行を「実行した後」の状態。</li>
+              <li><strong>get と pick-up は違う。</strong><code>get</code> は直接取得。<code>pick-up</code> はすでに地面に落ちているアイテムを拾い直すだけ。</li>
+              <li><strong>アイテム名は英語表記。</strong>名前が分からない場合は、左下のアイテム検索で調べてコピーできる。</li>
+              <li><strong>まずは短いスクリプトから。</strong>エラーが出たら、該当行付近にカーソルを移動し、1行ずつどの条件が成立していないか確認する。</li>
+            </>
+          ) : (
+            <>
+              <li><strong>它會自動執行。</strong>沒有 Run 按鈕，指令改完就會重新模擬。</li>
+              <li><strong>右側不是最終結果。</strong>它顯示的是文字游標所在指令「執行後」的狀態。</li>
+              <li><strong>get 和 pick-up 不同。</strong><code>get</code> 是直接取得；<code>pick-up</code> 只能撿回已經掉在地上的物品。</li>
+              <li><strong>物品名稱使用英文。</strong>若不確定名稱，可用左下物品搜尋器查找並複製。</li>
+              <li><strong>先從短腳本開始。</strong>發生錯誤時，把游標移到出錯行附近，逐行確認是哪個條件不成立。</li>
+            </>
+          )}
         </ul>
       </div>
     </section>
@@ -524,16 +581,16 @@ const commandGroups = [
     <section class="ist-final">
       <div class="ist-wrap">
         <span>READY / 01</span>
-        <h2>先貼一段腳本，再從結果修改。</h2>
-        <p>不必一次背完所有指令。能建立物品、裝備、存檔與讀檔，就足以開始測試大多數 IST 流程。</p>
+        <h2>{lang === "ja" ? "まずスクリプトを貼り付けて、結果を見ながら直そう。" : "先貼一段腳本，再從結果修改。"}</h2>
+        <p>{lang === "ja" ? "すべてのコマンドを一度に覚える必要はない。アイテム作成、装備、セーブ、ロードさえできれば、ほとんどの IST の流れをテストし始められる。" : "不必一次背完所有指令。能建立物品、裝備、存檔與讀檔，就足以開始測試大多數 IST 流程。"}</p>
         <div>
           <a class="ist-primary-action" href={IST_URL} target="_blank" rel="noopener">
-            開啟 IST 模擬器
+            {lang === "ja" ? "IST シミュレーターを開く" : "開啟 IST 模擬器"}
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path>
             </svg>
           </a>
-          <a href={COMMANDS_URL} target="_blank" rel="noopener">查看完整指令參考</a>
+          <a href={COMMANDS_URL} target="_blank" rel="noopener">{lang === "ja" ? "コマンドリファレンス全体を見る" : "查看完整指令參考"}</a>
         </div>
       </div>
     </section>
@@ -1982,6 +2039,7 @@ const commandGroups = [
     const panels = Array.from(document.querySelectorAll<HTMLElement>("[data-example-panel]"));
     const results = Array.from(document.querySelectorAll<HTMLElement>("[data-example-result]"));
     const copyActiveButton = document.querySelector<HTMLButtonElement>("#copy-active-script");
+    const isJa = document.documentElement.lang === "ja";
 
     function activateExample(id: string) {
       tabs.forEach((tab) => {
@@ -2020,7 +2078,7 @@ const commandGroups = [
         await navigator.clipboard.writeText(text);
         button.dataset.copied = "true";
         const originalLabel = button.getAttribute("aria-label");
-        button.setAttribute("aria-label", "已複製");
+        button.setAttribute("aria-label", isJa ? "コピー済み" : "已複製");
         window.setTimeout(() => {
           delete button.dataset.copied;
           if (originalLabel) button.setAttribute("aria-label", originalLabel);
