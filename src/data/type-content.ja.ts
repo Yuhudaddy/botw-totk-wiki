@@ -26,6 +26,12 @@ export interface PrincipleSectionJa {
   items?: TypeStep[];
 }
 
+/** FlowMapStepAction 的日文版；只開放 routeNote（Pin 彈出說明），layer／focus／pins／path／route
+ * 都是結構性資料（座標、檔名），中日共用，不放進來 */
+export interface FlowMapStepActionJa {
+  routeNote?: string;
+}
+
 /** TypeMethodSection 的日文版；以陣列索引對應中文版的 sections */
 export interface TypeMethodSectionJa {
   title?: string;
@@ -34,6 +40,8 @@ export interface TypeMethodSectionJa {
   tags?: string[];
   steps?: TypeStep[];
   note?: string | string[];
+  /** 依索引對應中文版的 mapFlow，不翻的填 null */
+  mapFlow?: (FlowMapStepActionJa | null)[];
 }
 
 /** TypeMethod 的日文版；由 TypeContentJa.methods 以中文 tab 當 key 索引 */
@@ -53,6 +61,8 @@ export interface TypeMethodJa {
   principle?: string;
   principleSections?: PrincipleSectionJa[];
   principleExtra?: { title?: string; items?: TypeStep[] };
+  /** 依索引對應中文版的 mapFlow，不翻的填 null */
+  mapFlow?: (FlowMapStepActionJa | null)[];
   /** 子分頁，一樣以中文 tab 當 key */
   subTabs?: Record<string, TypeMethodJa>;
 }
@@ -2073,6 +2083,10 @@ export const typeContentJa: Record<string, TypeContentJa> = {
               "※ 以上は最低限の数量。素材を多めに用意しておくほどミスへの余裕が増える。「n+」は n 個以上を意味する。",
               "※ ゾナウ装置は [[MTD|totk-14#MTD]] または [[SID|totk-14#SID]] で増殖できる。",
             ],
+            mapFlow: [
+              null,
+              { routeNote: "始まりの空島の 4 つの祠をクリアする。全行程で宝箱から服を取らないこと。" },
+            ],
           },
           {
             title: "第二段階：素材を準備 - 地上と地底（Surface & Depths）",
@@ -2093,6 +2107,17 @@ export const typeContentJa: Record<string, TypeContentJa> = {
             note: [
               "※ 以上は最低限の数量。素材を多めに用意しておくほどミスへの余裕が増える。「n+」は n 個以上を意味する。",
               "※ この過程では宝箱から服の装備一式を入手してはいけない。",
+            ],
+            mapFlow: [
+              { routeNote: "監視砦まで下りて、パラセールを入手する。" },
+              { routeNote: "目覚めの間へワープで戻り、ウイングで始まりの台地へ飛ぶ。" },
+              { routeNote: "地底の中央大廃鉱で「ブループリント（Autobuild）」を入手する。" },
+              { routeNote: "グタンバチの祠から東へ歩いて飛び降り、龍の泪の記憶を 1 つ入手する。" },
+              { routeNote: "アッカレ砦跡で、ドミズイノの祠のワープ地点を解放する。" },
+              { routeNote: "エノキダ工務店付近のゾナウガチャで、操縦桿 × 6+ を入手する。" },
+              { routeNote: "アッカレへワープで戻り、床抜け操縦桿の装備で BID を発生させて素材を増殖する。" },
+              { routeNote: "エコチウの祠から森の馬宿へ移動し、木の板のスロープ、操縦桿の盾、鉄の輪 4 つを組み合わせたブループリントを準備する。" },
+              { routeNote: "ルピ湖の洞窟前で、キルトンのそばで手動セーブする。" },
             ],
           },
           {
@@ -2123,6 +2148,13 @@ export const typeContentJa: Record<string, TypeContentJa> = {
                 ],
               },
               "自動セーブ A を読み込む",
+            ],
+            mapFlow: [
+              null,
+              { routeNote: "砂漠エリアでモルドラジークを探し、武器をフロックス化させる。" },
+              null, null, null, null, null, null,
+              { routeNote: "コルテンを__ナチョヤハの祠（モドレコの祠）__の入口そばまで運ぶ。" },
+              null, null, null, null, null, null, null,
             ],
           },
         ],
@@ -2156,6 +2188,10 @@ export const typeContentJa: Record<string, TypeContentJa> = {
               "※ 以上は最低限の数量。素材を多めに用意しておくほどミスへの余裕が増える。「n+」は n 個以上を意味する。",
               "※ ゾナウ装置は [[MTD|totk-14#MTD]] または [[SID|totk-14#SID]] で増殖できる。",
             ],
+            mapFlow: [
+              null,
+              { routeNote: "始まりの空島の 4 つの祠をクリアする。全行程で宝箱から服を取らないこと。" },
+            ],
           },
           {
             title: "第二段階：素材を準備 - 地上と地底（Surface & Depths）",
@@ -2177,6 +2213,18 @@ export const typeContentJa: Record<string, TypeContentJa> = {
             note: [
               "※ 以上は最低限の数量。素材を多めに用意しておくほどミスへの余裕が増える。「n+」は n 個以上を意味する。",
               "※ この過程では宝箱から服の装備一式を入手してはいけない。",
+            ],
+            mapFlow: [
+              { routeNote: "監視砦まで下りて、パラセールを入手する。" },
+              { routeNote: "目覚めの間へワープで戻り、ウイングで始まりの台地へ飛ぶ。" },
+              { routeNote: "地底の中央大廃鉱で「ブループリント（Autobuild）」を入手する。" },
+              { routeNote: "グタンバチの祠から東へ歩いて飛び降り、龍の泪の記憶を 1 つ入手する。" },
+              { routeNote: "アッカレ砦跡で、ドミズイノの祠のワープ地点を解放する。" },
+              { routeNote: "エノキダ工務店付近のゾナウガチャで、操縦桿 × 6+ を入手する。" },
+              { routeNote: "祠付近のゾナウガチャで、台車 × 2+ を入手する。" },
+              { routeNote: "アッカレへワープで戻り、床抜け操縦桿の装備で BID を発生させて素材を増殖する。" },
+              { routeNote: "エコチウの祠から森の馬宿へ移動し、操縦桿の盾と鉄の輪 4 つを組み合わせたブループリントを準備する。" },
+              { routeNote: "ルピ湖の洞窟前で、キルトンのそばで手動セーブする。" },
             ],
           },
           {
@@ -2207,6 +2255,13 @@ export const typeContentJa: Record<string, TypeContentJa> = {
                 ],
               },
               "自動セーブ A を読み込む",
+            ],
+            mapFlow: [
+              null,
+              { routeNote: "砂漠エリアでモルドラジークを探し、武器をフロックス化させる。" },
+              null, null, null, null, null, null,
+              { routeNote: "コルテンを__ナチョヤハの祠（モドレコの祠）__の入口そばまで運ぶ。" },
+              null, null, null, null, null, null, null,
             ],
           },
         ],
@@ -4004,17 +4059,24 @@ export const typeContentJa: Record<string, TypeContentJa> = {
       "Zelda Notes": {
         name: "メニューストレージ（Zelda Notes Inventory Storage）",
         steps: [
-          "[[轉存格|botw-02]]重複繼承屬性箭，觸發無效箭格頁",
-          "無効な矢欄ページを利用し、カーソルを武器または弓のタブの4段目に移動させる。右スティックを右へ、続けて左スティックを下へ入力すると、カーソルが脱ページする。右スティックでだいじなもののタブに切り替えると、1段目がロードボタンに対応しているので、左スティックでカーソルを右側へ動かし、勘で A を押してセーブデータのロード画面を開く。カーソルを Zelda Notes に合わせて A を押すと画面が開く",
-          "カーソルが「ロード」と「入れる」の間にある状態で A を押すと、セーブデータのロードとアイテムの投入が同時に発生する",
-          "ロード前に B を押して抜け、続けて画面上で A → B と押してインベントリを開く",
+          "[[轉存格|botw-02]]を発生させる。あらかじめ同位操作で売却不可の服を消しておき、できるだけ少ないアイテム数で行うとよい",
+          "引き継ぎ枠で属性矢を繰り返し引き継ぐ。最も簡単なのは古代矢だけを繰り返し引き継ぐ方法（40 -「弓」の純粋なスロット数が必要）。2ページ目の無効な矢欄ページが発生し、4段目を占有するまで続ける",
+          "カーソルを弓のタブ（1ページ目または3ページ目）の4段目に移動させ、右スティックを右(または左)へ → 左スティックを下へ（または他の左スティック操作を追加）入力する。カーソルがどのマスにもない状態で A を押すと、システム画面の任意のウィンドウが表示され、脱ページしたシステムタブが解除される",
+          "B を押して左スティックをキャンセルし、カーソルを武器または弓のタブへ戻す。カーソルが隣のタブへ脱ページした後、右スティックでだいじなもののタブへ移動し、左スティックでカーソルを右へ動かして「ロード」を選び、カーソルをロードしたいセーブデータへ移動させる",
+          "背景でカーソルを Zelda Notes のアイテムボックスへ移動させ、A を押す",
+          "カーソルが「入れる」で止まった状態で、左スティックを右へ倒し、カーソルを「ロード」ボタンへ移動させる",
+          "A → A の順に押す（間隔を空けすぎないこと）。ロードを選んでから「入れる」を押す",
+          "ロード後に A を押すと、カーソルが隣のタブへ脱ページする。A → B の順に押してわざとアイテムウィンドウを開いてから閉じると、残ったメニューの中でカーソルを動かせるようになる",
         ],
-        note: "※ 画面内で装備セットを切り替えた後 L でカメラを開いて撮影・削除すると、フィールド(Overworld)に装備セットのモデルが残る。マップを開いてからストレージ画面を閉じると、そのモデルを保持できる。",
+        note: [
+          "※ 手順4を行わないと、手順8でカーソルが動かせなくなる（システムメニューで止まったままになる）。手順8で A を押す前に、まず + を押してポーズを開き、右スティック ⇨ → 左スティック ⇨ → 右スティック ⇦ → + → B の順に入力してカーソルを一度脱ページさせてから戻すと、カーソルを動かせるようになる。",
+          "※ 画面内で装備セットを切り替えた後 L でカメラを開いて撮影・削除すると、フィールド(Overworld)に装備セットのモデルが残る。マップを開いてからストレージ画面を閉じると、そのモデルを保持できる。",
+        ],
       },
     },
     principleSections: [
       {
-        text: "__同フレーム入力（Same-Frame Inputs）__を利用し、システムに同一フレーム内で2つの出来事を発生させることでメニューを残せる。また「無効な矢欄ページ」(Arrow Prompt Entanglement)を使えば、カーソルを存在しないタブに留まらせ、画面と開いているウィンドウを非同期にすることもできる。2025/8/14、【WinnerBoi77】 プレイヤーが Zelda Notes でポーズメニュー画面を残す方法を共有した。",
+        text: "__同フレーム入力（Same-Frame Inputs）__を利用し、システムに同一フレーム内で2つの出来事を発生させることでメニューを残せる。また「無効な矢欄ページ」(Arrow Prompt Entanglement discovered by Kinak)を使えば、カーソルを存在しないタブに留まらせ、画面と開いているウィンドウを非同期にすることもできる。2025/8/14、【WinnerBoi77】 プレイヤーが Zelda Notes でポーズメニュー画面を残す方法を共有した。",
       },
     ],
     notes: [

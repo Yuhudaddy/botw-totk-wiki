@@ -26,6 +26,8 @@ const zh = {
 
   // 麵包屑
   breadcrumbHome: "首頁",
+  /** 詳細頁右上角「回到系列」連結；{game} 會被替換成遊戲名稱 */
+  backToGameSeries: "← 回到{game}系列",
 
   // 「適合」標籤：分頁／區塊標題旁邊列出適用版本的小標籤（例：適合 ～Ver.1.1.1）
   tagsLabel: "適合",
@@ -276,6 +278,7 @@ const ja: Record<keyof typeof zh, string> = {
   langJa: "日本語",
 
   breadcrumbHome: "ホーム",
+  backToGameSeries: "← {game}シリーズに戻る",
   tagsLabel: "対応",
   difficultyLabel: "難易度：",
   timeCostLabel: "所要時間：",

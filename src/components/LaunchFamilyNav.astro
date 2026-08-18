@@ -5,14 +5,16 @@
 // 若之後家族數量變多，再考慮抽成獨立資料檔。
 import { href } from "../lib/url";
 import type { TypeItem } from "../data/types";
+import type { Lang } from "../data/ui-strings";
 
 interface Props {
   game: string;
   members: TypeItem[];
   currentNo: string;
+  lang?: Lang;
 }
 
-const { game, members, currentNo } = Astro.props;
+const { game, members, currentNo, lang = "zh" } = Astro.props;
 
 const GLYPHS: Record<string, string> = {
   "01": '<circle cx="6" cy="17" r="3"/><circle cx="17" cy="7" r="3"/><line x1="9" y1="14" x2="14" y2="10" stroke-dasharray="2 2"/>',
@@ -30,7 +32,7 @@ const GLYPHS: Record<string, string> = {
         const active = m.no === currentNo;
         return (
           <a
-            href={href(`/types/${game}-${m.no}`)}
+            href={href(`/types/${game}-${m.no}`, lang)}
             class={`launch-card flex items-center gap-3.5 rounded-xl border px-4 py-3.5 no-underline transition-colors ${
               active
                 ? "border-accent bg-surface-2 shadow-[0_0_0_1px_var(--accent)]"
@@ -49,7 +51,9 @@ const GLYPHS: Record<string, string> = {
             />
             <div class="min-w-0">
               <div class="font-mono text-[10px] font-bold uppercase tracking-[1.5px] text-accent">{m.en}</div>
-              <div class="truncate font-serif text-[17px] font-medium leading-tight text-ink">{m.zh}</div>
+              <div class="truncate font-serif text-[17px] font-medium leading-tight text-ink">
+                {lang === "ja" ? m.ja ?? m.zh : m.zh}
+              </div>
             </div>
           </a>
         );

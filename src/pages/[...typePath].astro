@@ -46,15 +46,24 @@ const { group, item, lang } = Astro.props;
 const { typePath: routeId } = Astro.params as { typePath: string };
 const id = routeId.replace(/^ja\//, "").replace(/^types\//, "");
 const t = uiStrings[lang];
+// 本頁自己的身分（h1／麵包屑／分頁標題）一律用日文標題；type-content.ja.ts
+// 疊加的是攻略內文，跟這裡的 item.ja（技巧名稱本身）是兩回事，各自獨立維護
+const itemTitle = (lang === "ja" && item.ja) || item.zh;
 const gameLabelMap: Record<string, string> = {
   botw: "曠野之息",
   totk: "王國之淚",
   eow: "智慧的再現",
   ssbu: "大亂鬥特別版",
 };
-// 日文版標題用簡稱：目前只有曠野之息／王國之淚有日文版，其餘遊戲沿用中文
-// （見 types.ts 的 TypeGroup.ja，之後補齊資料層翻譯時這裡不用再改）。
-const gameLabelJaMap: Record<string, string> = { botw: "ブレワイ", totk: "ティアキン" };
+// 日文版標題用簡稱／簡稱等同全名（見 types.ts 的 TypeGroup.ja）
+const gameLabelJaMap: Record<string, string> = {
+  botw: "ブレワイ",
+  totk: "ティアキン",
+  eow: "知恵のかりもの",
+  ssbu: "スマブラSP",
+  aoc: "厄災の黙示録",
+  aoi: "封印戦記",
+};
 const gameLabel =
   (lang === "ja" && gameLabelJaMap[group.game]) || gameLabelMap[group.game] || group.label;
 // 日文版會把 type-content.ja.ts 的翻譯疊加上來；沒翻到的欄位自動沿用中文
@@ -119,8 +128,8 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 ---
 
 <BaseLayout
-  title={`${item.zh} · ${gameLabel}`}
-  description={`${item.zh}（${item.en}）攻略說明，${gameLabel}系列。`}
+  title={`${itemTitle} · ${gameLabel}`}
+  description={`${itemTitle}（${item.en}）攻略說明，${gameLabel}系列。`}
   active="types"
   lang={lang}
   altPath={`/types/${id}`}
@@ -135,24 +144,24 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         {family && (
           <>
             <span>/</span>
-            <span>{family.zh}</span>
+            <span>{lang === "ja" ? family.ja : family.zh}</span>
           </>
         )}
         <span>/</span>
-        <span class="text-ink">{item.zh}</span>
+        <span class="text-ink">{itemTitle}</span>
       </div>
       <div class="mb-2 flex items-center gap-2.5">
         <span class="font-mono text-[13px] text-accent">{group.en} · {item.no}</span>
       </div>
       <div class="mb-[18px] flex flex-wrap items-center justify-between gap-4">
         <h1 class="font-serif text-[27px] sm:text-[36px] font-medium leading-[1.12] text-ink">
-          {item.zh}
+          {itemTitle}
         </h1>
         <a
           href={href(`/types#${group.game}`, lang)}
           class="whitespace-nowrap text-sm text-accent no-underline"
         >
-          ← 回到{gameLabel}系列
+          {t.backToGameSeries.replace("{game}", gameLabel)}
         </a>
       </div>
       <p class="text-[13px] sm:text-[17px] text-muted">{content?.heroEn ?? item.en}</p>
@@ -163,9 +172,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     <section class="border-b border-border-soft bg-surface">
       <div class="mx-auto max-w-[1244px] px-8 py-8">
         <div class="mb-3 font-mono text-[11px] font-bold uppercase tracking-[2px] text-muted">
-          {family?.en} · {family?.zh}系列
+          {family?.en} · {lang === "ja" ? <>{family?.ja}シリーズ</> : <>{family?.zh}系列</>}
         </div>
-        <LaunchFamilyNav game={group.game} members={familyMembers} currentNo={item.no} />
+        <LaunchFamilyNav game={group.game} members={familyMembers} currentNo={item.no} lang={lang} />
       </div>
     </section>
   )}
@@ -359,7 +368,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                       )
                 )
               ) : (
-                t.principleFallbackTemplate.replace("{name}", item.zh)
+                t.principleFallbackTemplate.replace("{name}", itemTitle)
               )}
             </p>
           )}
@@ -671,7 +680,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       <div class="applications-dialog" role="dialog" aria-modal="true" aria-labelledby="applications-title">
         <div class="applications-head">
           <div>
-            <span>{item.zh} · {item.en}</span>
+            <span>{itemTitle} · {item.en}</span>
             <h2 id="applications-title">{content.applications.title ?? content.applications.label ?? t.applicationsLabel}</h2>
           </div>
           <button type="button" data-applications-close aria-label={t.closeAppList}>
@@ -813,7 +822,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               {t.sectionVideos}
             </div>
             <h2 class="mt-2 font-serif text-[26px] font-medium text-ink">
-              {item.zh} {t.relatedVideosSuffix}
+              {itemTitle} {t.relatedVideosSuffix}
             </h2>
           </div>
         )}
@@ -891,7 +900,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               {t.sectionVideos}
             </div>
             <h2 class="mt-2 font-serif text-[26px] font-medium text-ink">
-              {item.zh} {t.relatedVideosSuffix}
+              {itemTitle} {t.relatedVideosSuffix}
             </h2>
           </div>
           {content.videos.length > VIDEOS_PER_PAGE && (

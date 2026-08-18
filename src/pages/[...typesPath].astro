@@ -133,7 +133,9 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
               >
                 <div class="flex min-w-0 items-baseline gap-2">
                   <span class="flex-none font-mono text-[13px] text-accent">{item.no}</span>
-                  <span class="truncate font-serif text-[18px] font-medium text-ink">{item.shortZh ?? item.zh}</span>
+                  <span class="truncate font-serif text-[18px] font-medium text-ink">
+                    {lang === "ja" ? item.shortJa ?? item.ja ?? item.shortZh ?? item.zh : item.shortZh ?? item.zh}
+                  </span>
                 </div>
                 <div class="truncate text-[12px] text-muted">{item.shortEn ?? item.en}</div>
               </a>

@@ -32,6 +32,16 @@ function mergeMethod(zh: TypeMethod, ja: TypeMethodJa | undefined): TypeMethod {
     principle: pick(ja.principle, zh.principle),
   };
 
+  // mapFlow 依索引對應：只有 routeNote（Pin 彈出說明）能翻，layer／focus／pins／path／route
+  // 是結構性資料，一律沿用中文（見 FlowMapStepActionJa 的欄位範圍）
+  if (zh.mapFlow && ja.mapFlow) {
+    merged.mapFlow = zh.mapFlow.map((action, i) => {
+      const jaAction = ja.mapFlow?.[i];
+      if (!action || !jaAction) return action;
+      return { ...action, routeNote: pick(jaAction.routeNote, action.routeNote) };
+    });
+  }
+
   // sections 依索引對應；日文只翻了其中幾段時，其餘沿用中文
   if (zh.sections && ja.sections) {
     merged.sections = zh.sections.map((section, i) => {
@@ -44,6 +54,13 @@ function mergeMethod(zh: TypeMethod, ja: TypeMethodJa | undefined): TypeMethod {
         tags: pick(jaSection.tags, section.tags),
         steps: pick(jaSection.steps, section.steps),
         note: pick(jaSection.note, section.note),
+        mapFlow: section.mapFlow && jaSection.mapFlow
+          ? section.mapFlow.map((action, j) => {
+              const jaAction = jaSection.mapFlow?.[j];
+              if (!action || !jaAction) return action;
+              return { ...action, routeNote: pick(jaAction.routeNote, action.routeNote) };
+            })
+          : section.mapFlow,
       };
     });
   }
