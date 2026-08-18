@@ -20,8 +20,9 @@ const ROUTE_DIR = join(process.cwd(), "public", "totk-prologue escape route");
 export interface FlowRouteSegment {
   layer: string;                 // objmap 畫線當下的圖層（Surface／Sky／Depths）
   coords: [number, number][];    // [X, Z] 途經點，原始座標
-  color: string;
 }
+// 註：objmap 存檔裡的 style.color 刻意不取用——那只是畫線當下的隨手顏色，
+// 網站上的路線一律用主色，與 botw-28 的建議路線同一套視覺。
 
 export interface FlowRoute {
   segments: FlowRouteSegment[];
@@ -39,7 +40,6 @@ interface ObjmapSave {
     features?: {
       properties?: { order?: number; map_layer?: string };
       geometry?: { type?: string; coordinates?: number[][] };
-      style?: { color?: string };
     }[];
   };
 }
@@ -71,7 +71,6 @@ function loadRoutes(): Map<string, FlowRoute> {
       .map((f) => ({
         layer: f.properties?.map_layer ?? "Surface",
         coords: f.geometry!.coordinates!.map(([x, z]) => [x, z] as [number, number]),
-        color: f.style?.color ?? "#00f900",
       }));
     if (segments.length === 0) continue;
 

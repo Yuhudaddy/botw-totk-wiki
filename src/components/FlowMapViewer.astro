@@ -129,6 +129,13 @@ const config = {
           aria-pressed="false"
         >{t.flowMapGrid}</button>
       )}
+      {/* 清除：只拿掉「因為點擊而出現」的標記與路線，常駐編號 Pin 是頁面內容本身，保留 */}
+      <button
+        type="button"
+        class="flow-map-overview-btn"
+        data-flow-clear
+        title={t.flowMapClearHint}
+      >{t.flowMapClear}</button>
       <button type="button" class="flow-map-overview-btn" data-flow-overview>{t.flowMapOverview}</button>
     </div>
   </div>
@@ -345,20 +352,21 @@ const config = {
      * 每段沿用 objmap 裡畫的顏色，讓同一條路線的不同區段（地面／空島）分得開。
      */
     function drawRoute(route: {
-      segments?: { layer?: string; coords: [number, number][]; color?: string }[];
+      segments?: { layer?: string; coords: [number, number][] }[];
       fullLayers?: string[];
       end?: { x: number; z: number };
       note?: string;
     }) {
+      // 線與箭頭一律用主色，與 botw-28（無限古代素材）的建議路線同一套視覺；
+      // objmap 存檔裡的顏色只是畫線當下的隨手顏色，不沿用
       const pts: [number, number][] = [];
       (route.segments ?? []).forEach((seg) => {
-        const color = seg.color || accent;
         const latlngs = seg.coords.map(([x, z]) => toLatLng(x, z));
         latlngs.forEach((ll) => pts.push(ll));
-        const line = L.polyline(latlngs, { color, weight: 3.5, opacity: 0.95 }).addTo(stepRouteLayer);
+        const line = L.polyline(latlngs, { color: accent, weight: 3.5, opacity: 0.95 }).addTo(stepRouteLayer);
         routeShapes.push({ el: line, base: 0.95 });
         for (let i = 0; i < latlngs.length - 1; i++) {
-          routeShapes.push({ el: addSegmentArrow(latlngs[i], latlngs[i + 1], stepRouteLayer, color), base: 1 });
+          routeShapes.push({ el: addSegmentArrow(latlngs[i], latlngs[i + 1], stepRouteLayer), base: 1 });
         }
       });
 
@@ -480,6 +488,22 @@ const config = {
       markSelectedPin();
       enableDemoBtn(false);
       map.fitBounds(bounds);
+    });
+
+    // 「清除」：把因為點擊而出現的東西全部收掉（步驟標記／步驟路線／Pin 路線），
+    // 但保留常駐編號 Pin——那是頁面本身要表達的內容，不是使用者點出來的。
+    // 鏡頭不動（要回全圖請按「總覽」），並通知頁面把步驟單選按鈕一起取消選取。
+    root.querySelector<HTMLButtonElement>("[data-flow-clear]")?.addEventListener("click", () => {
+      marks.clearLayers();
+      stepRouteLayer.clearLayers();
+      routeShapes = [];
+      activeRouteLayers = [];
+      routeLayer.clearLayers();
+      selectedPin = null;
+      markSelectedPin();
+      enableDemoBtn(false);
+      if (statusEl) statusEl.textContent = defaultStatus;
+      document.dispatchEvent(new CustomEvent("flowmap:cleared"));
     });
 
     // ── 格線 ──────────────────────────────────────────────

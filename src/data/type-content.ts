@@ -4619,8 +4619,8 @@ export const typeContent: Record<string, TypeContent> = {
             collapsible: true,
             steps: [
               "重新開始遊戲，觸發序章__第 3 個自動存檔 A（大師劍發光）__，讀回舊檔（或無套裝檔）",
-              "(有進度檔：)回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
-              "(有進度檔：)觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]之後讀回無套裝檔",
+              "（舊檔：）回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
+              "（舊檔：）觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]之後讀回無套裝檔",
               "過載掉落一把武器，把武器餘料到盾牌上，丟出一個操縱桿，餘料到武器上",
               "將操縱桿移動到（1226, 1209, X）的位置，操作操縱桿，切換武器連打 B 避免遁地",
               "丟出一個操縱桿操作解除技能輪盤",
@@ -4659,8 +4659,8 @@ export const typeContent: Record<string, TypeContent> = {
               null, null,
               {
                 layer: "surface",
-                focus: { x: 1226, z: -1209, zoom: 3 },
-                pins: [{ x: 1226, z: -1209, label: "纏桿放置點 (1226, 1209)" }],
+                focus: { x: 1226.36, z: -1209.06, zoom: 3 },
+                pins: [{ x: 1226.36, z: -1209.06, label: "纏桿放置點 (1226.36, 1209.06)" }],
               },
               null, null, null,
               { route: "ZN_03-09_sky+surface", routeNote: "把柯爾天載到納裘亞哈神廟（倒轉乾坤神廟）門口旁邊。" },
@@ -4753,8 +4753,8 @@ export const typeContent: Record<string, TypeContent> = {
             collapsible: true,
             steps: [
               "重新開始遊戲，觸發序章__第 3 個自動存檔 A（大師劍發光）__，讀回舊檔（或無套裝檔）",
-              "(有進度檔：)回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
-              "(有進度檔：)觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]之後讀回無套裝檔",
+              "（舊檔：）回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
+              "（舊檔：）觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]之後讀回無套裝檔",
               "過載掉落一把武器，把武器餘料到盾牌上，丟出一個操縱桿，餘料到武器上",
               "將操縱桿移動到（1226, 1209, X）的位置，操作操縱桿，切換武器連打 B 避免遁地",
               "丟出一個操縱桿操作解除技能輪盤",
@@ -4793,8 +4793,8 @@ export const typeContent: Record<string, TypeContent> = {
               null, null,
               {
                 layer: "surface",
-                focus: { x: 1226, z: -1209, zoom: 3 },
-                pins: [{ x: 1226, z: -1209, label: "纏桿放置點 (1226, 1209)" }],
+                focus: { x: 1226.36, z: -1209.06, zoom: 3 },
+                pins: [{ x: 1226.36, z: -1209.06, label: "纏桿放置點 (1226.36, 1209.06)" }],
               },
               null, null, null,
               { route: "ZN_03-09_sky+surface", routeNote: "把柯爾天載到納裘亞哈神廟（倒轉乾坤神廟）門口旁邊。" },

@@ -1979,6 +1979,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       syncFlowMap();
     }
   });
+  // 地圖上按了「清除」：步驟單選按鈕要跟著取消，否則會變成「有選取但地圖空白」，
+  // 而且切分頁回來時 syncFlowMap 又會把標記畫回去
+  document.addEventListener("flowmap:cleared", () => {
+    document.querySelectorAll<HTMLInputElement>(".flow-step-radio").forEach((r) => (r.checked = false));
+    lastFlowRadio.clear();
+  });
 
   document.querySelectorAll<HTMLElement>(".method-tabs").forEach((root) => {
     // 用 data-tab／data-panel（原始 content.methods 索引）而非 DOM 順序做對應，
