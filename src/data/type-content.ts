@@ -68,13 +68,18 @@ export interface TypeMethod {
 // X 向東為正、Z 向南為正（北邊是負的 Z），範圍 X: -6000~6000、Z: -5000~5000，
 // 與遊戲畫面左下角顯示的前兩個數字一致，不需要任何換算。
 export interface FlowMapStepAction {
-  layer?: "surface" | "sky";     // 該步驟所在圖層；未填則沿用地圖目前的圖層
+  layer?: "surface" | "sky" | "depths"; // 該步驟所在圖層；未填則沿用地圖目前的圖層
   focus?: { x: number; z: number; zoom?: number };
                                  // 鏡頭移動目標；zoom 0≈全圖、每 +1 放大一倍（傳給 Leaflet 的 zoom）。
                                  // 未填 focus 時自動框住該步驟的所有 Pin／軌跡
   pins?: { x: number; z: number; label?: string }[];
                                  // 地點 Pin；label 會顯示為地圖上的常駐標籤
   path?: [number, number][];     // 移動軌跡 [X, Z] 途經點，依序連線並加上方向箭頭
+  route?: string;                // objmap 匯出的路線圖檔名（public/totk-prologue escape route/
+                                 // 底下，不含 .json）。可畫多段、跨圖層的箭頭路徑，比 path 適合
+                                 // 長程移動；檔名尾端的圖層清單決定箭頭在哪些圖層 100% 不透明，
+                                 // 其餘圖層降到 20%。詳見 src/lib/flow-route.ts
+  routeNote?: string;            // 路線終點 pin 點擊後顯示的簡易步驟說明
 }
 
 export interface RelatedVideo {
@@ -141,7 +146,7 @@ export interface TypeContent {
   flowMap?: {
     title?: string;                    // 區塊標題，預設「參照流程地圖」
     game?: "totk" | "botw";            // 底圖來源，預設 totk（曠野只有地面一層，切換鈕會自動隱藏）
-    defaultLayer?: "surface" | "sky";  // 初始圖層，預設 surface
+    defaultLayer?: "surface" | "sky" | "depths"; // 初始圖層，預設 surface
     note?: string;                     // 地圖下方的灰色備註
     grid?: boolean;                    // 顯示「格線」按鈕：疊上地圖單元格（A～J × 1～8）參考層
     pins?: {
@@ -4567,13 +4572,17 @@ export const typeContent: Record<string, TypeContent> = {
               "※ 以上為至少的量，材料越多容錯率越佳，「n+」表示 n 個以上。",
               "※ 左納烏裝置可以用 [[MTD|totk-14#MTD]] 或 [[SID|totk-14#SID]] 增殖。",
             ],
+            mapFlow: [
+              null,
+              { route: "ZN_01-02_sky", routeNote: "初始空島的四個神廟解完，全程不從寶箱拿衣服。" },
+            ],
           },
           {
             title: "第二階段：準備材料 - 地上與地底（Surface & Depths）",
             collapsible: true,
             steps: [
               "到海拉魯用走的，或用翼飛到監視堡壘獲得滑翔翼",
-              "傳送回覺醒室，通天上去用翼飛到初始空島",
+              "傳送回覺醒室或伊恩伊薩神廟，用翼飛到初始台地",
               "到地底的中央大廢礦獲得「藍圖（Autobuild）」",
               "傳送回__古塔恩巴奇神廟(通天術神廟)__，往東走跳下去獲得一個龍之淚的回憶",
               "移動到阿卡萊堡壘遺跡，開啟多米諸伊諾神廟的傳送點",
@@ -4593,14 +4602,25 @@ export const typeContent: Record<string, TypeContent> = {
               "※ 以上為至少的量，材料越多容錯率越佳，「n+」表示 n 個以上。",
               "※ 過程中都不能從寶箱獲得過衣服套裝。",
             ],
+            mapFlow: [
+              { route: "ZN_02-01_sky+surface", routeNote: "降到監視堡壘，拿到滑翔翼。" },
+              { route: "ZN_02-02_sky+surface", routeNote: "傳送回覺醒室或伊恩伊薩神廟，用翼飛到初始台地。" },
+              { route: "ZN_02-03_depths", routeNote: "地底的中央大廢礦，取得「藍圖（Autobuild）」。" },
+              { route: "ZN_02-04_sky+surface", routeNote: "從古塔恩巴奇神廟往東走跳下去，拿一個龍之淚的回憶。" },
+              { route: "ZN_02-05_surface", routeNote: "阿卡萊堡壘遺跡，開啟多米諸伊諾神廟的傳送點。" },
+              { route: "ZN_02-06_surface", routeNote: "松達建築店附近的扭蛋機，轉出操縱桿 × 6+。" },
+              { route: "ZN_02-07_surface", routeNote: "傳送回阿卡萊，用纏桿裝備觸發 BID 複製材料。" },
+              { route: "ZN_02-08_surface", routeNote: "艾可奇烏神廟移動到森林驛站，準備木板斜坡、操縱桿盾與四鋼輪組合的藍圖。" },
+              { route: "ZN_02-09_surface", routeNote: "魯皮湖洞穴前，在吉爾頓旁邊手動存檔。" },
+            ],
           },
           {
             title: "第三階段：移動柯爾天觸發「轉場儲存（Banc Storage）」",
             collapsible: true,
             steps: [
               "重新開始遊戲，觸發序章__第 3 個自動存檔 A（大師劍發光）__，讀回舊檔（或無套裝檔）",
-              "回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
-              "觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]",
+              "(有進度檔：)回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
+              "(有進度檔：)觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]之後讀回無套裝檔",
               "過載掉落一把武器，把武器餘料到盾牌上，丟出一個操縱桿，餘料到武器上",
               "將操縱桿移動到（1226, 1209, X）的位置，操作操縱桿，切換武器連打 B 避免遁地",
               "丟出一個操縱桿操作解除技能輪盤",
@@ -4625,15 +4645,26 @@ export const typeContent: Record<string, TypeContent> = {
               "讀取自動存檔 A",
             ],
             // 目前只有這一個座標是實際確認過的，其餘步驟先不放（避免示意座標
-            // 造成誤導），之後 Yuda 補齊座標後再依序填入
+            // 造成誤導），之後 Yuda 補齊座標後再依序填入。
+            //
+            // ⚠️ 這裡的 z 要填「負」的 -1209，不是步驟文字裡的 1209：objmap 介面
+            // 顯示的南北值是把原始資料的 z 取負號後的結果（見 objmap-totk 的
+            // AppMapDetailsBase.formatPosition），而本站流程地圖跟 objmap 的
+            // **原始**座標同一套（北為負，比照 botw-28 的 F-3 標記）。填 1209
+            // 會跑到 G-6，正確位置是 G-3（Pico Pond Cave 前的吉爾頓魔物商店）。
+            // 步驟文字保留 1209，因為那是玩家在遊戲內／objmap 上實際讀到的數字。
             mapFlow: [
-              null, null, null, null,
+              null,
+              { route: "ZN_03-02_surface", routeNote: "沙漠區找拉吉克，準備虛化武器。" },
+              null, null,
               {
                 layer: "surface",
-                focus: { x: 1226, z: 1209, zoom: 3 },
-                pins: [{ x: 1226, z: 1209, label: "纏桿放置點 (1226, 1209)" }],
+                focus: { x: 1226, z: -1209, zoom: 3 },
+                pins: [{ x: 1226, z: -1209, label: "纏桿放置點 (1226, 1209)" }],
               },
-              null, null, null, null, null, null, null, null, null, null, null,
+              null, null, null,
+              { route: "ZN_03-09_sky+surface", routeNote: "把柯爾天載到納裘亞哈神廟（倒轉乾坤神廟）門口旁邊。" },
+              null, null, null, null, null, null, null,
             ],
           },
         ],
@@ -4670,13 +4701,18 @@ export const typeContent: Record<string, TypeContent> = {
               "※ 以上為至少的量，材料越多容錯率越佳，「n+」表示 n 個以上。",
               "※ 左納烏裝置可以用 [[MTD|totk-14#MTD]] 或 [[SID|totk-14#SID]] 增殖。",
             ],
+            // 這階段與「有 Zelda Notes」完全相同，直接沿用 ZN 的路線圖
+            mapFlow: [
+              null,
+              { route: "ZN_01-02_sky", routeNote: "初始空島的四個神廟解完，全程不從寶箱拿衣服。" },
+            ],
           },
           {
             title: "第二階段：準備材料 - 地上與地底（Surface & Depths）",
             collapsible: true,
             steps: [
               "到海拉魯用走的，或用翼飛到監視堡壘獲得滑翔翼",
-              "傳送回覺醒室，通天上去用翼飛到初始空島",
+              "傳送回覺醒室或伊恩伊薩神廟，用翼飛到初始台地",
               "到地底的中央大廢礦獲得「藍圖（Autobuild）」",
               "傳送回__古塔恩巴奇神廟(通天術神廟)__，往東走跳下去獲得一個龍之淚的回憶",
               "移動到阿卡萊堡壘遺跡，開啟多米諸伊諾神廟的傳送點",
@@ -4697,14 +4733,28 @@ export const typeContent: Record<string, TypeContent> = {
               "※ 以上為至少的量，材料越多容錯率越佳，「n+」表示 n 個以上。",
               "※ 過程中都不能從寶箱獲得過衣服套裝。",
             ],
+            // 這階段比 ZN 多插入「轉出平台車」一步（步驟 7），所以步驟 7 用自己的
+            // NZN 路線圖，之後每一步都對應到 ZN 的前一號檔案（8→ZN 7、9→ZN 8、10→ZN 9）
+            mapFlow: [
+              { route: "ZN_02-01_sky+surface", routeNote: "降到監視堡壘，拿到滑翔翼。" },
+              { route: "ZN_02-02_sky+surface", routeNote: "傳送回覺醒室或伊恩伊薩神廟，用翼飛到初始台地。" },
+              { route: "ZN_02-03_depths", routeNote: "地底的中央大廢礦，取得「藍圖（Autobuild）」。" },
+              { route: "ZN_02-04_sky+surface", routeNote: "從古塔恩巴奇神廟往東走跳下去，拿一個龍之淚的回憶。" },
+              { route: "ZN_02-05_surface", routeNote: "阿卡萊堡壘遺跡，開啟多米諸伊諾神廟的傳送點。" },
+              { route: "ZN_02-06_surface", routeNote: "松達建築店附近的扭蛋機，轉出操縱桿 × 6+。" },
+              { route: "NZN_02-07_sky+surface", routeNote: "到烏可歐吉希神廟旁的扭蛋機，轉出平台車 × 2+。" },
+              { route: "ZN_02-07_surface", routeNote: "傳送回阿卡萊，用纏桿裝備觸發 BID 複製材料。" },
+              { route: "ZN_02-08_surface", routeNote: "艾可奇烏神廟移動到森林驛站，準備操縱桿盾與四鋼輪組合的藍圖。" },
+              { route: "ZN_02-09_surface", routeNote: "魯皮湖洞穴前，在吉爾頓旁邊手動存檔。" },
+            ],
           },
           {
             title: "第三階段：移動柯爾天觸發「轉場儲存（Banc Storage）」",
             collapsible: true,
             steps: [
               "重新開始遊戲，觸發序章__第 3 個自動存檔 A（大師劍發光）__，讀回舊檔（或無套裝檔）",
-              "回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
-              "觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]",
+              "(有進度檔：)回到舊檔案（或在無套裝檔移動）到沙漠區找拉吉克準備虛化武器",
+              "(有進度檔：)觸發[[可調式並列過載（GDI Zuggle Overload）|totk-11#Zuggle]]之後讀回無套裝檔",
               "過載掉落一把武器，把武器餘料到盾牌上，丟出一個操縱桿，餘料到武器上",
               "將操縱桿移動到（1226, 1209, X）的位置，操作操縱桿，切換武器連打 B 避免遁地",
               "丟出一個操縱桿操作解除技能輪盤",
@@ -4729,15 +4779,26 @@ export const typeContent: Record<string, TypeContent> = {
               "讀取自動存檔 A",
             ],
             // 目前只有這一個座標是實際確認過的，其餘步驟先不放（避免示意座標
-            // 造成誤導），之後 Yuda 補齊座標後再依序填入
+            // 造成誤導），之後 Yuda 補齊座標後再依序填入。
+            //
+            // ⚠️ 這裡的 z 要填「負」的 -1209，不是步驟文字裡的 1209：objmap 介面
+            // 顯示的南北值是把原始資料的 z 取負號後的結果（見 objmap-totk 的
+            // AppMapDetailsBase.formatPosition），而本站流程地圖跟 objmap 的
+            // **原始**座標同一套（北為負，比照 botw-28 的 F-3 標記）。填 1209
+            // 會跑到 G-6，正確位置是 G-3（Pico Pond Cave 前的吉爾頓魔物商店）。
+            // 步驟文字保留 1209，因為那是玩家在遊戲內／objmap 上實際讀到的數字。
             mapFlow: [
-              null, null, null, null,
+              null,
+              { route: "ZN_03-02_surface", routeNote: "沙漠區找拉吉克，準備虛化武器。" },
+              null, null,
               {
                 layer: "surface",
-                focus: { x: 1226, z: 1209, zoom: 3 },
-                pins: [{ x: 1226, z: 1209, label: "纏桿放置點 (1226, 1209)" }],
+                focus: { x: 1226, z: -1209, zoom: 3 },
+                pins: [{ x: 1226, z: -1209, label: "纏桿放置點 (1226, 1209)" }],
               },
-              null, null, null, null, null, null, null, null, null, null, null,
+              null, null, null,
+              { route: "ZN_03-09_sky+surface", routeNote: "把柯爾天載到納裘亞哈神廟（倒轉乾坤神廟）門口旁邊。" },
+              null, null, null, null, null, null, null,
             ],
           },
         ],
@@ -5384,7 +5445,7 @@ export const typeContent: Record<string, TypeContent> = {
               "※ 操作過程出現「套裝分離」「按 A 無法操作操縱桿」「究極手拖曳物品時視角異常」，可以脫掉套裝或流程中尚未用到的裝備先卸掉。",
               "※ 負載量過高導致空手撿起裝備，意外變成「過載撿拾（Overload Pickup）」，背對牆壁丟棄失敗就可以附著回林克身上。",
               "※ 步驟 12 也可以用 Drop Zuggle，但避免在序章過載撿拾，以 Drop Purgatorify 為佳。另外若用到「臨時過載（Temporary Overload）」，切記不要丟切到 S2（會變成 Drop Zuggle，在序章丟武器不會隱藏），可以先讓 W1 或 S1 處於 Zuggle Drop 的狀態增加負載量",
-              "※ 步驟 12 也可以直接 Drop Smuggle 或 Drop Purgatorify W1，不過在序章的步驟 3 必須改為卸掉武器（空手狀態）並撿起腳下的 W1。",
+              "※ 步驟 12 也可以直接 Drop Smuggle W1，不過在序章的步驟 3 必須改為卸掉武器（空手狀態）並撿起腳下的 W1。",
             ],
           },
           {

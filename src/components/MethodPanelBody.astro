@@ -3,8 +3,9 @@
 // 從 src/pages/types/[id].astro 抽出來，讓「合併分頁＋子分頁」（如 R0 Cull Zuggle 底下的
 // In Bound / Out of Bound）可以重複使用同一套渲染邏輯，不用整段複製。
 import { href } from "../lib/url";
-import type { TypeMethod } from "../data/type-content";
+import type { FlowMapStepAction, TypeMethod } from "../data/type-content";
 import { parseAccent, parseStep, stepParts } from "../lib/method-format";
+import { getFlowRoute } from "../lib/flow-route";
 import { uiStrings, type Lang } from "../data/ui-strings";
 
 interface Props {
@@ -16,6 +17,14 @@ interface Props {
 }
 const { method: m, mapGroup, lang = "zh" } = Astro.props;
 const t = uiStrings[lang];
+
+// 步驟地圖行為 → data-map 的 JSON。route 是檔名，這裡在建置期換成實際的線段座標，
+// 前端就不必再 fetch（routeNote 併進 route.note，前端只看一個物件）。
+function mapData(action: FlowMapStepAction, stepNo: number) {
+  const { route, routeNote, ...rest } = action;
+  const resolved = route ? getFlowRoute(route, routeNote) : undefined;
+  return JSON.stringify({ ...rest, ...(resolved ? { route: resolved } : {}), stepNo });
+}
 ---
 
 {/* 白標題與適合／難易度標籤可同時存在：有 name 時標題在上、標籤列接在下方。
@@ -98,7 +107,7 @@ const t = uiStrings[lang];
                     type="radio"
                     class="flow-step-radio"
                     name={`flow-steps-${mapGroup}`}
-                    data-map={JSON.stringify({ ...mapAction, stepNo: idx + 1 })}
+                    data-map={mapData(mapAction, idx + 1)}
                     aria-label={t.mapStepAriaLabelTemplate.replace("{n}", String(idx + 1))}
                     title={t.mapStepTitle}
                   />
@@ -226,7 +235,7 @@ const t = uiStrings[lang];
               type="radio"
               class="flow-step-radio"
               name={`flow-steps-${mapGroup}`}
-              data-map={JSON.stringify({ ...mapAction, stepNo: idx + 1 })}
+              data-map={mapData(mapAction, idx + 1)}
               aria-label={t.mapStepAriaLabelTemplate.replace("{n}", String(idx + 1))}
               title={t.mapStepTitle}
             />

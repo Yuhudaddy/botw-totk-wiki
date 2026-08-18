@@ -46,6 +46,7 @@ const {
   layers = [
     { id: "surface", label: t.flowMapLayerSurface, image: "/flow-map/totk/surface.webp" },
     { id: "sky", label: t.flowMapLayerSky, image: "/flow-map/totk/sky.webp" },
+    { id: "depths", label: t.flowMapLayerDepths, image: "/flow-map/totk/depths.webp" },
   ],
   defaultLayer,
   note,
@@ -84,6 +85,7 @@ const config = {
   data-config={JSON.stringify(config)}
   data-status-step-template={t.flowMapStatusStepTemplate}
   data-status-selected={t.flowMapStatusSelected}
+  data-goal-aria={t.flowMapGoalAria}
 >
   <div class="flow-map-toolbar">
     {/* 只有一個圖層時（例：曠野只有地面）不顯示切換鈕，避免看起來像壞掉的單顆按鈕 */}
@@ -168,6 +170,7 @@ const config = {
     const defaultStatus = statusEl?.textContent ?? "";
     const statusStepTemplate = root.dataset.statusStepTemplate ?? "目前顯示：步驟 {n}";
     const statusSelected = root.dataset.statusSelected ?? "目前顯示：選取的步驟";
+    const goalAria = root.dataset.goalAria ?? "查看這個步驟的說明";
 
     // 1 個地圖單位（latlng）= 10 遊戲單位；圖片上緣為北（z = minZ）
     const W = (config.maxX - config.minX) / 10;
@@ -203,6 +206,11 @@ const config = {
 
     // 步驟標記（Pin／軌跡）集中放在一個 layerGroup，換步驟時整組清掉
     const marks = L.layerGroup().addTo(map);
+    // 路線圖（objmap 匯出的多段箭頭）獨立一組：切換圖層時只調整透明度、不重畫，
+    // 所以要記住目前這條路線適用哪些圖層，以及畫出來的每個圖形
+    const stepRouteLayer = L.layerGroup().addTo(map);
+    let activeRouteLayers: string[] = [];
+    let routeShapes: { el: any; base: number }[] = [];
     // 常駐標記獨立一組：不隨步驟切換清除，只在圖層切換時決定顯示與否
     const staticMarks = L.layerGroup().addTo(map);
 
@@ -296,6 +304,19 @@ const config = {
       overlay.setUrl(layer.image);
       layerBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.flowLayer === id)));
       renderStaticPins(); // 常駐標記可能只屬於某個圖層
+      applyRouteOpacity(); // 路線在非所屬圖層上要淡化
+    }
+
+    // 路線只在檔名指定的圖層上完整顯示；切到其他圖層淡化成 20%，
+    // 讓人知道「這條路線存在，但不是這張地圖上的路徑」（不直接隱藏）
+    const ROUTE_DIM = 0.2;
+    function applyRouteOpacity() {
+      const full = activeRouteLayers.length === 0 || activeRouteLayers.includes(activeLayerId);
+      const factor = full ? 1 : ROUTE_DIM;
+      routeShapes.forEach(({ el, base }) => {
+        if (el.setStyle) el.setStyle({ opacity: base * factor, fillOpacity: base * factor });
+        else if (el.getElement?.()) el.getElement().style.opacity = String(base * factor);
+      });
     }
 
     renderStaticPins();
@@ -303,20 +324,67 @@ const config = {
     // 軌跡箭頭：divIcon 不隨縮放改變大小，放在每段線段的中點指向前進方向。
     // 螢幕座標 y 向下＝lat 減少，所以 dy 取負
     // target 預設為步驟軌跡的 marks；路線功能有自己的圖層，畫在別處才能各自獨立清除
-    function addSegmentArrow(a: [number, number], b: [number, number], target: any = marks) {
+    function addSegmentArrow(a: [number, number], b: [number, number], target: any = marks, color: string = accent) {
       const dx = b[1] - a[1];
       const dy = -(b[0] - a[0]);
       const deg = (Math.atan2(dy, dx) * 180) / Math.PI;
       const mid: [number, number] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-      L.marker(mid, {
+      return L.marker(mid, {
         interactive: false,
         icon: L.divIcon({
           className: "flow-map-arrow",
-          html: `<svg width="14" height="14" viewBox="0 0 14 14" style="transform:rotate(${deg}deg)"><path d="M2 2 L13 7 L2 12 L5 7 Z" fill="${accent}" stroke="${inkColor}" stroke-width="0.6"/></svg>`,
+          html: `<svg width="14" height="14" viewBox="0 0 14 14" style="transform:rotate(${deg}deg)"><path d="M2 2 L13 7 L2 12 L5 7 Z" fill="${color}" stroke="${inkColor}" stroke-width="0.6"/></svg>`,
           iconSize: [14, 14],
           iconAnchor: [7, 7],
         }),
       }).addTo(target);
+    }
+
+    /**
+     * 畫 objmap 匯出的路線圖：多段折線＋方向箭頭，終點放可點擊的 pin。
+     * 每段沿用 objmap 裡畫的顏色，讓同一條路線的不同區段（地面／空島）分得開。
+     */
+    function drawRoute(route: {
+      segments?: { layer?: string; coords: [number, number][]; color?: string }[];
+      fullLayers?: string[];
+      end?: { x: number; z: number };
+      note?: string;
+    }) {
+      const pts: [number, number][] = [];
+      (route.segments ?? []).forEach((seg) => {
+        const color = seg.color || accent;
+        const latlngs = seg.coords.map(([x, z]) => toLatLng(x, z));
+        latlngs.forEach((ll) => pts.push(ll));
+        const line = L.polyline(latlngs, { color, weight: 3.5, opacity: 0.95 }).addTo(stepRouteLayer);
+        routeShapes.push({ el: line, base: 0.95 });
+        for (let i = 0; i < latlngs.length - 1; i++) {
+          routeShapes.push({ el: addSegmentArrow(latlngs[i], latlngs[i + 1], stepRouteLayer, color), base: 1 });
+        }
+      });
+
+      // 終點 pin：有說明文字才做成可點擊，沒有就只是個標記
+      if (route.end) {
+        const ll = toLatLng(route.end.x, route.end.z);
+        pts.push(ll);
+        const clickable = !!route.note;
+        const marker = L.marker(ll, {
+          interactive: clickable,
+          keyboard: false,
+          icon: L.divIcon({
+            className: "flow-map-goal",
+            html: clickable
+              ? `<button type="button" class="flow-map-goal-dot is-clickable" aria-label="${goalAria}"></button>`
+              : `<span class="flow-map-goal-dot"></span>`,
+            iconSize: [22, 22],
+            iconAnchor: [11, 11],
+          }),
+        }).addTo(stepRouteLayer);
+        routeShapes.push({ el: marker, base: 1 });
+        if (route.note) {
+          marker.bindPopup(route.note, { className: "flow-map-note-popup", maxWidth: 280, autoPan: true });
+        }
+      }
+      return pts;
     }
 
     function show(detail: {
@@ -324,12 +392,25 @@ const config = {
       focus?: { x: number; z: number; zoom?: number };
       pins?: { x: number; z: number; label?: string }[];
       path?: [number, number][];
+      route?: any;
       stepNo?: number;
     }) {
       marks.clearLayers();
+      stepRouteLayer.clearLayers();
+      routeShapes = [];
+      activeRouteLayers = [];
+      // 路線圖自帶圖層資訊：沒有明講 layer 時，自動切到這條路線的第一個適用圖層，
+      // 免得選了步驟卻停在看不到路徑的地圖上
       if (detail.layer) setLayer(detail.layer);
+      else if (detail.route?.fullLayers?.length) setLayer(detail.route.fullLayers[0]);
 
       const focusPoints: [number, number][] = [];
+
+      if (detail.route) {
+        activeRouteLayers = detail.route.fullLayers ?? [];
+        drawRoute(detail.route).forEach((ll) => focusPoints.push(ll));
+        applyRouteOpacity();
+      }
 
       (detail.pins ?? []).forEach((p) => {
         const ll = toLatLng(p.x, p.z);
@@ -380,6 +461,9 @@ const config = {
 
     function reset() {
       marks.clearLayers();
+      stepRouteLayer.clearLayers();
+      routeShapes = [];
+      activeRouteLayers = [];
       map.fitBounds(bounds);
       if (statusEl) statusEl.textContent = defaultStatus;
     }
@@ -655,6 +739,58 @@ const config = {
   }
   .flow-map :global(.flow-map-pin-dot.is-selected) {
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent), 0 2px 8px rgb(0 0 0 / 0.5);
+  }
+
+  /* 路線終點標記：實心圓＋外圈，和常駐編號 Pin（有數字）、步驟小圓點分得開 */
+  .flow-map :global(.flow-map-goal) {
+    background: none;
+    border: none;
+  }
+  .flow-map :global(.flow-map-goal-dot) {
+    display: block;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--ink);
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.45);
+  }
+  .flow-map :global(.flow-map-goal-dot.is-clickable) {
+    cursor: pointer;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  .flow-map :global(.flow-map-goal-dot.is-clickable:hover) {
+    transform: scale(1.18);
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.55);
+  }
+  .flow-map :global(.flow-map-goal-dot.is-clickable:focus-visible) {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  /* 終點說明的 Leaflet popup：配合全站深淺色 */
+  .flow-map :global(.flow-map-note-popup .leaflet-popup-content-wrapper) {
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+  }
+  .flow-map :global(.flow-map-note-popup .leaflet-popup-content) {
+    margin: 10px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .flow-map :global(.flow-map-note-popup .leaflet-popup-tip) {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+  }
+  .flow-map :global(.flow-map-note-popup .leaflet-popup-close-button) {
+    color: var(--muted);
+  }
+  .flow-map :global(.flow-map-note-popup .leaflet-popup-close-button:hover) {
+    color: var(--ink);
   }
 
   /* 地圖單元格標籤：薄薄一層，不要搶走底圖 */

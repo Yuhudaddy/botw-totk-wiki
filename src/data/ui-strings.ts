@@ -62,9 +62,11 @@ const zh = {
   flowMapGrid: "格線",
   flowMapLayerSurface: "地面",
   flowMapLayerSky: "空島",
+  flowMapLayerDepths: "地底",
   /** {n} 會被替換成標記編號 */
   flowMapPinAriaTemplate: "查看標記 {n} 的建議路線",
   flowMapPinClose: "關閉照片",
+  flowMapGoalAria: "查看這個步驟的說明",
 
   // 空狀態
   emptyDemo: "示意內容準備中",
@@ -122,7 +124,7 @@ const zh = {
   // 流程地圖操作說明
   flowMapPan: "拖曳（左鍵／單指）：平移地圖",
   flowMapZoom: "滾輪／捏合：縮放",
-  flowMapLayers: "地圖上方按鈕：切換圖層（地面／空島）、「總覽」回到全圖",
+  flowMapLayers: "地圖上方按鈕：切換圖層（地面／空島／地底）、「總覽」回到全圖",
   flowMapSteps:
     "點擊流程步驟前的圓形按鈕：地圖顯示該步驟的地點與移動軌跡（再點一次取消）",
 
@@ -301,8 +303,10 @@ const ja: Record<keyof typeof zh, string> = {
   flowMapGrid: "グリッド",
   flowMapLayerSurface: "地上",
   flowMapLayerSky: "空島",
+  flowMapLayerDepths: "地底",
   flowMapPinAriaTemplate: "マーカー {n} の推奨ルートを表示",
   flowMapPinClose: "写真を閉じる",
+  flowMapGoalAria: "この手順の説明を表示",
 
   emptyDemo: "デモ映像を準備中",
   emptyVideos: "動画を整理中です。しばらくお待ちください。",
@@ -353,7 +357,7 @@ const ja: Record<keyof typeof zh, string> = {
   flowMapPan: "ドラッグ（左クリック／1本指）：マップを移動",
   flowMapZoom: "ホイール／ピンチ：ズーム",
   flowMapLayers:
-    "マップ上部のボタン：レイヤー切り替え（地上／空島）、「全体」で全体表示に戻る",
+    "マップ上部のボタン：レイヤー切り替え（地上／空島／地底）、「全体」で全体表示に戻る",
   flowMapSteps:
     "手順の前にある丸ボタンをクリック：その手順の地点と移動ルートをマップに表示（もう一度で解除）",
 

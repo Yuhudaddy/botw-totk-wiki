@@ -11,7 +11,8 @@
 //   totk：{host}/game_files/map/{Ground|Sky}/maptex/{z}/{x}/{y}.webp
 //   botw：{host}/game_files/maptex/{z}/{x}/{y}.webp
 //
-// 用法：node scripts/fetch-flowmap-basemap.mjs [totk|botw]（預設 totk）
+// 用法：node scripts/fetch-flowmap-basemap.mjs [totk|botw] [圖層 out 名稱]
+//      第二個參數可省略（抓該遊戲全部圖層）；也可指定單一圖層（例："depths"）只重抓那一層
 import { mkdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -25,6 +26,7 @@ const GAMES = {
     layers: [
       { area: "Ground", out: "surface" },
       { area: "Sky", out: "sky" },
+      { area: "Depths", out: "depths" },
     ],
   },
   botw: {
@@ -40,7 +42,13 @@ if (!GAMES[GAME]) {
   console.error(`未知的遊戲「${GAME}」，可用：${Object.keys(GAMES).join(" / ")}`);
   process.exit(1);
 }
-const { tileUrl, layers: LAYERS } = GAMES[GAME];
+const ONLY = process.argv[3];
+const { tileUrl, layers: LAYERS_ALL } = GAMES[GAME];
+const LAYERS = ONLY ? LAYERS_ALL.filter((l) => l.out === ONLY) : LAYERS_ALL;
+if (ONLY && LAYERS.length === 0) {
+  console.error(`「${GAME}」沒有 out="${ONLY}" 的圖層，可用：${LAYERS_ALL.map((l) => l.out).join(" / ")}`);
+  process.exit(1);
+}
 
 const ZOOM = 5;
 const NATIVE_ZOOM = 7;
