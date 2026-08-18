@@ -143,6 +143,15 @@ function mergeContent(zh: TypeContent, ja: TypeContentJa): TypeContent {
     merged.faqLink = { ...zh.faqLink, label: pick(ja.faqLink.label, zh.faqLink.label) };
   }
 
+  // termGroups：只翻分組標題（介面層），terms 本身尚未提供疊加欄位，見 TermGroupJa 註解
+  if (zh.termGroups && ja.termGroups) {
+    merged.termGroups = zh.termGroups.map((group, i) => {
+      const jaGroup = ja.termGroups?.[i];
+      if (!jaGroup) return group;
+      return { ...group, title: pick(jaGroup.title, group.title) };
+    });
+  }
+
   if (zh.flowMap && ja.flowMap) {
     merged.flowMap = {
       ...zh.flowMap,

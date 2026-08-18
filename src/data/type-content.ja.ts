@@ -83,6 +83,13 @@ export interface TypeFlowMapJa {
   note?: string;
 }
 
+/** termGroups（大亂鬥術語頁）的日文版；刻意只開放 title（分組標題／介面層），
+ * terms（實際名詞卡片內容）尚未提供疊加欄位——翻譯量體大，且需要先確認每個
+ * 縮寫的官方或社群日文用詞，屬於獨立的後續工作，不在此範圍。 */
+export interface TermGroupJa {
+  title?: string;
+}
+
 /** 單一攻略頁的日文疊加層 */
 export interface TypeContentJa {
   methodsTitle?: string;
@@ -113,6 +120,8 @@ export interface TypeContentJa {
   notes?: (TypeNoteJa | null)[];
   applications?: TypeApplicationsJa;
   faqLink?: { label?: string };
+  /** 依索引對應中文版的 termGroups，只翻分組標題，不翻的填 null（見 TermGroupJa 註解） */
+  termGroups?: (TermGroupJa | null)[];
 }
 
 // ── 翻譯內容 ────────────────────────────────────────────────
@@ -4523,6 +4532,38 @@ export const typeContentJa: Record<string, TypeContentJa> = {
       { text: "本ページのテクニックは下記動画からまとめたもので、同動画には購入の感想と戦闘テクニックの解説・実演も含まれている。" },
       { text: "序盤の成長曲線はやや急なので、難しいと感じたら先に難易度を下げ、C コンボとゾナウ連係に慣れてから高難易度以上に挑戦するとよい。" },
     ],
+  },
+
+  "aoc-01": {
+    intro:
+      "『災厄の黙示録』のメインストーリー攻略と戦闘チャレンジ動画を収録。各章のムービー、コログの実の位置、そして非常に難しい（Very Hard）難易度での戦闘チャレンジの実演を含む。",
+  },
+
+  // ssbu-01〜05：termGroups の分組標題（介面層）のみ翻訳。terms（名詞カードの中身）は
+  // まだ疊加できる型がなく、翻訳量も大きいため意図的に未着手（TermGroupJa 参照）。
+  "ssbu-01": {
+    termGroups: [{ title: "入門テクニック EX01" }],
+  },
+  "ssbu-02": {
+    termGroups: [{ title: "初級テクニック EX02" }],
+  },
+  "ssbu-03": {
+    termGroups: [{ title: "中級テクニック EX03" }],
+  },
+  "ssbu-04": {
+    termGroups: [{ title: "上級テクニック EX04" }],
+  },
+  "ssbu-05": {
+    termGroups: [
+      { title: "スマブラ専門用語（上）- 動画 EX09 より" },
+      { title: "スマブラ専門用語（下）- 動画 EX10 より" },
+    ],
+  },
+  "ssbu-07": {
+    intro: "キャラクター別に立ち回り、特殊操作、キャラの特徴などをまとめた紹介。",
+  },
+  "ssbu-08": {
+    intro: "ショート動画でゲーム内のよくある特殊操作を手早く紹介する。",
   },
 };
 
