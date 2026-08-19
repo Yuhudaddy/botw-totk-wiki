@@ -158,11 +158,6 @@ export const typeGroups: TypeGroup[] = [
 // 以下三個對照表一律由 typeGroups 衍生，不另外手寫清單。
 // 新增遊戲時只要在 typeGroups 加一組，影片索引、篩選鈕、麵包屑會自動跟上。
 
-/** 遊戲 id → 中文名（例：botw → 曠野之息） */
-export const gameLabels = Object.fromEntries(
-  typeGroups.map((g) => [g.game, g.label])
-) as Record<GameId, string>;
-
 /**
  * 依 typeGroups 順序排列的 { id, 中文名 }，供篩選鈕等需要固定順序的清單使用。
  * 用 shortLabel 優先：篩選鈕空間有限，「任天堂明星大亂鬥特別版」會撐破版面。
@@ -172,7 +167,7 @@ export const gameList: { id: GameId; label: string }[] = typeGroups.map((g) => (
   label: g.shortLabel ?? g.label,
 }));
 
-/** 依語言選字的遊戲名稱；日文只有曠野之息／王國之淚有 ja，其餘遊戲沿用中文 label。 */
+/** 依語言選字的遊戲名稱；缺 ja 的遊戲自動沿用中文 label（型別上選填，非強制每款都要有）。 */
 export function gameLabelFor(g: TypeGroup, lang: "zh" | "ja", short = false): string {
   if (lang === "ja" && g.ja) return g.ja;
   return short ? (g.shortLabel ?? g.label) : g.label;

@@ -49,8 +49,8 @@ export const quickNav: QuickNavItem[] = [
 
 export const SITE = {
   title: "曠野・王國攻略 Wiki",
-  // 日文頁的 <title> 後綴與預設 meta description；目前只有曠野之息／王國之淚
-  // 有日文版站名，其餘遊戲名稱尚未翻譯（見 types.ts 的 TypeGroup.ja）。
+  // 日文頁的 <title> 後綴與預設 meta description。站名固定以曠野之息／王國之淚
+  // 代表全站（其餘遊戲各自的日文名稱見 types.ts 的 TypeGroup.ja）。
   titleJa: "ブレワイ・ティアキン攻略Wiki",
   shortTitle: "Dazotikuy Shrine",
   description:

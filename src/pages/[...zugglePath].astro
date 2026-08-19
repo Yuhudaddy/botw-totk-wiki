@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { href } from "../lib/url";
 import { uiStrings, type Lang } from "../data/ui-strings";
+import { typeGroups } from "../data/types";
 
 // 中文 /types/totk-09-zuggle、日文 /ja/types/totk-09-zuggle
 export function getStaticPaths() {
@@ -13,6 +14,10 @@ export function getStaticPaths() {
 
 const { lang } = Astro.props;
 const t = uiStrings[lang];
+// 麵包屑「回到黏手與並列」的技巧名稱：跟 [...typePath].astro 同一套資料來源，
+// 不在這裡另外寫死中文
+const parentItem = typeGroups.find((g) => g.game === "totk")!.items.find((i) => i.no === "09")!;
+const parentLabel = (lang === "ja" && parentItem.ja) || parentItem.zh;
 ---
 
 <BaseLayout
@@ -30,7 +35,7 @@ const t = uiStrings[lang];
         <span>/</span>
         <a href={href("/types", lang)} class="no-underline text-muted">{t.navTypes}</a>
         <span>/</span>
-        <a href={href("/types/totk-09")} class="no-underline text-muted">黏手與並列</a>
+        <a href={href("/types/totk-09", lang)} class="no-underline text-muted">{parentLabel}</a>
         <span>/</span>
         <span class="text-ink">{lang === "ja" ? "詳細解説" : "深入了解"}</span>
       </div>
@@ -306,11 +311,11 @@ const t = uiStrings[lang];
     </div>
 
     <div class="mt-12 max-w-[760px] border-t border-border-soft pt-8">
-      <a href={href("/types/totk-09")} class="back-btn inline-flex items-center gap-2 no-underline">
+      <a href={href("/types/totk-09", lang)} class="back-btn inline-flex items-center gap-2 no-underline">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M19 12H5M12 19l-7-7 7-7"></path>
         </svg>
-        {lang === "ja" ? "黏手與並列のページに戻る" : "返回黏手與並列頁面"}
+        {lang === "ja" ? `${parentLabel}のページに戻る` : `返回${parentLabel}頁面`}
       </a>
     </div>
   </article>

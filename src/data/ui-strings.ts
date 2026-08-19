@@ -21,6 +21,7 @@ const zh = {
 
   // 語言切換
   langLabel: "切換語言",
+  themeToggleLabel: "切換深淺主題",
   langZh: "中文",
   langJa: "日文",
 
@@ -124,6 +125,7 @@ const zh = {
   model3dTopLabel: "俯視",
   model3dResetLabel: "重置視角",
   model3dPickInfo: "點擊模型中的房間或地標，可顯示名稱",
+  model3dTransparencyLabel: "透明化",
 
   // 流程地圖操作說明
   flowMapPan: "拖曳（左鍵／單指）：平移地圖",
@@ -274,6 +276,7 @@ const ja: Record<keyof typeof zh, string> = {
   searchLabel: "検索",
 
   langLabel: "言語切り替え",
+  themeToggleLabel: "テーマ切り替え",
   langZh: "中国語",
   langJa: "日本語",
 
@@ -360,6 +363,7 @@ const ja: Record<keyof typeof zh, string> = {
   model3dTopLabel: "真上から",
   model3dResetLabel: "視点をリセット",
   model3dPickInfo: "モデル内の部屋やランドマークをクリックすると名前が表示されます",
+  model3dTransparencyLabel: "透明化",
 
   flowMapPan: "ドラッグ（左クリック／1本指）：マップを移動",
   flowMapZoom: "ホイール／ピンチ：ズーム",

@@ -5,7 +5,7 @@ import Model3DViewer from "../components/Model3DViewer.astro";
 import FlowMapViewer from "../components/FlowMapViewer.astro";
 import LaunchFamilyNav from "../components/LaunchFamilyNav.astro";
 import { href, ytThumb, ytWatch, MEDIA_BASE } from "../lib/url";
-import { typeGroups, typeFamilies, type TypeItem, type TypeGroup } from "../data/types";
+import { typeGroups, typeFamilies, gameLabelFor, type TypeItem, type TypeGroup } from "../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../data/type-content";
 import { uiStrings, type Lang } from "../data/ui-strings";
 import { resolveTypeContent } from "../lib/i18n-content";
@@ -49,23 +49,9 @@ const t = uiStrings[lang];
 // 本頁自己的身分（h1／麵包屑／分頁標題）一律用日文標題；type-content.ja.ts
 // 疊加的是攻略內文，跟這裡的 item.ja（技巧名稱本身）是兩回事，各自獨立維護
 const itemTitle = (lang === "ja" && item.ja) || item.zh;
-const gameLabelMap: Record<string, string> = {
-  botw: "曠野之息",
-  totk: "王國之淚",
-  eow: "智慧的再現",
-  ssbu: "大亂鬥特別版",
-};
-// 日文版標題用簡稱／簡稱等同全名（見 types.ts 的 TypeGroup.ja）
-const gameLabelJaMap: Record<string, string> = {
-  botw: "ブレワイ",
-  totk: "ティアキン",
-  eow: "知恵のかりもの",
-  ssbu: "スマブラSP",
-  aoc: "厄災の黙示録",
-  aoi: "封印戦記",
-};
-const gameLabel =
-  (lang === "ja" && gameLabelJaMap[group.game]) || gameLabelMap[group.game] || group.label;
+// 遊戲名稱一律以 types.ts 的 typeGroups 為單一資料來源，不在這裡另外複製一份
+// （曾經在這裡手寫過對照表，結果跟 types.ts 的資料脫節，見 gameLabelFor）
+const gameLabel = gameLabelFor(group, lang);
 // 日文版會把 type-content.ja.ts 的翻譯疊加上來；沒翻到的欄位自動沿用中文
 const content = resolveTypeContent(id, lang);
 // [[文字|tab:分頁名]] 的跳轉目標一律以「中文版的 tab」為準：分頁標籤被翻成日文後，

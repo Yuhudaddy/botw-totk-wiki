@@ -55,7 +55,7 @@ export const glossaryGames: GlossaryGame[] = [
   { id: "botw", tag: "BotW", label: "曠野之息", title: "Breath of the Wild", aliases: ["BoTW", "Zelda BotW", "薩爾達傳說 曠野之息"] },
   { id: "totk", tag: "TotK", label: "王國之淚", title: "Tears of the Kingdom", aliases: ["ToTK", "Zelda TotK", "薩爾達傳說 王國之淚"] },
   { id: "eow", tag: "EoW", label: "智慧的再現", title: "Echoes of Wisdom", aliases: ["Zelda EoW", "薩爾達傳說 智慧的再現"] },
-  { id: "ssbu", tag: "SSBU", label: "任天堂明星大亂鬥 特別版", title: "Super Smash Bros. Ultimate", aliases: ["SSB Ultimate", "大亂鬥 SP", "Smash Ultimate"] },
+  { id: "ssbu", tag: "SSBU", label: "任天堂明星大亂鬥特別版", title: "Super Smash Bros. Ultimate", aliases: ["SSB Ultimate", "大亂鬥 SP", "Smash Ultimate"] },
   { id: "aoc", tag: "AoC", label: "災厄啟示錄", title: "Age of Calamity", aliases: ["Zelda AoC", "Hyrule Warriors: Age of Calamity"] },
   { id: "aoi", tag: "AoI", label: "封印戰記", title: "Age of Imprisonment", aliases: ["Zelda AoI", "Hyrule Warriors: Age of Imprisonment"] },
 ];
@@ -248,7 +248,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   { id: "iww", games: ["eow"], kind: "abbr", abbr: "IWW", en: "Index Wrong Warp", zh: "指標錯傳", aliases: ["指標錯傳"], description: "利用不同世界共用的傳送點陣列編號，在游標失效前切換地圖完成跨世界傳送。", sources: ["/types/eow-01"] },
   { id: "void-out", games: ["eow"], kind: "term", abbr: "Void out", en: "Void out", ja: "奈落判定", zh: "虛反", aliases: ["虛反", "落界"], description: "白霧或高空雲層邊界會觸發的落界判定，是選單儲存的觸發條件。", sources: ["/types/eow-01"] },
   { id: "prologue-link-transfer", games: ["eow"], kind: "term", abbr: "Prologue Link Transfer", en: "Prologue Link Transfer", ja: "プロローグリンク召喚", zh: "序章林克繼承", aliases: ["序章林克繼承", "序章繼承"], description: "用選單儲存讓讀檔清單與 Game Over 選單重疊，把序章林克帶進主世界。", sources: ["/types/eow-01"] },
-  { id: "ssbu", games: ["ssbu"], kind: "game", abbr: "SSBU", en: "Super Smash Bros. Ultimate", ja: "スマブラSP", zh: "任天堂明星大亂鬥 特別版", aliases: ["SSB Ultimate", "大亂鬥 SP", "Smash Ultimate"], description: "《任天堂明星大亂鬥 特別版》的常用英文縮寫。" },
+  { id: "ssbu", games: ["ssbu"], kind: "game", abbr: "SSBU", en: "Super Smash Bros. Ultimate", ja: "スマブラSP", zh: "任天堂明星大亂鬥特別版", aliases: ["SSB Ultimate", "大亂鬥 SP", "Smash Ultimate"], description: "《任天堂明星大亂鬥特別版》的常用英文縮寫。" },
   { id: "tech", games: ["ssbu"], kind: "term", abbr: "Tech", en: "Tech", ja: "受け身", zh: "受身", aliases: ["受身", "Attack Tech"], description: "被擊飛並即將撞擊地面或牆壁時按防禦鍵恢復姿態。", sources: ["/types/ssbu-01"] },
   { id: "short-hop-short-jump", games: ["ssbu"], kind: "term", abbr: "Short Hop / Short Jump", en: "Short Hop / Short Jump", ja: "小ジャンプ", zh: "小跳", aliases: ["小跳攻擊", "Short Hop Attack"], description: "按跳躍鍵後 3 幀內放開或同按兩顆跳躍鍵，做出低空跳躍。", sources: ["/types/ssbu-02"] },
   { id: "fast-fall-fast-fallen", games: ["ssbu"], kind: "term", abbr: "Fast Fall / Fast-fallen", en: "Fast Fall / Fast-fallen", ja: "急降下", zh: "速降", aliases: ["速落", "Fast-fallen"], description: "跳躍達最高點後迅速將左搖桿往下推，加速落地。", sources: ["/types/ssbu-02"] },
