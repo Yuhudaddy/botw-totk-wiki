@@ -71,3 +71,4 @@ docs/
 # 本機保留檔案只是當 media:push 的上傳來源；新增／更新影片後記得跑它。
 # 換新環境／clone 後用 npm run media:pull 取回。
 media-source/type-videos/
+.wrangler
