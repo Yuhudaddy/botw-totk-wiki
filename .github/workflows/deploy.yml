@@ -1,84 +1,19 @@
 name: 部署攻略 Wiki（Astro）
 
+# GitHub Pages 已於 2026-08-19 停用，正式站改由 Cloudflare Workers 服務
+# （www.dazotikuy.com）。Cloudflare 專案本身已接了這個 repo 的 GitHub 整合，
+# push 到 main 會自動觸發建置，這裡不用再重複 build/deploy 一次。
+# 這個檔案現在只剩一件事：每天排程（或手動觸發）戳一下 Cloudflare 的
+# Deploy Hook，讓它重新建置一次，藉此帶進最新的 YouTube 影片資料
+# （Cloudflare 的建置本身沒有排程機制，只認 git push）。
+
 on:
-  push:
-    branches:
-      - main
   schedule:
-    - cron: '0 2 * * *'  # 每天台灣時間 10:00 自動重建
+    - cron: '0 2 * * *'  # 每天台灣時間 10:00
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 同時間只跑一個部署，不取消進行中的
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 取得原始碼
-        uses: actions/checkout@v4
-
-      - name: 設定 Node 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - name: 安裝依賴
-        run: npm ci
-
-      # 不需要網路、不用等 R2 下載，最快能失敗的檢查放最前面：
-      # 確認 type-content.ts 裡引用的每支影片／圖片都登記在 media-manifest.txt。
-      # 擋的是「加了 method.video 卻忘記 npm run media:push」這種清單本身就漏記、
-      # 光比對「清單 vs 下載結果」抓不到的漏洞。
-      - name: 驗證影片參照完整
-        run: npm run media:verify-refs
-
-      # 型別檢查不需要影片實體檔案，也放進網路 I/O 之前，壞掉能更快失敗。
-      - name: 型別檢查
-        run: npm run check
-
-      - name: 抓取 YouTube 熱門影片
-        run: node scripts/fetch-youtube.mjs
-        env:
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-
-      - name: 建置 Astro 站台
-        run: npm run build
-
-      - name: 設定 GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: 上傳 Pages Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: 部署到 GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-  # Cloudflare Pages/Workers 遷移期間：GitHub Pages 仍是正式站，這個 job
-  # 不影響上面的部署，只是額外去戳一下 Cloudflare 的 Deploy Hook，讓它也
-  # 跟著每日排程重新建置（含重新抓 YouTube 影片資料）。只在排程或手動觸發
-  # 時跑，一般 push 不用重複觸發——Cloudflare 專案本身已經接了 GitHub，
-  # push 到 main 時會自動建置一次。
   ping-cloudflare:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: 觸發 Cloudflare 重新建置
