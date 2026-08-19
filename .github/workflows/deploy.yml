@@ -71,3 +71,15 @@ jobs:
       - name: 部署到 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Cloudflare Pages/Workers 遷移期間：GitHub Pages 仍是正式站，這個 job
+  # 不影響上面的部署，只是額外去戳一下 Cloudflare 的 Deploy Hook，讓它也
+  # 跟著每日排程重新建置（含重新抓 YouTube 影片資料）。只在排程或手動觸發
+  # 時跑，一般 push 不用重複觸發——Cloudflare 專案本身已經接了 GitHub，
+  # push 到 main 時會自動建置一次。
+  ping-cloudflare:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 觸發 Cloudflare 重新建置
+        run: curl -sf -X POST "${{ secrets.CF_DEPLOY_HOOK }}"
