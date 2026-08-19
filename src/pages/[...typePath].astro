@@ -50,8 +50,14 @@ const t = uiStrings[lang];
 // 疊加的是攻略內文，跟這裡的 item.ja（技巧名稱本身）是兩回事，各自獨立維護
 const itemTitle = (lang === "ja" && item.ja) || item.zh;
 // 遊戲名稱一律以 types.ts 的 typeGroups 為單一資料來源，不在這裡另外複製一份
-// （曾經在這裡手寫過對照表，結果跟 types.ts 的資料脫節，見 gameLabelFor）
-const gameLabel = gameLabelFor(group, lang);
+// （曾經在這裡手寫過對照表，結果跟 types.ts 的資料脫節，見 gameLabelFor）。
+// 唯一例外是大亂鬥中文版：label 的正式全名「任天堂明星大亂鬥特別版」在標題／
+// 麵包屑這種行文語境下太長，shortLabel「大亂鬥」又是特地給篩選鈕等窄版空間用
+// 的超短版本（改動它會連帶影響那些地方）；「大亂鬥特別版」是介於兩者之間、
+// 只有這個語境會用到的慣用簡稱，不值得為了單一遊戲、單一場合擴充 gameLabelFor
+// 的分級機制，直接在這裡覆蓋即可。
+const gameLabel =
+  lang === "zh" && group.game === "ssbu" ? "大亂鬥特別版" : gameLabelFor(group, lang);
 // 日文版會把 type-content.ja.ts 的翻譯疊加上來；沒翻到的欄位自動沿用中文
 const content = resolveTypeContent(id, lang);
 // [[文字|tab:分頁名]] 的跳轉目標一律以「中文版的 tab」為準：分頁標籤被翻成日文後，

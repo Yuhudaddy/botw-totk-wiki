@@ -18,6 +18,11 @@ function giveUpAndKeepExisting(reason) {
 
 if (!API_KEY) giveUpAndKeepExisting('缺少 YOUTUBE_API_KEY 環境變數');
 
+// 15 秒逾時，避免 DNS／連線異常時建置卡住不動；HTTP 層級的錯誤（配額用盡、
+// 金鑰失效等）已經由呼叫端各自檢查 res.ok 處理，這裡只補網路層級的例外。
+const FETCH_TIMEOUT_MS = 15_000;
+const timeoutSignal = () => AbortSignal.timeout(FETCH_TIMEOUT_MS);
+
 function formatViews(count) {
   const n = parseInt(count, 10);
   if (n >= 10000) return `${(n / 10000).toFixed(1).replace(/\.0$/, '')} 萬次觀看`;
@@ -87,9 +92,15 @@ function detectGame(v) {
 }
 
 // ── 1. 取得 uploads playlist ID（用 forHandle，不需要 Channel ID secret）────
-const channelRes = await fetch(
-  `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${CHANNEL_HANDLE}&key=${API_KEY}`
-);
+let channelRes;
+try {
+  channelRes = await fetch(
+    `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${CHANNEL_HANDLE}&key=${API_KEY}`,
+    { signal: timeoutSignal() }
+  );
+} catch (err) {
+  giveUpAndKeepExisting(`channels.list 連線失敗: ${err.message}`);
+}
 if (!channelRes.ok) giveUpAndKeepExisting(`channels.list 失敗: ${await channelRes.text()}`);
 const channelData = await channelRes.json();
 if (!channelData.items?.length) giveUpAndKeepExisting(`找不到頻道: ${CHANNEL_HANDLE}`);
@@ -101,7 +112,12 @@ const allVideoIds = [];
 let pageToken = '';
 do {
   const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=50${pageToken ? `&pageToken=${pageToken}` : ''}&key=${API_KEY}`;
-  const res = await fetch(url);
+  let res;
+  try {
+    res = await fetch(url, { signal: timeoutSignal() });
+  } catch (err) {
+    giveUpAndKeepExisting(`playlistItems.list 連線失敗: ${err.message}`);
+  }
   if (!res.ok) giveUpAndKeepExisting(`playlistItems.list 失敗: ${await res.text()}`);
   const data = await res.json();
   allVideoIds.push(...data.items.map((item) => item.snippet.resourceId.videoId));
@@ -113,9 +129,15 @@ console.log(`找到 ${allVideoIds.length} 支影片 ID`);
 const allVideos = [];
 for (let i = 0; i < allVideoIds.length; i += 50) {
   const batch = allVideoIds.slice(i, i + 50).join(',');
-  const res = await fetch(
-    `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${batch}&key=${API_KEY}`
-  );
+  let res;
+  try {
+    res = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${batch}&key=${API_KEY}`,
+      { signal: timeoutSignal() }
+    );
+  } catch (err) {
+    giveUpAndKeepExisting(`videos.list 批次連線失敗: ${err.message}`);
+  }
   if (!res.ok) giveUpAndKeepExisting(`videos.list 批次失敗: ${await res.text()}`);
   const data = await res.json();
   allVideos.push(...data.items);

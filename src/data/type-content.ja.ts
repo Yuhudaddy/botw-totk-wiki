@@ -59,7 +59,8 @@ export interface TypeMethodJa {
   sections?: (TypeMethodSectionJa | null)[];
   note?: string | string[];
   principle?: string;
-  principleSections?: PrincipleSectionJa[];
+  /** 依索引對應中文版的 principleSections，不翻的填 null */
+  principleSections?: (PrincipleSectionJa | null)[];
   principleExtra?: { title?: string; items?: TypeStep[] };
   /** 依索引對應中文版的 mapFlow，不翻的填 null */
   mapFlow?: (FlowMapStepActionJa | null)[];
@@ -108,7 +109,8 @@ export interface TypeContentJa {
   intro?: string;
   principle?: string;
   principleItems?: string[];
-  principleSections?: PrincipleSectionJa[];
+  /** 依索引對應中文版的 principleSections，不翻的填 null */
+  principleSections?: (PrincipleSectionJa | null)[];
   principleNote?: string;
   closing?: string;
   flowMap?: TypeFlowMapJa;
@@ -3973,6 +3975,9 @@ export const typeContentJa: Record<string, TypeContentJa> = {
       {
         text: "当初は特殊な方法（DLC のコンテンツ）で判定をリセットし、バクダンの祠の近くにいるガーディアンから素材を無限に噴出させられたが、Ver.1.3.1 で修正された。2019/4/30 に【おとを布】が X で共有。マップ上の朽ちたガーディアンはほとんどが静的オブジェクトで、ゲーム起動時に読み込まれるが、4 体だけ存在する動的なガーディアン（FldObj_RuinGuardian*Dynamic Static:0 で検索できる）は、リンクの位置に応じて動的に読み込み・解放される。",
       },
+      // 中文版第 2 段（推守護者不是觸發點...）尚未翻譯，用 null 佔位以維持後續索引對齊，
+      // 不能直接省略——省略會讓後面 3 段全部往前錯位一格（曾經是這樣，2026-08-19 修正）。
+      null,
       {
         title: "なぜこの 4 体の朽ちたガーディアンは素材を出し続けるのか？",
         text: "ゲームはリンクを中心に周囲 3 × 3 の__マップユニットグリッド（Map Unit Grid）__を読み込んだ状態に保つ。リンクが動的ガーディアンの元の位置から 2 マス以上離れると（DistanceToCurrentMapUnit >= 2）、そのガーディアンの領域に確保されていたデータはシステムに解放（Freed）され、近くで新しく読み込まれたマップオブジェクトに上書きされる。システムがドロップ判定関数 isWaitRevivalForDrop を実行すると、上書きされた新しいオブジェクトのデータを読み取ってしまう。新しいデータの判定フラグは初期値が未設定（Unset）のため、関数は false（ドロップ未完了）を返し続ける。その結果、システムは Actor::createDrops を繰り返し呼び出し、素材の噴水が発生する。",
