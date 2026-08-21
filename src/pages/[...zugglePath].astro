@@ -42,7 +42,7 @@ const parentLabel = (lang === "ja" && parentItem.ja) || parentItem.zh;
       <div class="mb-2 flex items-center gap-2.5">
         <span class="font-mono text-[13px] text-accent">Tears of the Kingdom · 09</span>
       </div>
-      <h1 class="mb-[18px] font-serif text-[29px] sm:text-[38px] font-medium leading-[1.12] text-ink">
+      <h1 class="mb-[18px] font-heading text-[29px] sm:text-[38px] font-medium leading-[1.12] text-ink">
         {lang === "ja" ? "Zuggle の技術原理" : "Zuggle 技術原理"}
       </h1>
       <p class="text-[13px] sm:text-[17px] text-muted">{lang === "ja" ? "整理・修正版" : "統整修正版"}</p>
@@ -323,7 +323,7 @@ const parentLabel = (lang === "ja" && parentItem.ja) || parentItem.zh;
 
 <style>
   .prose-zuggle h2 {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 22px;
     font-weight: 500;
     color: var(--ink);

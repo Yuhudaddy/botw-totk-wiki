@@ -101,7 +101,7 @@ function sourceLabel(url: string): string {
       <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
         {t.resourcesEyebrow}
       </div>
-      <h1 class="r-res-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
+      <h1 class="r-res-h1 mb-[18px] mt-3.5 font-heading text-[44px] font-medium leading-[1.14] text-ink">
         {t.navResources}
       </h1>
       <p class="r-res-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
@@ -130,7 +130,7 @@ function sourceLabel(url: string): string {
             />
             <div class="min-w-0">
               <div class="truncate text-[10px] font-bold tracking-[1.5px] text-accent">{g.shortEn ?? g.en}</div>
-              <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
+              <div class="r-portal-title truncate font-heading font-medium leading-tight text-ink">
                 {groupShortLabel(g)}
               </div>
             </div>
@@ -280,7 +280,7 @@ function sourceLabel(url: string): string {
               stroke="none"
               set:html={GAME_LOGOS[g.game].svg}
             />
-            <p class="font-serif text-xl font-medium text-ink">{t.resourcesEmptyTitle}</p>
+            <p class="font-heading text-xl font-medium text-ink">{t.resourcesEmptyTitle}</p>
             <p class="text-sm text-muted">
               {t.resourcesEmptyHintTemplate.replace("{game}", groupShortLabel(g))}
             </p>

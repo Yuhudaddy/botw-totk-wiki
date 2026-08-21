@@ -32,7 +32,7 @@ const featured = youtubeData.featured;
             {t.homeEyebrow}
           </div>
 
-          <h1 class="home-title font-serif text-ink">
+          <h1 class="home-title font-heading text-ink">
             <span>{t.homeHeadingLine1}</span>
             <span>{t.homeHeadingLine2}</span>
           </h1>
@@ -126,7 +126,7 @@ const featured = youtubeData.featured;
     <div class="home-section-heading">
       <div>
         <div class="home-section-kicker">{t.homeFeaturedKicker}</div>
-        <h2 class="home-section-title font-serif text-ink">{t.homeFeaturedTitle}</h2>
+        <h2 class="home-section-title font-heading text-ink">{t.homeFeaturedTitle}</h2>
       </div>
       <a href={href("/videos", lang)} class="home-text-link">
         {t.homeFeaturedAll} <span aria-hidden="true">→</span>
@@ -142,7 +142,7 @@ const featured = youtubeData.featured;
     <div class="mx-auto grid max-w-[1244px] grid-cols-[0.72fr_1.28fr] gap-16 px-8 py-[84px]">
       <div class="home-explore-intro">
         <div class="home-section-kicker">{t.homeExploreKicker}</div>
-        <h2 class="home-section-title font-serif text-ink">{t.homeExploreTitle}</h2>
+        <h2 class="home-section-title font-heading text-ink">{t.homeExploreTitle}</h2>
         <p class="mt-5 max-w-[25ch] text-[15px] leading-[1.8] text-text">
           {t.homeExploreIntro}
         </p>
@@ -168,12 +168,12 @@ const featured = youtubeData.featured;
                     aria-label={lang === "ja" ? (l.labelJa ?? l.label) : l.label}
                   />
                 ))}
-                <span class="home-nav-title font-serif text-ink">{title}</span>
+                <span class="home-nav-title font-heading text-ink">{title}</span>
                 {q.links.map(
                   (l, i) =>
                     l.word && (
                       <span
-                        class={`home-nav-word home-nav-word-${i + 1} home-nav-word-${l.tone} font-serif`}
+                        class={`home-nav-word home-nav-word-${i + 1} home-nav-word-${l.tone} font-heading`}
                         aria-hidden="true"
                       >
                         {lang === "ja" ? (l.wordJa ?? l.word) : l.word}
@@ -193,7 +193,7 @@ const featured = youtubeData.featured;
               <a href={href(q.path!, lang)} class="home-nav-card">
                 <span class="home-nav-no">{q.no}</span>
                 <span class="home-nav-series">{series}</span>
-                <span class="home-nav-title font-serif text-ink">{title}</span>
+                <span class="home-nav-title font-heading text-ink">{title}</span>
                 <span class="home-nav-arrow" aria-hidden="true">→</span>
               </a>
             );
@@ -547,7 +547,7 @@ const featured = youtubeData.featured;
       overflow: hidden;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
-      font-family: var(--font-serif);
+      font-family: var(--font-heading);
       font-size: 15px;
       font-weight: 500;
       line-height: 1.38;

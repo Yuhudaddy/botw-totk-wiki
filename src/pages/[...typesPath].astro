@@ -43,7 +43,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
           <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
             {t.typesEyebrow}
           </div>
-          <h1 class="r-types-h1 mb-[18px] mt-3.5 font-serif text-[44px] font-medium leading-[1.14] text-ink">
+          <h1 class="r-types-h1 mb-[18px] mt-3.5 font-heading text-[44px] font-medium leading-[1.14] text-ink">
             {t.navTypes}
           </h1>
           <p class="r-types-subtitle max-w-[62ch] text-[16px] leading-[1.65] text-text">
@@ -80,7 +80,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
             />
             <div class="min-w-0">
               <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{group.shortEn ?? group.en}</div>
-              <div class="r-portal-title truncate font-serif font-medium leading-tight text-ink">
+              <div class="r-portal-title truncate font-heading font-medium leading-tight text-ink">
                 {groupShortLabel(group)}
               </div>
             </div>
@@ -111,7 +111,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
               <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
                 {group.en}
               </div>
-              <h2 class="r-type-group-title mt-1 truncate font-serif text-[28px] font-medium text-ink">
+              <h2 class="r-type-group-title mt-1 truncate font-heading text-[28px] font-medium text-ink">
                 {groupLabel(group)}
               </h2>
             </div>
@@ -133,7 +133,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
               >
                 <div class="flex min-w-0 items-baseline gap-2">
                   <span class="flex-none font-mono text-[13px] text-accent">{item.no}</span>
-                  <span class="truncate font-serif text-[18px] font-medium text-ink">
+                  <span class="truncate font-heading text-[18px] font-medium text-ink">
                     {lang === "ja" ? item.shortJa ?? item.ja ?? item.shortZh ?? item.zh : item.shortZh ?? item.zh}
                   </span>
                 </div>
@@ -150,7 +150,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
               stroke="none"
               set:html={GAME_LOGOS[group.game].svg}
             />
-            <p class="font-serif text-xl font-medium text-ink">{t.typesEmptyTitle}</p>
+            <p class="font-heading text-xl font-medium text-ink">{t.typesEmptyTitle}</p>
             <p class="text-sm text-muted">
               {t.typesEmptyHintTemplate.replace("{game}", groupShortLabel(group))}
             </p>

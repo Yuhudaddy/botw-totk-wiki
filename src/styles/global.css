@@ -54,7 +54,7 @@
 }
 
 /* ── 把執行階段變數對映成 Tailwind token ──────────────────────
-   讓 bg-surface / text-ink / border-border / font-serif 等
+   讓 bg-surface / text-ink / border-border / font-heading 等
    utility class 直接吃 [data-theme] 切換後的值。 */
 @theme {
   --color-bg: var(--bg);
@@ -75,7 +75,9 @@
   --color-mono-text: var(--mono-text);
   --color-ivory: #f6f6f4;
 
-  --font-serif: "Spectral", "Noto Serif TC", Georgia, "Times New Roman", serif;
+  /* 標題與內文同一個家族，靠字級與字重拉出層次。
+     原本是襯線大標壓黑體內文，那組手勢是 Claude 官網的排版簽名。 */
+  --font-heading: "Noto Sans TC", system-ui, -apple-system, sans-serif;
   --font-sans: "Noto Sans TC", system-ui, -apple-system, sans-serif;
   --font-mono: "DM Mono", ui-monospace, monospace;
 
