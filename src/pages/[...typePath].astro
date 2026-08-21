@@ -86,15 +86,15 @@ const hasAnyVideo = content?.methods?.some((m) => m.video || (m.videos && m.vide
 const hasAnyImage = content?.methods?.some((m) => m.image || m.extraImage) ?? false;
 const hasMedia = hasAnyVideo || hasAnyImage || content?.showEmptyMedia;
 
-// 只顯示「相關影片」區的分類：隱藏流程／原理／注意事項，
-// 並讓影片區延續上方標題區的背景色（不另加 bg-surface）。
+// 只顯示「相關影片」區的分類：隱藏流程／原理／注意事項
 const videosOnly = item.videosOnly ?? false;
 // 只顯示「名詞說明」＋「相關影片」（大亂鬥用）
 const termsOnly = item.termsOnly ?? false;
-const isSimpleLayout = videosOnly || termsOnly;
-const vidSectionClass = isSimpleLayout ? "" : "border-t border-border-soft bg-surface";
-const vidRowHover = isSimpleLayout ? "hover:bg-surface" : "hover:bg-bg";
-const vidBtnBg = isSimpleLayout ? "bg-surface" : "bg-bg";
+// 全頁統一用 bg，不再靠 bg-surface 切換底色分段——側欄加入後，
+// 通版變色帶會在側欄兩側被截斷，看起來很亂；拿掉分色帶之後
+// bg-surface 專職當作「懸停 / 按鈕」的提亮色使用。
+const vidRowHover = "hover:bg-surface";
+const vidBtnBg = "bg-surface";
 
 const VIDEOS_PER_PAGE = 10;
 // 相關影片縮圖右下角的日期徽章：YYYY-MM-DD 縮成 YY/MM/DD，縮圖空間小放不下完整年份
@@ -137,7 +137,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     </aside>
 
   {/* 麵包屑 + 標題 */}
-  <section class="border-b border-border-soft">
+  <section>
     <div class="type-col mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       {/* 側欄出現時麵包屑就多餘了（同一份層級資訊講兩次），
           寬螢幕隱藏、窄螢幕留著當唯一的定位線索 */}
@@ -173,7 +173,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   </section>
 
   {familyMembers.length > 1 && (
-    <section class="border-b border-border-soft bg-surface">
+    <section>
       <div class="type-col mx-auto max-w-[1244px] px-8 py-8">
         <div class="mb-3 font-mono text-[11px] font-bold uppercase tracking-[2px] text-muted">
           {family?.en} · {lang === "ja" ? <>{family?.ja}シリーズ</> : <>{family?.zh}系列</>}
@@ -764,7 +764,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
   {/* termsOnly 頁的名詞說明 */}
   {termsOnly && (
-    <div class="border-b border-border-soft">
+    <div>
       <div class="type-col mx-auto max-w-[1244px] px-8 pb-12 pt-10">
         <h2 class="mb-8 font-heading text-[22px] font-medium text-ink">{t.sectionTerms}</h2>
         {content?.termGroups && content.termGroups.length > 0 ? (
@@ -804,7 +804,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
   {/* videosOnly 頁的簡介與說明 */}
   {videosOnly && (
-    <div class="border-b border-border-soft">
+    <div>
       <div class="type-col mx-auto max-w-[1244px] px-8 pb-10 pt-10">
         <h2 class="mb-4 font-heading text-[22px] font-medium text-ink">{t.sectionIntro}</h2>
         {content?.intro ? (
@@ -818,7 +818,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
   {/* videosOnly 頁的分類影片（例如「個別角色」依角色分組） */}
   {content?.videoGroups && content.videoGroups.length > 0 && (
-    <div class={vidSectionClass}>
+    <div>
       <div class="type-col mx-auto max-w-[1244px] px-8 pb-16 pt-10">
         {!videosOnly && (
           <div class="mb-6">
@@ -896,7 +896,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
   {/* 相關影片 */}
   {content?.videos && content.videos.length > 0 ? (
-    <section class={vidSectionClass}>
+    <section>
       <div class="type-col mx-auto max-w-[1244px] px-8 pb-16 pt-10">
         <div class="mb-6 flex items-end justify-between gap-5">
           <div>
@@ -979,7 +979,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       </div>
     </section>
   ) : !(content?.videoGroups && content.videoGroups.length > 0) && (
-    <section class={vidSectionClass}>
+    <section>
       <div class="type-col mx-auto max-w-[1244px] px-8 py-12">
         <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{t.sectionVideos}</div>
         <p class="mt-3 text-[15px] text-muted">{t.emptyVideos}</p>
@@ -1010,7 +1010,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       position: absolute;
       /* 與 hero 的 pt-[54px] 齊頭 */
       top: 54px;
-      bottom: 0;
+      /* 側欄跟頁面內容一樣長才有「黏」的空間（見下方 sticky 說明），
+         但貼齊 bottom:0 代表 sticky 失效脫離黏附狀態時會剛好卡在
+         Footer 正上方、零間距。留一段緩衝，脫離黏附時提前停住。 */
+      bottom: 48px;
       /* 1244 置中欄的左緣（50% - 622px）再加 px-8 的 32px */
       left: max(32px, calc(50% - 590px));
       width: 212px;
