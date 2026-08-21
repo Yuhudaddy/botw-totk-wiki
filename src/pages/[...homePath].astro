@@ -365,17 +365,19 @@ const featured = youtubeData.featured;
       outline-offset: 3px;
     }
 
+    /* 主要行動用墨色：這顆按鈕壓在海拉魯草原截圖上，
+       綠底會被草地吃掉，墨色在任何截圖上都保得住對比。 */
     .home-action-primary {
-      border-color: var(--brand);
-      background: var(--brand);
-      color: #fff;
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--bg);
     }
 
     .home-action-primary:hover,
     .home-action-primary:focus-visible {
-      border-color: #b95538;
-      background: #b95538;
-      color: #fff;
+      border-color: var(--ink-2);
+      background: var(--ink-2);
+      color: var(--bg);
     }
 
     .home-action-secondary {
