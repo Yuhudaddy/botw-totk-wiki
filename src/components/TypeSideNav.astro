@@ -1,0 +1,189 @@
+---
+// 技巧內頁的側邊分層選單：遊戲 → 系列 → 技巧。
+//
+// 只在寬螢幕顯示（見 [...typePath].astro 的 .type-sidenav 媒體查詢）；
+// 窄螢幕沿用頁首的麵包屑，不另外做抽屜——技巧頁的層級只有三層，
+// 手機上多一個抽屜按鈕的成本高於它省下的捲動。
+//
+// 資料一律取自 typeGroups，不另外手寫清單，新增技巧會自動出現。
+import { href } from "../lib/url";
+import { gameLabelFor, typeFamilies, type TypeGroup, type TypeItem } from "../data/types";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+interface Props {
+  group: TypeGroup;
+  /** 目前所在的技巧，用來決定哪一項要標成 active、哪個家族要展開 */
+  item: TypeItem;
+  lang?: Lang;
+}
+
+const { group, item, lang = "zh" } = Astro.props;
+const t = uiStrings[lang];
+
+/** 側欄空間窄，優先用短標題；日文頁沿用既有的三層 fallback */
+const titleOf = (i: TypeItem) =>
+  lang === "ja" ? i.shortJa ?? i.ja ?? i.shortZh ?? i.zh : i.shortZh ?? i.zh;
+/** 家族成員展開後顯示各自的完整名稱（風彈／一般擊飛／擊飛加速），不用家族名 */
+const memberTitleOf = (i: TypeItem) => (lang === "ja" ? i.ja ?? i.zh : i.zh);
+
+const familyNameOf = (id: string) => {
+  const f = typeFamilies[id];
+  if (!f) return null;
+  return lang === "ja" ? f.ja : f.zh;
+};
+
+// hideFromGrid 的家族成員不獨立列在第一層，收在代表項底下
+const topLevel = group.items.filter((i) => !i.hideFromGrid);
+
+const entries = topLevel.map((i) => {
+  const members = i.family ? group.items.filter((m) => m.family === i.family) : [];
+  return {
+    item: i,
+    // 只有真的有多個成員才當成家族處理，單一成員維持一般連結
+    members: members.length > 1 ? members : [],
+    label: (i.family && familyNameOf(i.family)) || titleOf(i),
+  };
+});
+
+const isCurrent = (i: TypeItem) => i.no === item.no;
+---
+
+<nav class="type-sidenav-inner" aria-label={t.navTypes}>
+  <a href={href(`/types#${group.game}`, lang)} class="type-sidenav-game">
+    <span class="type-sidenav-game-en">{group.shortEn ?? group.en}</span>
+    <span class="type-sidenav-game-zh">{gameLabelFor(group, lang)}</span>
+  </a>
+
+  <ul class="type-sidenav-list">
+    {entries.map(({ item: i, members, label }) => {
+      // 目前所在的家族才展開，其餘家族只顯示代表項，避免側欄變成一整片長清單
+      const inThisFamily = members.some(isCurrent);
+      return (
+        <li>
+          {members.length > 0 ? (
+            <>
+              <a
+                href={href(`/types/${group.game}-${members[0].no}`, lang)}
+                class="type-sidenav-link"
+                aria-current={inThisFamily ? "true" : undefined}
+              >
+                <span class="type-sidenav-no">{i.no}</span>
+                {label}
+              </a>
+              {inThisFamily && (
+                <ul class="type-sidenav-sublist">
+                  {members.map((m) => (
+                    <li>
+                      <a
+                        href={href(`/types/${group.game}-${m.no}`, lang)}
+                        class="type-sidenav-link type-sidenav-sublink"
+                        aria-current={isCurrent(m) ? "page" : undefined}
+                      >
+                        {memberTitleOf(m)}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          ) : (
+            <a
+              href={href(`/types/${group.game}-${i.no}`, lang)}
+              class="type-sidenav-link"
+              aria-current={isCurrent(i) ? "page" : undefined}
+            >
+              <span class="type-sidenav-no">{i.no}</span>
+              {label}
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+  .type-sidenav-inner {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .type-sidenav-game {
+    display: block;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-strong);
+    text-decoration: none;
+  }
+
+  .type-sidenav-game-en {
+    display: block;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .type-sidenav-game-zh {
+    display: block;
+    margin-top: 3px;
+    color: var(--ink);
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 500;
+  }
+
+  .type-sidenav-list,
+  .type-sidenav-sublist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .type-sidenav-link {
+    display: flex;
+    gap: 8px;
+    padding: 5px 0 5px 10px;
+    /* 左側細線是這一層的縮排依據，active 時整條轉為強調色 */
+    border-left: 2px solid transparent;
+    color: var(--text);
+    text-decoration: none;
+    transition: color 140ms ease, border-color 140ms ease;
+  }
+
+  .type-sidenav-link:hover {
+    color: var(--ink);
+    border-left-color: var(--border-strong);
+  }
+
+  .type-sidenav-link[aria-current="page"] {
+    border-left-color: var(--accent);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* 家族代表項：目前頁在這個家族裡但不是它自己，標示得比 page 弱 */
+  .type-sidenav-link[aria-current="true"] {
+    color: var(--ink);
+  }
+
+  .type-sidenav-no {
+    flex: none;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    /* 編號與標題基線對齊：mono 的字級比標題小，靠 padding 而非 align-items */
+    padding-top: 2px;
+  }
+
+  .type-sidenav-sublist {
+    margin-left: 10px;
+  }
+
+  .type-sidenav-sublink {
+    padding-left: 12px;
+    font-size: 12.5px;
+  }
+</style>

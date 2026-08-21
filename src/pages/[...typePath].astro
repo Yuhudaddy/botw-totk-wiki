@@ -4,6 +4,7 @@ import MethodPanelBody from "../components/MethodPanelBody.astro";
 import Model3DViewer from "../components/Model3DViewer.astro";
 import FlowMapViewer from "../components/FlowMapViewer.astro";
 import LaunchFamilyNav from "../components/LaunchFamilyNav.astro";
+import TypeSideNav from "../components/TypeSideNav.astro";
 import { href, ytThumb, ytWatch, MEDIA_BASE } from "../lib/url";
 import { typeGroups, typeFamilies, gameLabelFor, type TypeItem, type TypeGroup } from "../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../data/type-content";
@@ -126,10 +127,21 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   lang={lang}
   altPath={`/types/${id}`}
 >
+  {/* 側邊分層選單（遊戲 → 系列 → 技巧）以絕對定位放在內容欄左側的留白裡，
+      而不是把整頁包成 grid——頁面有數條 bg-surface 全出血色帶，
+      包進 grid 會讓那些色帶縮成欄寬。內層容器改用 .type-col 往右讓出空間，
+      色帶本身維持整頁滿版。 */}
+  <div class="type-shell">
+    <aside class="type-sidenav">
+      <TypeSideNav group={group} item={item} lang={lang} />
+    </aside>
+
   {/* 麵包屑 + 標題 */}
   <section class="border-b border-border-soft">
-    <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
-      <div class="mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
+    <div class="type-col mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
+      {/* 側欄出現時麵包屑就多餘了（同一份層級資訊講兩次），
+          寬螢幕隱藏、窄螢幕留著當唯一的定位線索 */}
+      <div class="type-breadcrumb mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
         <a href={href("/home", lang)} class="no-underline text-muted">{t.breadcrumbHome}</a>
         <span>/</span>
         <a href={href("/types", lang)} class="no-underline text-muted">{t.navTypes}</a>
@@ -162,7 +174,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
   {familyMembers.length > 1 && (
     <section class="border-b border-border-soft bg-surface">
-      <div class="mx-auto max-w-[1244px] px-8 py-8">
+      <div class="type-col mx-auto max-w-[1244px] px-8 py-8">
         <div class="mb-3 font-mono text-[11px] font-bold uppercase tracking-[2px] text-muted">
           {family?.en} · {lang === "ja" ? <>{family?.ja}シリーズ</> : <>{family?.zh}系列</>}
         </div>
@@ -173,7 +185,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
 
   {/* 主體：流程步驟（左）／原理說明＋快速示意（右）＋ 注意事項（下）。videosOnly / termsOnly 分類不顯示 */}
   {!videosOnly && !termsOnly && (
-  <article class="mx-auto max-w-[1244px] px-8 pb-16 pt-10">
+  <article class="type-col mx-auto max-w-[1244px] px-8 pb-16 pt-10">
     <div class="grid gap-x-12 gap-y-10 md:grid-cols-[1.6fr_1fr]">
       {/* 左：流程步驟 */}
       <div class="prose-custom">
@@ -753,7 +765,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   {/* termsOnly 頁的名詞說明 */}
   {termsOnly && (
     <div class="border-b border-border-soft">
-      <div class="mx-auto max-w-[1244px] px-8 pb-12 pt-10">
+      <div class="type-col mx-auto max-w-[1244px] px-8 pb-12 pt-10">
         <h2 class="mb-8 font-heading text-[22px] font-medium text-ink">{t.sectionTerms}</h2>
         {content?.termGroups && content.termGroups.length > 0 ? (
           content.termGroups.map((tg: TermGroup) => (
@@ -793,7 +805,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   {/* videosOnly 頁的簡介與說明 */}
   {videosOnly && (
     <div class="border-b border-border-soft">
-      <div class="mx-auto max-w-[1244px] px-8 pb-10 pt-10">
+      <div class="type-col mx-auto max-w-[1244px] px-8 pb-10 pt-10">
         <h2 class="mb-4 font-heading text-[22px] font-medium text-ink">{t.sectionIntro}</h2>
         {content?.intro ? (
           <p class="text-[16px] leading-[1.8] text-ink">{content.intro}</p>
@@ -807,7 +819,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   {/* videosOnly 頁的分類影片（例如「個別角色」依角色分組） */}
   {content?.videoGroups && content.videoGroups.length > 0 && (
     <div class={vidSectionClass}>
-      <div class="mx-auto max-w-[1244px] px-8 pb-16 pt-10">
+      <div class="type-col mx-auto max-w-[1244px] px-8 pb-16 pt-10">
         {!videosOnly && (
           <div class="mb-6">
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
@@ -885,7 +897,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   {/* 相關影片 */}
   {content?.videos && content.videos.length > 0 ? (
     <section class={vidSectionClass}>
-      <div class="mx-auto max-w-[1244px] px-8 pb-16 pt-10">
+      <div class="type-col mx-auto max-w-[1244px] px-8 pb-16 pt-10">
         <div class="mb-6 flex items-end justify-between gap-5">
           <div>
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
@@ -968,15 +980,62 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     </section>
   ) : !(content?.videoGroups && content.videoGroups.length > 0) && (
     <section class={vidSectionClass}>
-      <div class="mx-auto max-w-[1244px] px-8 py-12">
+      <div class="type-col mx-auto max-w-[1244px] px-8 py-12">
         <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{t.sectionVideos}</div>
         <p class="mt-3 text-[15px] text-muted">{t.emptyVideos}</p>
       </div>
     </section>
   )}
+  </div>
 </BaseLayout>
 
 <style is:global>
+  /* ── 側邊分層選單的版面 ───────────────────────────────────
+     選單以絕對定位貼在 1244px 內容欄左緣的留白裡，內容欄本身
+     靠 .type-col 加大左內距讓出空間。整頁不包成 grid，
+     頁面上數條 bg-surface 全出血色帶才能維持滿版。 */
+  .type-shell {
+    position: relative;
+  }
+
+  /* 1180px 以下藏起來，改由頁首的麵包屑負責定位。
+     技巧頁只有三層，窄螢幕多一個抽屜按鈕的成本高於它省下的捲動。 */
+  .type-sidenav {
+    display: none;
+  }
+
+  @media (min-width: 1180px) {
+    .type-sidenav {
+      display: block;
+      position: absolute;
+      /* 與 hero 的 pt-[54px] 齊頭 */
+      top: 54px;
+      bottom: 0;
+      /* 1244 置中欄的左緣（50% - 622px）再加 px-8 的 32px */
+      left: max(32px, calc(50% - 590px));
+      width: 212px;
+    }
+
+    /* sticky 掛在內層：外層要撐滿整頁高度才有讓它「黏」的空間 */
+    .type-sidenav > * {
+      position: sticky;
+      /* 導覽列 64px + 呼吸 */
+      top: 88px;
+      max-height: calc(100vh - 112px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .type-col {
+      padding-left: calc(2rem + 244px);
+    }
+
+    /* 側欄已經表達了完整層級，麵包屑會變成重複的第二份 */
+    .type-breadcrumb {
+      display: none;
+    }
+  }
+
   .prose-custom {
     color: var(--text);
     line-height: 1.75;
