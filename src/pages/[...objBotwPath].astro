@@ -491,13 +491,13 @@ const mapTools = [
     }
 
     :global([data-theme="dark"]) .obj-guide {
-      --hero-base: #171713;
-      --hero-ink: #faf9f5;
-      --hero-ink-soft: rgba(250, 249, 245, 0.82);
-      --hero-ink-muted: rgba(250, 249, 245, 0.56);
-      --hero-accent: #ef9779;
-      --hero-frame: rgba(250, 249, 245, 0.18);
-      --hero-overlay: color-mix(in srgb, #141413 74%, transparent);
+      --hero-base: #161917;
+      --hero-ink: #f6f6f4;
+      --hero-ink-soft: rgba(246, 246, 244, 0.82);
+      --hero-ink-muted: rgba(246, 246, 244, 0.56);
+      --hero-accent: #8fc49b;
+      --hero-frame: rgba(246, 246, 244, 0.18);
+      --hero-overlay: color-mix(in srgb, #121413 74%, transparent);
       --hero-map-opacity: 1;
       --hero-map-filter: saturate(0.72) contrast(1.08) brightness(0.72);
       --hero-nav-bg: var(--bg);
@@ -606,7 +606,7 @@ const mapTools = [
       align-items: center;
       gap: 10px;
       margin-bottom: 18px;
-      color: #ef9779;
+      color: #8fc49b;
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 500;
@@ -678,9 +678,9 @@ const mapTools = [
       justify-content: center;
       gap: 10px;
       padding: 0 20px;
-      background: #c96442;
-      color: #faf9f5;
-      border: 1px solid #d97757;
+      background: var(--ink);
+      color: var(--bg);
+      border: 1px solid var(--ink);
       border-radius: 9px;
       font-size: 14px;
       font-weight: 500;
@@ -701,8 +701,8 @@ const mapTools = [
 
     .obj-primary-action:hover,
     .obj-final-cta a:hover {
-      background: #d97757;
-      border-color: #ef9779;
+      background: var(--ink-2);
+      border-color: var(--ink-2);
     }
 
     .obj-primary-action:active,

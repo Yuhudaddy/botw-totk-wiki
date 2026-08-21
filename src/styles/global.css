@@ -2,50 +2,54 @@
 
 /* ============================================================
    曠野・王國攻略 Wiki — 全域樣式
-   羊皮紙 × 赤陶；雙主題以 [data-theme] 在執行階段切換。
+   中性紙 × 海拉魯綠；雙主題以 [data-theme] 在執行階段切換。
+
+   色彩原則：外框保持近中性、低彩度，讓遊戲截圖與影片提供顏色。
+   強調綠只用在連結、篩選標籤、目前頁指示等「線索」上；
+   主要行動按鈕一律用墨色（--ink），才不會在草地截圖上撞色。
    ============================================================ */
 
 /* ── 執行階段主題變數（淺色 / 深色） ───────────────────────── */
 :root,
 [data-theme="light"] {
-  --bg: #f5f4ed;
-  --surface: #faf9f5;
-  --surface-2: #ffffff;
-  --sand: #e8e6dc;
-  --border: #f0eee6;
-  --border-strong: #e8e6dc;
-  --ink: #141413;
-  --ink-2: #3d3d3a;
-  --text: #5e5d59;
-  --muted: #87867f;
-  --brand: #c96442;
-  --accent: #c96442;
-  --lang-tag: #4f6f93;
-  --lang-tag-ja: #4f8f5e;
-  --mono-bg: #f0eee6;
-  --mono-text: #5e5d59;
-  --ring: #d1cfc5;
+  --bg: #f6f6f4;
+  --surface: #ffffff;
+  --surface-2: #fafaf9;
+  --sand: #ececea;
+  --border: #e6e7e4;
+  --border-strong: #d8d9d5;
+  --ink: #14161a;
+  --ink-2: #33373b;
+  --text: #565b60;
+  --muted: #868b90;
+  --brand: #2f5d3a;
+  --accent: #2f5d3a;
+  --lang-tag: #3f6493;
+  --lang-tag-ja: #8a6220;
+  --mono-bg: #eeefec;
+  --mono-text: #565b60;
+  --ring: #c9cbc6;
   --shadow: rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="dark"] {
-  --bg: #141413;
-  --surface: #1d1c1a;
-  --surface-2: #30302e;
-  --sand: #30302e;
-  --border: #2a2926;
-  --border-strong: #30302e;
-  --ink: #faf9f5;
-  --ink-2: #ece9e0;
-  --text: #b0aea5;
-  --muted: #8a8980;
-  --brand: #c96442;
-  --accent: #d97757;
+  --bg: #121413;
+  --surface: #1a1d1c;
+  --surface-2: #262a28;
+  --sand: #262a28;
+  --border: #232726;
+  --border-strong: #2e3331;
+  --ink: #f2f3f1;
+  --ink-2: #e2e4e0;
+  --text: #a8ada9;
+  --muted: #7d827e;
+  --brand: #6ba173;
+  --accent: #6ba173;
   --lang-tag: #8fb2d9;
-  --lang-tag-ja: #8fd9a6;
-  --mono-bg: #30302e;
-  --mono-text: #b0aea5;
-  --ring: #4d4c48;
+  --lang-tag-ja: #d9b063;
+  --mono-bg: #262a28;
+  --mono-text: #a8ada9;
+  --ring: #454a47;
   --shadow: rgba(0, 0, 0, 0.35);
 }
 
@@ -69,7 +73,7 @@
   --color-lang-tag-ja: var(--lang-tag-ja);
   --color-mono-bg: var(--mono-bg);
   --color-mono-text: var(--mono-text);
-  --color-ivory: #faf9f5;
+  --color-ivory: #f6f6f4;
 
   --font-serif: "Spectral", "Noto Serif TC", Georgia, "Times New Roman", serif;
   --font-sans: "Noto Sans TC", system-ui, -apple-system, sans-serif;
@@ -95,7 +99,7 @@ body {
 
 ::selection {
   background: var(--brand);
-  color: #faf9f5;
+  color: #f6f6f4;
 }
 
 input::placeholder {
