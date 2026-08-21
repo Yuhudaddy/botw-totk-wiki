@@ -125,12 +125,13 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
         </div>
 
         {group.items.filter((item) => !item.hideFromGrid).length > 0 ? (
-          <div class="r-type-grid grid grid-cols-[repeat(auto-fill,minmax(248px,1fr))] gap-x-10 gap-y-1">
-            {/* 內容連結不包框，只用細底線與留白分隔；外框留給控制項（上方遊戲切換） */}
+          <div class="r-type-grid grid grid-cols-[repeat(auto-fill,minmax(248px,1fr))] gap-x-10 gap-y-2">
+            {/* 內容連結不包框也不畫底線，靠留白分隔；滑鼠移入才由左至右拉出漸層線。
+                外框留給控制項（上方遊戲切換） */}
             {group.items.filter((item) => !item.hideFromGrid).map((item) => (
               <a
                 href={href(`/types/${group.game}-${item.no}`, lang)}
-                class="group flex min-w-0 flex-col border-b border-border-soft pb-3 pt-2.5 no-underline transition-colors hover:border-brand"
+                class="type-link group flex min-w-0 flex-col pb-3 pt-2.5 no-underline"
               >
                 <div class="flex min-w-0 items-baseline gap-2">
                   <span class="flex-none font-mono text-[13px] text-accent">{item.no}</span>
@@ -173,6 +174,73 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
     justify-content: space-between;
     gap: 28px;
   }
+  /* 主題連結：平時只有文字，滑鼠移入時底線由左至右展開，
+     展開後漸層持續向左流動，形成脈衝感。
+     四段色由淺到深，深色主題整組往亮處移，否則最深的一段會沉進背景。 */
+  .type-link {
+    position: relative;
+    --u1: #a8d5b0;
+    --u2: #6ba173;
+    --u3: #356b41;
+    --u4: #23482c;
+  }
+
+  :global([data-theme="dark"]) .type-link {
+    --u1: #d3ead7;
+    --u2: #8fc49b;
+    --u3: #6ba173;
+    --u4: #4a7a55;
+  }
+
+  .type-link::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    border-radius: 1px;
+    /* 頭尾同色，位移一圈之後才接得上，不會出現斷點 */
+    background: linear-gradient(
+      90deg,
+      var(--u1) 0%,
+      var(--u2) 25%,
+      var(--u3) 50%,
+      var(--u4) 75%,
+      var(--u1) 100%
+    );
+    background-size: 200% 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms cubic-bezier(0.22, 0.8, 0.36, 1);
+  }
+
+  .type-link:hover::after,
+  .type-link:focus-visible::after {
+    transform: scaleX(1);
+    animation: type-link-flow 1.8s linear infinite;
+  }
+
+  @keyframes type-link-flow {
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  /* 減少動態時保留底線本身，只拿掉展開與流動 */
+  @media (prefers-reduced-motion: reduce) {
+    .type-link::after {
+      transform: scaleX(1);
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    .type-link:hover::after,
+    .type-link:focus-visible::after {
+      opacity: 1;
+      animation: none;
+    }
+  }
+
   .r-terminology-link {
     display: inline-flex;
     flex: none;
