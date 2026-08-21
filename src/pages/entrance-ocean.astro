@@ -1858,7 +1858,8 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
         opacity: 0;
         transition:
           clip-path 620ms cubic-bezier(0.65, 0, 0.35, 1),
-          opacity 420ms cubic-bezier(0.65, 0, 0.35, 1);
+          opacity 420ms cubic-bezier(0.65, 0, 0.35, 1),
+          transform 620ms cubic-bezier(0.65, 0, 0.35, 1);
       }
 
       .bottle-letter[hidden] { display: none; }
@@ -1867,9 +1868,14 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
          這裡刻意用固定長度而非百分比：百分比是相對信紙自己的高度算的，
          而信紙高度會隨內容變（影片是 16:9 高、後備文字只有一兩行矮），
          矮的時候 -8% 只剩約 7px，蓋不住往上突出 0.5rem 的蠟封，上緣就被切掉。 */
+      /* 攤開後把旋轉角拉直：闔起／軟木塞狀態的傾斜是「手寫信」的裝飾感，
+         但攤開後裡面是要拿滑鼠精準操作的影片控制列，斜的角度會讓控制列
+         的真實可點區跟視覺上以為的水平位置有落差，邊緣（尤其是進度條）
+         特別容易點空。攤開時拉直，閤上再恢復傾斜。 */
       .bottle-letter.is-open {
         clip-path: inset(-1.15rem -1.15rem -0.7rem -0.7rem round 10px);
         opacity: 1;
+        transform: translateY(-50%) rotate(0deg);
       }
 
       .letter-paper {
@@ -1945,6 +1951,11 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
           right: 50%;
           width: min(88vw, 26rem);
           transform: translate(50%, -50%) rotate(-1.2deg);
+        }
+
+        /* 手機版攤開同樣拉直，位置維持置中浮層不變，只歸零旋轉角 */
+        .bottle-letter.is-open {
+          transform: translate(50%, -50%) rotate(0deg);
         }
       }
 
@@ -2883,9 +2894,19 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
             if (event.key === "Escape" && bottleMode === "docked") returnBottle();
           });
 
+          // 信紙攤開時判定「點在外面」除了 contains() 之外，額外留一圈緩衝：
+          // 影片邊緣（尤其進度條）很窄，滑鼠稍微手滑落在信紙外側幾 px
+          // 不該直接整封關掉，要有一點容錯空間。
+          var LETTER_CLOSE_BUFFER = 20;
+          var pointInsideWithBuffer = function (el, x, y, buffer) {
+            var r = el.getBoundingClientRect();
+            return x >= r.left - buffer && x <= r.right + buffer && y >= r.top - buffer && y <= r.bottom + buffer;
+          };
+
           document.addEventListener("pointerdown", function (event) {
             if (bottleMode !== "docked") return;
             if (bottle.contains(event.target) || letterBox.contains(event.target)) return;
+            if (pointInsideWithBuffer(letterBox, event.clientX, event.clientY, LETTER_CLOSE_BUFFER)) return;
             returnBottle();
           });
 
