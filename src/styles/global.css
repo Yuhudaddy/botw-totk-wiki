@@ -108,6 +108,36 @@ input::placeholder {
   color: var(--muted);
 }
 
+/* ── 導覽列圖示鈕（贊助 $ / 語言 / 深淺模式）─────────────────
+   平時完全透明、沒有邊框也沒有底色，只有圖示本身；
+   滑鼠移入才淡淡填一層底。填色用 color-mix 疊 --ink，
+   因此淺色主題會稍微變深、深色主題會稍微變淺，兩邊都不必各寫一組。 */
+.nav-icon-btn {
+  display: flex;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.nav-icon-btn:hover {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
+}
+
+/* 沒有邊框之後，鍵盤焦點必須自己畫，否則 Tab 過去看不出停在哪 */
+.nav-icon-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  color: var(--ink);
+}
+
 /* ── 環繞式漸層邊框（hover / focus 時啟動）───────────────────
    套用 .ring-hover 於任何按鈕／卡片：滑鼠移入時邊框出現一段
    會繞著外框旋轉的漸層亮段，純線條、無發光暈染。
