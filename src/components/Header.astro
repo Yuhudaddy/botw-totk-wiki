@@ -102,7 +102,13 @@ const navLabelKey = {
      看起來就跟不透明底一樣，往下捲才會出現霧感。
 
      內容寬度維持與頁面同樣的 1244px 置中，不做整頁全寬：
-     下方內容是 1244px 欄寬，Header 全寬會讓 logo 離內容左緣很遠。 */
+     下方內容是 1244px 欄寬，Header 全寬會讓 logo 離內容左緣很遠。
+
+     第一版用 72% 不透明 + 14px 模糊，效果太保守——大部分頁面底色本身
+     就偏淺、偏均勻，模糊了也看不太出差異。這版把透明度降低、模糊與
+     飽和度都加大，讓「毛玻璃」在停留於頁首時就有感，而不是只有捲動
+     經過色塊分明的區域才看得出來；另外加一層極輕的陰影，讓導覽列在
+     視覺上明確浮在內容之上（不需要 scroll 監聽也能有這個層次感）。 */
   .site-header {
     background: var(--bg);
   }
@@ -111,9 +117,10 @@ const navLabelKey = {
      文字疊在捲動內容上完全無法讀。 */
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
     .site-header {
-      background: color-mix(in srgb, var(--bg) 72%, transparent);
-      -webkit-backdrop-filter: blur(14px) saturate(1.4);
-      backdrop-filter: blur(14px) saturate(1.4);
+      background: color-mix(in srgb, var(--bg) 58%, transparent);
+      -webkit-backdrop-filter: blur(22px) saturate(1.6);
+      backdrop-filter: blur(22px) saturate(1.6);
+      box-shadow: 0 1px 32px color-mix(in srgb, var(--ink) 7%, transparent);
     }
   }
 
