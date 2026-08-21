@@ -43,7 +43,7 @@ const navLabelKey = {
           return (
             <a
               href={href(n.path, lang)}
-              class={`ring-hover rounded-lg px-3 py-2 text-[15px] no-underline ${
+              class={`ring-hover rounded-[5px] px-3 py-2 text-[15px] no-underline ${
                 isActive
                   ? "bg-sand font-medium text-ink"
                   : "font-normal text-text"
@@ -58,7 +58,7 @@ const navLabelKey = {
 
     <div class="r-navactions ml-auto flex items-center gap-2.5">
       <div
-        class="r-navsearch relative flex w-[300px] items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand"
+        class="r-navsearch relative flex w-[300px] items-center rounded-[5px] border border-border-strong bg-surface transition-colors focus-within:border-brand"
         data-videos-url={videosUrl}
       >
         <input

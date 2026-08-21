@@ -67,7 +67,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
         typeGroups.map((group) => (
           <button
             type="button"
-            class="portal ring-hover relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-border-soft bg-surface px-4 text-left transition-colors"
+            class="portal ring-hover relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-[5px] border border-border-soft bg-surface px-4 text-left transition-colors"
             data-game={group.game}
             aria-pressed={group.game === "botw" ? "true" : "false"}
           >
@@ -129,7 +129,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
             {group.items.filter((item) => !item.hideFromGrid).map((item) => (
               <a
                 href={href(`/types/${group.game}-${item.no}`, lang)}
-                class="group flex min-w-0 flex-col rounded-2xl border border-border-soft bg-surface px-4 py-3.5 no-underline transition-colors hover:border-brand"
+                class="group flex min-w-0 flex-col rounded-[5px] border border-border-soft bg-surface px-4 py-3.5 no-underline transition-colors hover:border-brand"
               >
                 <div class="flex min-w-0 items-baseline gap-2">
                   <span class="flex-none font-mono text-[13px] text-accent">{item.no}</span>
@@ -142,7 +142,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
             ))}
           </div>
         ) : (
-          <div class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border-soft py-20 text-center">
+          <div class="flex flex-col items-center gap-3 rounded-[5px] border border-dashed border-border-soft py-20 text-center">
             <svg
               class="h-14 w-14 text-muted opacity-40"
               viewBox={GAME_LOGOS[group.game].viewBox}
@@ -178,7 +178,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
     align-items: center;
     gap: 9px;
     border: 1px solid var(--border-strong);
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--surface);
     color: var(--accent);
     padding: 9px 14px;

@@ -81,7 +81,7 @@
   --font-sans: "Noto Sans TC", system-ui, -apple-system, sans-serif;
   --font-mono: "DM Mono", ui-monospace, monospace;
 
-  --radius-card: 16px;
+  --radius-card: 5px;
 }
 
 /* ── 基礎 ─────────────────────────────────────────────────── */

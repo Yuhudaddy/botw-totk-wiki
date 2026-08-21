@@ -117,7 +117,7 @@ function sourceLabel(url: string): string {
         resourceGames.map((g) => (
           <button
             type="button"
-            class="portal ring-hover relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-border-soft bg-surface px-4 text-left transition-colors"
+            class="portal ring-hover relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-[5px] border border-border-soft bg-surface px-4 text-left transition-colors"
             data-game={g.game}
             aria-pressed={g.game === "botw" ? "true" : "false"}
           >
@@ -144,7 +144,7 @@ function sourceLabel(url: string): string {
   <div class="r-res-toolbar border-b border-border-soft bg-bg">
     <div class="mx-auto flex max-w-[1244px] flex-col gap-3 px-8 py-3.5 sm:flex-row sm:items-center">
       <div
-        class="flex flex-1 items-center rounded-[10px] border border-border-strong bg-surface transition-colors focus-within:border-brand md:flex-none md:w-[260px]"
+        class="flex flex-1 items-center rounded-[5px] border border-border-strong bg-surface transition-colors focus-within:border-brand md:flex-none md:w-[260px]"
       >
         <svg
           class="ml-3 flex-none text-muted"
@@ -172,7 +172,7 @@ function sourceLabel(url: string): string {
         <a
           href="#"
           title={t.resourcesKindRecommended}
-          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="star"
         >
           <svg
@@ -190,7 +190,7 @@ function sourceLabel(url: string): string {
         <a
           href="#"
           title={t.resourcesKindMap}
-          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="map"
         >
           <svg
@@ -208,7 +208,7 @@ function sourceLabel(url: string): string {
         <a
           href="#"
           title={t.resourcesKindData}
-          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="sheet"
         >
           <svg
@@ -226,7 +226,7 @@ function sourceLabel(url: string): string {
         <a
           href="#"
           title={t.resourcesKindDoc}
-          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="doc"
         >
           <svg
@@ -244,7 +244,7 @@ function sourceLabel(url: string): string {
         <a
           href="#"
           title={t.resourcesKindSite}
-          class="res-filter flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
+          class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="site"
         >
           <svg
@@ -322,12 +322,12 @@ function sourceLabel(url: string): string {
                     href={item.url.startsWith("/") ? href(item.url, lang) : item.url}
                     target={item.url.startsWith("/") ? undefined : "_blank"}
                     rel={item.url.startsWith("/") ? undefined : "noopener"}
-                    class="res group flex min-w-0 items-center gap-3.5 rounded-xl border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
+                    class="res group flex min-w-0 items-center gap-3.5 rounded-[5px] border border-border-soft bg-surface py-3 pl-3.5 pr-4 no-underline transition-colors hover:border-brand"
                     data-search={`${item.title} ${item.note ?? ""} ${sourceLabel(item.externalUrl ?? item.url)}`.toLowerCase()}
                     data-recommended={item.recommended ? "true" : "false"}
                     data-star-only={item.starOnly ? "true" : "false"}
                   >
-                  <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[10px] bg-sand text-muted transition-colors group-hover:text-accent" data-kind={item.kind}>
+                  <span class="flex h-9 w-9 flex-none items-center justify-center rounded-[5px] bg-sand text-muted transition-colors group-hover:text-accent" data-kind={item.kind}>
                     <svg
                       viewBox="0 0 24 24"
                       width="17"
@@ -352,7 +352,7 @@ function sourceLabel(url: string): string {
                   </span>
                   <span class="flex flex-none items-center gap-2">
                     <span
-                      class={`whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                      class={`whitespace-nowrap rounded-[5px] px-2 py-0.5 text-[10px] font-semibold ${
                         item.lang === "zh"
                           ? "bg-sand text-accent"
                           : item.lang === "ja"

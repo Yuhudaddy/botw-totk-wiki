@@ -41,19 +41,19 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
       <>
         <span class="text-[13px] text-ink">{t.tagsLabel}</span>
         {m.tags.map((tag) => (
-          <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+          <span class="inline-block rounded-[5px] bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
             {tag}
           </span>
         ))}
       </>
     )}
     {m.difficulty && (
-      <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+      <span class="inline-block rounded-[5px] bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
         {t.difficultyLabel}{m.difficulty}
       </span>
     )}
     {m.timeCost && (
-      <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+      <span class="inline-block rounded-[5px] bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
         {t.timeCostLabel}{m.timeCost}
       </span>
     )}
@@ -78,7 +78,7 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
       <div class="mb-3 flex flex-wrap items-center gap-2">
         <span class="text-[13px] text-ink">{t.tagsLabel}</span>
         {sec.tags.map((tag) => (
-          <span class="inline-block rounded-md bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
+          <span class="inline-block rounded-[5px] bg-surface px-3 py-1 text-[13px] text-muted shadow-[0_0_0_1px_var(--border-strong)]">
             {tag}
           </span>
         ))}

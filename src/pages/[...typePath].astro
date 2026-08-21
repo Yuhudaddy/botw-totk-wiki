@@ -198,7 +198,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                       tabindex={i === 0 ? 0 : -1}
                       data-tab={i}
                       data-tab-key={zhMethods?.[i]?.tab ?? m.tab}
-                      class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
+                      class="method-tab cursor-pointer rounded-[5px] border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
                     >
                       {m.tab}
                     </button>
@@ -221,7 +221,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                           data-subtab={j}
                           aria-selected={j === 0 ? "true" : "false"}
                           tabindex={j === 0 ? 0 : -1}
-                          class="method-subtab cursor-pointer rounded-full border border-border-strong bg-surface px-3.5 py-1 text-[13px] font-medium transition-colors hover:border-brand"
+                          class="method-subtab cursor-pointer rounded-[5px] border border-border-strong bg-surface px-3.5 py-1 text-[13px] font-medium transition-colors hover:border-brand"
                         >
                           {sub.tab}
                         </button>
@@ -419,7 +419,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               id="demo-media-wrap"
               data-video-base={videoBase}
               data-image-base={imageBase}
-              class="relative overflow-hidden rounded-xl bg-sand"
+              class="relative overflow-hidden rounded-[5px] bg-sand"
             >
               <video
                 id="demo-video"
@@ -427,14 +427,14 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 loop
                 muted
                 playsinline
-                class="hidden w-full rounded-xl"
+                class="hidden w-full rounded-[5px]"
               ></video>
               <button type="button" id="demo-image-trigger" class="demo-image-trigger hidden" aria-label={t.zoomDemoImage}>
                 <img
                   id="demo-image"
                   alt={t.demoImageAlt}
                   loading="lazy"
-                  class="w-full rounded-xl"
+                  class="w-full rounded-[5px]"
                 />
                 <span class="demo-zoom-hint" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /><path d="M11 8v6M8 11h6" /></svg>
@@ -455,7 +455,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 圖片路徑沿用上面 demo-media-wrap 的 imageBase，不重複宣告 */}
             <div
               id="demo-extra-wrap"
-              class="relative mt-3 overflow-hidden rounded-xl bg-sand"
+              class="relative mt-3 overflow-hidden rounded-[5px] bg-sand"
               hidden
             >
               <button type="button" id="demo-extra-trigger" class="demo-image-trigger" aria-label={t.zoomFlowImage}>
@@ -463,7 +463,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                   id="demo-extra-image"
                   alt={t.flowImageAlt}
                   loading="lazy"
-                  class="w-full rounded-xl"
+                  class="w-full rounded-[5px]"
                 />
                 <span class="demo-zoom-hint" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /><path d="M11 8v6M8 11h6" /></svg>
@@ -829,7 +829,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                 data-vg-tab={i}
                 aria-selected={i === 0 ? "true" : "false"}
                 tabindex={i === 0 ? 0 : -1}
-                class="method-tab cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
+                class="method-tab cursor-pointer rounded-[5px] border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
               >
                 {vg.title}
               </button>
@@ -849,7 +849,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                       src={ytThumb(v.id)}
                       alt={v.title}
                       loading="lazy"
-                      class="h-[79px] w-[140px] rounded-lg bg-sand object-cover"
+                      class="h-[79px] w-[140px] rounded-[5px] bg-sand object-cover"
                     />
                     {shortDate(v.publishedAt) && (
                       <span class="absolute bottom-[5px] right-[5px] rounded bg-black/70 px-[5px] py-[1px] font-mono text-[10px] leading-[1.4] tabular-nums tracking-wide text-white">
@@ -917,7 +917,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                   src={ytThumb(v.id)}
                   alt={v.title}
                   loading="lazy"
-                  class="h-[79px] w-[140px] rounded-lg bg-sand object-cover"
+                  class="h-[79px] w-[140px] rounded-[5px] bg-sand object-cover"
                 />
                 {shortDate(v.publishedAt) && (
                   <span class="absolute bottom-[5px] right-[5px] rounded bg-black/70 px-[5px] py-[1px] font-mono text-[10px] leading-[1.4] tabular-nums tracking-wide text-white">
@@ -950,7 +950,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             <button
               id="vid-prev"
               type="button"
-              class={`whitespace-nowrap rounded-[10px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
+              class={`whitespace-nowrap rounded-[5px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
               {t.videoPrevPage}
             </button>
@@ -958,7 +958,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
             <button
               id="vid-next"
               type="button"
-              class={`whitespace-nowrap rounded-[10px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
+              class={`whitespace-nowrap rounded-[5px] border border-border-strong ${vidBtnBg} px-3 py-1.5 text-[13px] sm:px-5 sm:py-2 sm:text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`}
             >
               {t.videoNextPage}
             </button>
@@ -1130,7 +1130,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   /* 原理說明的可收合段落（手風琴樣式，同「轉存格 Q&A」） */
   .prose-custom .principle-collapse {
     border: 1px solid var(--border-soft);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 0 14px;
   }
   .prose-custom .principle-collapse-summary {
@@ -1179,7 +1179,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   .prose-custom .note {
     background: var(--surface);
     border: 1px solid var(--border-strong);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 12px 16px;
     font-size: 14px;
     color: var(--muted);
@@ -1262,7 +1262,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
      標題與適合版本先收合列出，展開才顯示詳細步驟；同「原理說明」的 principle-collapse） */
   .method-section-collapse {
     border: 1px solid var(--border-soft);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 14px 16px;
   }
   .method-section + .method-section-collapse,
@@ -1310,7 +1310,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   /* 右欄工具導引卡片 */
   .tool-cta {
     border: 1px solid var(--border-soft);
-    border-radius: 8px;
+    border-radius: 5px;
     background:
       linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 52%),
       var(--surface);
@@ -1363,7 +1363,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     justify-content: center;
     gap: 7px;
     min-height: 38px;
-    border-radius: 8px;
+    border-radius: 5px;
     padding: 8px 13px;
     font-size: 13px;
     font-weight: 600;
@@ -1408,7 +1408,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     border: 1px solid var(--border-strong);
     background: var(--surface);
     color: var(--ink);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 10px 20px;
     font-size: 15px;
     font-weight: 500;
@@ -1428,7 +1428,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     padding: 9px 16px;
     cursor: pointer;
     border: 1px solid var(--border-strong);
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--surface);
     color: var(--ink);
     font-size: 14px;
@@ -1479,7 +1479,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     flex-direction: column;
     overflow: hidden;
     border: 1px solid var(--border-strong);
-    border-radius: 16px;
+    border-radius: 5px;
     background: var(--bg);
     box-shadow: 0 26px 64px rgb(0 0 0 / 0.32);
   }
@@ -1518,7 +1518,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     cursor: pointer;
     place-items: center;
     border: 1px solid var(--border-strong);
-    border-radius: 9px;
+    border-radius: 5px;
     background: var(--bg);
     color: var(--muted);
     transition: border-color 0.15s, color 0.15s;
@@ -1575,7 +1575,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   }
   .applications-list li {
     padding: 10px 12px;
-    border-radius: 9px;
+    border-radius: 5px;
     background: var(--surface);
   }
   .applications-name {
@@ -1610,7 +1610,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     justify-content: space-between;
     gap: 16px;
     padding: 11px 12px;
-    border-radius: 9px;
+    border-radius: 5px;
     background: var(--surface);
   }
   .applications-matrix-main {
@@ -1629,7 +1629,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     gap: 2px;
     padding: 4px 8px;
     border: 1px solid var(--border-soft);
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--bg);
   }
   .applications-mark-label {
@@ -1676,7 +1676,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       width: 100%;
       max-height: 90svh;
       border-width: 1px 0 0;
-      border-radius: 16px 16px 0 0;
+      border-radius: 5px 16px 0 0;
     }
     .applications-head,
     .applications-body {
@@ -1746,7 +1746,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     list-style: none;
     user-select: none;
     transition: background 0.15s;
-    border-radius: 6px;
+    border-radius: 5px;
   }
   .term-summary::-webkit-details-marker { display: none; }
   .term-summary:hover { background: var(--surface); }
@@ -1865,7 +1865,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     flex-direction: column;
     overflow: hidden;
     border: 1px solid var(--border-strong);
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--surface);
     box-shadow: 0 24px 70px color-mix(in srgb, #000 32%, transparent);
   }
@@ -2055,7 +2055,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
           label.className = "demo-video-item-title";
           label.textContent = item.title ?? "";
           const vid = document.createElement("video");
-          vid.className = "w-full rounded-xl bg-sand";
+          vid.className = "w-full rounded-[5px] bg-sand";
           vid.controls = true;
           vid.loop = true;
           vid.muted = true;

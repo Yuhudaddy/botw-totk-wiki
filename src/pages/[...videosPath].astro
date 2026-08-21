@@ -63,18 +63,18 @@ const facets = gameListFor(lang)
         id="idx-search"
         type="search"
         placeholder={t.videosSearchPlaceholder}
-        class="w-full rounded-xl border border-border-strong bg-surface py-[13px] pl-11 pr-4 text-[15px] text-ink outline-none focus:border-brand"
+        class="w-full rounded-[5px] border border-border-strong bg-surface py-[13px] pl-11 pr-4 text-[15px] text-ink outline-none focus:border-brand"
       />
     </div>
 
     {/* 遊戲篩選 */}
     <div id="idx-facets" class="mb-9 flex flex-wrap gap-2.5">
-      <button type="button" data-game="" class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm">
+      <button type="button" data-game="" class="chip rounded-[5px] border border-border-strong px-[15px] py-[7px] text-sm">
         {t.videosFilterAll}
       </button>
       {
         facets.map((f) => (
-          <button type="button" data-game={f.key} class="chip rounded-full border border-border-strong px-[15px] py-[7px] text-sm">
+          <button type="button" data-game={f.key} class="chip rounded-[5px] border border-border-strong px-[15px] py-[7px] text-sm">
             {f.label}
           </button>
         ))
@@ -126,12 +126,12 @@ const facets = gameListFor(lang)
   }
   :global(.idx-row:hover) {
     background: var(--surface);
-    border-radius: 6px;
+    border-radius: 5px;
   }
   :global(.idx-tag) {
     font-size: 12px;
     padding: 3px 10px;
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--surface);
     color: var(--muted);
     white-space: nowrap;
@@ -152,7 +152,7 @@ const facets = gameListFor(lang)
     display: flex;
     flex-direction: column;
     text-decoration: none;
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
     border: 1px solid var(--border-soft);
     background: var(--surface);
@@ -179,7 +179,7 @@ const facets = gameListFor(lang)
     justify-content: center;
     width: 32px;
     height: 32px;
-    border-radius: 8px;
+    border-radius: 5px;
     border: 1px solid var(--border-strong);
     background: var(--surface);
     color: var(--muted);
@@ -202,7 +202,7 @@ const facets = gameListFor(lang)
     min-width: 34px;
     height: 34px;
     padding: 0 6px;
-    border-radius: 8px;
+    border-radius: 5px;
     border: 1px solid var(--border-strong);
     background: var(--surface);
     color: var(--text);
