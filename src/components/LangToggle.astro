@@ -1,14 +1,19 @@
 ---
-// 中／日語言切換鈕。樣式與 ThemeToggle、SupportButton 一致（同一排的圓角方鈕）。
+// 語言切換：地球圖示鈕，點開彈窗顯示「另一個語言」（本站只有中／日兩版，
+// 所以彈窗永遠只有一個選項——不是選單，是「還有這個語言」的提示）。
+// 樣式與 SupportButton 的彈窗模式一致（同一顆 nav-icon-btn + 下拉彈窗）。
 //
 // 運作方式：日文版網址是中文版加上 /ja 前綴
 //   中文 /types/totk-11
 //   日文 /ja/types/totk-11
-// 點擊時就地增刪網址開頭的 /ja，讓使用者留在同一頁、只換語言。
 //
 // 按鈕由伺服器端算好目標網址（data-target），不在瀏覽器端拼字串——
 // 頁面知道自己有沒有日文版，瀏覽器不知道。沒有日文版的頁面不會渲染這顆按鈕，
 // 也就不可能發生「按下去 404」。
+//
+// 彈窗裡的語言名稱刻意用該語言自己的寫法（中文頁顯示「日本語」、
+// 日文頁顯示「繁体中国語」），而不是「日文」「中文」這種被目前語言
+// 翻譯過的講法——讀者找語言選項時，看該語言自己的寫法比較直覺。
 import { uiStrings, type Lang } from "../data/ui-strings";
 import { href } from "../lib/url";
 
@@ -22,19 +27,98 @@ const { lang = "zh", altPath } = Astro.props;
 const t = uiStrings[lang];
 const targetLang: Lang = lang === "zh" ? "ja" : "zh";
 const target = altPath ? href(altPath, targetLang) : null;
+const targetLabel = lang === "zh" ? t.langJa : t.langZh;
 ---
 
 {
   target && (
-    <a
-      id="lang-toggle"
-      href={target}
-      data-lang={lang}
-      aria-label={t.langLabel}
-      title={lang === "zh" ? t.langJa : t.langZh}
-      class="nav-icon-btn min-w-9 px-2 text-[13px] font-medium"
-    >
-      {lang === "zh" ? "日" : "中"}
-    </a>
+    <div class="relative">
+      <button
+        id="lang-toggle-btn"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-label={t.langLabel}
+        class="nav-icon-btn w-9"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="17"
+          height="17"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="9"></circle>
+          <ellipse cx="12" cy="12" rx="4" ry="9"></ellipse>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+      </button>
+
+      <div
+        id="lang-popover"
+        role="dialog"
+        aria-label={t.langLabel}
+        class="lang-popover pointer-events-none absolute right-0 top-[calc(100%+10px)] z-50 w-[168px] rounded-[5px] border border-border-strong bg-surface p-1.5 opacity-0 shadow-lg transition-opacity duration-150"
+      >
+        <a
+          href={target}
+          class="flex items-center rounded-[5px] px-3 py-2.5 text-[14px] text-ink no-underline transition-colors hover:bg-sand"
+        >
+          {targetLabel}
+        </a>
+      </div>
+    </div>
   )
 }
+
+<style>
+  .lang-popover[data-open="true"] {
+    pointer-events: auto;
+    opacity: 1;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var toggle = document.getElementById("lang-toggle-btn");
+    var popover = document.getElementById("lang-popover");
+    if (!toggle || !popover) return;
+
+    // 關閉時把焦點還給觸發按鈕，避免鍵盤使用者的焦點卡在已隱藏的彈窗裡
+    function close(returnFocus) {
+      if (popover.getAttribute("data-open") !== "true") return;
+      popover.removeAttribute("data-open");
+      toggle.setAttribute("aria-expanded", "false");
+      if (returnFocus) toggle.focus();
+    }
+
+    function open() {
+      popover.setAttribute("data-open", "true");
+      toggle.setAttribute("aria-expanded", "true");
+      var first = popover.querySelector("a[href]");
+      if (first) first.focus();
+    }
+
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (popover.getAttribute("data-open") === "true") close(false);
+      else open();
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!popover.contains(e.target) && e.target !== toggle) close(false);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") close(true);
+    });
+
+    // 彈窗只有一個連結，Tab 離開它（正向或反向）就自動關閉
+    popover.addEventListener("keydown", function (e) {
+      if (e.key !== "Tab") return;
+      close(false);
+    });
+  })();
+</script>

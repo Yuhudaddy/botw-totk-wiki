@@ -19,11 +19,12 @@ const zh = {
   searchPlaceholder: "搜尋技巧…",
   searchLabel: "搜尋",
 
-  // 語言切換
+  // 語言切換：彈窗裡顯示「另一個語言」的名稱，故意不用「日文」而用「日本語」——
+  // 語言選單通常用該語言自己的寫法標示自己，讀者找起來比翻譯過的名稱更直覺
   langLabel: "切換語言",
   themeToggleLabel: "切換深淺主題",
   langZh: "中文",
-  langJa: "日文",
+  langJa: "日本語",
 
   // 麵包屑
   breadcrumbHome: "首頁",
@@ -277,7 +278,7 @@ const ja: Record<keyof typeof zh, string> = {
 
   langLabel: "言語切り替え",
   themeToggleLabel: "テーマ切り替え",
-  langZh: "中国語",
+  langZh: "繁体中国語",
   langJa: "日本語",
 
   breadcrumbHome: "ホーム",
