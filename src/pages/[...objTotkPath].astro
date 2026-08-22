@@ -512,7 +512,9 @@ const mapTools = [
     .obj-hero-shell::after {
       content: "";
       position: absolute;
-      inset: 18px 18px 0;
+      /* 上緣要讓開浮動液態玻璃導覽列（top 10px + 高度 56px + 呼吸空間），
+         原本 18px 太靠近，看起來像框線是導覽列的一部分而不是這塊裝飾。 */
+      inset: 88px 18px 0;
       border: 1px solid var(--hero-frame);
       border-bottom: 0;
       pointer-events: none;
@@ -1507,7 +1509,9 @@ const mapTools = [
       }
 
       .obj-hero-shell::after {
-        inset: 10px 10px 0;
+        /* 這個寬度導覽列已經換行成兩排（top 8px + 高度約 96px），
+           要讓開更多 */
+        inset: 128px 10px 0;
       }
 
       .obj-hero-inner {
