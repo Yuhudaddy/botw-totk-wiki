@@ -65,7 +65,7 @@ const targetLabel = lang === "zh" ? t.langJa : t.langZh;
       >
         <a
           href={target}
-          class="flex items-center rounded-[5px] px-3 py-2.5 text-[14px] text-ink no-underline transition-colors hover:bg-sand"
+          class="ring-hover lang-option flex items-center rounded-[5px] px-3 py-2.5 text-[14px] text-ink no-underline"
         >
           {targetLabel}
         </a>
@@ -78,6 +78,21 @@ const targetLabel = lang === "zh" ? t.langJa : t.langZh;
   .lang-popover[data-open="true"] {
     pointer-events: auto;
     opacity: 1;
+  }
+
+  /* 沿用 .ring-hover 的旋轉漸層框當作 hover／鍵盤焦點指示，跟 Header
+     自己的分頁鈕同一套語言——這顆彈窗本來就是從 Header 長出來的。
+     .ring-hover 只處理 border/box-shadow，瀏覽器原生的 :focus 外框
+     是另一個屬性，這裡額外關掉，避免開啟彈窗時 JS 把焦點移過來的
+     瞬間跳出一圈突兀的系統藍框——鍵盤使用者仍會看到 :focus-visible
+     觸發的漸層框，不是拿掉指示，只是換掉樣式。 */
+  .lang-option {
+    outline: none;
+    transition: transform 160ms ease-out;
+  }
+
+  .lang-option:active {
+    transform: scale(0.97);
   }
 </style>
 
