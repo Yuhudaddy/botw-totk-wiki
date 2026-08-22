@@ -1,0 +1,130 @@
+---
+// 全站的希卡文字脈衝背景場：稀疏散布的字形以錯開的週期緩慢呼吸，
+// 像休眠中的希卡石板銘文。深色模式發英傑藍微光、淺色模式是銅刻。
+//
+// 設計約束（參考 ultrabroken 站實測值：其字符透明度最高僅 0.09）：
+// 透明度峰值壓在 0.10 以下，字符永遠是「體感」而不是「圖案」，
+// 鋪在內文正後方也不干擾閱讀；窄螢幕只縮小字級與密度、不整個隱藏。
+//
+// 佈局在 build 時以固定種子的 RNG 生成、烙進 HTML——零客戶端 JS，
+// 呼吸動畫全部交給 CSS；prefers-reduced-motion 時靜止在低透明度。
+import glyphData from "../data/sheikah-glyphs.json";
+
+// 用形狀差異大的字母子集，重複感比全字母表更低（sprite 也小一半）
+const GLYPH_KEYS = ["a", "d", "e", "g", "k", "m", "o", "r", "s", "t", "u", "w", "y", "z", "!", "?"] as const;
+const COUNT = 54;
+
+// mulberry32：固定種子讓每次 build 的佈局一致，diff 才不會每次全變
+function rng(seed: number) {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = rng(20260823);
+
+const glyphs = Array.from({ length: COUNT }, () => {
+  const key = GLYPH_KEYS[Math.floor(rand() * GLYPH_KEYS.length)];
+  return {
+    key,
+    left: +(rand() * 97).toFixed(2),          // vw %
+    top: +(rand() * 96).toFixed(2),           // svh %
+    size: Math.round(18 + rand() * 22),       // px（桌面基準，媒體查詢再縮放）
+    dur: +(7 + rand() * 6).toFixed(1),        // 呼吸週期 7~13s
+    delay: +(rand() * 12).toFixed(1),         // 錯開起始
+    rot: Math.round(rand() * 8 - 4),          // 輕微歪斜，像手刻
+  };
+});
+---
+
+<div class="sheikah-field" aria-hidden="true">
+  {/* 字形定義一次、以 use 重複引用，HTML 體積只算一份路徑 */}
+  <svg class="sheikah-defs" focusable="false">
+    <defs>
+      {GLYPH_KEYS.map((k) => (
+        <symbol id={`sk-${k === "!" ? "ex" : k === "?" ? "q" : k}`} viewBox={glyphData[k].viewBox}>
+          <path d={glyphData[k].d} fill="currentColor" />
+        </symbol>
+      ))}
+    </defs>
+  </svg>
+  {glyphs.map((g) => (
+    <svg
+      class="sheikah-glyph"
+      style={`left:${g.left}%;top:${g.top}%;--s:${g.size};--d:${g.dur}s;--dl:-${g.delay}s;--r:${g.rot}deg`}
+      viewBox={`0 0 ${glyphData[g.key].w} ${glyphData[g.key].h}`}
+    >
+      <use href={`#sk-${g.key === "!" ? "ex" : g.key === "?" ? "q" : g.key}`} />
+    </svg>
+  ))}
+</div>
+
+<style>
+  .sheikah-field {
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* 內容之後、筆刷紋理（-2）之前 */
+    overflow: hidden;
+    pointer-events: none;
+    /* 淺色：銅刻；深色在下方換英傑藍 */
+    color: #8f6d25;
+    --peak: 0.13;
+  }
+
+  :global([data-theme="dark"]) .sheikah-field {
+    color: #2991ff;
+    --peak: 0.14;
+  }
+
+  .sheikah-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  .sheikah-glyph {
+    position: absolute;
+    width: calc(var(--s) * 1px);
+    aspect-ratio: 57 / 57;
+    transform: rotate(var(--r));
+    opacity: 0.02;
+    animation: sheikah-breathe var(--d) ease-in-out var(--dl) infinite;
+  }
+
+  @keyframes sheikah-breathe {
+    0%,
+    100% {
+      opacity: 0.02;
+    }
+    50% {
+      opacity: var(--peak);
+    }
+  }
+
+  /* 窄螢幕：縮小字級並降密度（藏掉 1/3），比例照顯示 */
+  @media (max-width: 900px) {
+    .sheikah-glyph {
+      width: calc(var(--s) * 0.72px);
+    }
+    .sheikah-glyph:nth-child(3n) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .sheikah-glyph {
+      width: calc(var(--s) * 0.55px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheikah-glyph {
+      animation: none;
+      opacity: 0.05;
+    }
+  }
+</style>
