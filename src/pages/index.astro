@@ -47,7 +47,7 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
     {/* Google Search Console 的擁有權驗證。這串不是機密（本來就公開在原始碼裡），
         但不能刪——刪掉 Google 會判定驗證失效，Search Console 的資料就斷了。 */}
     <meta name="google-site-verification" content="WZrHSF2yf3HQZ-aEsslluBQvRXB3zK6FG0TjTfy_63o" />
-    <meta name="theme-color" content="#121413" />
+    <meta name="theme-color" content="#0f0304" />
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
     <link rel="canonical" href={canonicalUrl} />
@@ -301,51 +301,48 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
       :root,
       :root[data-theme="dark"] {
         color-scheme: dark;
-        /* 色相統一走 150（綠）。底色與文字的 chroma 壓到接近 0，
-           讓畫面讀起來是中性的深灰而不是綠灰；只有強調色才吃得到彩度。 */
-        --entrance-bg: oklch(14% 0.004 150);
-        --entrance-bg-deep: oklch(10% 0.004 150);
-        --entrance-bg-soft: oklch(18% 0.006 150);
-        --entrance-surface: oklch(24% 0.012 150);
-        --entrance-text: oklch(95% 0.006 150);
-        --entrance-text-soft: oklch(77% 0.012 150);
-        --entrance-text-faint: oklch(64% 0.01 150);
-        --entrance-line: oklch(63% 0.02 150 / 0.28);
-        --entrance-line-strong: oklch(72% 0.04 150 / 0.46);
-        --entrance-accent: oklch(72% 0.1 150);
-        --entrance-accent-bright: oklch(82% 0.09 148);
-        --entrance-accent-deep: oklch(56% 0.1 152);
-        /* YUDA 密碼字母命中時的專用色。命中字母是完全蓋住原本字形的疊層，
-           所以真正決定對比的是「這個顏色 vs 頁面底色」，不是 vs 標題漸層。
-           deep改用暖金當時解決了跟標題撞色的問題，但橘配這個站現在的全綠
-           色票看起來突兀——這個站才剛把橘色清乾淨。改成明暗反差：
-           深色模式閃純白、淺色模式閃近墨黑，光暈才用綠色，色相上不新增
-           跟綠競爭的第二個顏色，反差來自明暗而不是色相對撞。 */
-        --entrance-secret-hit: oklch(98% 0 0);
+        /* 希卡色系：底色走深棕（hue ~30、低彩度，BotW 官網同族），
+           中性文字帶乳白暖調，互動強調用英傑藍（hue ~255）。 */
+        --entrance-bg: oklch(13% 0.018 30);
+        --entrance-bg-deep: oklch(9% 0.02 25);
+        --entrance-bg-soft: oklch(17% 0.025 30);
+        --entrance-surface: oklch(23% 0.03 30);
+        --entrance-text: oklch(96% 0.03 100);
+        --entrance-text-soft: oklch(78% 0.03 90);
+        --entrance-text-faint: oklch(65% 0.025 85);
+        --entrance-line: oklch(65% 0.04 85 / 0.28);
+        --entrance-line-strong: oklch(74% 0.07 90 / 0.46);
+        --entrance-accent: oklch(66% 0.17 255);
+        --entrance-accent-bright: oklch(75% 0.14 250);
+        --entrance-accent-deep: oklch(52% 0.17 258);
+        /* YUDA 密碼字母命中：亮英傑藍——點中字母像啟動神廟，休眠銘文
+           轉為喚醒的藍光。標題漸層現在是乳白→希卡土的暖色系，
+           藍色命中在色相上跟標題完全分開，不會再混在一起。 */
+        --entrance-secret-hit: oklch(75% 0.15 250);
         /* 背景環境光暈專用（YUDA 粒子周圍的大片朦朧光），與上面三個
            --entrance-accent* 分開，不影響按鈕圖示、游標、對焦框等 UI 強調色。
            深色模式：純白霧（chroma 0，不帶任何色相）；淺色模式見下方 light 區塊。 */
         --entrance-glow-1: oklch(93% 0 0);
         --entrance-glow-2: oklch(96% 0 0);
         --entrance-glow-3: oklch(98% 0 0);
-        --entrance-button-primary: oklch(27% 0.03 150);
-        --entrance-button-primary-text: oklch(95% 0.006 150);
-        --entrance-button-secondary: oklch(19% 0.008 150);
-        --entrance-focus: oklch(83% 0.11 148);
-        --entrance-particle-glow: oklch(76% 0.09 150 / 0.25);
-        --entrance-shadow: oklch(6% 0.003 150 / 0.38);
-        --entrance-glass-fill: oklch(96% 0.004 150 / 0.065);
-        --entrance-glass-edge: oklch(79% 0.03 150 / 0.42);
-        --entrance-glass-edge-bright: oklch(98% 0.003 150 / 0.5);
+        --entrance-button-primary: oklch(26% 0.045 35);
+        --entrance-button-primary-text: oklch(96% 0.03 100);
+        --entrance-button-secondary: oklch(18% 0.025 30);
+        --entrance-focus: oklch(75% 0.14 250);
+        --entrance-particle-glow: oklch(74% 0.12 255 / 0.25);
+        --entrance-shadow: oklch(5% 0.01 30 / 0.4);
+        --entrance-glass-fill: oklch(96% 0.01 90 / 0.065);
+        --entrance-glass-edge: oklch(80% 0.06 90 / 0.42);
+        --entrance-glass-edge-bright: oklch(98% 0.008 90 / 0.5);
         --entrance-glass-sheen: oklch(100% 0 0 / 0.28);
         --entrance-glass-reflection: oklch(100% 0 0 / 0.22);
-        --entrance-glass-shadow: oklch(4% 0.003 150 / 0.34);
-        /* 標題漸層：白 → 淺灰綠 → 淺柔綠 → 草綠 */
+        --entrance-glass-shadow: oklch(4% 0.01 30 / 0.34);
+        /* 標題漸層：白 → 乳白 → 淡希卡土 → 希卡土（ZELDA logo 的暖乳白族） */
         --entrance-title-gradient-a: #ffffff;
-        --entrance-title-gradient-b: #cfe0d1;
-        --entrance-title-gradient-c: #8fc49b;
-        --entrance-title-gradient-d: #6ba173;
-        --entrance-theme-color: #121413;
+        --entrance-title-gradient-b: #fffde6;
+        --entrance-title-gradient-c: #efd9a8;
+        --entrance-title-gradient-d: #dcbf7c;
+        --entrance-theme-color: #0f0304;
         --cursor-x: -100px;
         --cursor-y: -100px;
         --cursor-dot-x: -100px;
@@ -359,39 +356,40 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         --entrance-bg-deep: #fff;
         --entrance-bg-soft: #fff;
         --entrance-surface: #fff;
-        --entrance-text: oklch(27% 0.02 150);
-        --entrance-text-soft: oklch(42% 0.02 150);
-        --entrance-text-faint: oklch(50% 0.018 150);
-        --entrance-line: oklch(53% 0.03 150 / 0.24);
-        --entrance-line-strong: oklch(51% 0.05 150 / 0.4);
-        --entrance-accent: oklch(50% 0.1 150);
-        --entrance-accent-bright: oklch(60% 0.11 148);
-        --entrance-accent-deep: oklch(40% 0.09 152);
-        /* 同上，淺色模式底是白的，改閃近墨黑，光暈同樣用綠 */
-        --entrance-secret-hit: oklch(16% 0.01 150);
+        --entrance-text: oklch(28% 0.02 35);
+        --entrance-text-soft: oklch(43% 0.02 40);
+        --entrance-text-faint: oklch(51% 0.02 45);
+        --entrance-line: oklch(55% 0.04 80 / 0.26);
+        --entrance-line-strong: oklch(50% 0.06 85 / 0.4);
+        --entrance-accent: oklch(48% 0.16 255);
+        --entrance-accent-bright: oklch(58% 0.15 252);
+        --entrance-accent-deep: oklch(40% 0.15 258);
+        /* 淺色底命中同樣走英傑藍，取加深版才有對比 */
+        --entrance-secret-hit: oklch(50% 0.17 255);
         /* 淺色模式的光暈跟深色模式方向相反：深色是白霧疊在暗底上，
-           淺色底是白的，白霧會完全看不見，必須改用中深的綠才浮得出來。 */
-        --entrance-glow-1: oklch(50% 0.1 152);
-        --entrance-glow-2: oklch(62% 0.11 148);
-        --entrance-glow-3: oklch(74% 0.09 145);
-        --entrance-button-primary: oklch(92% 0.03 148);
-        --entrance-button-primary-text: oklch(30% 0.06 150);
+           淺色底是白的，白霧會完全看不見。改用中深的希卡金——
+           休眠神廟的暖光，與深色模式的白霧成日夜對照。 */
+        --entrance-glow-1: oklch(52% 0.1 80);
+        --entrance-glow-2: oklch(64% 0.11 85);
+        --entrance-glow-3: oklch(75% 0.09 90);
+        --entrance-button-primary: oklch(93% 0.04 90);
+        --entrance-button-primary-text: oklch(32% 0.06 40);
         --entrance-button-secondary: #fff;
-        --entrance-focus: oklch(45% 0.12 150);
-        --entrance-particle-glow: oklch(55% 0.1 150 / 0.17);
-        --entrance-shadow: oklch(48% 0.02 150 / 0.14);
+        --entrance-focus: oklch(45% 0.16 255);
+        --entrance-particle-glow: oklch(55% 0.09 85 / 0.17);
+        --entrance-shadow: oklch(45% 0.03 60 / 0.14);
         --entrance-glass-fill: oklch(100% 0 0 / 0.12);
-        --entrance-glass-edge: oklch(77% 0.015 150 / 0.38);
+        --entrance-glass-edge: oklch(78% 0.03 85 / 0.38);
         --entrance-glass-edge-bright: oklch(100% 0 0 / 0.82);
         --entrance-glass-sheen: oklch(100% 0 0 / 0.66);
         --entrance-glass-reflection: oklch(100% 0 0 / 0.7);
-        --entrance-glass-shadow: oklch(62% 0.01 150 / 0.1);
+        --entrance-glass-shadow: oklch(62% 0.02 70 / 0.1);
         /* 標題漸層在淺色模式必須自己一組：深色那組以純白起頭，
-           疊在白底上等於看不見，原本就是這個狀況。改為由深到淺的綠。 */
-        --entrance-title-gradient-a: #2e5a3a;
-        --entrance-title-gradient-b: #3f7550;
-        --entrance-title-gradient-c: #56906a;
-        --entrance-title-gradient-d: #79ab8a;
+           疊在白底上等於看不見。改為由深到淺的銅棕（休眠銘文的顏色）。 */
+        --entrance-title-gradient-a: #4a3520;
+        --entrance-title-gradient-b: #6b4e28;
+        --entrance-title-gradient-c: #8f6d25;
+        --entrance-title-gradient-d: #b8923a;
         --entrance-theme-color: #f6f6f4;
       }
 
@@ -1936,7 +1934,7 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
             themeButton.setAttribute("aria-label", theme === "dark" ? t.toLight : t.toDark);
           }
           if (themeMeta) {
-            themeMeta.setAttribute("content", theme === "dark" ? "#121413" : "#f6f6f4");
+            themeMeta.setAttribute("content", theme === "dark" ? "#0f0304" : "#f6f6f4");
           }
         }
 
@@ -2181,21 +2179,21 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
 
         var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
         var palettes = {
-          // 深色模式：白 / 灰 / 草綠 / 淺柔綠。
+          // 深色模式：乳白 / 暖灰 / 英傑藍 / 希卡土。
           // 深色模式用 "lighter" 疊加，顏色越亮堆疊效果越明顯。
           dark: [
-            [246, 246, 244],
-            [170, 172, 168],
-            [124, 163, 116],
-            [186, 214, 182],
+            [255, 253, 230],
+            [176, 170, 155],
+            [88, 148, 235],
+            [220, 191, 124],
           ],
           // 淺色模式用 "source-over" 畫在白底上，必須反過來取深色，
           // 照抄深色那組會整片消失。
           light: [
-            [45, 88, 56],
-            [82, 124, 90],
-            [120, 128, 122],
-            [150, 170, 148],
+            [22, 80, 150],
+            [122, 94, 40],
+            [115, 110, 100],
+            [160, 140, 105],
           ],
         };
 
