@@ -120,6 +120,23 @@ input::placeholder {
   color: var(--muted);
 }
 
+/* ── 深色模式的官方筆刷紋理 ─────────────────────────────────
+   BotW 官網同款的暗色渦卷筆觸，鋪在深棕底上給暗處材質與深度——
+   死黑之所以有壓迫感是因為它是「空的」，紋理讓眼睛有東西可以落腳。
+   素材本身就是為這個底色設計的暗紋，不需要再壓透明度太多。
+   ocean 入口頁有自己的世界觀，排除。 */
+[data-theme="dark"] body:not(.ocean-page)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: url("/textures/botw-brush.avif") repeat;
+  background-size: 640px;
+  /* 0.55 在閱讀頁會跟內文搶注意力，壓到 0.35——遠看是材質、近看不干擾 */
+  opacity: 0.35;
+  pointer-events: none;
+}
+
 /* ── 導覽列圖示鈕（贊助 $ / 語言 / 深淺模式）─────────────────
    平時完全透明、沒有邊框也沒有底色，只有圖示本身；
    滑鼠移入才淡淡填一層底。填色用 color-mix 疊 --ink，
