@@ -178,12 +178,17 @@ const isCurrent = (i: TypeItem) => i.no === item.no;
     padding-top: 2px;
   }
 
+  /* 子項目縮排要清楚超過父項目「標題文字」的起點才看得出是更深一層。
+     實測父項目標題文字起點（連結左內距＋編號寬度＋flex gap）約在
+     連結自身左緣往右 33px 處；子項目用 UL margin-left 26px ＋
+     連結自身 border 2px ＋ padding-left 18px＝46px，留出約 13px
+     的清楚落差，不會看起來跟父項目同一層甚至更淺。 */
   .type-sidenav-sublist {
-    margin-left: 10px;
+    margin-left: 26px;
   }
 
   .type-sidenav-sublink {
-    padding-left: 12px;
+    padding-left: 18px;
     font-size: 12.5px;
   }
 </style>
