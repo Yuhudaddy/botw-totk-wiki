@@ -71,7 +71,7 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
           <span>/</span>
           <span class="text-ink">{t.typesGlossaryLink}</span>
         </div>
-        <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">{t.glossaryEyebrow}</div>
+        <div class="text-[11px] font-bold uppercase tracking-[2px] text-gold">{t.glossaryEyebrow}</div>
         <h1 class="mt-3.5 font-heading text-[44px] font-medium leading-[1.14] text-ink">{t.typesGlossaryLink}</h1>
         <p class="mt-[18px] max-w-[55ch] text-[16px] leading-[1.65] text-text">
           {t.glossaryIntro}
@@ -262,7 +262,7 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
     .glossary-filter[aria-pressed="true"] {
       border-color: var(--brand);
       background: var(--brand);
-      color: #f6f6f4;
+      color: var(--on-accent);
     }
 
     .glossary-toolbar {

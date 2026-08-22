@@ -40,7 +40,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
             <span>/</span>
             <span class="text-ink">{t.navTypes}</span>
           </div>
-          <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+          <div class="text-[11px] font-bold uppercase tracking-[2px] text-gold">
             {t.typesEyebrow}
           </div>
           <h1 class="r-types-h1 mb-[18px] mt-3.5 font-heading text-[44px] font-medium leading-[1.14] text-ink">
@@ -79,7 +79,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
               set:html={GAME_LOGOS[group.game].svg}
             />
             <div class="min-w-0">
-              <div class="text-[10px] font-bold tracking-[1.5px] text-accent">{group.shortEn ?? group.en}</div>
+              <div class="text-[10px] font-bold tracking-[1.5px] text-gold">{group.shortEn ?? group.en}</div>
               <div class="r-portal-title truncate font-heading font-medium leading-tight text-ink">
                 {groupShortLabel(group)}
               </div>
@@ -108,7 +108,7 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
               set:html={GAME_LOGOS[group.game].svg}
             />
             <div class="min-w-0">
-              <div class="text-[11px] font-bold uppercase tracking-[2px] text-accent">
+              <div class="text-[11px] font-bold uppercase tracking-[2px] text-gold">
                 {group.en}
               </div>
               <h2 class="r-type-group-title mt-1 truncate font-heading text-[28px] font-medium text-ink">
@@ -179,17 +179,17 @@ const groupShortLabel = (group: (typeof typeGroups)[number]) =>
      四段色由淺到深，深色主題整組往亮處移，否則最深的一段會沉進背景。 */
   .type-link {
     position: relative;
-    --u1: #a8d5b0;
-    --u2: #6ba173;
-    --u3: #356b41;
-    --u4: #23482c;
+    --u1: #9cc4f5;
+    --u2: #5fa3ec;
+    --u3: #1668c0;
+    --u4: #0f4a8f;
   }
 
   :global([data-theme="dark"]) .type-link {
-    --u1: #d3ead7;
-    --u2: #8fc49b;
-    --u3: #6ba173;
-    --u4: #4a7a55;
+    --u1: #bfdcff;
+    --u2: #6fb1ff;
+    --u3: #2991ff;
+    --u4: #1668c0;
   }
 
   .type-link::after {

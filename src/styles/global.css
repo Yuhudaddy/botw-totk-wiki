@@ -2,11 +2,15 @@
 
 /* ============================================================
    曠野・王國攻略 Wiki — 全域樣式
-   中性紙 × 海拉魯綠；雙主題以 [data-theme] 在執行階段切換。
+   希卡色系（BotW）；雙主題以 [data-theme] 在執行階段切換。
 
-   色彩原則：外框保持近中性、低彩度，讓遊戲截圖與影片提供顏色。
-   強調綠只用在連結、篩選標籤、目前頁指示等「線索」上；
-   主要行動按鈕一律用墨色（--ink），才不會在草地截圖上撞色。
+   色彩角色（借用神廟設定：休眠發橘光、喚醒發藍光）：
+   ・英傑藍 --accent：互動／喚醒——連結、active、focus、選取
+   ・希卡金 --gold：裝飾／結構——mono 小標、頂緣高光、贊助
+   ・乳白 --ink（深色模式）：標題的聲音，與 ZELDA logo 同色
+   ・深棕 --bg（深色模式）：地，上面鋪官方筆刷紋理
+   同一色相深淺模式各取不同明度：#2991FF 對乳白底只有 3.0:1，
+   淺色互動藍必須加深；希卡土 #DCBF7C 同理在淺色改銅色。
    ============================================================ */
 
 /* ── 執行階段主題變數（淺色 / 深色） ───────────────────────── */
@@ -22,10 +26,13 @@
   --ink-2: #33373b;
   --text: #565b60;
   --muted: #868b90;
-  --brand: #356b41;
-  --accent: #356b41;
-  --lang-tag: #3f6493;
-  --lang-tag-ja: #8a6220;
+  --brand: #1668c0;
+  --accent: #1668c0;
+  --gold: #8f6d25;
+  --gold-ink: #ffffff;
+  --on-accent: #ffffff;
+  --lang-tag: #2e6bb8;
+  --lang-tag-ja: #8f6d25;
   --mono-bg: #eeefec;
   --mono-text: #565b60;
   --ring: #c9cbc6;
@@ -33,24 +40,27 @@
 }
 
 [data-theme="dark"] {
-  --bg: #121413;
-  --surface: #1a1d1c;
-  --surface-2: #262a28;
-  --sand: #262a28;
-  --border: #232726;
-  --border-strong: #2e3331;
-  --ink: #f2f3f1;
-  --ink-2: #e2e4e0;
-  --text: #a8ada9;
-  --muted: #7d827e;
-  --brand: #6ba173;
-  --accent: #6ba173;
-  --lang-tag: #8fb2d9;
-  --lang-tag-ja: #d9b063;
-  --mono-bg: #262a28;
-  --mono-text: #a8ada9;
-  --ring: #454a47;
-  --shadow: rgba(0, 0, 0, 0.35);
+  --bg: #0f0304;
+  --surface: #1d1213;
+  --surface-2: #2b1d1e;
+  --sand: #2b1d1e;
+  --border: #291b1c;
+  --border-strong: #3a2a2b;
+  --ink: #fffde6;
+  --ink-2: #efe9d2;
+  --text: #cfc6b3;
+  --muted: #978d7c;
+  --brand: #2991ff;
+  --accent: #2991ff;
+  --gold: #dcbf7c;
+  --gold-ink: #241612;
+  --on-accent: #0f0304;
+  --lang-tag: #7fb0ee;
+  --lang-tag-ja: #dcbf7c;
+  --mono-bg: #2b1d1e;
+  --mono-text: #cfc6b3;
+  --ring: #4a3839;
+  --shadow: rgba(0, 0, 0, 0.45);
 }
 
 /* ── 把執行階段變數對映成 Tailwind token ──────────────────────
@@ -69,6 +79,8 @@
   --color-muted: var(--muted);
   --color-brand: var(--brand);
   --color-accent: var(--accent);
+  --color-gold: var(--gold);
+  --color-on-accent: var(--on-accent);
   --color-lang-tag: var(--lang-tag);
   --color-lang-tag-ja: var(--lang-tag-ja);
   --color-mono-bg: var(--mono-bg);
@@ -101,7 +113,7 @@ body {
 
 ::selection {
   background: var(--brand);
-  color: #f6f6f4;
+  color: var(--on-accent);
 }
 
 input::placeholder {
