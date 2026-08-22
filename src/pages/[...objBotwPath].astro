@@ -519,10 +519,12 @@ const mapTools = [
     .obj-hero-shell::after {
       content: "";
       position: absolute;
-      /* 上緣要讓開浮動液態玻璃導覽列（top 10px + 高度 56px + 呼吸空間），
-         原本 18px 太靠近，看起來像框線是導覽列的一部分而不是這塊裝飾。 */
+      /* 上緣要讓開浮動液態玻璃導覽列（top 10px + 高度 56px + 呼吸空間） */
       inset: 88px 18px 0;
       border: 1px solid var(--hero-frame);
+      /* 只留左右兩道內框線當裝飾；上下都不畫——上緣本來就離導覽列很近，
+         一條橫線在那裡很容易被誤認成導覽列自己的邊框或殘留線。 */
+      border-top: 0;
       border-bottom: 0;
       pointer-events: none;
       z-index: 31;
@@ -577,7 +579,10 @@ const mapTools = [
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding-block: 28px 42px;
+      /* 上邊界要清浮動導覽列（top 10px + 高度 56px≈66px）：原本 28px
+         比這個還小，麵包屑會被半透明的玻璃蓋住一截。留多一點呼吸空間，
+         避免文字內容跟導覽列的框貼在一起。 */
+      padding-block: 84px 42px;
     }
 
     .obj-breadcrumb {
@@ -1523,7 +1528,8 @@ const mapTools = [
       }
 
       .obj-hero-inner {
-        padding-block: 20px 16px;
+        /* 這個寬度導覽列已換行成兩排（top 8px + 高度約 96px≈104px） */
+        padding-block: 120px 16px;
       }
 
       /* 原本這裡疊加了 padding-top:52px，跟 margin-block:auto 的置中效果
