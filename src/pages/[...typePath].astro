@@ -1022,9 +1022,9 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     /* sticky 掛在內層：外層要撐滿整頁高度才有讓它「黏」的空間 */
     .type-sidenav > * {
       position: sticky;
-      /* 導覽列 64px + 呼吸 */
-      top: 88px;
-      max-height: calc(100vh - 112px);
+      /* 浮動玻璃導覽列：上方留白 10px + 高度 56px + 呼吸 */
+      top: 82px;
+      max-height: calc(100vh - 106px);
       overflow-y: auto;
       overscroll-behavior: contain;
     }

@@ -26,11 +26,12 @@ const navLabelKey = {
 } as const;
 ---
 
-<header class="site-header sticky top-0 z-50 border-b border-border-soft">
-  <div
-    class="r-navbar mx-auto flex h-16 max-w-[1244px] items-center gap-[26px] px-8"
-  >
-    <a href={href("/home", lang)} class="flex items-center gap-2.5 no-underline">
+<header class="site-header">
+  <div class="r-navbar flex h-14 items-center gap-[26px]">
+    <a
+      href={href("/home", lang)}
+      class="flex flex-none items-center gap-2.5 whitespace-nowrap no-underline"
+    >
       <BrandMark />
       <span class="font-heading text-lg font-medium text-ink">{SITE.shortTitle}</span>
     </a>
@@ -96,40 +97,231 @@ const navLabelKey = {
   </div>
 </header>
 
+{/* 液態玻璃的位移濾鏡。三次 feDisplacementMap 用略微不同的位移量分別套在
+    R / G / B 三個通道上再合成，做出真實玻璃邊緣的色散（彩虹色偏）——
+    這是「液態玻璃」跟單純毛玻璃的差別，模糊做不出這個。
+    貼圖與濾鏡範圍由下方的 script 依導覽列實際尺寸生成。 */}
+<svg class="glass-defs" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="glass-nav" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feImage id="glass-nav-map" result="map"></feImage>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="map"
+        xChannelSelector="R"
+        yChannelSelector="G"
+        scale="20"
+        result="chR"></feDisplacementMap>
+      <feColorMatrix
+        in="chR"
+        type="matrix"
+        values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+        result="onlyR"></feColorMatrix>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="map"
+        xChannelSelector="R"
+        yChannelSelector="G"
+        scale="23"
+        result="chG"></feDisplacementMap>
+      <feColorMatrix
+        in="chG"
+        type="matrix"
+        values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+        result="onlyG"></feColorMatrix>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="map"
+        xChannelSelector="R"
+        yChannelSelector="G"
+        scale="26"
+        result="chB"></feDisplacementMap>
+      <feColorMatrix
+        in="chB"
+        type="matrix"
+        values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+        result="onlyB"></feColorMatrix>
+      <feComposite
+        in="onlyR"
+        in2="onlyG"
+        operator="arithmetic"
+        k1="0"
+        k2="1"
+        k3="1"
+        k4="0"
+        result="rg"></feComposite>
+      <feComposite
+        in="rg"
+        in2="onlyB"
+        operator="arithmetic"
+        k1="0"
+        k2="1"
+        k3="1"
+        k4="0"></feComposite>
+    </filter>
+  </defs>
+</svg>
+
 <style>
-  /* 毛玻璃：捲動時內容從導覽列底下透出來並被模糊掉。
-     不需要 scroll 監聽——停在頁首時底下本來就沒有東西，
-     看起來就跟不透明底一樣，往下捲才會出現霧感。
+  /* ── 浮動液態玻璃導覽列 ─────────────────────────────────────
+     整條導覽列是一顆浮在內容之上的玻璃膠囊，不再是貼齊視窗上緣的滿版橫條。
+     左右各留 16px、上方留 10px，捲動時內容從它底下穿過。
 
-     內容寬度維持與頁面同樣的 1244px 置中，不做整頁全寬：
-     下方內容是 1244px 欄寬，Header 全寬會讓 logo 離內容左緣很遠。
-
-     第一版用 72% 不透明 + 14px 模糊，效果太保守——大部分頁面底色本身
-     就偏淺、偏均勻，模糊了也看不太出差異。這版把透明度降低、模糊與
-     飽和度都加大，讓「毛玻璃」在停留於頁首時就有感，而不是只有捲動
-     經過色塊分明的區域才看得出來；另外加一層極輕的陰影，讓導覽列在
-     視覺上明確浮在內容之上（不需要 scroll 監聽也能有這個層次感）。 */
+     內容跟著膠囊走（接近全寬），刻意不跟下方 1244px 內容欄對齊——
+     膠囊是浮在內容上的獨立物件，對不齊是它「浮著」的一部分。
+     超寬螢幕仍封頂在 1800px，否則兩端的 logo 與按鈕會離得太遠。 */
   .site-header {
-    background: var(--bg);
+    position: sticky;
+    top: 10px;
+    z-index: 50;
+    width: calc(100% - 32px);
+    max-width: 1800px;
+    margin: 10px auto 0;
+    border-radius: 999px;
+    /* 基礎樣式＝「已凝結」的可讀狀態。不支援捲動時間軸的瀏覽器停在這裡，
+       拿到的是清楚可讀的版本，而不是頁首那個極透明的狀態。 */
+    background: color-mix(in srgb, var(--bg) 62%, transparent);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    backdrop-filter: blur(18px) saturate(1.5);
+    box-shadow:
+      /* 外框細線 */
+      0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
+      /* 內圈亮邊：玻璃的「厚度」 */
+      inset 0 0 0 1px rgb(255 255 255 / 0.34),
+      /* 頂緣高光帶一絲品牌綠，像網站的強調色在玻璃裡折出的光 */
+      inset 0 1.5px 0 0 color-mix(in srgb, var(--accent) 20%, rgb(255 255 255 / 0.6)),
+      /* 底緣反光：下方內容打上來的光 */
+      inset 0 -1px 0 0 rgb(255 255 255 / 0.24),
+      /* 兩側側光 */
+      inset 1px 0 0 0 rgb(255 255 255 / 0.22),
+      inset -1px 0 0 0 rgb(255 255 255 / 0.22),
+      /* 內部柔光 */
+      inset 0 0 18px 0 rgb(255 255 255 / 0.1),
+      /* 投影：讓它真的「浮」起來 */
+      0 6px 24px color-mix(in srgb, var(--ink) 11%, transparent);
   }
 
-  /* 不支援 backdrop-filter 時退回不透明底，否則會變成半透明沒模糊、
-     文字疊在捲動內容上完全無法讀。 */
-  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-    .site-header {
-      background: color-mix(in srgb, var(--bg) 58%, transparent);
-      -webkit-backdrop-filter: blur(22px) saturate(1.6);
-      backdrop-filter: blur(22px) saturate(1.6);
-      box-shadow: 0 1px 32px color-mix(in srgb, var(--ink) 7%, transparent);
+  /* 深色主題的白色高光要收斂，否則玻璃邊緣會過亮、像描了一圈白框 */
+  :global([data-theme="dark"]) .site-header {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent),
+      inset 0 0 0 1px rgb(255 255 255 / 0.16),
+      inset 0 1.5px 0 0 color-mix(in srgb, var(--accent) 26%, rgb(255 255 255 / 0.3)),
+      inset 0 -1px 0 0 rgb(255 255 255 / 0.1),
+      inset 1px 0 0 0 rgb(255 255 255 / 0.09),
+      inset -1px 0 0 0 rgb(255 255 255 / 0.09),
+      inset 0 0 18px 0 rgb(255 255 255 / 0.05),
+      0 6px 26px rgb(0 0 0 / 0.34);
+  }
+
+  .r-navbar {
+    padding-inline: clamp(20px, 2.2vw, 38px);
+  }
+
+  /* 分頁名稱一律不換行：中等寬度（820〜1080px）時導覽列塞得下但很擠，
+     flex 會把連結壓到讓中文字一個字一行，寧可讓搜尋框先讓出寬度。 */
+  .r-navlist a {
+    white-space: nowrap;
+  }
+
+  /* 搜尋框是導覽列裡唯一可以彈性讓步的元素，改成隨視窗縮放；
+     logo、分頁、右側三顆按鈕都有各自的最小可用寬度，不能再壓。 */
+  .r-navsearch {
+    width: clamp(160px, 19vw, 300px);
+  }
+
+  /* 1100px 以下連縮到最小的搜尋框都放不下（日文分頁名稱又比中文寬），
+     與其把分頁擠到換行或溢出膠囊，不如讓搜尋框先退場——
+     影片索引頁本身就有完整的搜尋介面。 */
+  @media (max-width: 1100px) {
+    .r-navsearch {
+      display: none;
     }
   }
 
+  /* 折射版本：貼圖生成完成後由 script 掛上 .has-refraction，
+     避免有一瞬間 filter 指向還沒有內容的 feImage。
+     不支援 backdrop-filter: url() 的瀏覽器（Firefox、部分 Safari）
+     直接沿用上面的 blur 版本，不會壞掉，只是少了折射。 */
+  @supports (backdrop-filter: url("#glass-nav")) or (-webkit-backdrop-filter: url("#glass-nav")) {
+    .site-header.has-refraction {
+      /* 保留少量模糊：導覽列底下會經過遊戲截圖這類高對比內容，
+         純折射不模糊的話文字讀起來會很吃力 */
+      -webkit-backdrop-filter: url("#glass-nav") blur(5px) saturate(1.55);
+      backdrop-filter: url("#glass-nav") blur(5px) saturate(1.55);
+    }
+  }
+
+  /* 捲動凝結：停在頁首時玻璃很淡、幾乎不存在，往下捲時逐漸「凝結」。
+     用 CSS 捲動時間軸而非 scroll 監聽，零 JS、不會有捲動時的重繪抖動。
+     只動 background 與 box-shadow——backdrop-filter 掛著 url() 濾鏡，
+     一起動會讓每一格都重跑一次位移運算。 */
+  @supports (animation-timeline: scroll()) {
+    .site-header {
+      animation: header-condense linear both;
+      animation-timeline: scroll();
+      animation-range: 0 140px;
+    }
+
+    @keyframes header-condense {
+      from {
+        background: color-mix(in srgb, var(--bg) 34%, transparent);
+        box-shadow:
+          0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent),
+          inset 0 0 0 1px rgb(255 255 255 / 0.26),
+          inset 0 1.5px 0 0 color-mix(in srgb, var(--accent) 16%, rgb(255 255 255 / 0.44)),
+          inset 0 -1px 0 0 rgb(255 255 255 / 0.16),
+          inset 1px 0 0 0 rgb(255 255 255 / 0.14),
+          inset -1px 0 0 0 rgb(255 255 255 / 0.14),
+          inset 0 0 18px 0 rgb(255 255 255 / 0.07),
+          0 2px 10px color-mix(in srgb, var(--ink) 5%, transparent);
+      }
+    }
+
+    :global([data-theme="dark"]) .site-header {
+      animation: header-condense-dark linear both;
+      animation-timeline: scroll();
+      animation-range: 0 140px;
+    }
+
+    @keyframes header-condense-dark {
+      from {
+        background: color-mix(in srgb, var(--bg) 34%, transparent);
+        box-shadow:
+          0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
+          inset 0 0 0 1px rgb(255 255 255 / 0.12),
+          inset 0 1.5px 0 0 color-mix(in srgb, var(--accent) 20%, rgb(255 255 255 / 0.22)),
+          inset 0 -1px 0 0 rgb(255 255 255 / 0.07),
+          inset 1px 0 0 0 rgb(255 255 255 / 0.06),
+          inset -1px 0 0 0 rgb(255 255 255 / 0.06),
+          inset 0 0 18px 0 rgb(255 255 255 / 0.03),
+          0 2px 12px rgb(0 0 0 / 0.22);
+      }
+    }
+  }
+
+  .glass-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
   @media (max-width: 820px) {
+    .site-header {
+      width: calc(100% - 20px);
+      margin: 8px auto 0;
+      top: 8px;
+      /* 窄螢幕導覽列會換成兩行，高度變高；999px 在高盒子上會撐成
+         上下兩個大半圓，形狀怪異，改用固定圓角。 */
+      border-radius: 22px;
+    }
+
     .r-navbar {
       height: auto;
       flex-wrap: wrap;
       align-items: center;
-      padding: 10px 18px;
+      padding: 10px 16px;
       gap: 0;
     }
     /* Row 1 右側：ThemeToggle 推到最右，與 Logo 同行 */
@@ -179,4 +371,153 @@ const navLabelKey = {
       if (e.key === 'Enter') go();
     });
   })();
+</script>
+
+<script>
+  // ── 液態玻璃的位移貼圖 ──────────────────────────────────────
+  // feDisplacementMap 需要一張「位移貼圖」：R 通道決定水平位移、G 通道決定
+  // 垂直位移，128 表示不位移。這裡依導覽列的實際尺寸即時畫出一張——
+  // 邊緣附近把取樣點往內推（模擬光線通過玻璃邊緣被折彎），中央完全不動。
+  //
+  // 刻意不用預先產好的 PNG：貼圖必須跟元素同尺寸才對得準，寫死一張的話
+  // 換個視窗寬度就會整個歪掉。canvas 一次繪製只有幾毫秒，改成即時生成
+  // 反而更簡單也更準。
+  const header = document.querySelector<HTMLElement>(".site-header");
+  const feImage = document.getElementById("glass-nav-map");
+  const filter = document.getElementById("glass-nav");
+
+  if (header && feImage && filter) {
+    // 濾鏡範圍往外擴一圈，避免位移取樣到範圍外時邊緣出現硬切
+    const BLEED = 20;
+    // 折射帶寬度：從邊緣往內幾 px 之內才有位移
+    const BAND = 22;
+
+    /** 圓角矩形的有號距離場：負值在內部、0 在邊界、正值在外部 */
+    function roundedRectSDF(
+      px: number,
+      py: number,
+      halfW: number,
+      halfH: number,
+      radius: number,
+    ) {
+      const qx = Math.abs(px) - halfW + radius;
+      const qy = Math.abs(py) - halfH + radius;
+      return (
+        Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) +
+        Math.min(Math.max(qx, qy), 0) -
+        radius
+      );
+    }
+
+    function buildMap(width: number, height: number, cssRadius: number) {
+      const mapW = width + BLEED * 2;
+      const mapH = height + BLEED * 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = mapW;
+      canvas.height = mapH;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return null;
+
+      const image = ctx.createImageData(mapW, mapH);
+      const data = image.data;
+      const halfW = width / 2;
+      const halfH = height / 2;
+      // 圓角半徑取自元素實際的 border-radius，不能假設一定是膠囊——
+      // 窄螢幕導覽列換行變高、圓角改成固定的 22px，若這裡仍用「高度的一半」
+      // 算，貼圖的圓角就會跟元素對不上，四個角的折射會歪掉。
+      const radius = Math.min(cssRadius, halfW, halfH);
+      const cx = mapW / 2;
+      const cy = mapH / 2;
+
+      for (let y = 0; y < mapH; y += 1) {
+        for (let x = 0; x < mapW; x += 1) {
+          const px = x - cx;
+          const py = y - cy;
+          const sd = roundedRectSDF(px, py, halfW, halfH, radius);
+
+          let dx = 0;
+          let dy = 0;
+          const depth = -sd; // 距離邊界多深（內部為正）
+          if (depth > 0 && depth < BAND) {
+            // 用中央差分取 SDF 梯度＝邊界的外向法線
+            const gx =
+              roundedRectSDF(px + 1, py, halfW, halfH, radius) -
+              roundedRectSDF(px - 1, py, halfW, halfH, radius);
+            const gy =
+              roundedRectSDF(px, py + 1, halfW, halfH, radius) -
+              roundedRectSDF(px, py - 1, halfW, halfH, radius);
+            const len = Math.hypot(gx, gy) || 1;
+
+            // 越靠近邊緣位移越強，往內遞減到 0（smoothstep 讓過渡不出現硬邊）
+            let t = 1 - depth / BAND;
+            t = t * t * (3 - 2 * t);
+
+            // 取樣點往內推＝負的外向法線
+            dx = (-gx / len) * t;
+            dy = (-gy / len) * t;
+          }
+
+          const i = (y * mapW + x) * 4;
+          data[i] = 128 + dx * 127;
+          data[i + 1] = 128 + dy * 127;
+          data[i + 2] = 128;
+          data[i + 3] = 255;
+        }
+      }
+
+      ctx.putImageData(image, 0, 0);
+      return { url: canvas.toDataURL("image/png"), mapW, mapH };
+    }
+
+    let lastKey = "";
+
+    function refresh() {
+      const rect = header!.getBoundingClientRect();
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      if (width < 2 || height < 2) return;
+
+      // 圓角會隨斷點改變（膠囊 999px ↔ 窄螢幕 22px），一起納入比對的
+      // key，否則只有圓角變、尺寸沒變時貼圖不會重畫
+      const radius = parseFloat(
+        getComputedStyle(header!).borderTopLeftRadius,
+      ) || 0;
+
+      // 尺寸與圓角都沒變就不重畫（捲動凝結會改 box-shadow，但不動幾何）
+      const key = width + "x" + height + "r" + Math.round(radius);
+      if (key === lastKey) return;
+      lastKey = key;
+
+      const built = buildMap(width, height, radius);
+      if (!built) return;
+
+      const x = String(-BLEED);
+      const y = String(-BLEED);
+      filter!.setAttribute("x", x);
+      filter!.setAttribute("y", y);
+      filter!.setAttribute("width", String(built.mapW));
+      filter!.setAttribute("height", String(built.mapH));
+      feImage!.setAttribute("x", x);
+      feImage!.setAttribute("y", y);
+      feImage!.setAttribute("width", String(built.mapW));
+      feImage!.setAttribute("height", String(built.mapH));
+      feImage!.setAttribute("href", built.url);
+
+      // 貼圖備妥才啟用折射，避免有一瞬間 filter 指向空的 feImage
+      header!.classList.add("has-refraction");
+    }
+
+    refresh();
+
+    // 直接觀察導覽列本身而不是監聽 window resize：導覽列的尺寸不只受視窗寬度
+    // 影響，字型載入完成、窄螢幕換行、內容變動都會改變它，ResizeObserver
+    // 一次涵蓋所有情況。debounce 是因為拖曳視窗邊緣會連續觸發，
+    // 而每次重畫都要跑一次整張貼圖的逐像素運算。
+    let resizeTimer = 0;
+    const observer = new ResizeObserver(() => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(refresh, 120);
+    });
+    observer.observe(header);
+  }
 </script>
