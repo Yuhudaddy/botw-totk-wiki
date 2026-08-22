@@ -315,10 +315,13 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         --entrance-accent: oklch(72% 0.1 150);
         --entrance-accent-bright: oklch(82% 0.09 148);
         --entrance-accent-deep: oklch(56% 0.1 152);
-        /* YUDA 密碼字母命中時的專用色，刻意跟標題漸層（同一組綠）拉開色相——
-           兩者原本共用 --entrance-accent-bright，改成全綠色票後兩色幾乎融在
-           一起，看不出字母被點中。用互補的暖金，不管疊在漸層哪一段都能跳出來。 */
-        --entrance-secret-hit: oklch(84% 0.15 85);
+        /* YUDA 密碼字母命中時的專用色。命中字母是完全蓋住原本字形的疊層，
+           所以真正決定對比的是「這個顏色 vs 頁面底色」，不是 vs 標題漸層。
+           deep改用暖金當時解決了跟標題撞色的問題，但橘配這個站現在的全綠
+           色票看起來突兀——這個站才剛把橘色清乾淨。改成明暗反差：
+           深色模式閃純白、淺色模式閃近墨黑，光暈才用綠色，色相上不新增
+           跟綠競爭的第二個顏色，反差來自明暗而不是色相對撞。 */
+        --entrance-secret-hit: oklch(98% 0 0);
         /* 背景環境光暈專用（YUDA 粒子周圍的大片朦朧光），與上面三個
            --entrance-accent* 分開，不影響按鈕圖示、游標、對焦框等 UI 強調色。
            深色模式：純白霧（chroma 0，不帶任何色相）；淺色模式見下方 light 區塊。 */
@@ -364,8 +367,8 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         --entrance-accent: oklch(50% 0.1 150);
         --entrance-accent-bright: oklch(60% 0.11 148);
         --entrance-accent-deep: oklch(40% 0.09 152);
-        /* 同上，淺色模式標題漸層是深綠系，命中色一樣改用暖金拉開差異 */
-        --entrance-secret-hit: oklch(62% 0.15 68);
+        /* 同上，淺色模式底是白的，改閃近墨黑，光暈同樣用綠 */
+        --entrance-secret-hit: oklch(16% 0.01 150);
         /* 淺色模式的光暈跟深色模式方向相反：深色是白霧疊在暗底上，
            淺色底是白的，白霧會完全看不見，必須改用中深的綠才浮得出來。 */
         --entrance-glow-1: oklch(50% 0.1 152);
@@ -1126,8 +1129,12 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
       }
 
       .secret-letter.is-hit {
+        /* 字母本身閃明暗反差色（白/墨），光暈用綠——反差來自明暗，
+           不引入第二個跟綠競爭的色相 */
         color: var(--entrance-secret-hit);
-        text-shadow: 0 0 14px color-mix(in oklch, var(--entrance-secret-hit) 65%, transparent);
+        text-shadow:
+          0 0 16px color-mix(in oklch, var(--entrance-accent-bright) 70%, transparent),
+          0 0 4px color-mix(in oklch, var(--entrance-secret-hit) 50%, transparent);
       }
 
       .hero-support {
