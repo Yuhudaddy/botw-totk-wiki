@@ -31,6 +31,12 @@
   --border-strong: #d8d9d5;
   --ink: #14161a;
   --ink-2: #33373b;
+  /* 遊戲選擇卡（.portal）選中邊框專用：直接用 --ink 在淺色模式太接近
+     純黑（#14161a 幾乎沒有色相），讀起來像通用系統色，不像站內配色。
+     用 --gold 把它往希卡色系的暖棕調一些，選中狀態才看得出是「這個
+     網站的深色」而不是隨便一個黑框。深色模式的 --ink 本來就是暖乳白，
+     摻 --gold 影響很小，兩個主題視覺上維持一致邏輯。 */
+  --ink-warm: color-mix(in srgb, var(--ink) 55%, var(--gold) 45%);
   --text: #565b60;
   /* 原本是 #868b90，對頁面底色只有 3.18:1、對卡片白底 3.44:1，兩個都低於
      AA 對一般文字要求的 4.5:1——而這顆 token 全站到處在當次要文字用
@@ -61,6 +67,7 @@
   --border-strong: #3a2a2b;
   --ink: #fffde6;
   --ink-2: #efe9d2;
+  --ink-warm: color-mix(in srgb, var(--ink) 55%, var(--gold) 45%);
   --text: #cfc6b3;
   --muted: #978d7c;
   --brand: #03c1d5;

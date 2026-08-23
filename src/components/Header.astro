@@ -610,7 +610,22 @@ const navLabelKey = {
   const feImage = document.getElementById("glass-nav-map");
   const filter = document.getElementById("glass-nav");
 
-  if (header && feImage && filter) {
+  // ── WebKit 必須排除在折射之外 ────────────────────────────────
+  // Safari（含 iOS 上所有瀏覽器，它們都是 WKWebView）在這件事上會說謊：
+  // `@supports (backdrop-filter: url(...))` 與 `CSS.supports(...)` 都回報
+  // true，但實際渲染時解析不了這個濾鏡參照，於是**整條 backdrop-filter
+  // 被判定無效而整個丟棄**——連同一行裡的 blur() 和 saturate() 一起沒了。
+  // 結果不是「少了折射」，而是玻璃完全消失、變成一片沒有模糊的半透明色板，
+  // 背後的深色內容直接透出來（iPhone 17 Pro 模擬器實測確認：純 blur 的
+  // 對照組正常糊化，換成 url()+blur 就完全不糊）。
+  //
+  // 因為兩種 supports 查詢都不可信，只能改判斷引擎。navigator.vendor 在
+  // Safari 與 iOS 版 Chrome／Firefox 都是 "Apple Computer, Inc."，桌面版
+  // Chromium 是 "Google Inc."、Firefox 是空字串，剛好對應「誰真的能用」。
+  // 排除後會落回上面那組純 blur 的基礎樣式，那是實測正常的。
+  const isWebKit = navigator.vendor === "Apple Computer, Inc.";
+
+  if (header && feImage && filter && !isWebKit) {
     // 濾鏡範圍往外擴一圈，避免位移取樣到範圍外時邊緣出現硬切
     const BLEED = 20;
     // 折射帶寬度：從邊緣往內幾 px 之內才有位移
