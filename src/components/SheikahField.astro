@@ -70,13 +70,15 @@ const glyphs = Array.from({ length: COUNT }, () => {
     z-index: -1; /* 內容之後、筆刷紋理（-2）之前 */
     overflow: hidden;
     pointer-events: none;
-    /* 淺色：銅刻；深色在下方換英傑藍 */
-    color: #8f6d25;
+    /* 淺色吃 --gold（銅刻）、深色吃 --brand（希卡青）。這兩顆 token 本身
+       就會隨 [data-theme] 換值，所以只有透明度需要各寫一次；顏色不要在這裡
+       複寫成字面色碼，否則下次調色盤一動，這個檔案會被漏掉。 */
+    color: var(--gold);
     --peak: 0.13;
   }
 
   :global([data-theme="dark"]) .sheikah-field {
-    color: #03c1d5;
+    color: var(--brand);
     --peak: 0.14;
   }
 
