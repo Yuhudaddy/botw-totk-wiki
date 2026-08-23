@@ -16,7 +16,8 @@
     "media:verify": "node scripts/media-manifest.mjs --verify",
     "media:verify-refs": "node --experimental-strip-types scripts/media-manifest.mjs --verify-references",
     "ja:draft": "node --experimental-strip-types scripts/gen-ja-draft.mjs",
-    "og:gen": "node scripts/gen-og-image.mjs"
+    "og:gen": "node scripts/gen-og-image.mjs",
+    "data:verify": "node --experimental-strip-types scripts/verify-data.mjs"
   },
   "engines": {
     "node": ">=22.6"
