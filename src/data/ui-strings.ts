@@ -58,6 +58,8 @@ const zh = {
   principleFallbackTemplate: "本系列說明「{name}」的基本概念與適用範圍。操作前請確認遊戲版本，部分技巧僅限特定版本可用。",
   sectionModel: "地圖模型",
   sectionControls: "操作方式",
+  /** 流程地圖下方的操作說明改成可收合的下拉選單，用獨立字串跟 3D 模型那組的 sectionControls 區隔，不影響它 */
+  flowMapSectionControls: "操作方式一覽",
   sectionFlowMap: "參照流程地圖",
   flowMapToggleLayers: "切換地圖圖層",
   flowMapStatusDefault: "點擊步驟前的圓形按鈕，在地圖上顯示該步驟的行為",
@@ -318,6 +320,7 @@ const ja: Record<keyof typeof zh, string> = {
   principleFallbackTemplate: "このシリーズでは「{name}」の基本概念と適用範囲を解説する。操作前にゲームのバージョンを確認すること。一部のテクニックは特定のバージョンでのみ使用可能。",
   sectionModel: "マップモデル",
   sectionControls: "操作方法",
+  flowMapSectionControls: "操作方法一覧",
   sectionFlowMap: "参照フローマップ",
   flowMapToggleLayers: "マップレイヤーを切り替える",
   flowMapStatusDefault: "手順の前にある丸いボタンを押すと、マップ上にその手順の内容が表示されます",
