@@ -5,7 +5,7 @@ import Model3DViewer from "../components/Model3DViewer.astro";
 import FlowMapViewer from "../components/FlowMapViewer.astro";
 import LaunchFamilyNav from "../components/LaunchFamilyNav.astro";
 import TypeSideNav from "../components/TypeSideNav.astro";
-import { href, ytThumb, ytWatch, MEDIA_BASE } from "../lib/url";
+import { href, ytThumb, ytThumbFallback, ytWatch, MEDIA_BASE } from "../lib/url";
 import { typeGroups, typeFamilies, gameLabelFor, type TypeItem, type TypeGroup } from "../data/types";
 import { typeContent, type TypeMethod, type TermGroup, type VideoGroup } from "../data/type-content";
 import { uiStrings, type Lang } from "../data/ui-strings";
@@ -859,6 +859,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                   <div class="relative flex-none">
                     <img
                       src={ytThumb(v.id)}
+                      onerror={`this.onerror=null;this.src='${ytThumbFallback(v.id)}'`}
                       alt={v.title}
                       loading="lazy"
                       class="h-[79px] w-[140px] rounded-[5px] bg-sand object-cover"
@@ -927,6 +928,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               <div class="relative flex-none">
                 <img
                   src={ytThumb(v.id)}
+                  onerror={`this.onerror=null;this.src='${ytThumbFallback(v.id)}'`}
                   alt={v.title}
                   loading="lazy"
                   class="h-[79px] w-[140px] rounded-[5px] bg-sand object-cover"

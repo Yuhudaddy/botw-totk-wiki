@@ -1,0 +1,44 @@
+# Cloudflare Workers Static Assets 的自訂回應標頭。
+# Astro 會把 public/ 原樣複製進 dist/，而 wrangler.jsonc 的 assets.directory
+# 指向 ./dist，所以這個檔案會被 Cloudflare 讀到。此部署沒有 Worker script
+# （wrangler.jsonc 只有 assets、沒有 main），全部請求都是靜態資產，
+# 不受官方文件「不套用於 Worker 產生的回應」那條限制影響。
+#
+# ※ 這裡刻意不設 Strict-Transport-Security。HSTS 要在 Cloudflare 儀表板的
+#   zone 層級開（SSL/TLS → Edge Certificates → HSTS），那裡才涵蓋 apex 與
+#   media 子網域；從 www 這個 Worker 發 HSTS 只管得到 www 自己，而且日後
+#   兩邊都設會送出重複標頭。
+
+/*
+  # 禁止瀏覽器用內容猜測覆寫 Content-Type。這是零風險、零副作用的一條。
+  X-Content-Type-Options: nosniff
+
+  # 跨站導覽時只送出來源網域，不送完整路徑與查詢字串——站上有大量外連
+  # （YouTube／Discord／各攻略站），預設行為會把使用者正在看哪一頁、
+  # 甚至站內搜尋關鍵字一起送給對方。
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # 這站不該被任何人嵌進 iframe。全站零 iframe，設 none 沒有副作用。
+  X-Frame-Options: DENY
+
+  # 關掉不需要的瀏覽器功能，減少未來被夾帶利用的面。
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()
+
+  # ── CSP ──────────────────────────────────────────────────────────
+  # 誠實說明它在這裡的價值與極限：
+  # 站上有 7 段內聯 <script>（主題初始化、玻璃濾鏡等）與大量 style 屬性，
+  # 靜態輸出又拿不到 nonce，所以 script-src/style-src 必須帶 'unsafe-inline'。
+  # 這代表 CSP 擋不住「注入內聯腳本」這種攻擊。
+  # 它真正擋得住的是：從外部網域載入腳本、<base> 竄改、外掛物件、
+  # 被嵌進 iframe、表單被劫持到外部——也就是萬一建置管線或某個檔案
+  # 被動手腳時，限縮爆炸半徑。以這個沒有登入、沒有 cookie、沒有使用者
+  # 資料的站來說，這是縱深防禦而不是修補既有漏洞。
+  #
+  # 來源清單全部照實際建置產物掃出來，不是憑印象寫的：
+  #   img.youtube.com      影片縮圖
+  #   media.dazotikuy.com  R2 上的示範影片與圖片（img 與 media 都要）
+  #   fonts.googleapis.com Google Fonts 樣式表
+  #   fonts.gstatic.com    字型檔
+  #   data:                canvas 產生的玻璃位移貼圖、內聯小圖
+  #   blob:                model-viewer 內部的 Web Worker
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://img.youtube.com https://media.dazotikuy.com; media-src 'self' https://media.dazotikuy.com; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
