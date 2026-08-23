@@ -62,6 +62,7 @@ const zh = {
   flowMapSectionControls: "操作方式一覽",
   sectionFlowMap: "參照流程地圖",
   flowMapToggleLayers: "切換地圖圖層",
+  flowMapToolsMenu: "地圖工具選單",
   flowMapStatusDefault: "點擊步驟前的圓形按鈕，在地圖上顯示該步驟的行為",
   /** {n} 會被替換成步驟編號 */
   flowMapStatusStepTemplate: "目前顯示：步驟 {n}",
@@ -323,6 +324,7 @@ const ja: Record<keyof typeof zh, string> = {
   flowMapSectionControls: "操作方法一覧",
   sectionFlowMap: "参照フローマップ",
   flowMapToggleLayers: "マップレイヤーを切り替える",
+  flowMapToolsMenu: "マップツールメニュー",
   flowMapStatusDefault: "手順の前にある丸いボタンを押すと、マップ上にその手順の内容が表示されます",
   flowMapStatusStepTemplate: "現在の表示：手順 {n}",
   flowMapStatusSelected: "現在の表示：選択中の手順",

@@ -93,59 +93,78 @@ const config = {
   data-status-selected={t.flowMapStatusSelected}
   data-goal-aria={t.flowMapGoalAria}
 >
-  <div class="flow-map-toolbar">
-    {/* 只有一個圖層時（例：曠野只有地面）不顯示切換鈕，避免看起來像壞掉的單顆按鈕 */}
-    <div
-      class="flow-map-layers"
-      role="group"
-      aria-label={t.flowMapToggleLayers}
-      hidden={resolvedLayers.length < 2}
-    >
-      {resolvedLayers.map((l) => (
-        <button
-          type="button"
-          class="flow-map-layer-btn"
-          data-flow-layer={l.id}
-          aria-pressed={l.id === (defaultLayer ?? resolvedLayers[0]?.id) ? "true" : "false"}
-        >
-          {l.label}
-        </button>
-      ))}
-    </div>
-    <span class="flow-map-status" data-flow-status aria-live="polite">
-      {hideStatusHint ? "" : t.flowMapStatusDefault}
-    </span>
-    <div class="flow-map-actions">
-      {hasImages && (
-        // 先點地圖上的標記才知道要開哪一張圖，所以初始為停用；aria-disabled 而非 disabled，
-        // 讓鍵盤使用者仍能聚焦讀到 title 的說明，不會變成「摸不到的按鈕」
-        <button
-          type="button"
-          class="flow-map-overview-btn"
-          data-flow-demo-image
-          aria-disabled="true"
-          title={t.flowMapDemoImageHint}
-        >{t.flowMapDemoImage}</button>
-      )}
-      {grid && (
-        <button
-          type="button"
-          class="flow-map-overview-btn"
-          data-flow-grid
-          aria-pressed="false"
-        >{t.flowMapGrid}</button>
-      )}
-      {/* 清除：只拿掉「因為點擊而出現」的標記與路線，常駐編號 Pin 是頁面內容本身，保留 */}
+  {/* 工具列改成疊在地圖上的浮動控制（呼應 Leaflet 自帶、本來就浮在左上角的
+      +/− 縮放鈕），不再另外佔一列版面高度，窄寬螢幕共用同一套排版：
+      圖層切換維持獨立按鈕（置頂置中，只有多圖層頁面如王國之淚才會出現）；
+      示意圖／格線／清除／總覽這幾個操作按鈕收進右上角的漢堡選單，
+      按鈕本身的選中／停用樣式原封不動，只是搬進選單面板裡。 */}
+  <div class="flow-map-stage">
+    <div class="flow-map-canvas" data-flow-canvas></div>
+
+    {resolvedLayers.length >= 2 && (
+      <div class="flow-map-layers" role="group" aria-label={t.flowMapToggleLayers}>
+        {resolvedLayers.map((l) => (
+          <button
+            type="button"
+            class="flow-map-layer-btn"
+            data-flow-layer={l.id}
+            aria-pressed={l.id === (defaultLayer ?? resolvedLayers[0]?.id) ? "true" : "false"}
+          >
+            {l.label}
+          </button>
+        ))}
+      </div>
+    )}
+
+    <div class="flow-map-tools" data-flow-tools>
       <button
         type="button"
-        class="flow-map-overview-btn"
-        data-flow-clear
-        title={t.flowMapClearHint}
-      >{t.flowMapClear}</button>
-      <button type="button" class="flow-map-overview-btn" data-flow-overview>{t.flowMapOverview}</button>
+        class="flow-map-tools-btn"
+        data-flow-tools-btn
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="flow-map-tools-panel"
+        aria-label={t.flowMapToolsMenu}
+      >
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M3 5.5h14M3 10h14M3 14.5h14" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <div id="flow-map-tools-panel" class="flow-map-tools-panel">
+        {hasImages && (
+          // 先點地圖上的標記才知道要開哪一張圖，所以初始為停用；aria-disabled 而非 disabled，
+          // 讓鍵盤使用者仍能聚焦讀到 title 的說明，不會變成「摸不到的按鈕」
+          <button
+            type="button"
+            class="flow-map-overview-btn"
+            data-flow-demo-image
+            aria-disabled="true"
+            title={t.flowMapDemoImageHint}
+          >{t.flowMapDemoImage}</button>
+        )}
+        {grid && (
+          <button
+            type="button"
+            class="flow-map-overview-btn"
+            data-flow-grid
+            aria-pressed="false"
+          >{t.flowMapGrid}</button>
+        )}
+        {/* 清除：只拿掉「因為點擊而出現」的標記與路線，常駐編號 Pin 是頁面內容本身，保留 */}
+        <button
+          type="button"
+          class="flow-map-overview-btn"
+          data-flow-clear
+          title={t.flowMapClearHint}
+        >{t.flowMapClear}</button>
+        <button type="button" class="flow-map-overview-btn" data-flow-overview>{t.flowMapOverview}</button>
+      </div>
     </div>
+
+    {/* :empty 用來在沒有提示文字時整顆膠囊都不畫出來，所以這裡刻意擠成
+        一行——標籤和 {} 之間留白會被編譯成空白文字節點，讓 :empty 永遠選不中 */}
+    <span class="flow-map-status" data-flow-status aria-live="polite">{hideStatusHint ? "" : t.flowMapStatusDefault}</span>
   </div>
-  <div class="flow-map-canvas" data-flow-canvas></div>
   {note && <p class="flow-map-note">{note}</p>}
 
   {/* Pin 實景圖：窄螢幕改成置中的對話框，寬螢幕則由 Leaflet popup 貼在 Pin 上 */}
@@ -525,6 +544,30 @@ const config = {
       gridBtn.setAttribute("aria-pressed", String(gridOn));
     });
 
+    // ── 工具選單（漢堡）：開合邏輯跟 Header 的手機分頁選單同一套 ──────
+    const toolsWrap = root.querySelector<HTMLElement>("[data-flow-tools]");
+    const toolsBtn = toolsWrap?.querySelector<HTMLButtonElement>("[data-flow-tools-btn]");
+    function closeTools() {
+      if (!toolsWrap || !toolsWrap.classList.contains("is-open")) return;
+      toolsWrap.classList.remove("is-open");
+      toolsBtn?.setAttribute("aria-expanded", "false");
+    }
+    toolsBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = toolsWrap!.classList.toggle("is-open");
+      toolsBtn.setAttribute("aria-expanded", String(open));
+    });
+    document.addEventListener("click", (e) => {
+      if (toolsWrap && !toolsWrap.contains(e.target as Node)) closeTools();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeTools();
+    });
+    // 選了選單裡任何一顆按鈕就直接收合，不用使用者自己再點一次漢堡關掉
+    toolsWrap?.querySelectorAll<HTMLButtonElement>(".flow-map-overview-btn").forEach((b) =>
+      b.addEventListener("click", closeTools)
+    );
+
     // ── 路線：點 pin 直接顯示，不需要另外開關 ──────────────────
     function drawRoutes(idx: number) {
       routeLayer.clearLayers();
@@ -627,19 +670,109 @@ const config = {
     background: var(--surface-2);
     overflow: hidden;
   }
-  .flow-map-toolbar {
+  /* 浮動控制的容器：跟 Leaflet 自己的縮放鈕共用同一個定位脈絡，
+     不佔文件版面高度，寬窄螢幕同一套排版。 */
+  .flow-map-stage {
+    position: relative;
+  }
+
+  /* 圖層切換：置頂置中的膠囊群組，跟 Leaflet 左上角的 +/− 縮放鈕錯開，
+     避免互相遮擋。只有多圖層頁面（如王國之淚）才會渲染這個區塊。 */
+  .flow-map-layers {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.25);
+  }
+  .flow-map-layer-btn {
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--ink-2);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12.5px;
+    font-weight: 500;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .flow-map-layer-btn[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* 操作按鈕收進右上角的漢堡選單，開合邏輯跟 Header 的手機分頁選單
+     （.r-navcompact）同一套：toggle .is-open + aria-expanded，
+     點選單外或按 Escape 關閉。 */
+  .flow-map-tools {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+  }
+  .flow-map-tools-btn {
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border-strong);
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    color: var(--ink-2);
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.25);
+    transition: border-color 0.15s, color 0.15s, background-color 0.15s;
   }
-  .flow-map-layers {
+  .flow-map-tools-btn:hover {
+    border-color: var(--brand);
+    color: var(--ink);
+  }
+  .flow-map-tools.is-open .flow-map-tools-btn {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--surface);
+  }
+  .flow-map-tools-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .flow-map-tools-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
     display: flex;
-    gap: 6px;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 128px;
+    padding: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 140ms ease, transform 140ms ease, visibility 0s 140ms;
   }
-  .flow-map-layer-btn,
+  .flow-map-tools.is-open .flow-map-tools-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 140ms ease, transform 140ms ease;
+  }
+  .flow-map-tools-panel .flow-map-overview-btn {
+    width: 100%;
+    text-align: left;
+    border-radius: 6px;
+  }
   .flow-map-overview-btn {
     cursor: pointer;
     border: 1px solid var(--border-strong);
@@ -651,22 +784,28 @@ const config = {
     font-weight: 500;
     transition: border-color 0.15s, color 0.15s;
   }
-  .flow-map-layer-btn:hover,
   .flow-map-overview-btn:hover {
     border-color: var(--brand);
   }
-  .flow-map-layer-btn[aria-pressed="true"] {
-    border-color: var(--ink);
-    color: var(--ink);
-  }
+
+  /* 狀態列（步驟提示文字）改成貼在地圖左下角的小膠囊，沒有文字時
+     （多數頁面用 hideStatusHint 隱藏預設提示）靠 :empty 直接不佔位。 */
   .flow-map-status {
-    flex: 1;
-    min-width: 160px;
-    font-size: 12.5px;
-    color: var(--muted);
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    z-index: 3;
+    max-width: calc(100% - 16px);
+    padding: 4px 10px;
+    font-size: 11.5px;
+    color: var(--ink-2);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.25);
   }
-  .flow-map-overview-btn {
-    margin-left: auto;
+  .flow-map-status:empty {
+    display: none;
   }
   .flow-map-canvas {
     /* 12:10 的地圖塞進 2:1 左右的容器：桌機高一點、手機順著寬度縮 */
@@ -756,7 +895,6 @@ const config = {
     border: none;
     white-space: nowrap;
   }
-  .flow-map-actions { display: flex; gap: 6px; }
   .flow-map-overview-btn.is-disabled { opacity: 0.42; cursor: not-allowed; }
   .flow-map-overview-btn[aria-pressed="true"] {
     background: var(--ink);
