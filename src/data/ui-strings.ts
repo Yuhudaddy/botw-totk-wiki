@@ -19,6 +19,10 @@ const zh = {
   searchPlaceholder: "搜尋技巧…",
   searchLabel: "搜尋",
 
+  // 手機版濃縮導覽（三角力量鈕）
+  navGo: "前往",
+  navGoLabel: "開啟分頁選單",
+
   // 語言切換：彈窗裡顯示「另一個語言」的名稱，故意不用「日文」而用「日本語」——
   // 語言選單通常用該語言自己的寫法標示自己，讀者找起來比翻譯過的名稱更直覺
   langLabel: "切換語言",
@@ -275,6 +279,9 @@ const ja: Record<keyof typeof zh, string> = {
 
   searchPlaceholder: "テクニックを検索…",
   searchLabel: "検索",
+
+  navGo: "移動",
+  navGoLabel: "ページメニューを開く",
 
   langLabel: "言語切り替え",
   themeToggleLabel: "テーマ切り替え",
