@@ -2053,7 +2053,7 @@ export const typeContentJa: Record<string, TypeContentJa> = {
 
   "totk-19": {
     flowMap: {
-      note: "※ 背景地図はすでに実際のマップに差し替え済み。段階ごとのセクションでも手順のラジオボタンに対応済みで、現在は第三段階の手順 5 のみ座標が確認できているためボタンが表示される。残りの手順は座標が確定し次第、順次追加予定。",
+      note: "※ マップは Léo の objmap（zeldamods.org）から引用。",
     },
     methods: {
       "有 Zelda Notes": {
@@ -3949,7 +3949,7 @@ export const typeContentJa: Record<string, TypeContentJa> = {
   "botw-28": {
     flowMap: {
       title: "動的ガーディアンの位置",
-      note: "※ マップ全体でこの 4 体だけが動的ガーディアン（objmap で FldObj_RuinGuardian*Dynamic Static:0 を検索）。座標はゲーム内の (X, Z)。マーカーをクリックすると推奨ルートを表示、選択後に「実景写真」でその地点の写真を確認できます。",
+      note: "※ objmap で FldObj_RuinGuardian*Dynamic Static:0 を検索すると見つかります。",
     },
     methods: {
       步驟: {

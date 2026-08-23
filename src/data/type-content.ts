@@ -148,6 +148,9 @@ export interface TypeContent {
     game?: "totk" | "botw";            // 底圖來源，預設 totk（曠野只有地面一層，切換鈕會自動隱藏）
     defaultLayer?: "surface" | "sky" | "depths"; // 初始圖層，預設 surface
     note?: string;                     // 地圖下方的灰色備註
+    hideStatusHint?: boolean;          // 隱藏地圖工具列預設顯示的操作提示（flowMapStatusDefault）；
+                                        // 該提示是全站共用文案，這裡只是不顯示，不影響其他頁面，
+                                        // 也不影響點擊步驟後動態更新的狀態文字
     grid?: boolean;                    // 顯示「格線」按鈕：疊上地圖單元格（A～J × 1～8）參考層
     pins?: {
       x: number; z: number;
@@ -2197,7 +2200,8 @@ export const typeContent: Record<string, TypeContent> = {
       game: "botw",
       grid: true,
       pinImageFolder: "botw-dynamic_ruinguardian",
-      note: "※ 全地圖只有這 4 隻是動態守護者（可在 objmap 查找 FldObj_RuinGuardian*Dynamic Static:0）。座標為遊戲內 (X, Z)；點擊標記顯示建議移動方向，選取後再按「示意圖」查看該處實景。",
+      note: "※ 在 objmap 查找 FldObj_RuinGuardian*Dynamic Static:0 可找到。",
+      hideStatusHint: true,
       pins: [
         {
           x: 732.77, z: -1494.6, label: "① F-3 (733, -1495)",
@@ -4544,7 +4548,8 @@ export const typeContent: Record<string, TypeContent> = {
   "totk-19": {
     videoFolder: "totk-prologue escape",
     flowMap: {
-      note: "※ 底圖已換成實際地圖。分階段區塊的步驟單選按鈕已支援（sections 各自讀自己的 mapFlow），目前只有第三階段步驟 5 的座標經過實際確認並顯示按鈕，其餘步驟待 Yuda 補齊座標後依序填入。",
+      note: "※ 底圖引用自 Léo 的 objmap（zeldamods.org）。",
+      hideStatusHint: true,
     },
     methods: [
       {

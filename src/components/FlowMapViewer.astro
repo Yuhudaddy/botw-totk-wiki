@@ -38,6 +38,11 @@ interface Props {
   grid?: boolean;
   /** 頁面語言；日文攻略頁傳 "ja"，其餘沿用中文 */
   lang?: Lang;
+  /** 隱藏工具列預設的操作提示（flowMapStatusDefault）。該提示是全站共用文案，
+   *  這裡只讓單一頁面選擇不顯示，不影響其他流程地圖頁，也不影響點擊步驟後
+   *  動態更新的狀態文字（defaultStatus 讀的是初始 textContent，空字串一樣能
+   *  正確在清除選取後重置回「空」）。 */
+  hideStatusHint?: boolean;
 }
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const { lang = "zh" } = Astro.props;
@@ -52,6 +57,7 @@ const {
   note,
   pins = [],
   grid = false,
+  hideStatusHint = false,
 } = Astro.props;
 const hasImages = pins.some((p) => p.image);
 const resolvedLayers = layers.map((l) => ({
@@ -107,7 +113,7 @@ const config = {
       ))}
     </div>
     <span class="flow-map-status" data-flow-status aria-live="polite">
-      {t.flowMapStatusDefault}
+      {hideStatusHint ? "" : t.flowMapStatusDefault}
     </span>
     <div class="flow-map-actions">
       {hasImages && (
