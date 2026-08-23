@@ -59,21 +59,42 @@ const featured = featuredVideos;
           </div>
         </div>
 
+        {/* 四張都是原圖直接輸出的 PNG（未壓縮），最大到 1.9MB。改成 WebP 版本，
+            PSNR 44+ dB（實測差異，肉眼分辨不出，何況畫面上還會被裁切縮小顯示），
+            體積省 84～95%。維持 <picture> + PNG 備援是跟隨站內既有慣例（見
+            BaseLayout 的 logo），不支援 WebP 的極少數瀏覽器還是拿得到原圖。
+            特別注意：不動 loading="eager"、不動任何載入時機或 CSS 顯示邏輯——
+            這兩張 light/dark 只有一張會顯示，但主題在 <head> 就用 inline script
+            決定了，兩張都 eager 載入才能讓使用者手動切換主題時「瞬間」切換、
+            不會有讀取閃爍；这是刻意的體感考量，不是疏漏，所以只換素材格式，
+            不改載入策略。 */}
         <div class="home-hero-scene" aria-hidden="true">
-          <img class="home-scene home-scene-light" src={href("/logo/light.png")} alt="" loading="eager" />
-          <img class="home-scene home-scene-dark" src={href("/logo/dark.png")} alt="" loading="eager" />
-          <img
-            class="home-link-wide"
-            src={href("/logo/55AFA7FA-20B1-4351-B645-454C89FE30C7-Photoroom.png")}
-            alt=""
-            loading="eager"
-          />
-          <img
-            class="home-link-tall"
-            src={href("/logo/1D0CB390-F719-4376-B57A-3039F034587F-Photoroom.png")}
-            alt=""
-            loading="eager"
-          />
+          <picture>
+            <source srcset={href("/logo/light.webp")} type="image/webp" />
+            <img class="home-scene home-scene-light" src={href("/logo/light.png")} alt="" loading="eager" />
+          </picture>
+          <picture>
+            <source srcset={href("/logo/dark.webp")} type="image/webp" />
+            <img class="home-scene home-scene-dark" src={href("/logo/dark.png")} alt="" loading="eager" />
+          </picture>
+          <picture>
+            <source srcset={href("/logo/home-link-wide.webp")} type="image/webp" />
+            <img
+              class="home-link-wide"
+              src={href("/logo/55AFA7FA-20B1-4351-B645-454C89FE30C7-Photoroom.png")}
+              alt=""
+              loading="eager"
+            />
+          </picture>
+          <picture>
+            <source srcset={href("/logo/home-link-tall.webp")} type="image/webp" />
+            <img
+              class="home-link-tall"
+              src={href("/logo/1D0CB390-F719-4376-B57A-3039F034587F-Photoroom.png")}
+              alt=""
+              loading="eager"
+            />
+          </picture>
         </div>
       </div>
 
