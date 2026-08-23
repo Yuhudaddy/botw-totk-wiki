@@ -4,6 +4,31 @@ import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// 遊戲清單與 src/data/types.ts 的 typeGroups 對應。這裡沒辦法直接 import 那支
+// TypeScript（本檔以純 node 執行，加 --experimental-strip-types 會綁死呼叫端的
+// 指令，而正式建置指令在 Cloudflare 後台、改不到），所以維持手寫一份，
+// 但緊接著補一道對照檢查：typeGroups 加了新遊戲卻忘了加這裡時會出聲，
+// 不會再只是靠註解提醒。純警告不中斷——影片資料不該擋住整個網站部署。
+// 放在檔案最前面（早於 API 金鑰檢查）是刻意的：沒有金鑰時腳本會提早結束，
+// 擺在後面的話本機永遠跑不到這段。
+const GAME_IDS = ['botw', 'totk', 'eow', 'ssbu', 'aoc', 'aoi'];
+
+try {
+  const typesSrc = readFileSync(join(__dirname, '../src/data/types.ts'), 'utf8');
+  const declared = [...typesSrc.matchAll(/^\s{4}game: "(\w+)",/gm)].map((m) => m[1]);
+  const missing = declared.filter((id) => !GAME_IDS.includes(id));
+  const extra = GAME_IDS.filter((id) => !declared.includes(id));
+  if (missing.length || extra.length) {
+    console.warn(
+      '⚠️  GAME_IDS 與 src/data/types.ts 的 typeGroups 不一致' +
+        (missing.length ? `；types.ts 有但這裡缺少：${missing.join(', ')}` : '') +
+        (extra.length ? `；這裡有但 types.ts 沒有：${extra.join(', ')}` : '')
+    );
+  }
+} catch {
+  // 讀不到 types.ts 就跳過檢查，不影響抓取本身
+}
+
 const API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_HANDLE = 'zb_yuhudaddy'; // 頻道 handle，無需 secret
 
@@ -144,9 +169,6 @@ for (let i = 0; i < allVideoIds.length; i += 50) {
 }
 
 // ── 4. 建立分類陣列（六款遊戲各一）──────────────────────────────────────────
-// 遊戲清單與 src/data/types.ts 的 typeGroups 對應；新增遊戲時兩邊都要加。
-const GAME_IDS = ['botw', 'totk', 'eow', 'ssbu', 'aoc', 'aoi'];
-
 const toVideo = (v) => ({
   id: v.id,
   title: v.snippet.title,

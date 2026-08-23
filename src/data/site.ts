@@ -12,8 +12,11 @@ export const navItems: NavItem[] = [
   { label: "關於神廟", path: "/about", match: "about" },
 ];
 
-// 首頁的「最近熱門」與「最新整理」改由 src/data/youtube.json 供應
-// （CI 每日跑 scripts/fetch-youtube.mjs 更新），此處原本的手寫清單已移除。
+// 首頁的「最近熱門」與「最新整理」改由 src/data/youtube.json 供應，此處原本的
+// 手寫清單已移除。更新流程：Cloudflare 建置時跑 scripts/fetch-youtube.mjs 打
+// YouTube API 覆寫該檔，每天由 .github/workflows/deploy.yml 戳 Deploy Hook 觸發。
+// ※ 版控裡那份 youtube.json 是「種子／保底資料」，抓取結果只存在建置容器、
+//   不會 commit 回來——所以它的 updatedAt 永遠是舊的，看它判斷不了流程是否正常。
 
 export interface QuickNavItem {
   no: string;
