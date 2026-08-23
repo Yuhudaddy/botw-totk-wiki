@@ -281,6 +281,13 @@ const searchIndex = (entry: (typeof glossaryEntries)[number]) =>
       background: var(--surface);
       color: var(--muted);
       padding: 0 14px;
+      transition: border-color 0.2s ease;
+    }
+    /* 裡面那顆 input 把 outline 關掉了（見下方），焦點指示必須由外框自己畫，
+       否則鍵盤使用者 Tab 到搜尋框時完全看不出焦點在哪。做法比照
+       資源頁與藍圖頁的搜尋框。 */
+    .glossary-search:focus-within {
+      border-color: var(--accent);
     }
     .glossary-search input {
       min-width: 0;

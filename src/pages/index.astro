@@ -302,7 +302,8 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
       :root[data-theme="dark"] {
         color-scheme: dark;
         /* 希卡色系：底色走深棕（hue ~30、低彩度，BotW 官網同族），
-           中性文字帶乳白暖調，互動強調用英傑藍（hue ~255）。 */
+           中性文字帶乳白暖調，互動強調用希卡青（hue ~205，對應
+           全站 token 的 #03C1D5）。淺色模式那組才是偏藍的 hue ~250。 */
         --entrance-bg: oklch(13% 0.018 30);
         --entrance-bg-deep: oklch(9% 0.02 25);
         --entrance-bg-soft: oklch(17% 0.025 30);
@@ -1127,8 +1128,8 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
       }
 
       .secret-letter.is-hit {
-        /* 字母本身閃明暗反差色（白/墨），光暈用綠——反差來自明暗，
-           不引入第二個跟綠競爭的色相 */
+        /* 字母與光暈都走希卡青：標題漸層是乳白→希卡土的暖色系，
+           青色在色相環上跟它完全分開，命中時不會跟標題混成一片 */
         color: var(--entrance-secret-hit);
         text-shadow:
           0 0 16px color-mix(in oklch, var(--entrance-accent-bright) 70%, transparent),
@@ -1696,7 +1697,8 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         .hero-action,
         .hero-action::before,
         .hero-action::after,
-        .action-icon,
+        .action-symbol,
+        .brand-logo,
         .skip-link {
           transition-duration: 0.01ms;
         }
@@ -2438,8 +2440,12 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         );
 
         function updateCursor() {
-          cursorRingX += (cursorTargetX - cursorRingX) * 0.16;
-          cursorRingY += (cursorTargetY - cursorRingY) * 0.16;
+          // 游標環平常用 0.16 的插值拖在指標後面。開了「減少動態」時改成 1，
+          // 也就是直接貼齊指標——持續跟隨的拖曳正是前庭敏感使用者要避開的動態，
+          // 而這支函式原本是 animate() 裡唯一沒查 reducedMotion 的。
+          var follow = reducedMotion.matches ? 1 : 0.16;
+          cursorRingX += (cursorTargetX - cursorRingX) * follow;
+          cursorRingY += (cursorTargetY - cursorRingY) * follow;
           root.style.setProperty("--cursor-x", cursorRingX + "px");
           root.style.setProperty("--cursor-y", cursorRingY + "px");
           root.style.setProperty("--cursor-dot-x", cursorTargetX + "px");

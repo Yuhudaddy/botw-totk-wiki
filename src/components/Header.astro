@@ -81,6 +81,7 @@ const navLabelKey = {
           return (
             <a
               href={href(n.path, lang)}
+              aria-current={isActive ? "page" : undefined}
               class={`ring-hover rounded-[5px] px-3 py-2 text-[15px] no-underline ${
                 isActive
                   ? "bg-sand font-medium text-ink"
@@ -225,7 +226,7 @@ const navLabelKey = {
       0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
       /* 內圈亮邊：玻璃的「厚度」 */
       inset 0 0 0 1px rgb(255 255 255 / 0.34),
-      /* 頂緣高光帶一絲品牌綠，像網站的強調色在玻璃裡折出的光 */
+      /* 頂緣高光帶一絲希卡金，像裝飾色在玻璃裡折出的光 */
       inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 30%, rgb(255 255 255 / 0.6)),
       /* 底緣反光：下方內容打上來的光 */
       inset 0 -1px 0 0 rgb(255 255 255 / 0.24),
