@@ -100,9 +100,9 @@ const facets = gameListFor(lang)
     transition: background-color 0.15s, color 0.15s, border-color 0.15s;
   }
   .chip[data-active="true"] {
-    background: var(--brand);
-    color: var(--on-accent);
-    border-color: var(--brand);
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
   }
 
   /* ── 以下為動態注入 HTML 的樣式，須用 :global() 繞過 Astro scoping ── */
@@ -187,9 +187,9 @@ const facets = gameListFor(lang)
     transition: background-color 0.15s, color 0.15s, border-color 0.15s;
   }
   :global(.view-btn[data-active="true"]) {
-    background: var(--brand);
-    color: var(--on-accent);
-    border-color: var(--brand);
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
   }
   :global(.view-btn:hover:not([data-active="true"])) {
     background: var(--surface-2);
@@ -211,9 +211,9 @@ const facets = gameListFor(lang)
     transition: background-color 0.12s, color 0.12s, border-color 0.12s;
   }
   :global(.page-btn[data-active="true"]) {
-    background: var(--brand);
-    color: var(--on-accent);
-    border-color: var(--brand);
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
   }
   :global(.page-btn:hover:not([data-active="true"]):not(:disabled)) {
     background: var(--surface-2);

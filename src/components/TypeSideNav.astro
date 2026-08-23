@@ -146,7 +146,7 @@ const isCurrent = (i: TypeItem) => i.no === item.no;
     display: flex;
     gap: 8px;
     padding: 5px 0 5px 10px;
-    /* 左側細線是這一層的縮排依據，active 時整條轉為強調色 */
+    /* 左側細線是這一層的縮排依據，active 時整條轉為墨色 */
     border-left: 2px solid transparent;
     color: var(--text);
     text-decoration: none;
@@ -159,7 +159,7 @@ const isCurrent = (i: TypeItem) => i.no === item.no;
   }
 
   .type-sidenav-link[aria-current="page"] {
-    border-left-color: var(--accent);
+    border-left-color: var(--ink);
     color: var(--ink);
     font-weight: 500;
   }
