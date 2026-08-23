@@ -251,12 +251,15 @@ const navLabelKey = {
       0 6px 24px color-mix(in srgb, var(--ink) 11%, transparent);
   }
 
-  /* 深色主題的白色高光要收斂，否則玻璃邊緣會過亮、像描了一圈白框 */
+  /* 深色主題的白色高光要收斂，否則玻璃邊緣會過亮、像描了一圈白框。
+     頂緣的金摻量原本是 38%，隔離測試（純色塊 + 同一組 box-shadow，拿掉
+     backdrop-filter 對照）發現不管有沒有折射都看得出一條線，比較像
+     「描邊」而不是「玻璃受光」。壓到 20% 讓它退回一點光澤感，不是一條線。 */
   :global([data-theme="dark"]) .site-header {
     box-shadow:
       0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent),
       inset 0 0 0 1px rgb(255 255 255 / 0.16),
-      inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 38%, rgb(255 255 255 / 0.3)),
+      inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 20%, rgb(255 255 255 / 0.3)),
       inset 0 -1px 0 0 rgb(255 255 255 / 0.1),
       inset 1px 0 0 0 rgb(255 255 255 / 0.09),
       inset -1px 0 0 0 rgb(255 255 255 / 0.09),
@@ -348,7 +351,7 @@ const navLabelKey = {
         box-shadow:
           0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
           inset 0 0 0 1px rgb(255 255 255 / 0.12),
-          inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 30%, rgb(255 255 255 / 0.22)),
+          inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 16%, rgb(255 255 255 / 0.22)),
           inset 0 -1px 0 0 rgb(255 255 255 / 0.07),
           inset 1px 0 0 0 rgb(255 255 255 / 0.06),
           inset -1px 0 0 0 rgb(255 255 255 / 0.06),
