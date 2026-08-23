@@ -1,10 +1,12 @@
 ---
-import { ytThumb, ytWatch } from "../lib/url";
+import { ytThumb, ytThumbFallback, ytWatch } from "../lib/url";
 
 interface Props {
   vid: string;
   title: string;
-  meta: string;
+  /** 觀看數字樣。all[] 的影片沒有這個欄位，故為選用；沒有就不畫那一行，
+      不要留一條空的灰字撐出版面。 */
+  meta?: string;
 }
 const { vid, title, meta } = Astro.props;
 ---
@@ -16,8 +18,12 @@ const { vid, title, meta } = Astro.props;
   class="ring-hover group block overflow-hidden rounded-[5px] border border-border-soft bg-surface no-underline"
 >
   <div class="relative leading-[0]">
+    {/* maxresdefault 只有 720p 以上的影片才有，其餘會 404 變成一塊空白；
+        onerror 退回每支都有的 hqdefault。先清掉 onerror 才換 src，
+        否則保底圖萬一也失敗會無限重試。 */}
     <img
       src={ytThumb(vid)}
+      onerror={`this.onerror=null;this.src='${ytThumbFallback(vid)}'`}
       alt={title}
       loading="lazy"
       class="aspect-video w-full bg-sand object-cover"
@@ -33,6 +39,6 @@ const { vid, title, meta } = Astro.props;
   </div>
   <div class="p-4">
     <div class="font-heading text-[17px] font-medium leading-snug text-ink">{title}</div>
-    <div class="mt-1 text-xs text-muted">{meta}</div>
+    {meta && <div class="mt-1 text-xs text-muted">{meta}</div>}
   </div>
 </a>

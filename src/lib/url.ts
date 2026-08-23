@@ -22,8 +22,16 @@ export function href(path = "/", lang: "zh" | "ja" = "zh"): string {
 export const MEDIA_BASE = "https://media.dazotikuy.com/type-videos";
 
 // YouTube 縮圖與連結
+//
+// maxresdefault 是 1280×720 的 16:9 原圖，但**只有上傳解析度達 720p 的影片才有**，
+// 其餘一律 404——而 <img> 載入失敗不會自己退回別的來源，就是一塊空白。
+// hqdefault 每支影片都有，所以拿它當保底。兩者都要用，因此成對匯出：
+// 呼叫端把 ytThumbFallback() 掛在 onerror 上，讓瀏覽器自己換手。
 export function ytThumb(id: string): string {
   return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+}
+export function ytThumbFallback(id: string): string {
+  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
 }
 export function ytWatch(id: string, at?: number): string {
   return at ? `https://youtu.be/${id}?t=${at}` : `https://youtu.be/${id}`;
