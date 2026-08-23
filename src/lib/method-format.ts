@@ -15,11 +15,15 @@ export function stepParts(s: TypeStep) {
     : { text: s.text, sub: s.sub ?? [] };
 }
 
-// 把 【人名】 解析成白色底線
+// 把 【人名】 解析成帶底線的片段（底線顏色由 CSS 的 .prose-custom u 決定）
 export function parseName(text: string) {
   return text.split("【").map((part, i) => {
     if (i === 0) return { text: part, name: false };
-    const [name, rest] = part.split("】");
+    // rest 要給預設值：資料裡少打一個「】」時，split 只會回傳一個元素，
+    // rest 變成 undefined 一路傳進 parseStep 就是 text.split of undefined，
+    // 整個 astro build 會掛在一個看不出原因的 TypeError 上。內容檔裡有
+    // 八十幾處【】，一個手誤不該讓建置整個倒掉。
+    const [name, rest = ""] = part.split("】");
     return [{ text: name, name: true }, { text: rest, name: false }];
   }).flat();
 }
@@ -61,7 +65,7 @@ const PRINCIPLE_BASE = (import.meta as any).env?.BASE_URL?.replace(/\/$/, "") ??
 export function principleHtml(text: string) {
   return parseName(text).map((seg) =>
     seg.name
-      ? `<u style="text-decoration-color: white; text-underline-offset: 3px;">${escapeHtml(seg.text)}</u>`
+      ? `<u>${escapeHtml(seg.text)}</u>`
       : parseStep(seg.text).map((s) =>
           s.href
             ? s.external
@@ -107,21 +111,16 @@ export function principleSectionsHtml(
 export function principleExtraHtml(extra?: { title?: string; items: TypeStep[] }) {
   if (!extra || !extra.items?.length) return "";
   const titleHtml = extra.title ? `<div class="principle-block-title">${escapeHtml(extra.title)}</div>` : "";
+  // 子項目原本走 escapeHtml，等於把 __強調__ 和 [[文字|id]] 原字印出來——
+  // 上面 principleSectionsHtml 的同一段是用 principleHtml，兩條路徑行為不一致。
+  // 這裡統一改用 principleHtml，順便把主項目那段手刻的 parseStep→HTML 一起收掉
+  // （principleHtml 本來就做同樣的事，還多支援【人名】）。
   const itemsHtml = extra.items.map((it) => {
     const { text, sub } = stepParts(it);
-    const mainHtml = parseStep(text).map((s) =>
-      s.href
-        ? s.external
-          ? `<a href="${escapeHtml(s.href)}" class="accent-link" target="_blank" rel="noopener noreferrer">${escapeHtml(s.text)}</a>`
-          : `<a href="${PRINCIPLE_BASE}/types/${escapeHtml(s.href)}" class="accent-link">${escapeHtml(s.text)}</a>`
-        : s.accent
-          ? `<span class="accent-text">${escapeHtml(s.text)}</span>`
-          : escapeHtml(s.text)
-    ).join("");
     const subHtml = sub.length
-      ? `<ul class="step-sub">${sub.map((d) => `<li>${escapeHtml(d)}</li>`).join("")}</ul>`
+      ? `<ul class="step-sub">${sub.map((d) => `<li>${principleHtml(d)}</li>`).join("")}</ul>`
       : "";
-    return `<li>${mainHtml}${subHtml}</li>`;
+    return `<li>${principleHtml(text)}${subHtml}</li>`;
   }).join("");
   return `<div class="principle-block">${titleHtml}<ul>${itemsHtml}</ul></div>`;
 }

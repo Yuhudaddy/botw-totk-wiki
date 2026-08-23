@@ -178,6 +178,8 @@ const zh = {
   resourcesEmptyHintTemplate: "{game}的地圖與資料連結還在蒐集彙整，敬請期待。",
   /** 搜尋結果計數（client script 用，透過 data 屬性傳遞）；{n} 為符合筆數 */
   resourcesCountTemplate: "{n} 筆符合",
+  /** 搜尋／篩選後一筆都不符合時顯示（與 resourcesEmptyTitle 不同：那個是整個遊戲還沒有資源） */
+  resourcesNoMatch: "沒有符合的資源，換個關鍵字試試。",
   resourcesLangZh: "中文",
   resourcesLangJa: "日文",
   resourcesLangEn: "英文",
@@ -409,6 +411,7 @@ const ja: Record<keyof typeof zh, string> = {
   resourcesEmptyTitle: "準備中",
   resourcesEmptyHintTemplate: "{game}のマップ・資料リンクは収集中です。しばらくお待ちください。",
   resourcesCountTemplate: "{n} 件該当",
+  resourcesNoMatch: "該当する資料がありません。別のキーワードでお試しください。",
   resourcesLangZh: "中国語",
   resourcesLangJa: "日本語",
   resourcesLangEn: "英語",

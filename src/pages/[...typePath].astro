@@ -155,7 +155,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <span class="text-ink">{itemTitle}</span>
       </div>
       <div class="mb-2 flex items-center gap-2.5">
-        <span class="font-mono text-[13px] text-accent">{group.en} · {item.no}</span>
+        <span class="font-mono text-[13px] text-gold">{group.en} · {item.no}</span>
       </div>
       <div class="mb-[18px] flex flex-wrap items-center justify-between gap-4">
         <h1 class="font-heading text-[27px] sm:text-[36px] font-medium leading-[1.12] text-ink">
@@ -294,7 +294,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                     <p>
                       {parseName(sec.text).map((seg) =>
                         seg.name
-                          ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u>
+                          ? <u>{seg.text}</u>
                           : parseAccent(seg.text).map((a) =>
                               a.accent ? <span class="text-accent">{a.text}</span> : a.text
                             )
@@ -366,7 +366,7 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
               {content?.principle ? (
                 parseName(content.principle).map((seg) =>
                   seg.name
-                    ? <u style="text-decoration-color: white; text-underline-offset: 3px;">{seg.text}</u>
+                    ? <u>{seg.text}</u>
                     : parseAccent(seg.text).map((a) =>
                         a.accent ? <span class="text-accent">{a.text}</span> : a.text
                       )
@@ -1262,19 +1262,17 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     padding: 0 0 14px;
   }
 
-  /* 原理說明中的人名白色底線 */
-  .name-underline {
-    text-decoration: underline 2px white;
-    text-underline-offset: 3px;
-  }
   .prose-custom li {
     margin-bottom: 0.5em;
   }
   .prose-custom ol li {
     padding-left: 0.2em;
   }
+  /* 原理說明裡的【人名】發現者署名。用金色而非 accent：這串名字不可點，
+     藍底線在視覺上就是「連結」，會做出一個按不下去的假承諾——依全站的
+     色彩角色約定（藍＝可互動、金＝裝飾／結構），署名屬於後者。 */
   .prose-custom u {
-    text-decoration-color: var(--accent);
+    text-decoration-color: var(--gold);
     text-underline-offset: 3px;
   }
   .prose-custom .note {

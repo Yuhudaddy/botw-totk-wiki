@@ -372,14 +372,21 @@ function sourceLabel(url: string): string {
                   </a>
                 ))}
               </div>
-              {g.categories.length === 0 && (
-                <p class="res-empty hidden pt-16 text-center text-[15px] text-muted">
-                  沒有符合的資源，換個關鍵字試試。
-                </p>
-              )}
             </section>
           );
         })()}
+        {/* 搜尋／篩選後零筆時的提示。原本的條件寫反了（只有「完全沒有資源的
+            遊戲」才渲染這段），結果是有資源的遊戲搜不到東西時整片空白、沒有
+            任何說明；而沒有資源的遊戲反而會同時出現「資源整理中」和這句。
+            另外它原本擺在 <section class="res-sec"> 裡面——那個 section 在零筆時
+            會被 applyFilter() 整個 hidden 掉，訊息跟著一起被藏起來，就算條件
+            改對了也永遠看不到。所以它必須待在 section 外、.lib 底下。
+            平常靠 hidden class 收著，由 applyFilter() 依 visibleTotal 開關。 */}
+        {g.categories.length > 0 && (
+          <p class="res-empty hidden pt-16 text-center text-[15px] text-muted">
+            {t.resourcesNoMatch}
+          </p>
+        )}
       </div>
     ))
   }
@@ -525,8 +532,6 @@ function sourceLabel(url: string): string {
         });
         sec.hidden = visible === 0;
         visibleTotal += visible;
-        const badge = sec.querySelector(".sec-count");
-        if (badge) badge.textContent = q ? `${visible}/${sec.dataset.total}` : `${sec.dataset.total}`;
       });
 
       const empty = lib.querySelector<HTMLElement>(".res-empty");
@@ -570,8 +575,11 @@ function sourceLabel(url: string): string {
         activeKind = activeKind === kind ? null : kind;
         filterBtns.forEach((b) => {
           const isActive = b.dataset.kind === activeKind;
-          b.classList.toggle("border-brand", isActive);
-          b.classList.toggle("text-accent", isActive);
+          // 選中態用 ink（「你在這裡」），不能用 brand/accent——按鈕本身的
+          // hover 就是 hover:border-brand hover:text-accent，兩者用同一組色的話
+          // 「已選中」和「只是滑過去」會長得一模一樣，根本看不出哪個篩選開著。
+          b.classList.toggle("border-ink", isActive);
+          b.classList.toggle("text-ink", isActive);
           b.classList.toggle("border-border-soft", !isActive);
           b.classList.toggle("text-muted", !isActive);
         });
