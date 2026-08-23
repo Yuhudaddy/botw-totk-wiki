@@ -98,15 +98,12 @@
   --color-lang-tag-ja: var(--lang-tag-ja);
   --color-mono-bg: var(--mono-bg);
   --color-mono-text: var(--mono-text);
-  --color-ivory: #f6f6f4;
 
   /* 標題用襯線、內文用黑體。token 名稱維持 --font-heading（而非 --font-serif），
      這樣之後要換成別的標題字體也不必再改一次全站的 class 名。 */
   --font-heading: "Spectral", "Noto Serif TC", Georgia, "Times New Roman", serif;
   --font-sans: "Noto Sans TC", system-ui, -apple-system, sans-serif;
   --font-mono: "DM Mono", ui-monospace, monospace;
-
-  --radius-card: 5px;
 }
 
 /* ── 基礎 ─────────────────────────────────────────────────── */

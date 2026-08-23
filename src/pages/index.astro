@@ -257,7 +257,7 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
                 I18N 裡的 actionsLabel）永遠不會被讀出來。 */}
             <div class="hero-actions" role="group" aria-label="Entrance actions">
               <a
-                class="hero-action hero-action-primary magnetic"
+                class="hero-action hero-action-primary"
                 href={wikiHomeUrl}
                 data-href-zh={wikiHomeUrl}
                 data-href-ja={wikiHomeUrlJa}
@@ -272,7 +272,7 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
               </a>
 
               <a
-                class="hero-action hero-action-secondary magnetic"
+                class="hero-action hero-action-secondary"
                 href={SITE.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -329,9 +329,6 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         --entrance-glow-1: oklch(93% 0 0);
         --entrance-glow-2: oklch(96% 0 0);
         --entrance-glow-3: oklch(98% 0 0);
-        --entrance-button-primary: oklch(26% 0.045 35);
-        --entrance-button-primary-text: oklch(96% 0.03 100);
-        --entrance-button-secondary: oklch(18% 0.025 30);
         --entrance-focus: oklch(80% 0.12 200);
         --entrance-particle-glow: oklch(78% 0.11 205 / 0.25);
         --entrance-shadow: oklch(5% 0.01 30 / 0.4);
@@ -346,7 +343,6 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         --entrance-title-gradient-b: #fffde6;
         --entrance-title-gradient-c: #efd9a8;
         --entrance-title-gradient-d: #dcbf7c;
-        --entrance-theme-color: #0f0304;
         --cursor-x: -100px;
         --cursor-y: -100px;
         --cursor-dot-x: -100px;
@@ -376,9 +372,6 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         --entrance-glow-1: oklch(52% 0.1 80);
         --entrance-glow-2: oklch(64% 0.11 85);
         --entrance-glow-3: oklch(75% 0.09 90);
-        --entrance-button-primary: oklch(93% 0.04 90);
-        --entrance-button-primary-text: oklch(32% 0.06 40);
-        --entrance-button-secondary: #fff;
         --entrance-focus: oklch(45% 0.16 255);
         --entrance-particle-glow: oklch(55% 0.09 85 / 0.17);
         --entrance-shadow: oklch(45% 0.03 60 / 0.14);
@@ -394,7 +387,6 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         --entrance-title-gradient-b: #6b4e28;
         --entrance-title-gradient-c: #8f6d25;
         --entrance-title-gradient-d: #b8923a;
-        --entrance-theme-color: #f6f6f4;
       }
 
       .entrance-html {
@@ -2174,7 +2166,6 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
               localStorage.setItem("wiki-theme", next);
             } catch (error) {}
             syncThemeControl();
-            window.dispatchEvent(new CustomEvent("wiki-theme-change", { detail: next }));
           });
           themeButton.addEventListener("pointerup", function () {
             themeButton.blur();

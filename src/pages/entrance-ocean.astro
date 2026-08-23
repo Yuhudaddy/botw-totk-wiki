@@ -2436,7 +2436,6 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
           root.style.colorScheme = theme;
           try { localStorage.setItem("wiki-theme", theme); } catch (error) {}
           syncThemeControl();
-          window.dispatchEvent(new CustomEvent("wiki-theme-change", { detail: theme }));
         }
 
         function setText(selector, value) {
