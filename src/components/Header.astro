@@ -224,6 +224,18 @@ const navLabelKey = {
     max-width: 1800px;
     margin: 10px auto 0;
     border-radius: 999px;
+    /* 形狀（留白／圓角）跟材質（background／box-shadow）分開兩套機制在動：
+       材質是零 JS 的 scroll-timeline（見下方 @supports 區塊），形狀是
+       .is-docked 這顆 class（JS 判斷捲動距離後加上，見下方 script）。
+       兩者管的 CSS 屬性完全不重疊，可以同時作用不打架。
+       過渡曲線沿用站內既有的 cubic-bezier(0.22, 0.8, 0.36, 1)（見
+       .r-navcompact-btn 的 gap 動畫），全站維持同一種「收尾」的手感。 */
+    transition:
+      margin 320ms cubic-bezier(0.22, 0.8, 0.36, 1),
+      width 320ms cubic-bezier(0.22, 0.8, 0.36, 1),
+      max-width 320ms cubic-bezier(0.22, 0.8, 0.36, 1),
+      top 320ms cubic-bezier(0.22, 0.8, 0.36, 1),
+      border-radius 320ms cubic-bezier(0.22, 0.8, 0.36, 1);
     /* 基礎樣式＝「已凝結」的可讀狀態。不支援捲動時間軸的瀏覽器停在這裡，
        拿到的是清楚可讀的版本，而不是頁首那個極透明的狀態。 */
     background: color-mix(in srgb, var(--bg) 62%, transparent);
@@ -249,6 +261,20 @@ const navLabelKey = {
       inset 0 0 18px 0 rgb(255 255 255 / 0.1),
       /* 投影：讓它真的「浮」起來 */
       0 6px 24px color-mix(in srgb, var(--ink) 11%, transparent);
+  }
+
+  /* 貼邊態：捲動超過門檻後 script 幫 .site-header 加上這個 class，
+     膠囊收起四周留白與圓角，變成貼齊螢幕邊緣、融入頁面背景的長方形。
+     跟現有的玻璃凝結（material：background／box-shadow）是各自獨立的
+     兩層效果，這裡完全不碰那些屬性，只管形狀。
+     max-width 也收掉（改 none）：貼邊的意思就是真的貼到邊，桌面超寬螢幕
+     沒有理由這個狀態下還留著置中的封頂寬度。 */
+  .site-header.is-docked {
+    top: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
   }
 
   /* 深色主題的白色高光要收斂，否則玻璃邊緣會過亮、像描了一圈白框。
@@ -531,6 +557,16 @@ const navLabelKey = {
       top: 8px;
     }
 
+    /* 手機版留白比桌面小（8px vs 10px），貼邊態的目標值都是 0／100%／none，
+       跟桌面那顆 .is-docked 一樣，這裡只是要在特異度／出現順序上贏過
+       上面 .site-header 這條 media query 專屬規則。 */
+    .site-header.is-docked {
+      top: 0;
+      width: 100%;
+      margin: 0;
+      border-radius: 0;
+    }
+
     .r-navbar {
       position: relative;
       padding: 10px 16px;
@@ -766,4 +802,45 @@ const navLabelKey = {
     });
     observer.observe(header);
   }
+</script>
+
+<script>
+  // ── 貼邊態：捲動超過門檻切換 .is-docked ──────────────────────
+  // 這裡是全站唯一監聽 scroll 的地方，刻意跟上面材質用的 scroll-timeline
+  // 分開：材質是「捲動位置的連續函式」（每格畫面都要重算漸層進度到哪），
+  // 用 CSS 時間軸零 JS 處理最合適；形狀只是「過了門檻沒」的二元狀態，
+  // 用一次性的 class 切換（觸發一次 CSS transition 自己跑完）比連續驅動
+  // 划算，也不會有連續捲動的重繪負擔——這正是原本材質選擇零 JS 的理由，
+  // 而它不適用在這裡：不是不能用 JS，是這裡的 JS 用量不會產生同一個問題。
+  //
+  // 門檻取 40px：比材質凝結的完成點（140px，見 animation-range）早，
+  // 貼邊動作先做完，玻璃材質再慢慢跟上，兩層動畫不會同時搶注意力。
+  (function () {
+    const header = document.querySelector<HTMLElement>(".site-header");
+    if (!header) return;
+
+    const THRESHOLD = 40;
+    let ticking = false;
+    let docked = false;
+
+    function apply() {
+      const next = window.scrollY > THRESHOLD;
+      if (next !== docked) {
+        docked = next;
+        header!.classList.toggle("is-docked", docked);
+      }
+      ticking = false;
+    }
+
+    apply();
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(apply);
+      },
+      { passive: true }
+    );
+  })();
 </script>
