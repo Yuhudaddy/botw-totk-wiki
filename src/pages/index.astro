@@ -1,6 +1,17 @@
 ---
 import { SITE } from "../data/site";
 import { href } from "../lib/url";
+import sheikahGlyphsData from "../data/sheikah-glyphs.json";
+
+// 彩蛋解鎖後標題變成的希卡文字：「Dazotikuy Shrine」逐字對應希卡字母，
+// 資料沿用 SheikahField 背景裝飾同一份 sheikah-glyphs.json（A~Z 拼音對照，
+// 不含空格），字母集合用兩個獨立字群代替空格，不需要額外處理空格字元。
+// 轉成 Record<string, ...>：字母是跑迴圈拼出來的變數、不是寫死的字面量鍵，
+// TS 從 JSON 推論出的字面量物件型別沒有字串索引簽章，直接索引會報錯。
+type SheikahGlyph = { d: string; viewBox: string; w: number; h: number };
+const sheikahGlyphs = sheikahGlyphsData as Record<string, SheikahGlyph>;
+const SHEIKAH_TITLE_WORDS = ["dazotikuy", "shrine"];
+const SHEIKAH_TITLE_LETTERS = Array.from(new Set(SHEIKAH_TITLE_WORDS.join("").split("")));
 
 // 入口頁本身就在 "/"，兩顆按鈕與站內導引一律指向攻略首頁 "/home"
 const wikiHomeUrl = href("/home");
@@ -244,6 +255,40 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
           >
             <span class="hero-title-prefix">Welcome to</span>
             <em>Dazotikuy Shrine</em>
+            {/* 彩蛋解鎖那刻，標題從 Latin 字母淡成希卡文字——跟 <em> 疊在同一個
+                grid cell（見下方 CSS 的 grid-row），靠 opacity 互相淡入淡出，
+                不用 JS 逐字測量位置（跟下面 .secret-layer 那套熱區疊字不同）。
+                漸層直接沿用 <em> 那組 --entrance-title-gradient-* token，
+                顏色跟著明暗主題自動換，不在這裡另外寫一份色碼。 */}
+            <svg class="sheikah-title-defs" focusable="false">
+              <defs>
+                <linearGradient id="sheikah-title-gradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="var(--entrance-title-gradient-a)" />
+                  <stop offset="31%" stop-color="var(--entrance-title-gradient-b)" />
+                  <stop offset="65%" stop-color="var(--entrance-title-gradient-c)" />
+                  <stop offset="100%" stop-color="var(--entrance-title-gradient-d)" />
+                </linearGradient>
+                {SHEIKAH_TITLE_LETTERS.map((ch) => (
+                  <symbol id={`skt-${ch}`} viewBox={sheikahGlyphs[ch].viewBox}>
+                    <path d={sheikahGlyphs[ch].d} fill="url(#sheikah-title-gradient)" />
+                  </symbol>
+                ))}
+              </defs>
+            </svg>
+            <span class="sheikah-title" aria-hidden="true">
+              {SHEIKAH_TITLE_WORDS.map((word) => (
+                <span class="sheikah-word">
+                  {word.split("").map((ch) => (
+                    <svg
+                      class="sheikah-letter"
+                      viewBox={`0 0 ${sheikahGlyphs[ch].w} ${sheikahGlyphs[ch].h}`}
+                    >
+                      <use href={`#skt-${ch}`} />
+                    </svg>
+                  ))}
+                </span>
+              ))}
+            </span>
           </h1>
 
           <div class="hero-support entrance-reveal entrance-reveal-3">
@@ -524,19 +569,23 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         animation: brand-secret-pulse 2.8s ease-in-out infinite alternate;
       }
 
+      /* 光暈改走 --entrance-accent-bright（希卡青）：跟下面 .secret-letter.is-hit
+         命中字母用的是同一顆 token，彩蛋從「按對字母」到「Logo 解鎖」視覺上是
+         同一套識別色，不是憑空挑一個白色高光。半徑也放大一截，窄視窗、隨手一瞥
+         都看得出這裡現在可以點。 */
       @keyframes brand-secret-pulse {
         from {
-          filter: drop-shadow(0 0 3px color-mix(in oklch, white 55%, transparent));
+          filter: drop-shadow(0 0 6px color-mix(in oklch, var(--entrance-accent-bright) 65%, transparent));
         }
         to {
-          filter: drop-shadow(0 0 10px color-mix(in oklch, white 85%, transparent));
+          filter: drop-shadow(0 0 22px color-mix(in oklch, var(--entrance-accent-bright) 92%, transparent));
         }
       }
 
       @media (prefers-reduced-motion: reduce) {
         .entrance-brand.is-secret-unlocked .brand-logo-pic {
           animation: none;
-          filter: drop-shadow(0 0 7px color-mix(in oklch, white 70%, transparent));
+          filter: drop-shadow(0 0 14px color-mix(in oklch, var(--entrance-accent-bright) 78%, transparent));
         }
       }
 
@@ -1096,6 +1145,74 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         }
         100% {
           background-position: 34% 50%;
+        }
+      }
+
+      /* ── 彩蛋解鎖：標題變希卡文字 ─────────────────────────────────────
+         <em> 跟 .sheikah-title 疊在同一個 grid cell（都指到 row 2），
+         平時只有 <em> 看得到；解鎖那刻 .hero-title 被加上 .is-sheikah，
+         兩邊 opacity 互換，看起來像文字本身「轉換」成了希卡文字。
+         希卡字母是逐顆獨立的小 <svg>，靠 flexbox 排版自然換行，
+         不需要像下面的 .secret-layer 那樣用 JS 實量每個字的座標。 */
+      .sheikah-title-defs {
+        position: absolute;
+        width: 0;
+        height: 0;
+      }
+
+      .hero-title em,
+      .sheikah-title {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .sheikah-title {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        column-gap: 0.05em;
+        row-gap: 0.12em;
+        opacity: 0;
+        transform: scale(0.92);
+        pointer-events: none;
+        transition:
+          opacity 900ms cubic-bezier(0.22, 0.8, 0.36, 1),
+          transform 900ms cubic-bezier(0.22, 0.8, 0.36, 1);
+      }
+
+      .sheikah-word {
+        display: flex;
+        column-gap: 0.05em;
+      }
+
+      .sheikah-word + .sheikah-word {
+        margin-left: 0.3em; /* 代替原本標題裡的空格 */
+      }
+
+      .sheikah-letter {
+        width: 0.6em;
+        height: 0.6em;
+        flex: none;
+      }
+
+      .hero-title.is-sheikah em {
+        opacity: 0;
+        transition: opacity 700ms ease;
+      }
+
+      .hero-title.is-sheikah .sheikah-title {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .sheikah-title,
+        .hero-title.is-sheikah em {
+          transition-duration: 1ms;
+        }
+        .sheikah-title {
+          transform: none;
         }
       }
 
@@ -2087,6 +2204,8 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
             secretBrand.setAttribute("aria-label", t.brandLink);
             secretBrand.dataset.secretState = "unlocked";
           }
+          // 標題轉希卡文字跟語音同時觸發，不是等語音播完才變
+          if (secretTitle) secretTitle.classList.add("is-sheikah");
           if (secretAudio) {
             secretAudio.currentTime = 0;
             var playing = secretAudio.play();
