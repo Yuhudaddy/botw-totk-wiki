@@ -234,8 +234,12 @@ const navLabelKey = {
       0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
       /* 內圈亮邊：玻璃的「厚度」 */
       inset 0 0 0 1px rgb(255 255 255 / 0.34),
-      /* 頂緣高光帶一絲希卡金，像裝飾色在玻璃裡折出的光 */
-      inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 30%, rgb(255 255 255 / 0.6)),
+      /* 頂緣高光：玻璃上緣受光的那道白。這裡刻意不摻 --gold——淺色模式的
+         --gold 是深銅色 #8f6d25，摻進來會變成一條比背景還暗的土色線，
+         讀起來像髒污或多餘的描邊，而不是反光（深色模式的 --gold 是亮暖色，
+         摻了才成立，見下方 dark 區塊）。玻璃在淺底上的邊界定義交給上面
+         那條外框細線負責，高光只需要純粹的白。 */
+      inset 0 1.5px 0 0 rgb(255 255 255 / 0.85),
       /* 底緣反光：下方內容打上來的光 */
       inset 0 -1px 0 0 rgb(255 255 255 / 0.24),
       /* 兩側側光 */
@@ -323,7 +327,7 @@ const navLabelKey = {
         box-shadow:
           0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent),
           inset 0 0 0 1px rgb(255 255 255 / 0.26),
-          inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 24%, rgb(255 255 255 / 0.44)),
+          inset 0 1.5px 0 0 rgb(255 255 255 / 0.62),
           inset 0 -1px 0 0 rgb(255 255 255 / 0.16),
           inset 1px 0 0 0 rgb(255 255 255 / 0.14),
           inset -1px 0 0 0 rgb(255 255 255 / 0.14),
