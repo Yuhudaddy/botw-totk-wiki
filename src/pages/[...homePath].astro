@@ -927,14 +927,18 @@ const featured = featuredVideos;
       display: block;
     }
 
+    /* 頂色原本是 rgb(29,28,26)——一個不對應任何站內 token 的灰棕色殘留值，
+       跟 --bg 深色 #0f0304（rgb(15,3,4)）對不起來。淺色那組本來就精準用
+       --bg 淺色 #f6f6f4 的字面值，這裡改成對齊，讓漸層真的融進頁面底色，
+       而不是在 hero 頂端留一條跟周圍背景色不同的色帶。 */
     :global([data-theme="dark"]) .home-hero-frame::before {
       background: linear-gradient(
         90deg,
-        rgba(29, 28, 26, 0.97) 0%,
-        rgba(29, 28, 26, 0.92) 38%,
-        rgba(29, 28, 26, 0.66) 54%,
-        rgba(29, 28, 26, 0.19) 75%,
-        rgba(29, 28, 26, 0.05) 100%
+        rgba(15, 3, 4, 0.97) 0%,
+        rgba(15, 3, 4, 0.92) 38%,
+        rgba(15, 3, 4, 0.66) 54%,
+        rgba(15, 3, 4, 0.19) 75%,
+        rgba(15, 3, 4, 0.05) 100%
       );
     }
 
@@ -1075,9 +1079,9 @@ const featured = featuredVideos;
       :global([data-theme="dark"]) .home-hero-frame::before {
         background: linear-gradient(
           180deg,
-          rgba(29, 28, 26, 0.97) 0%,
-          rgba(29, 28, 26, 0.93) 53%,
-          rgba(29, 28, 26, 0.66) 100%
+          rgba(15, 3, 4, 0.97) 0%,
+          rgba(15, 3, 4, 0.93) 53%,
+          rgba(15, 3, 4, 0.66) 100%
         );
       }
 
