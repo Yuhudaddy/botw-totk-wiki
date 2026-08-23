@@ -1234,18 +1234,9 @@ const mapTools = [
       font-size: 11px;
     }
 
-    /* 選中鍵帽的配色隨主題翻轉：淺色模式把 accent 壓深才夠白字的對比，
-       深色模式的 accent 本身較亮，配深色字即可。 */
     .obj-filter-board {
-      --key-on-bg: color-mix(in srgb, var(--accent) 88%, #000);
-      --key-on-ink: #fff;
       display: grid;
       gap: 22px;
-    }
-
-    :global([data-theme="dark"]) .obj-filter-board {
-      --key-on-bg: var(--accent);
-      --key-on-ink: #1a1a18;
     }
 
     .obj-filter-keys {
@@ -1275,10 +1266,14 @@ const mapTools = [
       color: var(--ink);
     }
 
+    /* 選中鍵帽：走全站的「墨＝你在這裡」，跟術語表／主題頁的篩選鈕同一套。
+       原本填 accent 藍，是這次色彩角色掃描漏掉的一處；改用 ink 之後
+       也不再需要 --key-on-bg／--key-on-ink 那組隨主題翻轉的變數——
+       那組變數存在的唯一理由就是「把藍色壓到夠有對比」。 */
     .obj-filter-keys button[aria-selected="true"] {
-      border-color: var(--key-on-bg);
-      background: var(--key-on-bg);
-      color: var(--key-on-ink);
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--bg);
     }
 
     .obj-filter-detail {

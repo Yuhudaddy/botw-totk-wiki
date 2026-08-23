@@ -1165,7 +1165,9 @@ const schematicsPerPage = 12;
       left: 3px;
       width: calc(50% - 3px);
       border-radius: 5px;
-      background: color-mix(in srgb, var(--accent) 11%, transparent);
+      /* 跟上面分類頁籤的 .schematics-thumb 用同一種填色。原本這顆是 accent
+         淡染，是色彩角色掃描漏掉的一處——同一頁兩顆滑動膠囊不該一藍一灰。 */
+      background: var(--surface-2);
       transition: transform 240ms cubic-bezier(0.22, 0.8, 0.36, 1);
     }
 

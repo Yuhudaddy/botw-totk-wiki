@@ -467,13 +467,26 @@ const config = {
       }
     }
 
-    function reset() {
+    // 把「因為使用者互動而出現的東西」全部收掉：步驟標記、步驟路線、
+    // Pin 路線、Pin 的選中狀態、示意圖按鈕。常駐編號 Pin 不動。
+    // reset() 與「清除」鈕共用這段——原本 reset() 只清了前兩者，於是取消
+    // 步驟選取時鏡頭跳回總覽、但先前點過的 Pin 路線還留在圖上、那顆 Pin
+    // 也還是選中的樣子，跟第 10 行寫的協定（清除標記並回到總覽）不符。
+    function clearInteractions() {
       marks.clearLayers();
       stepRouteLayer.clearLayers();
       routeShapes = [];
       activeRouteLayers = [];
-      map.fitBounds(bounds);
+      routeLayer.clearLayers();
+      selectedPin = null;
+      markSelectedPin();
+      enableDemoBtn(false);
       if (statusEl) statusEl.textContent = defaultStatus;
+    }
+
+    function reset() {
+      clearInteractions();
+      map.fitBounds(bounds);
     }
 
     document.addEventListener("flowmap:show", ((e: CustomEvent) => show(e.detail)) as EventListener);
@@ -494,15 +507,7 @@ const config = {
     // 但保留常駐編號 Pin——那是頁面本身要表達的內容，不是使用者點出來的。
     // 鏡頭不動（要回全圖請按「總覽」），並通知頁面把步驟單選按鈕一起取消選取。
     root.querySelector<HTMLButtonElement>("[data-flow-clear]")?.addEventListener("click", () => {
-      marks.clearLayers();
-      stepRouteLayer.clearLayers();
-      routeShapes = [];
-      activeRouteLayers = [];
-      routeLayer.clearLayers();
-      selectedPin = null;
-      markSelectedPin();
-      enableDemoBtn(false);
-      if (statusEl) statusEl.textContent = defaultStatus;
+      clearInteractions();
       document.dispatchEvent(new CustomEvent("flowmap:cleared"));
     });
 
@@ -525,7 +530,10 @@ const config = {
         pts.push(a, b);
         const color = r.alt ? inkColor : accent;
         L.polyline([a, b], { color, weight: 3.5, opacity: 0.95 }).addTo(routeLayer);
-        addSegmentArrow(a, b, routeLayer);      // 箭頭沿用步驟軌跡的樣式，但畫進路線自己的圖層才能被 routeLayer.clearLayers() 清乾淨
+        // 箭頭要跟著這條路線自己的顏色走（替代路線是 ink、主線是 accent），
+        // 少傳這個參數的話箭頭會一律吃預設的 accent，變成 ink 線配 accent 箭頭。
+        // 畫進路線自己的圖層才能被 routeLayer.clearLayers() 清乾淨。
+        addSegmentArrow(a, b, routeLayer, color);
         L.circleMarker(b, {
           radius: 5, color, weight: 2, fillColor: color, fillOpacity: 0.9, interactive: false,
         }).addTo(routeLayer);
@@ -658,7 +666,6 @@ const config = {
     /* 12:10 的地圖塞進 2:1 左右的容器：桌機高一點、手機順著寬度縮 */
     height: clamp(320px, 44vw, 560px);
     background: var(--surface);
-    outline: none;
     /* Leaflet 內部圖層自帶 z-index（圖磚 200、標記 600、控制項 1000），而地圖容器
        只有 position: relative、沒有 z-index，不會建立堆疊脈絡——那些數字會直接跑到
        根層級跟 sticky header（z-50）比大小，捲動時地圖就蓋在 header 上面。
@@ -666,6 +673,13 @@ const config = {
        注意：只隔離畫布，不要隔離外層 .flow-map，否則實景照片（fixed, z-2000）
        會被一起關進來，反而蓋不過 header。 */
     isolation: isolate;
+  }
+  /* Leaflet 預設 keyboard: true，會給容器 tabindex="0" 並綁方向鍵平移——
+     這是個可用鍵盤操作的元件，原本卻寫死 outline: none，Tab 進來完全沒有
+     焦點提示。outline-offset 取負值把框畫在容器內側，免得被裁掉。 */
+  .flow-map-canvas:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
   .flow-map-note {
     margin: 0;
@@ -761,8 +775,11 @@ const config = {
     outline: 3px solid var(--ink);
     outline-offset: 3px;
   }
+  /* 選中光環用 ink：Pin 本身的底色就是 accent，再套一圈同色相的半透明光環
+     等於「藍上面加藍」，幾乎看不出選了哪一顆。上面的 :focus-visible 早就
+     用 ink 了，這裡跟它一致。 */
   .flow-map :global(.flow-map-pin-dot.is-selected) {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent), 0 2px 8px rgb(0 0 0 / 0.5);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 55%, transparent), 0 2px 8px rgb(0 0 0 / 0.5);
   }
 
   /* 路線終點標記：實心圓＋外圈，和常駐編號 Pin（有數字）、步驟小圓點分得開 */
