@@ -138,7 +138,11 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
     )}
   </div>
   {layoutUrl && (
-    <div class="model3d-pick-info" data-hint={t.model3dPickInfo}>
+    <div
+      class="model3d-pick-info"
+      data-hint={t.model3dPickInfo}
+      data-picked-tpl={t.model3dPickedTemplate}
+    >
       {t.model3dPickInfo}
     </div>
   )}
@@ -364,7 +368,10 @@ const maxOrbit = `auto auto ${maxZoomDistance}m`;
             }
           }
         }
-        infoEl.textContent = text ? `選取：${text}` : hint;
+        // 前綴走 data 屬性帶進來的模板，不能寫死中文——這行沒有任何 fallback
+        // 路徑，寫死的話日文版 3D 模型頁會直接顯示「選取：…」。
+        const pickedTpl = infoEl.dataset.pickedTpl ?? "{name}";
+        infoEl.textContent = text ? pickedTpl.replace("{name}", text) : hint;
         infoEl.classList.toggle("is-picked", !!text);
       });
     }

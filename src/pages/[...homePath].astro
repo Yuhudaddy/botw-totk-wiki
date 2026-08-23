@@ -4,7 +4,7 @@ import VideoCard from "../components/VideoCard.astro";
 import { href } from "../lib/url";
 import { quickNav, SITE } from "../data/site";
 import { typeGroups } from "../data/types";
-import youtubeData from "../data/youtube.json";
+import { featuredVideos, latestVideos } from "../data/youtube";
 import { uiStrings, type Lang } from "../data/ui-strings";
 
 // 中文 /home、日文 /ja/home
@@ -18,7 +18,7 @@ export function getStaticPaths() {
 const { lang } = Astro.props;
 const t = uiStrings[lang];
 
-const featured = youtubeData.featured;
+const featured = featuredVideos;
 ---
 
 <BaseLayout active="home" lang={lang} altPath="/home">
@@ -42,7 +42,7 @@ const featured = youtubeData.featured;
             <a href={SITE.youtube} target="_blank" rel="noopener">@zb_yuhudaddy</a>。
           </p>
 
-          <div class="home-actions" aria-label={t.homeQuickBrowseLabel}>
+          <div class="home-actions" role="group" aria-label={t.homeQuickBrowseLabel}>
             <a href={href("/videos?game=totk", lang)} class="home-action home-action-primary">
               {t.homeBrowseTotk}
               <span aria-hidden="true">→</span>
@@ -54,7 +54,7 @@ const featured = youtubeData.featured;
           </div>
 
           {/* 由 typeGroups 產生，新增遊戲時會自動出現，不需手動補 */}
-          <div class="home-series" aria-label={t.homeSeriesLabel}>
+          <div class="home-series" role="group" aria-label={t.homeSeriesLabel}>
             {typeGroups.map((group) => <span>{group.game.toUpperCase()}</span>)}
           </div>
         </div>
@@ -87,9 +87,12 @@ const featured = youtubeData.featured;
         </div>
         <ol class="home-latest-list">
           {
-            youtubeData.latest.map((l) => {
+            latestVideos.map((l) => {
               const d = new Date(l.publishedAt);
-              const dateLabel = `${d.getMonth() + 1}/${String(d.getDate()).padStart(2, "0")}`;
+              // 用 UTC 取值：這頁是靜態產生的，日期在建置當下就被寫死進 HTML，
+              // 而 getMonth()/getDate() 會依「建置機器的時區」換算。本機在 UTC+8、
+              // Cloudflare 的建置容器在 UTC，同一支影片的日期可能差一天。
+              const dateLabel = `${d.getUTCMonth() + 1}/${String(d.getUTCDate()).padStart(2, "0")}`;
               return (
                 <li>
                   <a

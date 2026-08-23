@@ -103,6 +103,10 @@ const zh = {
   model3dLegend: "色彩圖例",
   videoPrevPage: "← 上一頁",
   videoNextPage: "下一頁 →",
+  /** 上面兩個帶箭頭的是「看得到的按鈕文字」；影片索引頁的翻頁鈕只有一個
+   *  箭頭符號，可及名稱會變成「←」，所以另外給不含箭頭的純文字版本。 */
+  videoPrevPageLabel: "上一頁",
+  videoNextPageLabel: "下一頁",
   /** {page}／{total} 會被替換成目前頁碼／總頁數 */
   videoPageLabel: "第 {page} 頁，共 {total} 頁",
 
@@ -130,6 +134,8 @@ const zh = {
   model3dTopLabel: "俯視",
   model3dResetLabel: "重置視角",
   model3dPickInfo: "點擊模型中的房間或地標，可顯示名稱",
+  /** 點到東西之後的前綴；{name} 會被替換成該處名稱 */
+  model3dPickedTemplate: "選取：{name}",
   model3dTransparencyLabel: "透明化",
 
   // 流程地圖操作說明
@@ -221,6 +227,8 @@ const zh = {
   glossaryFilterLabel: "依遊戲篩選術語",
   glossaryFilterAll: "全部",
   glossarySearchPlaceholder: "搜尋縮寫、英文、日文或中文…",
+  /** 搜尋框的螢幕閱讀器標籤（視覺上隱藏） */
+  glossarySearchLabel: "搜尋術語",
   /** {n} 會被替換成條目數量 */
   glossaryCountTemplate: "共 {n} 條",
   /** 篩選後的計數；{shown} 為符合筆數、{total} 為總筆數 */
@@ -350,6 +358,8 @@ const ja: Record<keyof typeof zh, string> = {
   model3dLegend: "カラー凡例",
   videoPrevPage: "← 前へ",
   videoNextPage: "次へ →",
+  videoPrevPageLabel: "前のページ",
+  videoNextPageLabel: "次のページ",
   videoPageLabel: "{page} / {total} ページ",
 
   footerTagline: "ゼルダの伝説 BotW / TotK テクニック・グリッチ攻略",
@@ -373,6 +383,7 @@ const ja: Record<keyof typeof zh, string> = {
   model3dTopLabel: "真上から",
   model3dResetLabel: "視点をリセット",
   model3dPickInfo: "モデル内の部屋やランドマークをクリックすると名前が表示されます",
+  model3dPickedTemplate: "選択：{name}",
   model3dTransparencyLabel: "透明化",
 
   flowMapPan: "ドラッグ（左クリック／1本指）：マップを移動",
@@ -450,6 +461,7 @@ const ja: Record<keyof typeof zh, string> = {
   glossaryFilterLabel: "ゲームで絞り込む",
   glossaryFilterAll: "すべて",
   glossarySearchPlaceholder: "略称・英語・日本語・中国語で検索…",
+  glossarySearchLabel: "用語を検索",
   glossaryCountTemplate: "全 {n} 件",
   glossaryCountFilteredTemplate: "{shown} / {total} 件",
   glossaryColAbbr: "略称",

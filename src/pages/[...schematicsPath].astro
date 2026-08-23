@@ -524,7 +524,7 @@ const schematicsPerPage = 12;
                 ? "残しておきたい建造物を、ひとつのアーカイブにまとめる。ブループリントごとに QR Code・名称・制作者を保持するので、探すたびに散らばった画像をめくり直す必要がない。"
                 : "把值得留下的建造收進同一座資料庫。每張藍圖保留 QR Code、名稱與製作者，查找時不必再翻遍散落的圖片。"}
             </p>
-            <div class="schematics-meta" aria-label={lang === "ja" ? "ブループリントのデータ項目" : "藍圖資料欄位"}>
+            <div class="schematics-meta" role="group" aria-label={lang === "ja" ? "ブループリントのデータ項目" : "藍圖資料欄位"}>
               <span>QR Code</span>
               <span>{lang === "ja" ? "説明" : "敘述"}</span>
               <span>{lang === "ja" ? "制作者" : "製作者"}</span>
@@ -580,7 +580,7 @@ const schematicsPerPage = 12;
           }
         </div>
 
-        <div class="schematics-view-toggle" aria-label={lang === "ja" ? "画像の表示方法" : "圖片展示方式"} data-schematics-view-toggle data-active="grid">
+        <div class="schematics-view-toggle" role="group" aria-label={lang === "ja" ? "画像の表示方法" : "圖片展示方式"} data-schematics-view-toggle data-active="grid">
           <span class="schematics-view-thumb" aria-hidden="true"></span>
           <button type="button" aria-pressed="true" data-schematics-view="grid" aria-label={lang === "ja" ? "グリッド表示" : "圖塊展示"}>
             <svg viewBox="0 0 24 24" aria-hidden="true">

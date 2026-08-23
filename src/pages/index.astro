@@ -252,7 +252,10 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
               Super Smash Bros., and beyond.
             </p>
 
-            <div class="hero-actions" aria-label="Entrance actions">
+            {/* role 不能省：aria-label 對隱含 role 為 generic 的 <div> 無效，
+                ARIA 規範明訂 generic 禁止命名，沒有 role 的話這個標籤（以及三份
+                I18N 裡的 actionsLabel）永遠不會被讀出來。 */}
+            <div class="hero-actions" role="group" aria-label="Entrance actions">
               <a
                 class="hero-action hero-action-primary magnetic"
                 href={wikiHomeUrl}
@@ -730,8 +733,13 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         transition: background-color 160ms cubic-bezier(0.25, 1, 0.5, 1), color 160ms;
       }
 
+      /* 目前語言＝「你在這裡」，走 entrance 的 ink 而不是互動藍：一來符合
+         全站「藍色只表示可互動」的約定，二來 accent-bright 在淺色模式下對
+         白底只有 4.29:1，撐不起 0.82rem 的一般字重。旁邊本來就有勾勾圖示
+         在表示選中，不需要再靠色相講第二次。 */
       .lang-option[aria-checked="true"] {
-        color: var(--entrance-accent-bright);
+        color: var(--entrance-text);
+        font-weight: 500;
       }
 
       .lang-option-check {

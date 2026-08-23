@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import youtubeData from "../data/youtube.json";
+import { allVideos } from "../data/youtube";
 import { gameList, gameListFor } from "../data/types";
 import { uiStrings, type Lang } from "../data/ui-strings";
 
@@ -18,15 +18,12 @@ const t = uiStrings[lang];
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-// CI 跑過 fetch-youtube.mjs 後會有 all[]；本地 seed 沒有時 fallback 合併各遊戲陣列
-const rawAll: any[] =
-  (youtubeData as any).all ??
-  gameList.flatMap(({ id }) =>
-    ((youtubeData as any)[id] ?? []).map((v: any) => ({ ...v, game: id }))
-  );
+// 兩種資料形狀（建置時抓過 vs 只有種子）的處理集中在 src/data/youtube.ts，
+// 這裡拿到的已經是統一過、有型別的陣列。
+const rawAll = allVideos(gameList.map(({ id }) => id));
 // 日文頁只有曠野之息／王國之淚有翻譯，其餘遊戲名稱沿用中文（見 types.ts 的 gameLabelFor）
 const gameLabelMap = Object.fromEntries(gameListFor(lang).map(({ id, label }) => [id, label]));
-const videos = rawAll.map((v: any) => ({
+const videos = rawAll.map((v) => ({
   ytId: v.id,
   title: v.title,
   game: v.game ?? "",
@@ -59,9 +56,12 @@ const facets = gameListFor(lang)
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </span>
+      {/* placeholder 不算可及名稱：一旦使用者開始打字它就消失，讀屏也不保證會唸。
+          搜尋框需要一個穩定的名稱，這裡用既有的 searchLabel。 */}
       <input
         id="idx-search"
         type="search"
+        aria-label={t.searchLabel}
         placeholder={t.videosSearchPlaceholder}
         class="w-full rounded-[5px] border border-border-strong bg-surface py-[13px] pl-11 pr-4 text-[15px] text-ink outline-none focus:border-brand"
       />
@@ -69,12 +69,12 @@ const facets = gameListFor(lang)
 
     {/* 遊戲篩選 */}
     <div id="idx-facets" class="mb-9 flex flex-wrap gap-2.5">
-      <button type="button" data-game="" class="chip rounded-[5px] border border-border-strong px-[15px] py-[7px] text-sm">
+      <button type="button" data-game="" aria-pressed="false" class="chip rounded-[5px] border border-border-strong px-[15px] py-[7px] text-sm">
         {t.videosFilterAll}
       </button>
       {
         facets.map((f) => (
-          <button type="button" data-game={f.key} class="chip rounded-[5px] border border-border-strong px-[15px] py-[7px] text-sm">
+          <button type="button" data-game={f.key} aria-pressed="false" class="chip rounded-[5px] border border-border-strong px-[15px] py-[7px] text-sm">
             {f.label}
           </button>
         ))
@@ -272,6 +272,9 @@ const facets = gameListFor(lang)
   resultCount: t.videosResultCountTemplate,
   viewList: t.videosViewList,
   viewGrid: t.videosViewGrid,
+  prevPage: t.videoPrevPageLabel,
+  nextPage: t.videoNextPageLabel,
+  pageLabel: t.videoPageLabel,
 } }}>
   (function () {
     var search = document.getElementById("idx-search");
@@ -315,7 +318,14 @@ const facets = gameListFor(lang)
     function inGame(g) {
       return !game || g === game;
     }
+    // 這支 script 是 is:inline 的純 JS，沒辦法 import src/lib/url.ts，只能複寫一份。
+    // 政策要跟 VideoCard 一致：maxresdefault 畫質好但只有 720p 以上的影片才有，
+    // 載不到就退回每支都有的 hqdefault（hqdefault 是 4:3 含黑邊，靠卡片的
+    // object-fit: cover 裁掉）。
     function ytThumb(id) {
+      return "https://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
+    }
+    function ytThumbFallback(id) {
       return "https://img.youtube.com/vi/" + id + "/hqdefault.jpg";
     }
 
@@ -336,7 +346,8 @@ const facets = gameListFor(lang)
     function videoGridCard(v) {
       return (
         '<a class="idx-grid-card" href="https://youtu.be/' + v.ytId + '" target="_blank" rel="noopener">' +
-        '<img loading="lazy" alt="" src="' + ytThumb(v.ytId) + '" />' +
+        '<img loading="lazy" alt="" src="' + ytThumb(v.ytId) +
+          '" onerror="this.onerror=null;this.src=\'' + ytThumbFallback(v.ytId) + '\'" />' +
         '<div class="idx-grid-card-body">' +
         '<div style="font-size:13px; line-height:1.4; color:var(--ink); display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" class="font-heading">' + hl(v.title) + "</div>" +
         (v.gameLabel ? '<div style="font-size:11px; color:var(--muted); margin-top:5px;">' + esc(v.gameLabel) + "</div>" : "") +
@@ -347,11 +358,14 @@ const facets = gameListFor(lang)
 
     /* ── 分頁列 ── */
     function paginationHTML(current, total) {
-      var html = '<div class="page-scroll" style="overflow-x:auto;margin-top:22px;padding-bottom:4px;">' +
+      // 包在 <nav> 裡並給它「第 n 頁，共 m 頁」的標籤，讀屏才知道這一區是分頁
+      // 以及目前在哪一頁；翻頁鈕只有箭頭符號，可及名稱必須另外用 aria-label 補。
+      var navLabel = esc(i18n.pageLabel.replace("{page}", current + 1).replace("{total}", total));
+      var html = '<nav class="page-scroll" aria-label="' + navLabel + '" style="overflow-x:auto;margin-top:22px;padding-bottom:4px;">' +
         '<div style="display:flex;align-items:center;justify-content:center;gap:5px;width:max-content;margin:0 auto;">';
 
       // 上一頁
-      html += '<button class="page-btn" data-page="' + (current - 1) + '"' + (current === 0 ? " disabled" : "") + ">←</button>";
+      html += '<button class="page-btn" aria-label="' + esc(i18n.prevPage) + '" data-page="' + (current - 1) + '"' + (current === 0 ? " disabled" : "") + ">←</button>";
 
       // 頁碼（桌面最多顯示 7 個，手機縮減為 5 個，超出用 …）
       var maxVisible = window.innerWidth < 480 ? 5 : 7;
@@ -365,7 +379,9 @@ const facets = gameListFor(lang)
         if (start > 1) html += '<span style="color:var(--muted);font-size:13px;padding:0 2px;">…</span>';
       }
       for (var i = start; i <= end; i++) {
-        html += '<button class="page-btn" data-page="' + i + '" data-active="' + (i === current ? "true" : "false") + '">' + (i + 1) + "</button>";
+        var isCurrent = i === current;
+        html += '<button class="page-btn" data-page="' + i + '" data-active="' + (isCurrent ? "true" : "false") + '"' +
+          (isCurrent ? ' aria-current="page"' : "") + ">" + (i + 1) + "</button>";
       }
       if (end < total - 1) {
         if (end < total - 2) html += '<span style="color:var(--muted);font-size:13px;padding:0 2px;">…</span>';
@@ -373,8 +389,8 @@ const facets = gameListFor(lang)
       }
 
       // 下一頁
-      html += '<button class="page-btn" data-page="' + (current + 1) + '"' + (current === total - 1 ? " disabled" : "") + ">→</button>";
-      html += "</div></div>";
+      html += '<button class="page-btn" aria-label="' + esc(i18n.nextPage) + '" data-page="' + (current + 1) + '"' + (current === total - 1 ? " disabled" : "") + ">→</button>";
+      html += "</div></nav>";
       return html;
     }
 
@@ -410,10 +426,10 @@ const facets = gameListFor(lang)
     function viewToggleHTML() {
       return (
         '<div style="display:flex;gap:5px;">' +
-        '<button class="view-btn" data-view="list" data-active="' + (viewMode === "list" ? "true" : "false") + '" title="' + i18n.viewList + '">' +
+        '<button class="view-btn" data-view="list" data-active="' + (viewMode === "list" ? "true" : "false") + '" aria-pressed="' + (viewMode === "list" ? "true" : "false") + '" aria-label="' + esc(i18n.viewList) + '" title="' + esc(i18n.viewList) + '">' +
         '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>' +
         "</button>" +
-        '<button class="view-btn" data-view="grid" data-active="' + (viewMode === "grid" ? "true" : "false") + '" title="' + i18n.viewGrid + '">' +
+        '<button class="view-btn" data-view="grid" data-active="' + (viewMode === "grid" ? "true" : "false") + '" aria-pressed="' + (viewMode === "grid" ? "true" : "false") + '" aria-label="' + esc(i18n.viewGrid) + '" title="' + esc(i18n.viewGrid) + '">' +
         '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>' +
         "</button>" +
         "</div>"
@@ -511,7 +527,11 @@ const facets = gameListFor(lang)
     /* ── Chip active 狀態 ── */
     function setActiveChip() {
       chips.forEach(function (c) {
-        c.setAttribute("data-active", c.getAttribute("data-game") === game ? "true" : "false");
+        // data-active 只驅動樣式，讀屏看不到；aria-pressed 才是「這顆是不是按下
+        // 狀態」的無障礙表達，全站其他篩選列（術語表、資源頁）都是這樣做。
+        var on = c.getAttribute("data-game") === game;
+        c.setAttribute("data-active", on ? "true" : "false");
+        c.setAttribute("aria-pressed", on ? "true" : "false");
       });
     }
     function setTerms(str) {

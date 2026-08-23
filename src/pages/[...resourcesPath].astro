@@ -169,8 +169,10 @@ function sourceLabel(url: string): string {
       </div>
       <div id="res-count" class="font-mono text-[12px] text-muted" data-count-tpl={t.resourcesCountTemplate}></div>
       <div class="ml-auto flex items-center gap-1.5">
-        <a
-          href="#"
+        <button
+          type="button"
+          aria-pressed="false"
+          aria-label={t.resourcesKindRecommended}
           title={t.resourcesKindRecommended}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="star"
@@ -186,9 +188,11 @@ function sourceLabel(url: string): string {
             stroke-linejoin="round"
             set:html={STAR_ICON}
           />
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
+          type="button"
+          aria-pressed="false"
+          aria-label={t.resourcesKindMap}
           title={t.resourcesKindMap}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="map"
@@ -204,9 +208,11 @@ function sourceLabel(url: string): string {
             stroke-linejoin="round"
             set:html={KIND_ICONS.map}
           />
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
+          type="button"
+          aria-pressed="false"
+          aria-label={t.resourcesKindData}
           title={t.resourcesKindData}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="sheet"
@@ -222,9 +228,11 @@ function sourceLabel(url: string): string {
             stroke-linejoin="round"
             set:html={KIND_ICONS.sheet}
           />
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
+          type="button"
+          aria-pressed="false"
+          aria-label={t.resourcesKindDoc}
           title={t.resourcesKindDoc}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="doc"
@@ -240,9 +248,11 @@ function sourceLabel(url: string): string {
             stroke-linejoin="round"
             set:html={KIND_ICONS.doc}
           />
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
+          type="button"
+          aria-pressed="false"
+          aria-label={t.resourcesKindSite}
           title={t.resourcesKindSite}
           class="res-filter flex h-9 w-9 items-center justify-center rounded-[5px] border border-border-soft bg-surface text-muted transition-all hover:border-brand hover:text-accent"
           data-kind="site"
@@ -258,7 +268,7 @@ function sourceLabel(url: string): string {
             stroke-linejoin="round"
             set:html={KIND_ICONS.site}
           />
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -566,15 +576,19 @@ function sourceLabel(url: string): string {
       })
     );
 
+    // 這五顆原本是 <a href="#">，已改成 <button type="button" aria-pressed>：
+    // 它們的行為是開關而不是導覽，當成連結會被讀屏唸成「連結」、還會污染
+    // 瀏覽記錄，而且開／關狀態完全沒有表達出來。改成按鈕後 preventDefault
+    // 也不需要了（type="button" 本來就沒有預設行為）。
     filterBtns.forEach((btn) =>
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
+      btn.addEventListener("click", () => {
         // dataset.kind 可能是 undefined；統一收斂成 null，
         // 否則兩顆都缺 data-kind 的按鈕會因 undefined === undefined 被誤判為選中
         const kind = btn.dataset.kind ?? null;
         activeKind = activeKind === kind ? null : kind;
         filterBtns.forEach((b) => {
           const isActive = b.dataset.kind === activeKind;
+          b.setAttribute("aria-pressed", isActive ? "true" : "false");
           // 選中態用 ink（「你在這裡」），不能用 brand/accent——按鈕本身的
           // hover 就是 hover:border-brand hover:text-accent，兩者用同一組色的話
           // 「已選中」和「只是滑過去」會長得一模一樣，根本看不出哪個篩選開著。
