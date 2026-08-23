@@ -416,69 +416,84 @@ const navLabelKey = {
     outline-offset: 2px;
   }
 
-  /* 向下彈出的四顆分頁鈕：逐顆進場 */
+  /* 向下彈出的四顆分頁鈕：單排橫向分布，四顆各自獨立浮起——不是
+     一塊面板裡的清單，是四顆分開的玻璃膠囊，彼此之間看得到縫隙。
+     容器本身不畫背景／邊框，只負責排版；材質全部畫在個別 <a> 上。
+
+     展開動畫：四顆從中央力量鈕的位置「長出來」再滑到定位——關閉時
+     每顆都用 translateX 拉回中心、縮小、往上收；展開時各自沿自己
+     的 --fan-x 滑開到定位、同時放大歸位。--fan-x 是「這顆最終位置
+     離中心多遠」，關閉態直接位移等量的反向距離讓它從中心出發。 */
   .r-navcompact-menu {
     position: absolute;
     top: calc(100% + 14px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    flex-direction: column;
     gap: 6px;
-    width: 176px;
-    padding: 8px;
-    border: 1px solid var(--border-strong);
-    border-radius: 16px;
-    background: color-mix(in srgb, var(--surface) 86%, transparent);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    backdrop-filter: blur(16px) saturate(1.4);
-    box-shadow: 0 10px 32px color-mix(in srgb, var(--ink) 14%, transparent);
     opacity: 0;
     visibility: hidden;
-    translate: 0 -6px;
-    transition: opacity 180ms ease, translate 200ms ease, visibility 0s 200ms;
+    transition: opacity 160ms ease, visibility 0s 260ms;
   }
 
   .r-navcompact.is-open .r-navcompact-menu {
     opacity: 1;
     visibility: visible;
-    translate: 0 0;
-    transition: opacity 180ms ease, translate 200ms ease;
+    transition: opacity 160ms ease;
   }
 
   .r-navcompact-menu a {
     display: block;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 14.5px;
+    padding: 9px 9px;
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.35);
+    backdrop-filter: blur(14px) saturate(1.35);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--ink) 12%, transparent);
+    font-size: 12.5px;
     color: var(--text);
     text-decoration: none;
     text-align: center;
+    white-space: nowrap;
     opacity: 0;
-    translate: 0 -8px;
-    transition: opacity 220ms ease, translate 240ms cubic-bezier(0.22, 0.8, 0.36, 1), background-color 160ms ease;
+    transform-origin: 50% -14px;
+    transform: translate(var(--fan-x, 0), -22px) scale(0.3);
+    transition:
+      transform 340ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 200ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
   }
+
+  /* 每顆最終落點離排列中心的距離；關閉時反向套用同樣的量，
+     視覺上就像從中央力量鈕的位置一路滑出來 */
+  .r-navcompact-menu a:nth-child(1) { --fan-x: 116px; }
+  .r-navcompact-menu a:nth-child(2) { --fan-x: 39px; }
+  .r-navcompact-menu a:nth-child(3) { --fan-x: -39px; }
+  .r-navcompact-menu a:nth-child(4) { --fan-x: -116px; }
 
   .r-navcompact.is-open .r-navcompact-menu a {
     opacity: 1;
-    translate: 0 0;
+    transform: translate(0, 0) scale(1);
   }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(1) { transition-delay: 30ms; }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(2) { transition-delay: 80ms; }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(3) { transition-delay: 130ms; }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(4) { transition-delay: 180ms; }
+  .r-navcompact.is-open .r-navcompact-menu a:nth-child(2) { transition-delay: 0ms; }
+  .r-navcompact.is-open .r-navcompact-menu a:nth-child(3) { transition-delay: 0ms; }
+  .r-navcompact.is-open .r-navcompact-menu a:nth-child(1) { transition-delay: 45ms; }
+  .r-navcompact.is-open .r-navcompact-menu a:nth-child(4) { transition-delay: 45ms; }
 
   .r-navcompact-menu a:hover {
-    background: color-mix(in srgb, var(--ink) 7%, transparent);
+    border-color: var(--ink);
     color: var(--ink);
   }
 
-  /* 目前頁：沿用「墨＝你在這裡」——淡墨填底＋加重字。
-     左側短線在圓角＋置中文字的選單裡會彎成一個奇怪的弧，不用。 */
+  /* 目前頁：沿用「墨＝你在這裡」——淡墨填底＋加重字＋墨色邊框，
+     四顆分開之後每顆都是完整的方塊，邊框可以整圈畫不會變形。 */
   .r-navcompact-menu a.is-current {
+    border-color: var(--ink);
     color: var(--ink);
     font-weight: 500;
-    background: color-mix(in srgb, var(--ink) 9%, transparent);
+    background: color-mix(in srgb, var(--ink) 9%, var(--surface));
   }
 
   @media (prefers-reduced-motion: reduce) {
