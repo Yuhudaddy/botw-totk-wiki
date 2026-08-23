@@ -56,14 +56,22 @@ const navLabelKey = {
       </button>
       <div id="navcompact-menu" class="r-navcompact-menu">
         {
-          navItems.map((n) => {
+          navItems.map((n, i) => {
             const isActive = n.match === active;
             const key = navLabelKey[n.match as keyof typeof navLabelKey];
+            // 展開動畫的起點位移：這顆最終落點離整排中心有多遠。原本寫死成
+            // nth-child(1..4) 的 116/39/-39/-116，剛好對上目前的四筆分頁；
+            // 只要 navItems 增減一筆，多出來的那顆就沒有 --fan-x（fallback 0）
+            // 會從中心原地冒出來，整排也會偏掉。改成從筆數算，加減分頁不用改 CSS。
+            // 77 是「按鈕寬 + gap」的實測值；中心索引取 (n-1)/2 讓奇數筆時
+            // 正中間那顆的位移剛好是 0。
+            const fanX = ((navItems.length - 1) / 2 - i) * 77;
             return (
               <a
                 href={href(n.path, lang)}
                 aria-current={isActive ? "page" : undefined}
                 class={isActive ? "is-current" : undefined}
+                style={`--fan-x:${fanX}px`}
               >
                 {key ? t[key] : n.label}
               </a>
@@ -84,7 +92,7 @@ const navLabelKey = {
               aria-current={isActive ? "page" : undefined}
               class={`ring-hover rounded-[5px] px-3 py-2 text-[15px] no-underline ${
                 isActive
-                  ? "bg-sand font-medium text-ink"
+                  ? "is-current font-medium text-ink"
                   : "font-normal text-text"
               }`}
             >
@@ -260,6 +268,14 @@ const navLabelKey = {
      flex 會把連結壓到讓中文字一個字一行，寧可讓搜尋框先讓出寬度。 */
   .r-navlist a {
     white-space: nowrap;
+  }
+
+  /* 目前頁的底色跟手機版濃縮選單用同一條 color-mix。原本桌面走 bg-sand
+     （中性灰）、手機走這條暖墨，同一份檔案、同一個語意卻是兩種色相，
+     淺色模式下並排看得出來不是同一套「選中」語彙。
+     bg-sand 本身沒問題，它在別處是縮圖／圖示底這類中性佔位色，留著。 */
+  .r-navlist a.is-current {
+    background: color-mix(in srgb, var(--ink) 9%, var(--surface));
   }
 
   /* 搜尋框是導覽列裡唯一可以彈性讓步的元素，改成隨視窗縮放；
@@ -467,21 +483,16 @@ const navLabelKey = {
       border-color 160ms ease;
   }
 
-  /* 每顆最終落點離排列中心的距離；關閉時反向套用同樣的量，
-     視覺上就像從中央力量鈕的位置一路滑出來 */
-  .r-navcompact-menu a:nth-child(1) { --fan-x: 116px; }
-  .r-navcompact-menu a:nth-child(2) { --fan-x: 39px; }
-  .r-navcompact-menu a:nth-child(3) { --fan-x: -39px; }
-  .r-navcompact-menu a:nth-child(4) { --fan-x: -116px; }
-
+  /* --fan-x（每顆離排列中心的距離）改由 Astro 端依 navItems 筆數算好、
+     寫在 inline style 上，這裡不再寫死 nth-child。 */
   .r-navcompact.is-open .r-navcompact-menu a {
     opacity: 1;
     transform: translate(0, 0) scale(1);
   }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(2) { transition-delay: 0ms; }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(3) { transition-delay: 0ms; }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(1) { transition-delay: 45ms; }
-  .r-navcompact.is-open .r-navcompact-menu a:nth-child(4) { transition-delay: 45ms; }
+  /* 進場順序：中間先、外側後，看起來像從中央往兩邊推開。用 nth-child 搭配
+     反向的 nth-last-child 取「最外側兩顆」，筆數改變也還是成立。 */
+  .r-navcompact.is-open .r-navcompact-menu a:first-child,
+  .r-navcompact.is-open .r-navcompact-menu a:last-child { transition-delay: 45ms; }
 
   .r-navcompact-menu a:hover {
     border-color: var(--ink);

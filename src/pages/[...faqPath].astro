@@ -560,10 +560,16 @@ const faqs: FaqItem[] = [
     letter-spacing: 0.02em;
     flex-shrink: 0;
   }
+  /* 四個分類徽章。原本後三個直接寫 Tailwind 的預設色（blue-400／purple-400／
+     emerald-400），有兩個問題：一是完全不隨 [data-theme] 變，二是那些亮色配上
+     自己 15% 的淡底，實算只有 1.6～2.2:1，遠低於 AA 的 4.5:1。
+     紫色和綠色也不在希卡調色盤裡——那正是這次改版要退掉的色系。
+     改成四顆既有 token：青、金、墨、灰。色相不夠分的部分由徽章上的
+     IST／DIC／WMC／PE 文字本身負責，不必為了配色再引進新色相。 */
   .type-ist  { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
-  .type-dic  { background: color-mix(in srgb, #60a5fa 15%, transparent); color: #60a5fa; }
-  .type-wmc  { background: color-mix(in srgb, #c084fc 15%, transparent); color: #c084fc; }
-  .type-pe   { background: color-mix(in srgb, #34d399 15%, transparent); color: #34d399; }
+  .type-dic  { background: color-mix(in srgb, var(--gold) 15%, transparent); color: var(--gold); }
+  .type-wmc  { background: color-mix(in srgb, var(--ink) 12%, transparent); color: var(--ink); }
+  .type-pe   { background: color-mix(in srgb, var(--text) 15%, transparent); color: var(--text); }
 
   /* FAQ 列表 */
   .faq-list {
