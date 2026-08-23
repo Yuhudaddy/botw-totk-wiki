@@ -41,6 +41,15 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* iOS Safari 會用 theme-color 去填「頂端安全區域」（狀態列底下、網頁內容
+        上面那一條）。沒有這個 meta 時 Safari 用自己的淺色預設值，深色模式下
+        就會在導覽列上方出現一條突兀的淺色橫帶——看起來像多餘的 padding 或
+        容器，其實是瀏覽器畫的。兩個入口頁本來就有這個 meta，所以只有站內頁
+        會出現。初始值跟下方 inline script 的 fallback 一致（深色），
+        script 與主題切換鈕都會即時改寫它。
+        ※ 刻意不加 viewport-fit=cover：那會讓內容鑽進瀏海／安全區域，
+          浮動導覽列可能被狀態列蓋住，是真的會動到版面的改法。 */}
+    <meta name="theme-color" content="#0f0304" />
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
     {/* SVG favicon 在部分平台（iOS 加到主畫面、舊版 Safari）吃不到，補一張 PNG 備援 */}
     <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
@@ -92,6 +101,10 @@ const ogImageUrl = new URL(href("/og-image.jpg"), Astro.site).href;
           theme = "dark";
         }
         document.documentElement.setAttribute("data-theme", theme);
+        // theme-color 要跟著實際套用的主題走，否則使用者上次選淺色時，
+        // 頂端安全區域仍會被填成深色（或反過來），跟頁面對不起來。
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", theme === "light" ? "#f6f6f4" : "#0f0304");
       })();
     </script>
   </head>

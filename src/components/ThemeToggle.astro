@@ -63,6 +63,13 @@ const t = uiStrings[lang];
       var dark = document.documentElement.getAttribute("data-theme") === "dark";
       if (moon) moon.classList.toggle("hidden", dark);
       if (sun) sun.classList.toggle("hidden", !dark);
+      // theme-color 決定 iOS Safari 把自己的介面染成什麼顏色，切換主題時
+      // 一併更新。Safari 只在載入時讀一次、事後改不會重讀（Chrome 會），
+      // 所以這行在 Safari 上要等下次換頁才生效——可以接受，因為頂端那條
+      // 淺色帶的真正成因是 body 的 margin 穿透，已在 global.css 修掉，
+      // 不靠這個 meta 遮。
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", dark ? "#0f0304" : "#f6f6f4");
     }
     sync();
     if (btn) {

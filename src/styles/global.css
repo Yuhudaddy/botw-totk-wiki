@@ -120,6 +120,17 @@ html {
 
 body {
   margin: 0;
+  /* 建立區塊格式化脈絡，擋掉外邊距穿透。
+     浮動導覽列（.site-header）是 body 的第一個流內子元素，它的
+     margin-top（手機 8px／桌機 10px）原本會「穿透」body 跑到外面，
+     把整個 body 的盒子往下推同樣的距離——實測 body 的 top 是 8 而不是 0。
+     那最上面幾 px 因此落在 body 之外，只剩背景透明的 <html>。
+     Chromium 會把 body 的背景傳播到畫布上，所以看不出來；iOS Safari 不會，
+     深色模式下就在導覽列上方露出一條淺色橫帶（看起來像多餘的 padding
+     或沒刪乾淨的容器，其實是這裡漏出來的縫）。
+     用 flow-root 而不是 overflow:hidden：後者會破壞 sticky 導覽列。
+     實測套用後 body 的 top 由 8 變 0，而導覽列仍在 8px，版面零變化。 */
+  display: flow-root;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
