@@ -34,6 +34,12 @@ const navLabelKey = {
     >
       <BrandMark />
       <span class="r-navtitle font-heading text-lg font-medium text-ink">{SITE.shortTitle}</span>
+      {/* 極窄螢幕（≤560px）原本整串站名直接 display:none，logo 旁邊變成空的。
+          改成留品牌名的第一個字「Dazotikuy」——取 shortTitle 第一個空白前的
+          部分而不是另外寫死一串，之後改站名不會漏改這裡。刻意不翻成中文
+          （例如「神廟」）：Dazotikuy 是不會變的品牌識別字，Shrine／神廟只是
+          修飾詞，窄螢幕沒有空間時修飾詞先讓，識別字留到最後才讓。 */}
+      <span class="r-navtitle-mini font-heading text-lg font-medium text-ink">{SITE.shortTitle.split(" ")[0]}</span>
     </a>
 
     {/* 手機版濃縮導覽：正中央一顆三角力量鈕。點擊時膠囊向左右伸長露出
@@ -550,10 +556,19 @@ const navLabelKey = {
     }
   }
 
-  /* 極窄螢幕：站名文字讓位給中央的三角力量鈕，只留 logo 圖示 */
+  /* 兩顆站名文字互斥顯示：寬螢幕顯示完整站名，.r-navtitle-mini 先收著。 */
+  .r-navtitle-mini {
+    display: none;
+  }
+
+  /* 極窄螢幕：完整站名讓位給中央的三角力量鈕，但 logo 旁邊不能整個空掉——
+     留品牌識別字「Dazotikuy」，比完全沒有文字更容易辨認這是哪個網站。 */
   @media (max-width: 560px) {
     .r-navtitle {
       display: none;
+    }
+    .r-navtitle-mini {
+      display: inline;
     }
   }
 </style>
