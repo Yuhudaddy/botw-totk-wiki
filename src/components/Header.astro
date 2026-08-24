@@ -30,7 +30,7 @@ const navLabelKey = {
   <div class="r-navbar flex h-14 items-center gap-[26px]">
     <a
       href={href("/home", lang)}
-      class="flex flex-none items-center gap-2.5 whitespace-nowrap no-underline"
+      class="r-navbrand flex flex-none items-center gap-2.5 whitespace-nowrap no-underline"
     >
       <BrandMark />
       <span class="r-navtitle font-heading text-lg font-medium text-ink">{SITE.shortTitle}</span>
@@ -142,9 +142,28 @@ const navLabelKey = {
           </svg>
         </button>
       </div>
-      <SupportButton lang={lang} />
-      <LangToggle lang={lang} altPath={altPath} />
-      <ThemeToggle lang={lang} />
+      {/* 支持／語言／主題三顆按鈕外包一層 cluster：平時（桌面與手機未捲動）
+          漢堡鈕隱藏、選單以 inline 橫排呈現，跟包裝前一模一樣；手機捲動後
+          膠囊分解（.is-split），漢堡鈕現身、三顆收進向下展開的選單。
+          按鈕只有一份，兩種狀態靠 CSS 切換呈現方式。 */}
+      <div class="r-navcluster relative" data-navcluster>
+        <button
+          type="button"
+          class="r-navcluster-btn"
+          aria-expanded="false"
+          aria-controls="navcluster-menu"
+          aria-label={t.navClusterLabel}
+        >
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M3 5.5h14M3 10h14M3 14.5h14" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <div id="navcluster-menu" class="r-navcluster-menu">
+          <SupportButton lang={lang} />
+          <LangToggle lang={lang} altPath={altPath} />
+          <ThemeToggle lang={lang} />
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -540,11 +559,27 @@ const navLabelKey = {
     }
   }
 
+  /* ── 右上角按鈕群（cluster）────────────────────────────────
+     平時漢堡鈕收著、選單就是一列 inline 橫排（gap 對齊包裝前的 gap-2.5），
+     視覺與行為跟三顆按鈕直接放在導覽列裡完全相同。
+     分解狀態的樣式全部在下方 820px 斷點裡，桌面永遠不受影響。 */
+  .r-navcluster-btn {
+    display: none;
+  }
+  .r-navcluster-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   @media (max-width: 820px) {
     .site-header {
       width: calc(100% - 20px);
       margin: 8px auto 0;
       top: 8px;
+      transition:
+        background 300ms ease,
+        box-shadow 300ms ease;
     }
 
     .r-navbar {
@@ -563,6 +598,155 @@ const navLabelKey = {
 
     .r-navactions {
       margin-left: auto;
+    }
+
+    /* ── 捲動分解（.is-split）────────────────────────────────
+       往下捲過門檻後長膠囊「分解」：容器的玻璃完全溶解（背景、陰影、
+       backdrop-filter 全關），只剩三顆各自帶玻璃殼的小島——左邊 Logo
+       圓鈕、中間三角鈕、右邊漢堡鈕。容器改 pointer-events: none，
+       三顆島各自恢復 auto，島與島之間的空隙可以直接點到底下的內容。
+
+       animation: none 是必要的：Chromium 的捲動凝結 keyframes 帶著
+       fill: both，動畫值會蓋過 class 的 background／box-shadow，
+       不關掉的話玻璃永遠溶解不了。 */
+    .site-header.is-split {
+      animation: none;
+      background: transparent;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      pointer-events: none;
+    }
+
+    .site-header.is-split .r-navbrand,
+    .site-header.is-split .r-navcompact,
+    .site-header.is-split .r-navcluster {
+      pointer-events: auto;
+    }
+
+    /* 三顆小島共用的玻璃殼：配方值直接沿用膠囊的基礎玻璃
+       （bg 52% + blur 11px + saturate 1.6），材質是連續的，
+       只是尺寸縮小。刻意不掛 SDF 折射：折射帶寬 22px，比按鈕
+       半徑還大，整顆都在扭曲帶內只會糊掉，不會像玻璃。 */
+    .site-header.is-split .r-navbrand,
+    .site-header.is-split .r-navcompact-btn,
+    .site-header.is-split .r-navcluster-btn,
+    .site-header.is-split .r-navcluster-menu :global(.nav-icon-btn) {
+      background: color-mix(in srgb, var(--bg) 52%, transparent);
+      -webkit-backdrop-filter: blur(11px) saturate(1.6);
+      backdrop-filter: blur(11px) saturate(1.6);
+      border-radius: 999px;
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
+        inset 0 0 0 1px rgb(255 255 255 / 0.3),
+        inset 0 1.5px 0 0 rgb(255 255 255 / 0.6),
+        0 4px 14px color-mix(in srgb, var(--ink) 10%, transparent);
+    }
+
+    :global([data-theme="dark"]) .site-header.is-split .r-navbrand,
+    :global([data-theme="dark"]) .site-header.is-split .r-navcompact-btn,
+    :global([data-theme="dark"]) .site-header.is-split .r-navcluster-btn,
+    :global([data-theme="dark"]) .site-header.is-split .r-navcluster-menu :global(.nav-icon-btn) {
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent),
+        inset 0 0 0 1px rgb(255 255 255 / 0.14),
+        inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 20%, rgb(255 255 255 / 0.26)),
+        0 4px 16px rgb(0 0 0 / 0.3);
+    }
+
+    /* Logo 島：站名文字收合、gap 歸零，<a> 自己補 padding 變成
+       比 28px logo 大一圈的圓鈕。文字用 max-width 收合（span 是
+       flex item，max-width 動畫是乾淨的），跟三角鈕「前往」同手法。 */
+    .r-navbrand {
+      transition:
+        background 300ms ease,
+        box-shadow 300ms ease,
+        gap 300ms ease,
+        padding 300ms ease;
+    }
+    .r-navtitle,
+    .r-navtitle-mini {
+      max-width: 12em;
+      overflow: hidden;
+      transition: max-width 300ms ease, opacity 220ms ease;
+    }
+    .site-header.is-split .r-navbrand {
+      gap: 0;
+      padding: 6px;
+    }
+    .site-header.is-split .r-navtitle,
+    .site-header.is-split .r-navtitle-mini {
+      max-width: 0;
+      opacity: 0;
+    }
+
+    /* 三角鈕在分解後是獨立的島，自己的 border 讓給玻璃殼的
+       box-shadow 細線，避免疊出雙重描邊 */
+    .site-header.is-split .r-navcompact-btn {
+      border-color: transparent;
+    }
+
+    /* 漢堡鈕：只在分解狀態現身。40px 圓鈕，跟其他島同一套殼。 */
+    .site-header.is-split .r-navcluster-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: none;
+      color: var(--ink-2);
+      cursor: pointer;
+    }
+    .site-header.is-split .r-navcluster-btn:hover {
+      color: var(--ink);
+    }
+    .site-header.is-split .r-navcluster-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .r-navcluster.is-open .r-navcluster-btn {
+      color: var(--ink);
+    }
+
+    /* 分解狀態的選單：從漢堡鈕下方垂直展開三顆圓玻璃鈕。
+       開合邏輯（opacity + visibility + 位移）比照三角鈕選單。 */
+    .site-header.is-split .r-navcluster-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition:
+        opacity 160ms ease,
+        transform 200ms ease,
+        visibility 0s 200ms;
+    }
+    .site-header.is-split .r-navcluster.is-open .r-navcluster-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      transition:
+        opacity 160ms ease,
+        transform 200ms ease;
+    }
+    .site-header.is-split .r-navcluster-menu :global(.nav-icon-btn) {
+      width: 40px;
+      height: 40px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .site-header,
+      .r-navbrand,
+      .r-navtitle,
+      .r-navtitle-mini,
+      .r-navcluster-menu {
+        transition: none;
+      }
     }
   }
 
@@ -603,10 +787,12 @@ const navLabelKey = {
     });
   })();
 
-  (function () {
-    var wrap = document.querySelector('[data-navcompact]');
-    if (!wrap) return;
-    var btn = wrap.querySelector('.r-navcompact-btn');
+  // 三角分頁選單與漢堡設定選單共用同一套開合邏輯：
+  // 點按切換、點選單外關閉、Escape 關閉（Escape 統一掛在下面）。
+  function setupToggle(sel, btnSel) {
+    var wrap = document.querySelector(sel);
+    if (!wrap) return null;
+    var btn = wrap.querySelector(btnSel);
 
     function close() {
       if (!wrap.classList.contains('is-open')) return;
@@ -623,9 +809,61 @@ const navLabelKey = {
     document.addEventListener('click', function (e) {
       if (!wrap.contains(e.target)) close();
     });
+    return close;
+  }
+
+  (function () {
+    var closeCompact = setupToggle('[data-navcompact]', '.r-navcompact-btn');
+    var closeCluster = setupToggle('[data-navcluster]', '.r-navcluster-btn');
+
+    function closeMenus() {
+      if (closeCompact) closeCompact();
+      if (closeCluster) closeCluster();
+    }
+
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape') closeMenus();
     });
+
+    /* ── 捲動分解（手機版）──────────────────────────────────
+       往下捲過 DOWN 門檻加上 .is-split（膠囊分解成三顆小島），
+       往回捲到 UP 門檻內移除。兩個門檻拉開（遲滯），剛好停在
+       門檻附近時不會瘋狂抖動。狀態切換瞬間強制收合兩個選單，
+       避免選單懸在已經變形的膠囊上。
+
+       用 rAF 節流的 scroll 監聽而非 CSS scroll-timeline：Safari
+       不支援後者，而手機版恰恰以 iOS 使用者為大宗。桌面（>820px）
+       不加 class、也把殘留的 class 拿掉——分解樣式本身也全部
+       關在 820px 斷點內，雙保險。 */
+    var splitHeader = document.querySelector('.site-header');
+    if (!splitHeader) return;
+    var mql = window.matchMedia('(max-width: 820px)');
+    var DOWN = 96;
+    var UP = 40;
+
+    // 刻意不用 rAF 節流：這個 handler 只有兩個整數比較加一次（多數捲動
+    // 事件下）不變的 classList 查詢，成本趨近於零；rAF 版本反而有個
+    // 真實的死鎖風險——分頁不可見時 rAF 不執行，節流旗標一卡住，
+    // 監聽器就永久失效。
+    function applySplit() {
+      if (!mql.matches) {
+        splitHeader.classList.remove('is-split');
+        return;
+      }
+      var y = window.scrollY;
+      var split = splitHeader.classList.contains('is-split');
+      if (!split && y > DOWN) {
+        splitHeader.classList.add('is-split');
+        closeMenus();
+      } else if (split && y < UP) {
+        splitHeader.classList.remove('is-split');
+        closeMenus();
+      }
+    }
+
+    window.addEventListener('scroll', applySplit, { passive: true });
+    if (mql.addEventListener) mql.addEventListener('change', applySplit);
+    applySplit();
   })();
 </script>
 

@@ -22,6 +22,8 @@ const zh = {
   // 手機版濃縮導覽（三角力量鈕）
   navGo: "前往",
   navGoLabel: "開啟分頁選單",
+  /** 手機版捲動後膠囊分解，右上角三顆按鈕（支持／語言／主題）收進的漢堡鈕 */
+  navClusterLabel: "開啟設定選單",
 
   // 語言切換：彈窗裡顯示「另一個語言」的名稱，故意不用「日文」而用「日本語」——
   // 語言選單通常用該語言自己的寫法標示自己，讀者找起來比翻譯過的名稱更直覺
@@ -295,6 +297,7 @@ const ja: Record<keyof typeof zh, string> = {
 
   navGo: "移動",
   navGoLabel: "ページメニューを開く",
+  navClusterLabel: "設定メニューを開く",
 
   langLabel: "言語切り替え",
   themeToggleLabel: "テーマ切り替え",
