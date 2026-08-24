@@ -50,7 +50,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "08", zh: "劍之考驗", en: "Trial of the Sword (DLC1)", ja: "剣の試練" },
       { no: "09", zh: "新手學習", en: "Beginners", ja: "初心者向け", videosOnly: true },
       { no: "10", zh: "神廟特解", en: "Shrine Strategies", ja: "祠攻略", videosOnly: true },
-      { no: "11", zh: "技巧指法", en: "Inputs", ja: "指運び", videosOnly: true },
+      { no: "11", zh: "技巧指法", en: "Inputs", ja: "入力参考", videosOnly: true },
       { no: "12", zh: "主線任務", en: "Main Story", ja: "メインストーリー", videosOnly: true },
       { no: "13", zh: "裝備複製", en: "Equipment Duping", ja: "装備増殖" },
       { no: "14", zh: "觀眾提問", en: "Viewer Replies", ja: "視聴者Q&A", videosOnly: true },
