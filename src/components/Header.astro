@@ -230,6 +230,67 @@ const navLabelKey = {
         k3="1"
         k4="0"></feComposite>
     </filter>
+
+    {/* 分解後三顆 40×40 小島共用的折射濾鏡：跟上面 glass-nav 同一套
+        色散手法，但 scale 大幅縮小——原本 20/23/26 是照長膠囊（幾百
+        到近兩千 px 寬）調的，位移量對 40px 的按鈕來說會超過整顆的
+        四分之一寬、直接糊成一團，不會是折射。 */}
+    <filter id="glass-btn" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feImage id="glass-btn-map" result="map"></feImage>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="map"
+        xChannelSelector="R"
+        yChannelSelector="G"
+        scale="6"
+        result="btnChR"></feDisplacementMap>
+      <feColorMatrix
+        in="btnChR"
+        type="matrix"
+        values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+        result="btnOnlyR"></feColorMatrix>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="map"
+        xChannelSelector="R"
+        yChannelSelector="G"
+        scale="7"
+        result="btnChG"></feDisplacementMap>
+      <feColorMatrix
+        in="btnChG"
+        type="matrix"
+        values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+        result="btnOnlyG"></feColorMatrix>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="map"
+        xChannelSelector="R"
+        yChannelSelector="G"
+        scale="8"
+        result="btnChB"></feDisplacementMap>
+      <feColorMatrix
+        in="btnChB"
+        type="matrix"
+        values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+        result="btnOnlyB"></feColorMatrix>
+      <feComposite
+        in="btnOnlyR"
+        in2="btnOnlyG"
+        operator="arithmetic"
+        k1="0"
+        k2="1"
+        k3="1"
+        k4="0"
+        result="btnRg"></feComposite>
+      <feComposite
+        in="btnRg"
+        in2="btnOnlyB"
+        operator="arithmetic"
+        k1="0"
+        k2="1"
+        k3="1"
+        k4="0"></feComposite>
+    </filter>
   </defs>
 </svg>
 
@@ -573,13 +634,76 @@ const navLabelKey = {
   }
 
   @media (max-width: 820px) {
+    /* ── 手機版：玻璃搬到專用圖層 ────────────────────────────
+       桌面版的玻璃直接畫在 .site-header 身上，但手機版要做「膠囊往
+       中央收縮成一顆水珠」的分解動畫——若玻璃還在 header 上，收縮
+       就得連同 header 一起縮，裡面的三顆按鈕會被一起拖著跑。
+       改成把玻璃整組（底色／模糊／陰影）畫在 ::before 這層獨立的
+       絕對定位盒子上：header 本身退化成純定位容器（完全透明），
+       ::before 可以自由收縮而完全不影響任何按鈕的位置。 */
     .site-header {
       width: calc(100% - 20px);
       margin: 8px auto 0;
       top: 8px;
+      transition: top 380ms cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    /* 把 header 本體的玻璃「清空」，交給下面的 ::before 圖層負責。
+       ※ 必須連同深色主題那條選取器一起寫：`[data-theme="dark"] .site-header`
+       的權重是 (0,2,0)，只寫 `.site-header`(0,1,0) 蓋不過它——漏掉的話
+       深色模式下 header 自己的膠囊外框會一直留著，分解後就變成三顆水珠
+       外面還套著一圈長膠囊的「殘留容器」。
+       捲動凝結的 keyframes 同理要一起關掉（它動的正是這兩個屬性），
+       動畫已改掛到 ::before 上。 */
+    .site-header,
+    :global([data-theme="dark"]) .site-header {
+      background: transparent;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      animation: none;
+    }
+
+    .site-header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg) 52%, transparent);
+      -webkit-backdrop-filter: blur(11px) saturate(1.6);
+      backdrop-filter: blur(11px) saturate(1.6);
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
+        inset 0 0 0 1px rgb(255 255 255 / 0.34),
+        inset 0 1.5px 0 0 rgb(255 255 255 / 0.85),
+        inset 0 -1px 0 0 rgb(255 255 255 / 0.24),
+        inset 1px 0 0 0 rgb(255 255 255 / 0.22),
+        inset -1px 0 0 0 rgb(255 255 255 / 0.22),
+        inset 0 0 18px 0 rgb(255 255 255 / 0.1),
+        0 6px 24px color-mix(in srgb, var(--ink) 11%, transparent);
+      /* 收縮用 top/right/bottom/left 而不是 clip-path：clip-path 會把
+         外陰影一起裁掉，收到最後那顆水珠就沒有陰影、浮不起來。
+         改成真的縮小這個盒子，陰影每一格都正確跟著算。 */
       transition:
-        background 300ms ease,
-        box-shadow 300ms ease;
+        top 380ms cubic-bezier(0.65, 0, 0.35, 1),
+        right 380ms cubic-bezier(0.65, 0, 0.35, 1),
+        bottom 380ms cubic-bezier(0.65, 0, 0.35, 1),
+        left 380ms cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    :global([data-theme="dark"]) .site-header::before {
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent),
+        inset 0 0 0 1px rgb(255 255 255 / 0.16),
+        inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 20%, rgb(255 255 255 / 0.3)),
+        inset 0 -1px 0 0 rgb(255 255 255 / 0.1),
+        inset 1px 0 0 0 rgb(255 255 255 / 0.09),
+        inset -1px 0 0 0 rgb(255 255 255 / 0.09),
+        inset 0 0 18px 0 rgb(255 255 255 / 0.05),
+        0 6px 26px rgb(0 0 0 / 0.34);
     }
 
     .r-navbar {
@@ -600,21 +724,38 @@ const navLabelKey = {
       margin-left: auto;
     }
 
-    /* ── 捲動分解（.is-split）────────────────────────────────
-       往下捲過門檻後長膠囊「分解」：容器的玻璃完全溶解（背景、陰影、
-       backdrop-filter 全關），只剩三顆各自帶玻璃殼的小島——左邊 Logo
-       圓鈕、中間三角鈕、右邊漢堡鈕。容器改 pointer-events: none，
-       三顆島各自恢復 auto，島與島之間的空隙可以直接點到底下的內容。
+    /* 捲動凝結：玻璃搬到 ::before 之後，動畫也要一起搬過來 */
+    @supports (animation-timeline: scroll()) {
+      .site-header::before {
+        animation: header-condense linear both;
+        animation-timeline: scroll();
+        animation-range: 0 140px;
+      }
+      :global([data-theme="dark"]) .site-header::before {
+        animation-name: header-condense-dark;
+      }
+    }
 
-       animation: none 是必要的：Chromium 的捲動凝結 keyframes 帶著
-       fill: both，動畫值會蓋過 class 的 background／box-shadow，
-       不關掉的話玻璃永遠溶解不了。 */
+    /* 長膠囊的折射同樣掛到玻璃所在的那一層 */
+    @supports (backdrop-filter: url("#glass-nav")) or (-webkit-backdrop-filter: url("#glass-nav")) {
+      .site-header.has-refraction::before {
+        -webkit-backdrop-filter: url("#glass-nav") blur(4px) saturate(1.65);
+        backdrop-filter: url("#glass-nav") blur(4px) saturate(1.65);
+      }
+    }
+
+    /* ── 捲動分解（.is-split）：退潮留珠 ──────────────────────
+       整段動畫只講一件事：玻璃是液體，往中央退去。
+       ・膠囊玻璃（::before）從左右兩端同時往中央收縮成一顆 40×40 水珠
+       ・退潮邊緣掃過 Logo／右側時，那兩個位置各「留下一滴」水珠
+       ・中央那顆殘體就是三角鈕的玻璃，三角圖示全程坐在原地不動 */
     .site-header.is-split {
-      animation: none;
-      background: transparent;
-      box-shadow: none;
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
+      /* 分解後只剩三顆小圓點，長膠囊需要的呼吸空間不再適用——
+         跟其他平台「捲動後迷你控制列貼近邊緣」的慣例一致，
+         整組跟著往上收一點，讀起來才像刻意設計的精簡態，
+         而不是「忘記一起收」。留 4px 而非貼到 0，避免太靠近
+         瀏覽器自己的網址列或瀏海安全區。 */
+      top: 4px;
       pointer-events: none;
     }
 
@@ -624,13 +765,82 @@ const navLabelKey = {
       pointer-events: auto;
     }
 
-    /* 三顆小島共用的玻璃殼：配方值直接沿用膠囊的基礎玻璃
-       （bg 52% + blur 11px + saturate 1.6），材質是連續的，
-       只是尺寸縮小。刻意不掛 SDF 折射：折射帶寬 22px，比按鈕
-       半徑還大，整顆都在扭曲帶內只會糊掉，不會像玻璃。 */
-    .site-header.is-split .r-navbrand,
-    .site-header.is-split .r-navcompact-btn,
-    .site-header.is-split .r-navcluster-btn,
+    /* 玻璃收縮成中央那顆水珠。這顆殘體同時就是三角鈕的玻璃殼——
+       中島不是「變成」圓形，它是膠囊縮剩的最後一滴，所以沒有任何
+       形狀切換的瞬間，也就沒有突兀感。 */
+    .site-header.is-split::before {
+      top: 8px;
+      bottom: 8px;
+      left: calc(50% - 20px);
+      right: calc(50% - 20px);
+      animation: none;
+      /* 收縮途中維持純模糊：折射貼圖是照 40×40 正圓算的，套在還在
+         收縮中的長條盒子上會對不準而閃爛。0s 時長＋380ms 延遲＝
+         等收縮結束才瞬間換上折射版，過程中完全不會看到中間態。 */
+      transition:
+        top 380ms cubic-bezier(0.65, 0, 0.35, 1),
+        right 380ms cubic-bezier(0.65, 0, 0.35, 1),
+        bottom 380ms cubic-bezier(0.65, 0, 0.35, 1),
+        left 380ms cubic-bezier(0.65, 0, 0.35, 1),
+        -webkit-backdrop-filter 0s 380ms,
+        backdrop-filter 0s 380ms;
+    }
+
+    /* ── 左右兩滴水珠 ────────────────────────────────────────
+       尺寸永遠固定 40×40、各自錨定（左貼左緣、右貼右緣），完全
+       不隨宿主元素的寬度變化——這是「長方形容器閃現」的根治：
+       站名文字都還沒收完的時候，玻璃也絕不可能跟著攤成一長條。
+       延遲 120ms 出生，剛好對上退潮邊緣掃過該位置的時機。 */
+    .r-navbrand {
+      position: relative;
+    }
+    .r-navbrand::before,
+    .r-navcluster-btn {
+      background: color-mix(in srgb, var(--bg) 52%, transparent);
+      -webkit-backdrop-filter: blur(11px) saturate(1.6);
+      backdrop-filter: blur(11px) saturate(1.6);
+      border-radius: 999px;
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
+        inset 0 0 0 1px rgb(255 255 255 / 0.3),
+        inset 0 1.5px 0 0 rgb(255 255 255 / 0.6),
+        0 4px 14px color-mix(in srgb, var(--ink) 10%, transparent);
+    }
+
+    :global([data-theme="dark"]) .r-navbrand::before,
+    :global([data-theme="dark"]) .r-navcluster-btn,
+    :global([data-theme="dark"]) .site-header.is-split .r-navcluster-menu :global(.nav-icon-btn) {
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent),
+        inset 0 0 0 1px rgb(255 255 255 / 0.14),
+        inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 20%, rgb(255 255 255 / 0.26)),
+        0 4px 16px rgb(0 0 0 / 0.3);
+    }
+
+    /* z-index: -1 讓水珠沉到 logo 圖片底下（絕對定位的 ::before 預設
+       會蓋在同層的靜態內容上，不壓下去 logo 會被玻璃遮住） */
+    .r-navbrand::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      z-index: -1;
+      width: 40px;
+      height: 40px;
+      opacity: 0;
+      transform: translateY(-50%) scale(0.72);
+      pointer-events: none;
+      transition:
+        opacity 200ms ease,
+        transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .site-header.is-split .r-navbrand::before {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+      transition-delay: 120ms;
+    }
+
+    /* 分解狀態下選單裡那三顆圓鈕沿用同一套玻璃殼 */
     .site-header.is-split .r-navcluster-menu :global(.nav-icon-btn) {
       background: color-mix(in srgb, var(--bg) 52%, transparent);
       -webkit-backdrop-filter: blur(11px) saturate(1.6);
@@ -643,24 +853,24 @@ const navLabelKey = {
         0 4px 14px color-mix(in srgb, var(--ink) 10%, transparent);
     }
 
-    :global([data-theme="dark"]) .site-header.is-split .r-navbrand,
-    :global([data-theme="dark"]) .site-header.is-split .r-navcompact-btn,
-    :global([data-theme="dark"]) .site-header.is-split .r-navcluster-btn,
-    :global([data-theme="dark"]) .site-header.is-split .r-navcluster-menu :global(.nav-icon-btn) {
-      box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent),
-        inset 0 0 0 1px rgb(255 255 255 / 0.14),
-        inset 0 1.5px 0 0 color-mix(in srgb, var(--gold) 20%, rgb(255 255 255 / 0.26)),
-        0 4px 16px rgb(0 0 0 / 0.3);
+    /* 折射：水珠與選單圓鈕都固定 40×40 正圓，共用同一張貼圖
+       （見下方 script）。.has-btn-refraction 由 script 在貼圖就緒後
+       掛上，避免 filter 有一瞬間指向空的 feImage。 */
+    @supports (backdrop-filter: url("#glass-btn")) or (-webkit-backdrop-filter: url("#glass-btn")) {
+      .site-header.has-btn-refraction.is-split::before,
+      .site-header.has-btn-refraction.is-split .r-navbrand::before,
+      .site-header.has-btn-refraction.is-split .r-navcluster-btn,
+      .site-header.has-btn-refraction.is-split .r-navcluster-menu :global(.nav-icon-btn) {
+        -webkit-backdrop-filter: url("#glass-btn") blur(6px) saturate(1.6);
+        backdrop-filter: url("#glass-btn") blur(6px) saturate(1.6);
+      }
     }
 
-    /* Logo 島：站名文字收合、gap 歸零，<a> 自己補 padding 變成
-       比 28px logo 大一圈的圓鈕。文字用 max-width 收合（span 是
-       flex item，max-width 動畫是乾淨的），跟三角鈕「前往」同手法。 */
+    /* Logo 島：站名文字收合、gap 歸零，<a> 補 padding 讓觸控區
+       維持 40×40（玻璃本身是上面那顆固定尺寸的水珠，不受這裡影響）。
+       文字用 max-width 收合（span 是 flex item，max-width 動畫乾淨）。 */
     .r-navbrand {
       transition:
-        background 300ms ease,
-        box-shadow 300ms ease,
         gap 300ms ease,
         padding 300ms ease;
     }
@@ -680,59 +890,99 @@ const navLabelKey = {
       opacity: 0;
     }
 
-    /* 三角鈕在分解後是獨立的島，自己的 border 讓給玻璃殼的
-       box-shadow 細線，避免疊出雙重描邊 */
-    .site-header.is-split .r-navcompact-btn {
-      border-color: transparent;
+    /* 三角鈕：垂直置中對齊，讓它跟收縮到定位的殘體水珠精準重合，
+       否則差個 1〜2px 會在邊緣露出一圈玻璃。 */
+    .r-navcompact {
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
 
-    /* 漢堡鈕：只在分解狀態現身。40px 圓鈕，跟其他島同一套殼。 */
-    .site-header.is-split .r-navcluster-btn {
+    /* 分解後三角鈕自己完全不畫任何殼——它的玻璃就是收縮到中央的
+       那顆殘體（.is-split::before）。這是「中島不需要變身」的關鍵：
+       如果這裡也畫一層，就會跟殘體疊成雙層玻璃、邊緣多一圈描邊。 */
+    .site-header.is-split .r-navcompact-btn {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 0;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    /* 分解狀態下鎖死不撐開：容器膠囊還在時，開選單／滑過會伸長露出
+       「前往」文字（膠囊有空間接得住）；分解後是 40×40 正圓小島，
+       撐開會破壞與殘體水珠的重合，所以文字永遠收在 0 寬。 */
+    .site-header.is-split .r-navcompact-word {
+      max-width: 0;
+      opacity: 0;
+    }
+
+    /* 右邊那滴水珠（漢堡鈕）：不用 display 切換——display 無法過渡，
+       會「蹦」出來。改成永遠在場但絕對定位（不佔版面）、平時透明，
+       分解時才淡入＋帶一點回彈的縮放，像水珠成形時的表面張力。 */
+    .r-navcluster-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 0;
+      top: 50%;
       width: 40px;
       height: 40px;
       padding: 0;
       border: none;
       color: var(--ink-2);
       cursor: pointer;
+      opacity: 0;
+      transform: translateY(-50%) scale(0.72);
+      pointer-events: none;
+      transition:
+        opacity 200ms ease,
+        transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        color 160ms ease;
     }
-    .site-header.is-split .r-navcluster-btn:hover {
-      color: var(--ink);
+    .site-header.is-split .r-navcluster-btn {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+      pointer-events: auto;
+      transition-delay: 120ms, 120ms, 0s;
     }
-    .site-header.is-split .r-navcluster-btn:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
+    .r-navcluster-btn:hover,
     .r-navcluster.is-open .r-navcluster-btn {
       color: var(--ink);
     }
+    .r-navcluster-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
 
-    /* 分解狀態的選單：從漢堡鈕下方垂直展開三顆圓玻璃鈕。
-       開合邏輯（opacity + visibility + 位移）比照三角鈕選單。 */
+    /* 分解時三顆 inline 圖示「就地」淡出，不先跳到下拉位置再淡出。
+       位置切換留到真的展開時才發生——那一刻它本來就還是透明的，
+       所以跳位看不見。 */
     .site-header.is-split .r-navcluster-menu {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        opacity 160ms ease,
+        visibility 0s 160ms;
+    }
+    .site-header.is-split .r-navcluster.is-open .r-navcluster-menu {
       position: absolute;
       top: calc(100% + 10px);
       right: 0;
       flex-direction: column;
       align-items: flex-end;
       gap: 8px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-6px);
-      transition:
-        opacity 160ms ease,
-        transform 200ms ease,
-        visibility 0s 200ms;
-    }
-    .site-header.is-split .r-navcluster.is-open .r-navcluster-menu {
       opacity: 1;
       visibility: visible;
-      transform: translateY(0);
-      transition:
-        opacity 160ms ease,
-        transform 200ms ease;
+      pointer-events: auto;
+      transition: opacity 160ms ease;
     }
     .site-header.is-split .r-navcluster-menu :global(.nav-icon-btn) {
       width: 40px;
@@ -741,9 +991,12 @@ const navLabelKey = {
 
     @media (prefers-reduced-motion: reduce) {
       .site-header,
+      .site-header::before,
       .r-navbrand,
+      .r-navbrand::before,
       .r-navtitle,
       .r-navtitle-mini,
+      .r-navcluster-btn,
       .r-navcluster-menu {
         transition: none;
       }
@@ -918,7 +1171,7 @@ const navLabelKey = {
       );
     }
 
-    function buildMap(width: number, height: number, cssRadius: number) {
+    function buildMap(width: number, height: number, cssRadius: number, band: number = BAND) {
       const mapW = width + BLEED * 2;
       const mapH = height + BLEED * 2;
       const canvas = document.createElement("canvas");
@@ -947,7 +1200,7 @@ const navLabelKey = {
           let dx = 0;
           let dy = 0;
           const depth = -sd; // 距離邊界多深（內部為正）
-          if (depth > 0 && depth < BAND) {
+          if (depth > 0 && depth < band) {
             // 用中央差分取 SDF 梯度＝邊界的外向法線
             const gx =
               roundedRectSDF(px + 1, py, halfW, halfH, radius) -
@@ -958,7 +1211,7 @@ const navLabelKey = {
             const len = Math.hypot(gx, gy) || 1;
 
             // 越靠近邊緣位移越強，往內遞減到 0（smoothstep 讓過渡不出現硬邊）
-            let t = 1 - depth / BAND;
+            let t = 1 - depth / band;
             t = t * t * (3 - 2 * t);
 
             // 取樣點往內推＝負的外向法線
@@ -1028,5 +1281,34 @@ const navLabelKey = {
       resizeTimer = window.setTimeout(refresh, 120);
     });
     observer.observe(header);
+
+    // ── 分解後三顆小島共用的折射貼圖 ──────────────────────────
+    // 跟膠囊本體不同：三顆島在手機版分解狀態下固定 40×40 正圓，
+    // 尺寸不隨視窗寬度變化（是寫死的 px，不是 clamp），所以貼圖
+    // 只需要建一次，不用 ResizeObserver 跟著重畫。折射帶寬縮小到
+    // 10px（膠囊是 22px）：40px 的元素半徑只有 20px，沿用 22px
+    // 會讓整顆從中心到邊緣都在扭曲帶內，中心也會被拉扯；縮小後
+    // 中心留一小塊不扭曲的平面，邊緣才是「折射」而不是「揉皺」。
+    const btnFilter = document.getElementById("glass-btn");
+    const btnFeImage = document.getElementById("glass-btn-map");
+    if (btnFilter && btnFeImage) {
+      const BTN_SIZE = 40;
+      const BTN_BAND = 10;
+      const built = buildMap(BTN_SIZE, BTN_SIZE, 999, BTN_BAND);
+      if (built) {
+        const bx = String(-BLEED);
+        const by = String(-BLEED);
+        btnFilter.setAttribute("x", bx);
+        btnFilter.setAttribute("y", by);
+        btnFilter.setAttribute("width", String(built.mapW));
+        btnFilter.setAttribute("height", String(built.mapH));
+        btnFeImage.setAttribute("x", bx);
+        btnFeImage.setAttribute("y", by);
+        btnFeImage.setAttribute("width", String(built.mapW));
+        btnFeImage.setAttribute("height", String(built.mapH));
+        btnFeImage.setAttribute("href", built.url);
+        header.classList.add("has-btn-refraction");
+      }
+    }
   }
 </script>
