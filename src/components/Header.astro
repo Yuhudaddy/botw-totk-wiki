@@ -230,11 +230,19 @@ const navLabelKey = {
     max-width: 1800px;
     margin: 10px auto 0;
     border-radius: 999px;
-    /* 基礎樣式＝「已凝結」的可讀狀態。不支援捲動時間軸的瀏覽器停在這裡，
-       拿到的是清楚可讀的版本，而不是頁首那個極透明的狀態。 */
-    background: color-mix(in srgb, var(--bg) 62%, transparent);
-    -webkit-backdrop-filter: blur(18px) saturate(1.5);
-    backdrop-filter: blur(18px) saturate(1.5);
+    /* 基礎樣式＝「已凝結」的可讀狀態。不支援捲動時間軸的瀏覽器（Safari 就是）
+       停在這裡，拿到的是清楚可讀的版本，而不是頁首那個極透明的狀態。
+
+       這組數字關係到「玻璃感」還是「實心遮擋」，兩個變因要一起看：
+       ・底色不透明度：62% 太厚，壓到 52%。
+       ・模糊半徑：原本 18px 才是主因——超過 12px 左右，背後的內容會被糊成
+         一片無法辨識的色塊，就算底色是半透明的，讀起來仍然像實心色板。
+         降到 11px 後形狀輪廓開始透出來，才有「隔著玻璃看到東西」的感覺。
+       模糊放輕會讓背景顏色變灰，所以 saturate 同步從 1.5 補到 1.6，
+       讓透出來的內容看得出是「內容」而不是灰霧。 */
+    background: color-mix(in srgb, var(--bg) 52%, transparent);
+    -webkit-backdrop-filter: blur(11px) saturate(1.6);
+    backdrop-filter: blur(11px) saturate(1.6);
     box-shadow:
       /* 外框細線 */
       0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
@@ -313,9 +321,11 @@ const navLabelKey = {
   @supports (backdrop-filter: url("#glass-nav")) or (-webkit-backdrop-filter: url("#glass-nav")) {
     .site-header.has-refraction {
       /* 保留少量模糊：導覽列底下會經過遊戲截圖這類高對比內容，
-         純折射不模糊的話文字讀起來會很吃力 */
-      -webkit-backdrop-filter: url("#glass-nav") blur(5px) saturate(1.55);
-      backdrop-filter: url("#glass-nav") blur(5px) saturate(1.55);
+         純折射不模糊的話文字讀起來會很吃力。
+         有折射的路徑本來就只有 5px，通透感主要靠上面的底色不透明度改善；
+         這裡只微調 4px 並補一點 saturate，跟基礎樣式的方向保持一致。 */
+      -webkit-backdrop-filter: url("#glass-nav") blur(4px) saturate(1.65);
+      backdrop-filter: url("#glass-nav") blur(4px) saturate(1.65);
     }
   }
 
@@ -332,7 +342,7 @@ const navLabelKey = {
 
     @keyframes header-condense {
       from {
-        background: color-mix(in srgb, var(--bg) 34%, transparent);
+        background: color-mix(in srgb, var(--bg) 30%, transparent);
         box-shadow:
           0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent),
           inset 0 0 0 1px rgb(255 255 255 / 0.26),
@@ -353,7 +363,7 @@ const navLabelKey = {
 
     @keyframes header-condense-dark {
       from {
-        background: color-mix(in srgb, var(--bg) 34%, transparent);
+        background: color-mix(in srgb, var(--bg) 30%, transparent);
         box-shadow:
           0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
           inset 0 0 0 1px rgb(255 255 255 / 0.12),
