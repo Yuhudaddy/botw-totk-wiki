@@ -2065,23 +2065,45 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   // 在 click 當下用 checked 區分「剛選上」還是「本來就選著」，所以自己用一張
   // 表記住每個群組目前選到哪一顆
   const lastFlowRadio = new Map<string, HTMLInputElement>();
+  // 點步驟前的圓鈕選到新步驟時，把地圖捲進畫面——原本選完還要自己往下拉
+  // 才看得到地圖反應的內容。扣掉浮動 header 的實際高度（手機版捲動後會
+  // 分解變矮，用當下量到的高度而非寫死數字），地圖頂緣才不會被蓋住。
+  // 只在「選到新步驟」時捲動，再點一次取消選取（回總覽）不用跟著跳畫面。
+  function scrollToFlowMap() {
+    const mapEl = document.querySelector<HTMLElement>("[data-flow-map]");
+    if (!mapEl) return;
+    const header = document.querySelector<HTMLElement>(".site-header");
+    const headerH = header?.getBoundingClientRect().height ?? 0;
+    const targetY = window.scrollY + mapEl.getBoundingClientRect().top - headerH - 16;
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+  }
+  // 「選到新步驟」的共用處理：記住選取、把地圖捲進畫面。滑鼠（click）與
+  // 鍵盤（change）兩條路徑都要走這裡，否則用方向鍵切換的人會看到地圖內容
+  // 更新、畫面卻還停在步驟區。
+  function selectFlowRadio(t: HTMLInputElement) {
+    lastFlowRadio.set(t.name, t);
+    scrollToFlowMap();
+  }
   document.addEventListener("click", (event) => {
     const t = event.target;
     if (!(t instanceof HTMLInputElement) || !t.classList.contains("flow-step-radio")) return;
     if (lastFlowRadio.get(t.name) === t) {
-      // 點擊已選取的 radio：取消選取、地圖回總覽
+      // 點擊已選取的 radio：取消選取、地圖回總覽（取消時不捲動）
       t.checked = false;
       lastFlowRadio.delete(t.name);
     } else {
-      lastFlowRadio.set(t.name, t);
+      selectFlowRadio(t);
     }
     syncFlowMap();
   });
   document.addEventListener("change", (event) => {
-    // 鍵盤方向鍵切換選取只發 change 不發 click，這裡也要記錄＋同步
+    // 鍵盤方向鍵切換選取只發 change 不發 click，這裡也要記錄＋同步。
+    // 兩點防護：① 只在 checked 為 true 時處理，避免上面 click 分支剛把
+    // radio 取消掉、change 卻又把它加回來並捲動；② selectFlowRadio 本身
+    // 是冪等的，滑鼠點擊時 click→change 連續進來兩次也不會有副作用。
     const t = event.target;
-    if (t instanceof HTMLInputElement && t.classList.contains("flow-step-radio")) {
-      lastFlowRadio.set(t.name, t);
+    if (t instanceof HTMLInputElement && t.classList.contains("flow-step-radio") && t.checked) {
+      selectFlowRadio(t);
       syncFlowMap();
     }
   });

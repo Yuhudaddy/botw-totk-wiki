@@ -84,12 +84,20 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
         ))}
       </div>
     );
+    const subtitleNode = sec.subtitle && (
+      <div class="method-section-title">
+        {parseAccent(sec.subtitle).map((seg) =>
+          seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+        )}
+      </div>
+    );
     const body = (
       <>
         {sec.intro && (
           <p class="mb-3 text-[13px] leading-[1.7] text-muted">{sec.intro}</p>
         )}
         {!sec.collapsible && tagsNode}
+        {subtitleNode}
         {/* steps 可省略：只有標題與 tags 的區塊當作純標頭用（例：變體名稱），
             此時不要生出空的 <ol>，否則會多一段列表的上下留白 */}
         {sec.steps && sec.steps.length > 0 && (
@@ -165,6 +173,48 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
               )}
             </p>
           )
+        )}
+        {sec.extra && sec.extra.steps.length > 0 && (
+          <div class="mt-5">
+            {sec.extra.title && (
+              <div class="method-section-title">
+                {parseAccent(sec.extra.title).map((seg) =>
+                  seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+                )}
+              </div>
+            )}
+            <ol>
+              {sec.extra.steps.map((s) => {
+                const { text, sub } = stepParts(s);
+                return (
+                  <li>
+                    {parseStep(text).map((seg) =>
+                      seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                        : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
+                        : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                    )}
+                    {sub.length > 0 && (
+                      <ul class="step-sub">
+                        {sub.map((d) => (
+                          <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
+                            {parseStep(d).map((seg) =>
+                              seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                                : seg.href ? (seg.external
+                    ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
+                    : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
+                                : seg.accent ? <span class="accent-text">{seg.text}</span> : seg.text
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         )}
       </>
     );
