@@ -2074,8 +2074,17 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     if (!mapEl) return;
     const header = document.querySelector<HTMLElement>(".site-header");
     const headerH = header?.getBoundingClientRect().height ?? 0;
-    const targetY = window.scrollY + mapEl.getBoundingClientRect().top - headerH - 16;
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+    const rect = mapEl.getBoundingClientRect();
+    // 地圖在「header 以下的可視範圍」裡置中，而不是頂緣貼齊 header——
+    // 貼齊會把地圖頂到畫面最上面，看起來過高，手機版還會讓上方的
+    // 「參照流程地圖」標題整個被浮動 header 蓋掉。置中後標題會自然
+    // 回到畫面裡（它只在地圖上方十幾 px），也比較有呼吸感。
+    // 地圖比可視範圍還高時（矮視窗／橫向手機）除不盡，退回 16px 的
+    // 頂部留白，至少不會算出負值把地圖推到 header 底下。
+    const available = window.innerHeight - headerH;
+    const gap = Math.max(16, (available - rect.height) / 2);
+    const targetY = window.scrollY + rect.top - headerH - gap;
+    window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
   }
   // 「選到新步驟」的共用處理：記住選取、把地圖捲進畫面。滑鼠（click）與
   // 鍵盤（change）兩條路徑都要走這裡，否則用方向鍵切換的人會看到地圖內容
