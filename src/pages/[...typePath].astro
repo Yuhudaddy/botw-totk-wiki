@@ -136,9 +136,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       <TypeSideNav group={group} item={item} lang={lang} />
     </aside>
 
-  {/* 麵包屑 + 標題 */}
+  {/* 麵包屑 + 標題。
+      分隔線只畫在 .type-col（跟內容同寬）而不是整個 <section> 滿版——
+      滿版會從側欄底下穿過去，那正是 a5e06f1 當初把它拿掉的原因；
+      收進內容欄寬之後，線的起訖點跟正文對齊，側欄旁邊不會有斷頭的線。 */}
   <section>
-    <div class="type-col mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
+    <div class="type-col type-divider-b mx-auto max-w-[1244px] px-8 pb-12 pt-[54px]">
       {/* 側欄出現時麵包屑就多餘了（同一份層級資訊講兩次），
           寬螢幕隱藏、窄螢幕留著當唯一的定位線索 */}
       <div class="type-breadcrumb mb-[22px] flex flex-wrap items-center gap-2 text-[13px] text-muted">
@@ -898,10 +901,12 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     </div>
   )}
 
-  {/* 相關影片 */}
+  {/* 相關影片。頂緣分隔線同樣收在 .type-col 內，跟標題區那條同一套做法。
+      這條線同時服務兩種版型：一般頁是接在「注意事項」之後，
+      videosOnly 頁（如主線任務）則是接在「簡介與說明」之後。 */}
   {content?.videos && content.videos.length > 0 ? (
     <section>
-      <div class="type-col mx-auto max-w-[1244px] px-8 pb-16 pt-10">
+      <div class="type-col type-divider-t mx-auto max-w-[1244px] px-8 pb-16 pt-10">
         <div class="mb-6 flex items-end justify-between gap-5">
           <div>
             <div class="text-[11px] font-bold uppercase tracking-[2px] text-gold">
@@ -1038,10 +1043,45 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       padding-left: calc(2rem + 244px);
     }
 
+    /* 寬螢幕時線的起點退到正文左緣，不從側欄底下穿過去
+       （a5e06f1 當初就是因為線會穿過側欄才把整組拿掉的）。
+       選取器多帶一個 .type-col 提高權重：底下那組基礎樣式在檔案裡
+       比這裡晚出現，同權重的話會反過來把 left 蓋回 0。 */
+    .type-col.type-divider-b::after,
+    .type-col.type-divider-t::before {
+      left: calc(2rem + 244px);
+    }
+
     /* 側欄已經表達了完整層級，麵包屑會變成重複的第二份 */
     .type-breadcrumb {
       display: none;
     }
+  }
+
+  /* 內容區塊之間的分隔線（標題區下方、相關影片上方）。
+     用偽元素而不是 border-b／border-t：這兩條線在寬螢幕要退到正文左緣
+     避開側欄，而 .type-col 是靠 padding-left 讓位的，畫在 box 上的
+     border 一定會從側欄底下穿過去。偽元素可以直接指定 left，乾淨明確，
+     也不必跟 Tailwind reset 的 `border: 0 solid`（會把 border-image
+     重設成 none）在層疊上互相打架。 */
+  .type-divider-b,
+  .type-divider-t {
+    position: relative;
+  }
+  .type-divider-b::after,
+  .type-divider-t::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-border-soft);
+  }
+  .type-divider-b::after {
+    bottom: 0;
+  }
+  .type-divider-t::before {
+    top: 0;
   }
 
   .prose-custom {
