@@ -1,0 +1,392 @@
+---
+// 首頁「最近熱門」的滿版展示帶：由右往左緩慢漂移並無限循環，
+// 可用滑鼠／手指拖曳快轉或回捲，點擊卡片前往該影片。
+//
+// 為什麼自己驅動位移而不用原生橫向捲動容器：
+// 無限循環需要在越過一份內容寬度時把位移 modulo 歸位，而 iOS Safari 在
+// 慣性捲動進行中被改寫 scrollLeft 會抖動——這個站手機以 iOS 使用者為大宗，
+// 正好踩在最痛的地方。改由 JS 持有唯一的 offset，漂移與拖曳共用同一套座標，
+// 交接時不需要同步，行為在所有裝置也一致。
+import { ytThumb, ytThumbFallback, ytWatch } from "../lib/url";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+interface Props {
+  videos: { id: string; title: string; meta?: string }[];
+  lang?: Lang;
+}
+const { videos, lang = "zh" } = Astro.props;
+const t = uiStrings[lang];
+
+// 內容渲染兩份接在一起：位移超過一份的寬度就 modulo 歸位，因為兩份完全一樣，
+// 歸位的瞬間畫面沒有變化，使用者無感。第二份對輔助技術是重複內容，設 aria-hidden。
+const rank = (i: number) => String(i + 1).padStart(2, "0");
+---
+
+<div class="marquee" data-marquee>
+  <div class="marquee-viewport" data-marquee-viewport>
+    <div class="marquee-track" data-marquee-track>
+      {[0, 1].map((copy) => (
+        <div class="marquee-set" aria-hidden={copy === 1 ? "true" : undefined}>
+          {videos.map((v, i) => (
+            <a
+              class="marquee-card"
+              href={ytWatch(v.id)}
+              target="_blank"
+              rel="noopener"
+              draggable="false"
+              tabindex={copy === 1 ? -1 : undefined}
+            >
+              <div class="marquee-thumb">
+                <img
+                  src={ytThumb(v.id)}
+                  onerror={`this.onerror=null;this.src='${ytThumbFallback(v.id)}'`}
+                  alt={v.title}
+                  loading="lazy"
+                  draggable="false"
+                />
+                <span class="marquee-rank" aria-hidden="true">{rank(i)}</span>
+              </div>
+              <div class="marquee-meta">
+                <div class="marquee-title">{v.title}</div>
+                {v.meta && <div class="marquee-sub">{v.meta}</div>}
+              </div>
+            </a>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* 滑鼠使用者不一定想得到能拖，補一對箭頭；hover 才浮現，不搶視覺。
+      觸控裝置用不到（下方 CSS 以 hover: hover 收起來）。 */}
+  <button type="button" class="marquee-nav marquee-nav-prev" data-marquee-prev aria-label={t.marqueePrev}>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M15 5 8 12l7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+  <button type="button" class="marquee-nav marquee-nav-next" data-marquee-next aria-label={t.marqueeNext}>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="m9 5 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+</div>
+
+<style>
+  .marquee {
+    position: relative;
+    /* 掙脫置中欄的寬度限制，做成左右滿版 */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+  .marquee-viewport {
+    overflow: hidden;
+    /* 兩端淡出，讓帶子看起來是「延伸出畫面」而不是被硬切斷 */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    /* 拖曳時整條帶子跟著手走，游標要反映「可以抓」 */
+    cursor: grab;
+    will-change: transform;
+  }
+  .marquee.is-dragging .marquee-track {
+    cursor: grabbing;
+  }
+  .marquee-set {
+    display: flex;
+    gap: 18px;
+    padding-right: 18px;
+  }
+
+  .marquee-card {
+    display: block;
+    width: 280px;
+    flex: none;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: 5px;
+    background: var(--surface);
+    text-decoration: none;
+    transition: border-color 180ms ease;
+  }
+  .marquee-card:hover {
+    border-color: var(--border-strong);
+  }
+  .marquee-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* 拖曳中把整條帶子的滑鼠事件關掉：不然指標掃過卡片會觸發 hover，
+     而且拖到一半放開容易誤觸連結（點擊本身另外用位移門檻擋掉） */
+  .marquee.is-dragging .marquee-card {
+    pointer-events: none;
+  }
+
+  .marquee-thumb {
+    position: relative;
+    line-height: 0;
+  }
+  .marquee-thumb img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--sand, var(--surface-2));
+    object-fit: cover;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+  /* 名次：沿用站上「HOME / 01」那組金色 mono 小字的語彙——名次是裝飾性
+     資訊，符合金色＝裝飾、藍色＝可互動的分工 */
+  .marquee-rank {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: color-mix(in srgb, #000 68%, transparent);
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+  }
+
+  .marquee-meta {
+    padding: 12px 14px 14px;
+  }
+  .marquee-title {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--ink);
+    /* 標題長度不一，統一夾成兩行，卡片高度才會整齊 */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .marquee-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .marquee-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: none;
+    width: 38px;
+    height: 38px;
+    transform: translateY(-50%);
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--ink-2);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 180ms ease, color 160ms ease;
+  }
+  .marquee-nav-prev { left: 18px; }
+  .marquee-nav-next { right: 18px; }
+  .marquee-nav:hover { color: var(--ink); }
+  .marquee-nav:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* 只有真的有滑鼠的裝置才給箭頭；觸控直接拖更快 */
+  @media (hover: hover) {
+    .marquee-nav { display: flex; }
+    .marquee:hover .marquee-nav { opacity: 1; }
+  }
+
+  @media (max-width: 600px) {
+    .marquee-card { width: 230px; }
+    .marquee-set { gap: 14px; padding-right: 14px; }
+  }
+</style>
+
+<script>
+  // 唯一真相是 offset（單位 px，往左為正）。漂移每幀加一點、拖曳時直接跟手，
+  // 兩者寫同一個變數，所以交接不需要同步，也不會出現「放手後跳一下」。
+  document.querySelectorAll<HTMLElement>("[data-marquee]").forEach((root) => {
+    const track = root.querySelector<HTMLElement>("[data-marquee-track]");
+    const firstSet = root.querySelector<HTMLElement>(".marquee-set");
+    if (!track || !firstSet) return;
+
+    const SPEED = 28;          // px/秒，緩慢巡航
+    const RESUME_DELAY = 2600; // 放手後多久恢復漂移（讓使用者有時間瞄準要點的卡片）
+    const RESUME_RAMP = 900;   // 恢復時從靜止加速到巡航速度所需的時間
+    const DRAG_THRESHOLD = 8;  // 超過這個位移就算拖曳，並吞掉那次 click
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let setWidth = firstSet.getBoundingClientRect().width;
+    let offset = 0;
+    let paused = false;        // hover／觸碰／鍵盤聚焦時暫停
+    let dragging = false;
+    let dragMoved = 0;
+    let pointerId: number | null = null;
+    let lastX = 0;
+    let resumeAt = 0;          // 早於這個時間戳不漂移（放手後的靜置）
+    let rafId = 0;
+    let lastTs = 0;
+    let visible = true;
+
+    function apply() {
+      // modulo 歸位：兩份內容一樣，所以歸位瞬間畫面不變
+      if (setWidth > 0) {
+        offset = ((offset % setWidth) + setWidth) % setWidth;
+      }
+      track!.style.transform = `translate3d(${-offset}px, 0, 0)`;
+    }
+
+    function frame(ts: number) {
+      rafId = 0;
+      const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 0;
+      lastTs = ts;
+
+      if (!dragging && !paused && !reduceMotion.matches) {
+        // 放手後先靜置，再用一段 ramp 緩緩加速回巡航速度，不要瞬間跳回全速
+        const since = ts - resumeAt;
+        if (since > 0) {
+          const ramp = Math.min(since / RESUME_RAMP, 1);
+          offset += SPEED * ramp * dt;
+          apply();
+        }
+      }
+      schedule();
+    }
+
+    function schedule() {
+      // 捲出視野或分頁切到背景就停掉逐幀更新，不讓首頁常駐吃電
+      if (rafId || !visible || document.hidden) return;
+      if (reduceMotion.matches && !dragging) return;
+      rafId = requestAnimationFrame(frame);
+    }
+
+    function pause() { paused = true; }
+    function resume() {
+      paused = false;
+      resumeAt = performance.now() + RESUME_DELAY;
+      lastTs = 0;
+      schedule();
+    }
+
+    // ── 拖曳 ──────────────────────────────────────────────
+    track.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0 && e.pointerType === "mouse") return;
+      dragging = true;
+      dragMoved = 0;
+      pointerId = e.pointerId;
+      lastX = e.clientX;
+      lastTs = 0;
+      root.classList.add("is-dragging");
+      track.setPointerCapture(e.pointerId);
+    });
+
+    track.addEventListener("pointermove", (e) => {
+      if (!dragging || e.pointerId !== pointerId) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      dragMoved += Math.abs(dx);
+      offset -= dx; // 手往右拉＝內容往右＝offset 減少
+      apply();
+    });
+
+    function endDrag(e: PointerEvent) {
+      if (!dragging || e.pointerId !== pointerId) return;
+      dragging = false;
+      pointerId = null;
+      root.classList.remove("is-dragging");
+      // 放手後靜置一段時間再恢復漂移
+      resumeAt = performance.now() + RESUME_DELAY;
+      lastTs = 0;
+      schedule();
+    }
+    track.addEventListener("pointerup", endDrag);
+    track.addEventListener("pointercancel", endDrag);
+
+    // 拖曳超過門檻就吞掉這次 click，否則拖到一半放開會誤開影片
+    track.addEventListener("click", (e) => {
+      if (dragMoved > DRAG_THRESHOLD) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      dragMoved = 0;
+    }, true);
+
+    // ── 暫停條件 ──────────────────────────────────────────
+    root.addEventListener("pointerenter", pause);
+    root.addEventListener("pointerleave", () => { if (!dragging) resume(); });
+    // 鍵盤 Tab 進來時暫停並把該卡片捲進畫面，否則焦點會落在看不見的地方
+    root.addEventListener("focusin", (e) => {
+      pause();
+      const card = (e.target as HTMLElement)?.closest<HTMLElement>(".marquee-card");
+      const vp = root.querySelector<HTMLElement>("[data-marquee-viewport]");
+      if (!card || !vp) return;
+      const c = card.getBoundingClientRect();
+      const v = vp.getBoundingClientRect();
+      if (c.left < v.left) offset -= v.left - c.left + 24;
+      else if (c.right > v.right) offset += c.right - v.right + 24;
+      apply();
+    });
+    root.addEventListener("focusout", (e) => {
+      if (!root.contains(e.relatedTarget as Node)) resume();
+    });
+
+    // ── 箭頭：推進一張卡的距離 ────────────────────────────
+    const step = () => {
+      const card = root.querySelector<HTMLElement>(".marquee-card");
+      const gap = 18;
+      return card ? card.getBoundingClientRect().width + gap : 260;
+    };
+    root.querySelector("[data-marquee-prev]")?.addEventListener("click", () => {
+      offset -= step();
+      apply();
+      resume();
+    });
+    root.querySelector("[data-marquee-next]")?.addEventListener("click", () => {
+      offset += step();
+      apply();
+      resume();
+    });
+
+    // ── 生命週期 ──────────────────────────────────────────
+    const io = new IntersectionObserver((entries) => {
+      visible = entries[0]?.isIntersecting ?? true;
+      lastTs = 0;
+      schedule();
+    });
+    io.observe(root);
+
+    // 分頁可見性獨立追蹤，不能寫成 visible = !document.hidden && visible——
+    // 那是單向閂鎖：隱藏時把 visible 壓成 false，切回來時 visible 已經是
+    // false，`false && true` 仍是 false，帶子就永遠不會恢復漂移了。
+    // visible 只歸 IntersectionObserver 管（帶子在不在視野內），
+    // 分頁在不在前景是另一個維度，兩者都要成立才跑。
+    document.addEventListener("visibilitychange", () => {
+      lastTs = 0;
+      if (!document.hidden) schedule();
+    });
+
+    // 字型載入完成或視窗改變會讓卡片寬度變動，setWidth 要重量，
+    // 否則 modulo 的歸位點會對不上，循環處會出現跳動
+    const ro = new ResizeObserver(() => {
+      setWidth = firstSet.getBoundingClientRect().width;
+      apply();
+    });
+    ro.observe(firstSet);
+
+    apply();
+    schedule();
+  });
+</script>

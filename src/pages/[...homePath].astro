@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import VideoCard from "../components/VideoCard.astro";
+import FeaturedMarquee from "../components/FeaturedMarquee.astro";
 import { href } from "../lib/url";
 import { quickNav, SITE } from "../data/site";
 import { typeGroups } from "../data/types";
@@ -146,7 +146,7 @@ const featured = featuredVideos;
   </section>
 
   {/* ===== 精選技巧 ===== */}
-  <section id="featured" class="home-section mx-auto max-w-[1244px] px-8 py-[84px]">
+  <section id="featured" class="home-section mx-auto max-w-[1244px] px-8 pt-[84px]">
     <div class="home-section-heading">
       <div>
         <div class="home-section-kicker">{t.homeFeaturedKicker}</div>
@@ -156,10 +156,13 @@ const featured = featuredVideos;
         {t.homeFeaturedAll} <span aria-hidden="true">→</span>
       </a>
     </div>
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
-      {featured.map((f) => <VideoCard vid={f.id} title={f.title} meta={f.meta} />)}
-    </div>
   </section>
+  {/* 展示帶要左右滿版，所以放在置中的 .home-section 之外自成一段——
+      放進去的話會被 max-w-[1244px] 夾住，掙脫寬度限制的負 margin 也會
+      跟區塊的 px-8 打架。標題仍留在上面的置中區塊裡。 */}
+  <div class="mt-8 pb-[84px]">
+    <FeaturedMarquee videos={featured} lang={lang} />
+  </div>
 
   {/* ===== 快速導覽 ===== */}
   <section id="explore" class="home-explore border-y border-border-soft bg-surface">

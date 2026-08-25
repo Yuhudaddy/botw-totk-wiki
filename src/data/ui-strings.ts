@@ -213,6 +213,9 @@ const zh = {
   homeNavAbout: "關於本站",
   homeFeaturedKicker: "近期整理 · Featured",
   homeFeaturedTitle: "最近熱門",
+  /** 熱門展示帶的左右推進鈕（僅滑鼠裝置顯示，觸控直接拖） */
+  marqueePrev: "上一批熱門影片",
+  marqueeNext: "下一批熱門影片",
   homeFeaturedAll: "查看全部影片",
   homeExploreKicker: "快速導覽 · Explore",
   homeExploreTitle: "從哪開始",
@@ -451,6 +454,8 @@ const ja: Record<keyof typeof zh, string> = {
   homeNavAbout: "このサイトについて",
   homeFeaturedKicker: "最近の整理 · Featured",
   homeFeaturedTitle: "最近の人気",
+  marqueePrev: "前の人気動画へ",
+  marqueeNext: "次の人気動画へ",
   homeFeaturedAll: "すべての動画を見る",
   homeExploreKicker: "クイックナビ · Explore",
   homeExploreTitle: "どこから始める",

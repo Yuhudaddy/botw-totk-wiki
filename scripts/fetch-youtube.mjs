@@ -190,7 +190,7 @@ const all = allVideos.map((v) => ({
   game: gameOf.get(v.id),
 }));
 
-// ── 6. 精選：90 天內觀看數最高的 6 部 ────────────────────────────────────────
+// ── 6. 精選：90 天內觀看數最高的 10 部 ────────────────────────────────────────
 // 原本用 30 天窗、門檻 3 部，但頻道發片頻率沒那麼高，幾乎每次都不足額，
 // 導致精選長期卡在 oldFeatured（見下方 8.）。放寬時間窗、降低門檻，
 // 讓「這次確實有抓到新片」時就採用新結果，減少觸發 fallback 的機率。
@@ -198,10 +198,10 @@ const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOStrin
 const recent = allVideos.filter((v) => v.snippet.publishedAt >= ninetyDaysAgo);
 const featured = recent
   .sort((a, b) => parseInt(b.statistics.viewCount) - parseInt(a.statistics.viewCount))
-  .slice(0, 6)
+  .slice(0, 10)
   .map(toVideo);
 
-if (featured.length < 6) console.warn(`90天內只找到 ${featured.length} 部影片，精選可能不足`);
+if (featured.length < 10) console.warn(`90天內只找到 ${featured.length} 部影片，精選不足 10 部（展示帶會照實際筆數循環）`);
 
 // ── 7. 最新：最近上傳的 4 部 ─────────────────────────────────────────────────
 const latest = allVideos.slice(0, 4).map(toVideo);
