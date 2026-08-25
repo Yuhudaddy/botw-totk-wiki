@@ -33,19 +33,19 @@ function checkMethod(zhMethod, jaMethod, where) {
   checkLen(zhMethod.principleSections, jaMethod.principleSections, `${where} principleSections`);
   checkLen(zhMethod.mapFlow, jaMethod.mapFlow, `${where} mapFlow`);
 
-  // sections 底下各自的 mapFlow／extra.steps 也是索引對應，要逐段檢查
+  // sections 底下各自的 mapFlow／popover.steps 也是索引對應，要逐段檢查
   if (zhMethod.sections && jaMethod.sections) {
     zhMethod.sections.forEach((zhSec, i) => {
       const jaSec = jaMethod.sections[i];
       if (!zhSec || !jaSec) return;
       checkLen(zhSec.mapFlow, jaSec.mapFlow, `${where} sections[${i}] mapFlow`);
-      checkLen(zhSec.extra?.steps, jaSec.extra?.steps, `${where} sections[${i}] extra.steps`);
-      // 「中文沒有 extra、日文卻有」代表兩邊的結構定義已經岔開：這種情況
+      checkLen(zhSec.popover?.steps, jaSec.popover?.steps, `${where} sections[${i}] popover.steps`);
+      // 「中文沒有 popover、日文卻有」代表兩邊的結構定義已經岔開：這種情況
       // checkLen 因為中文端是 undefined 會直接跳過，不會有任何警訊，但頁面
       // 上這段日文內容是不是真的該存在很可疑（中文版讀者永遠看不到它）。
       // 明確報出來，讓人決定是要補中文還是刪掉日文，而不是靜靜留著。
-      if (!zhSec.extra && jaSec.extra) {
-        problems.push(`${where} sections[${i}] extra：中文沒有這段、日文卻有，中日結構不一致`);
+      if (!zhSec.popover && jaSec.popover) {
+        problems.push(`${where} sections[${i}] popover：中文沒有這段、日文卻有，中日結構不一致`);
       }
     });
   }

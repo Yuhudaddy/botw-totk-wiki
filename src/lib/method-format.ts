@@ -36,14 +36,18 @@ function escapeHtml(s: string) {
 // 把步驟文字解析成片段：[[文字|type-id]] 會變成連結（橙字＋底線）；[[文字|tab:分頁名]] 會變成同頁切換分頁的按鈕；
 // [[文字|https://...]] 會變成外部連結（新分頁開啟，不套用站內 base path／語言前綴）；其餘沿用 __文字__ 的橙色規則
 export function parseStep(text: string) {
-  const segments: { text: string; accent: boolean; href?: string; external?: boolean; jumpTab?: string }[] = [];
+  const segments: { text: string; accent: boolean; href?: string; external?: boolean; jumpTab?: string; popover?: boolean }[] = [];
   const linkRe = /\[\[([^\]|]+)\|([^\]]+)\]\]/g;
   let last = 0;
   let m: RegExpExecArray | null;
   while ((m = linkRe.exec(text))) {
     if (m.index > last) segments.push(...parseAccent(text.slice(last, m.index)));
     const target = m[2];
-    if (target.startsWith("tab:")) {
+    if (target === "popover") {
+      // 點開所屬 section 的 popover（子技巧的完整步驟）。一個 section 只有一組，
+      // 所以不需要 id；實際的內容與開合由 MethodPanelBody 渲染、[id].astro 綁事件
+      segments.push({ text: m[1], accent: true, popover: true });
+    } else if (target.startsWith("tab:")) {
       segments.push({ text: m[1], accent: true, jumpTab: target.slice(4) });
     } else if (/^https?:\/\//.test(target)) {
       segments.push({ text: m[1], accent: true, href: target, external: true });

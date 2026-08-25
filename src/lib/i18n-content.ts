@@ -55,14 +55,14 @@ function mergeMethod(zh: TypeMethod, ja: TypeMethodJa | undefined): TypeMethod {
         steps: pick(jaSection.steps, section.steps),
         note: pick(jaSection.note, section.note),
         subtitle: pick(jaSection.subtitle, section.subtitle),
-        // 中文有 extra 才逐欄位 fallback；中文沒有、日文自己補了一段時直接採用
-        // 日文版（原本寫成只看中文端，會讓日文獨有的 extra 靜默消失）
-        extra: section.extra
+        // 中文有 popover 才逐欄位 fallback；中文沒有、日文自己補了一段時直接採用
+        // 日文版（原本寫成只看中文端，會讓日文獨有的 popover 靜默消失）
+        popover: section.popover
           ? {
-              title: pick(jaSection.extra?.title, section.extra.title),
-              steps: pick(jaSection.extra?.steps, section.extra.steps),
+              title: pick(jaSection.popover?.title, section.popover.title),
+              steps: pick(jaSection.popover?.steps, section.popover.steps),
             }
-          : jaSection.extra,
+          : jaSection.popover,
         mapFlow: section.mapFlow && jaSection.mapFlow
           ? section.mapFlow.map((action, j) => {
               const jaAction = jaSection.mapFlow?.[j];

@@ -43,7 +43,7 @@ export interface TypeMethodSectionJa {
   /** 依索引對應中文版的 mapFlow，不翻的填 null */
   mapFlow?: (FlowMapStepActionJa | null)[];
   subtitle?: string;
-  extra?: { title?: string; steps: TypeStep[] };
+  popover?: { title?: string; steps: TypeStep[] };
 }
 
 /** TypeMethod 的日文版；由 TypeContentJa.methods 以中文 tab 當 key 索引 */
@@ -3861,14 +3861,14 @@ export const typeContentJa: Record<string, TypeContentJa> = {
               "オートセーブの発生：ポーチのアイテムが完全に空、またはアイテム欄の右側に出現する異なる 2 つのアイテムを拾って捨てる（mCount ≤ 0 になったとき）ことでオートセーブを発生させる",
               "ゲームの再起動：ゲームを終了して引き継ぎ枠をキャンセルし、再起動して先ほどの mCount ≤ 0 のオートセーブをロードする",
               "状態のリセット：光の弓、片手剣 2 本、盾 1 枚を回収し、武器と盾を装備する",
-              "スマグル法での引き継ぎ枠：素材を集めるか購入し、スマグル法を使って「ロード後の貴重品数 + 1」枠分の引き継ぎ枠を作る",
+              "スマグル法での引き継ぎ枠：素材を集めるか購入し、[[スマグル法|popover]]を使って「ロード後の貴重品数 + 1」枠分の引き継ぎ枠を作る",
               "不要品を捨てる：武器・盾・素材を全て捨て、身につけているのは「光の弓」と「貴重品」だけにし、引き継ぎ枠がちょうど光の弓に掛かるようにする",
               "目的のセーブをロード：手順 1 の手動セーブをロードする",
               "同期の完了：ポーチを一度開閉して同期させ、手動セーブする",
               "最後にゲームを終了して再起動し、引き継ぎ枠の状態をキャンセルする",
             ],
-            extra: {
-              title: "※スマグル法（Item Smuggle）",
+            popover: {
+              title: "スマグル法（Item Smuggle）",
               steps: [
                 "リンクの前に四角い爆弾を置き、Y で片手剣を構えると A の判定が出る",
                 "素早く A → 十字キー◀︎ の順に押して盾を外し、R で爆弾を投げて「武器スマグル（Weapon Smuggle）」を発生させる",

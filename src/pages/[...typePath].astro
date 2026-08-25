@@ -1594,6 +1594,113 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     color: var(--accent);
   }
 
+  /* ── 步驟裡的子技巧彈窗 ──────────────────────────────────
+     寬螢幕：貼在觸發連結旁邊浮出的小視窗（position 由 JS 依連結位置算）。
+     窄螢幕：退回置中的對話框，跟站上其他 modal 同一套語彙。
+     兩種型態共用同一段標記，差別只在下面的 :not(.is-anchored) 分支。 */
+  .step-popover[hidden] {
+    display: none;
+  }
+  .step-popover {
+    position: fixed;
+    z-index: 120;
+    inset: 0;
+  }
+  .step-popover-backdrop {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    background: color-mix(in srgb, #000 62%, transparent);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+  .step-popover-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    width: min(420px, calc(100vw - 40px));
+    max-height: min(76vh, 620px);
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 5px;
+    background: var(--bg);
+    box-shadow: 0 26px 64px rgb(0 0 0 / 0.32);
+  }
+  /* 錨定型態（寬螢幕）：位置改由 JS 寫進 --pop-x／--pop-y，
+     背景遮罩收掉，因為小視窗是「補充說明」不是需要專注的模態。 */
+  .step-popover.is-anchored .step-popover-panel {
+    top: var(--pop-y, 0);
+    left: var(--pop-x, 0);
+    transform: none;
+  }
+  .step-popover.is-anchored .step-popover-backdrop {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .step-popover-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px 12px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--surface);
+  }
+  .step-popover-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .step-popover-head button {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    flex: none;
+    place-items: center;
+    border: 1px solid var(--border-soft);
+    border-radius: 5px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .step-popover-head button:hover {
+    border-color: var(--border-strong);
+    color: var(--ink);
+  }
+  .step-popover-head svg {
+    width: 15px;
+    height: 15px;
+  }
+  .step-popover-panel ol {
+    margin: 0;
+    padding: 14px 18px 16px 34px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .step-popover-panel ol li + li {
+    margin-top: 6px;
+  }
+  /* 觸發連結：沿用步驟裡既有的 .accent-link 語彙，但補一條虛線底線，
+     跟「跳到其他分頁」的實線連結區分開——這顆點了不會離開目前的閱讀位置 */
+  .step-popover-open {
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    text-decoration-style: dotted;
+  }
+
   .applications-modal[hidden] {
     display: none;
   }
@@ -2478,6 +2585,94 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     });
 
     render();
+  })();
+
+  // ── 步驟裡的子技巧彈窗 ────────────────────────────────────────
+  // 每個 section 最多一組，觸發鈕與內容都在同一個 section 裡，用 closest
+  // 配對而不是全域查詢，多個 section 各有彈窗時才不會互相搶。
+  (function () {
+    const ANCHOR_MIN_WIDTH = 900; // 以下退回置中對話框：小螢幕沒有足夠的側向空間浮出
+    let openPop: HTMLElement | null = null;
+    let lastTrigger: HTMLElement | null = null;
+
+    function close() {
+      if (!openPop) return;
+      openPop.hidden = true;
+      openPop.classList.remove("is-anchored");
+      document.documentElement.style.overflow = "";
+      lastTrigger?.focus();
+      openPop = null;
+      lastTrigger = null;
+    }
+
+    // 錨定在觸發連結旁邊；右側空間不夠就翻到左邊，仍不夠就退回置中模態。
+    // 位置用 fixed 座標，所以捲動時要重算（見下方 scroll 監聽）。
+    function place(pop: HTMLElement, trigger: HTMLElement) {
+      if (window.innerWidth < ANCHOR_MIN_WIDTH) {
+        pop.classList.remove("is-anchored");
+        return;
+      }
+      const panel = pop.querySelector<HTMLElement>(".step-popover-panel");
+      if (!panel) return;
+      pop.classList.add("is-anchored");
+
+      const t = trigger.getBoundingClientRect();
+      const pw = panel.offsetWidth;
+      const ph = panel.offsetHeight;
+      const GAP = 12;
+      const MARGIN = 12;
+
+      let x = t.right + GAP;
+      if (x + pw > window.innerWidth - MARGIN) x = t.left - GAP - pw; // 翻到左邊
+      if (x < MARGIN) {
+        // 兩側都放不下，退回置中模態
+        pop.classList.remove("is-anchored");
+        return;
+      }
+      // 垂直對齊觸發連結中心，並夾在視窗內
+      let y = t.top + t.height / 2 - ph / 2;
+      y = Math.min(Math.max(y, MARGIN), window.innerHeight - ph - MARGIN);
+
+      panel.style.setProperty("--pop-x", `${Math.round(x)}px`);
+      panel.style.setProperty("--pop-y", `${Math.round(y)}px`);
+    }
+
+    document.addEventListener("click", (event) => {
+      const trigger = (event.target as HTMLElement)?.closest<HTMLElement>("[data-step-popover-open]");
+      if (!trigger) return;
+      const section = trigger.closest<HTMLElement>(".method-section, .method-section-collapse");
+      const pop = section?.querySelector<HTMLElement>("[data-step-popover]");
+      if (!pop) return;
+
+      close();
+      openPop = pop;
+      lastTrigger = trigger;
+      pop.hidden = false;
+      place(pop, trigger);
+      // 置中模態才鎖背景捲動；錨定型態是補充說明，鎖捲動反而礙事
+      if (!pop.classList.contains("is-anchored")) {
+        document.documentElement.style.overflow = "hidden";
+      }
+      pop.querySelector<HTMLButtonElement>(".step-popover-panel [data-step-popover-close]")?.focus();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!(event.target as HTMLElement)?.closest("[data-step-popover-close]")) return;
+      close();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") close();
+    });
+
+    // 錨定型態沒有鎖捲動，捲動或改變視窗大小時要重新對位，否則小視窗會飄走
+    const reposition = () => {
+      if (openPop && lastTrigger && openPop.classList.contains("is-anchored")) {
+        place(openPop, lastTrigger);
+      }
+    };
+    window.addEventListener("scroll", reposition, { passive: true });
+    window.addEventListener("resize", reposition);
   })();
 
   // ── 應用一覽彈出視窗 ──────────────────────────────────────────

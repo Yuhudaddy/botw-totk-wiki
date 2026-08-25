@@ -121,7 +121,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
                   />
                 )}
                 {parseStep(text).map((seg) =>
-                  seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                  seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                     : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -132,7 +133,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
                     {sub.map((d) => (
                       <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
                         {parseStep(d).map((seg) =>
-                          seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                          seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                             : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -153,7 +155,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
               {sec.note.map((n) => (
                 <p class="text-[13px] leading-[1.7] text-muted">
                   {parseStep(n).map((seg) =>
-                    seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                    seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                       : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -165,7 +168,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
           ) : (
             <p class="mt-4 text-[13px] leading-[1.7] text-muted">
               {parseStep(sec.note).map((seg) =>
-                seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                   : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -174,22 +178,42 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
             </p>
           )
         )}
-        {sec.extra && sec.extra.steps.length > 0 && (
-          <div class="mt-5">
-            {sec.extra.title && (
-              <div class="method-section-title">
-                {parseAccent(sec.extra.title).map((seg) =>
-                  seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+        {/* 子技巧的完整步驟：預設隱藏，由主流程步驟裡的 [[文字|popover]] 連結點開。
+            寬螢幕時貼在觸發連結旁邊浮出，窄螢幕時變成置中的對話框（見 [id].astro
+            的定位邏輯與樣式）。刻意不直接排在主流程下方——並排會讓人誤以為那是
+            「同一件事的另一種做法」，但它其實只是其中一個步驟用到的工具。 */}
+        {sec.popover && sec.popover.steps.length > 0 && (
+          <div class="step-popover" data-step-popover hidden>
+            <button
+              type="button"
+              class="step-popover-backdrop"
+              tabindex="-1"
+              aria-hidden="true"
+              data-step-popover-close
+            ></button>
+            <div class="step-popover-panel" role="dialog" aria-modal="true" aria-label={sec.popover.title}>
+              <div class="step-popover-head">
+                {sec.popover.title && (
+                  <div class="step-popover-title">
+                    {parseAccent(sec.popover.title).map((seg) =>
+                      seg.accent ? <span class="accent-strong">{seg.text}</span> : seg.text
+                    )}
+                  </div>
                 )}
+                <button type="button" data-step-popover-close aria-label={t.closeAppList}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+                  </svg>
+                </button>
               </div>
-            )}
-            <ol>
-              {sec.extra.steps.map((s) => {
+              <ol>
+              {sec.popover.steps.map((s) => {
                 const { text, sub } = stepParts(s);
                 return (
                   <li>
                     {parseStep(text).map((seg) =>
-                      seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                      seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                         : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -200,7 +224,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
                         {sub.map((d) => (
                           <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
                             {parseStep(d).map((seg) =>
-                              seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                              seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                                 : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -213,7 +238,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
                   </li>
                 );
               })}
-            </ol>
+              </ol>
+            </div>
           </div>
         )}
       </>
@@ -291,7 +317,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
             />
           )}
           {parseStep(text).map((seg) =>
-            seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+            seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
               : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -302,7 +329,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
               {sub.map((d) => (
                 <li class={/^[（(]/.test(d) ? "step-sub-deep" : ""}>
                   {parseStep(d).map((seg) =>
-                    seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+                    seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
                       : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -323,7 +351,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
       {m.note.map((n) => (
         <p class="text-[13px] leading-[1.7] text-muted">
           {parseStep(n).map((seg) =>
-            seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+            seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
               : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
@@ -335,7 +364,8 @@ function mapData(action: FlowMapStepAction, stepNo: number) {
   ) : (
     <p class="mt-4 text-[13px] leading-[1.7] text-muted">
       {parseStep(m.note).map((seg) =>
-        seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
+        seg.popover ? <button type="button" class="accent-link step-popover-open" data-step-popover-open>{seg.text}</button>
+                    : seg.jumpTab ? <button type="button" class="accent-link jump-tab-btn" data-jump-tab={seg.jumpTab}>{seg.text}</button>
           : seg.href ? (seg.external
                     ? <a href={seg.href} class="accent-link" target="_blank" rel="noopener noreferrer">{seg.text}</a>
                     : <a href={href(`/types/${seg.href}`, lang)} class="accent-link">{seg.text}</a>)
