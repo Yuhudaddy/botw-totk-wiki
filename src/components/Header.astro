@@ -1067,12 +1067,22 @@ const navLabelKey = {
 
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
+      var willOpen = !wrap.classList.contains('is-open');
+      // 即將展開前先通知其他選單收起——它們各自的觸發鈕也會 stopPropagation，
+      // 點擊事件傳不到 document，光靠「點擊選單外關閉」互相收不到彼此。
+      if (willOpen) document.dispatchEvent(new CustomEvent('nav:closeOthers', { detail: { except: wrap } }));
       var open = wrap.classList.toggle('is-open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
 
     document.addEventListener('click', function (e) {
       if (!wrap.contains(e.target)) close();
+    });
+    document.addEventListener('nav:closeOthers', function (e) {
+      // 手機捲動後贊助／語言彈窗其實長在漢堡選單（r-navcluster-menu）裡面，
+      // 開啟它們時不能連自己所在的容器一起收掉，否則彈窗會跟著容器一起
+      // 隱形（opacity/visibility 隨 .is-open 一起關掉）。
+      if (e.detail.except !== wrap && !wrap.contains(e.detail.except)) close();
     });
     return close;
   }

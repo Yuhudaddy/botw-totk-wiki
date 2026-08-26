@@ -205,6 +205,7 @@ const t = uiStrings[lang];
     var toggle = document.getElementById("support-toggle");
     var popover = document.getElementById("support-popover");
     if (!toggle || !popover) return;
+    var wrap = toggle.closest(".relative") || toggle.parentElement;
 
     // 關閉時把焦點還給觸發按鈕，避免鍵盤使用者的焦點卡在已隱藏的彈窗裡
     function close(returnFocus) {
@@ -214,9 +215,27 @@ const t = uiStrings[lang];
       if (returnFocus) toggle.focus();
     }
 
+    // 這顆鈕在窄螢幕不一定是這排最右邊那顆（右邊可能還有語言／主題鈕），
+    // 固定寬度的彈窗照 right:0 往左展開，容易把左邊界推出視窗外。
+    // 開啟後量一次實際位置，超出安全邊距就改貼齊視窗左緣，不硬套 right:0。
+    function reposition() {
+      popover.style.right = "0";
+      popover.style.left = "";
+      var margin = 12;
+      var rect = popover.getBoundingClientRect();
+      if (rect.left < margin) {
+        var wrapRect = wrap.getBoundingClientRect();
+        popover.style.right = "auto";
+        popover.style.left = Math.round(margin - wrapRect.left) + "px";
+      }
+    }
+
     function open() {
+      // 開啟前先通知其他導覽選單收起（語言彈窗、手機版三角／漢堡選單）
+      document.dispatchEvent(new CustomEvent("nav:closeOthers", { detail: { except: popover } }));
       popover.setAttribute("data-open", "true");
       toggle.setAttribute("aria-expanded", "true");
+      reposition();
       var first = popover.querySelector("a[href]");
       if (first) first.focus();
     }
@@ -232,6 +251,12 @@ const t = uiStrings[lang];
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") close(true);
+    });
+    document.addEventListener("nav:closeOthers", function (e) {
+      if (e.detail.except !== popover) close(false);
+    });
+    window.addEventListener("resize", function () {
+      if (popover.getAttribute("data-open") === "true") reposition();
     });
 
     // Tab 走出彈窗最後一個連結時自動關閉，焦點順勢回到頁面後續元素
