@@ -27,7 +27,7 @@ const t = uiStrings[lang];
   <div
     id="support-popover"
     role="dialog"
-    class="support-popover pointer-events-none absolute right-0 top-[calc(100%+10px)] z-50 w-[290px] rounded-[5px] border border-border-strong bg-surface p-5 opacity-0 shadow-lg transition-opacity duration-150"
+    class="support-popover pointer-events-none absolute left-1/2 top-[calc(100%+10px)] z-50 w-[250px] -translate-x-1/2 rounded-[5px] border border-border-strong bg-surface p-5 opacity-0 shadow-lg transition-opacity duration-150"
   >
     <div class="flex flex-col gap-2">
       <p class="text-[13px] leading-[1.5] text-text">{t.supportSubscribeHint}</p>
@@ -205,7 +205,6 @@ const t = uiStrings[lang];
     var toggle = document.getElementById("support-toggle");
     var popover = document.getElementById("support-popover");
     if (!toggle || !popover) return;
-    var wrap = toggle.closest(".relative") || toggle.parentElement;
 
     // 關閉時把焦點還給觸發按鈕，避免鍵盤使用者的焦點卡在已隱藏的彈窗裡
     function close(returnFocus) {
@@ -215,18 +214,23 @@ const t = uiStrings[lang];
       if (returnFocus) toggle.focus();
     }
 
-    // 這顆鈕在窄螢幕不一定是這排最右邊那顆（右邊可能還有語言／主題鈕），
-    // 固定寬度的彈窗照 right:0 往左展開，容易把左邊界推出視窗外。
-    // 開啟後量一次實際位置，超出安全邊距就改貼齊視窗左緣，不硬套 right:0。
+    // 預設用 CSS 置中在觸發鈕正下方（left:50% + translateX(-50%)）。
+    // 窄螢幕上這顆鈕可能偏在畫面邊緣，置中後彈窗仍會被推出視窗外，
+    // 開啟後量一次實際位置，超出安全邊距就用 margin-left 微調位置，
+    // 不動 left／transform——它們是置中定位的基礎，另外疊加位移比
+    // 互相覆蓋更不容易踩到 Tailwind 邏輯屬性（inset-inline-start）
+    // 跟物理屬性（left）互相打架的坑。
     function reposition() {
-      popover.style.right = "0";
-      popover.style.left = "";
+      popover.style.marginLeft = "0px";
       var margin = 12;
+      // 用 clientWidth 而非 window.innerWidth：後者在桌面版還含捲軸寬度，
+      // 前者才是實際可視寬度。
+      var vw = document.documentElement.clientWidth;
       var rect = popover.getBoundingClientRect();
       if (rect.left < margin) {
-        var wrapRect = wrap.getBoundingClientRect();
-        popover.style.right = "auto";
-        popover.style.left = Math.round(margin - wrapRect.left) + "px";
+        popover.style.marginLeft = Math.round(margin - rect.left) + "px";
+      } else if (rect.right > vw - margin) {
+        popover.style.marginLeft = Math.round(vw - margin - rect.right) + "px";
       }
     }
 
