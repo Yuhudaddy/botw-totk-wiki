@@ -11,6 +11,13 @@ export interface TypeItem {
   termsOnly?: boolean;  // 詳細頁只顯示「名詞說明」＋「相關影片」（大亂鬥用）
   family?: string;       // 技巧家族 id（同家族的項目在詳細頁會顯示彈道切換帶，例："launch"）
   hideFromGrid?: boolean; // 家族內非代表項目：不在主題解說列表顯示，只能透過切換帶進入
+  /** 家族的「旁支」成員：不是這個家族的另一種技巧，而是跨越全家族的共通議題
+   *  （例：布偶程錯會讓三種擊飛全都失效，但它本身不是一種擊飛方式）。
+   *  這種成員刻意**不進切換帶**——切換帶在手機是直向堆疊的，就算桌面版把第四張卡
+   *  做成虛線框，手機上它仍會變成清單裡的第四項，跟前三個並列技巧完全分不出差別，
+   *  讀起來就像「第四種擊飛」。改成彩現在切換帶標頭列右側的次要連結，沿用站上
+   *  「回到 XX 系列 →」那套「旁支資源」的視覺語彙，從屬關係一眼看得出來。 */
+  familyAside?: boolean;
 }
 
 export type GameId = "botw" | "totk" | "eow" | "ssbu" | "aoc" | "aoi";
@@ -41,6 +48,7 @@ export const typeGroups: TypeGroup[] = [
       { no: "01", zh: "風彈", en: "Windbomb", ja: "ウインドボム", shortZh: "擊飛", shortEn: "Launch", shortJa: "ローンチ", family: "launch" },
       { no: "01-stasis", zh: "一般擊飛", en: "General Launch", ja: "ノーマルローンチ", family: "launch", hideFromGrid: true },
       { no: "01-super", zh: "擊飛加速", en: "Super Launch", ja: "スーパーローンチ", family: "launch", hideFromGrid: true },
+      { no: "01-ragdoll", zh: "布偶程錯", en: "Ragdoll Glitch", ja: "ラグドールグリッチ", family: "launch", hideFromGrid: true, familyAside: true },
       { no: "02", zh: "轉存格", en: "Inventory Slot Transfer", ja: "引き継ぎ枠" },
       { no: "03", zh: "萊尼爾", en: "Lynels", ja: "ライネル" },
       { no: "04", zh: "月步", en: "Moonjump", ja: "流鏑馬ホバー" },

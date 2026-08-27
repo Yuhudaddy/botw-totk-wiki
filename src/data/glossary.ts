@@ -138,7 +138,10 @@ export const glossaryEntries: GlossaryEntry[] = [
   { id: "hold-smuggle", games: ["botw"], kind: "term", abbr: "Hold Smuggle", en: "Hold Smuggle", ja: "強制物持ち", zh: "選單手持", aliases: ["選單手持"], description: "選單手持、實際模型未手持的狀態。", sources: ["/types/botw-22"] },
   { id: "holy-coho", games: ["botw"], kind: "object", abbr: "Holy cOHO", en: "Holy Cutscene One-Hit Obliterator", ja: "白一撃", zh: "神聖過場必殺劍", aliases: ["神聖必殺劍"], description: "卡在手上的白色 cOHO，是曠野之息唯一黏手會有碰撞判定的裝備。", sources: ["/types/botw-05"] },
   { id: "bullet-time", games: ["botw"], kind: "concept", abbr: "Bullet Time", en: "Bullet Time", ja: "バレットタイム", zh: "子彈時間", aliases: ["子時", "子彈時間"], description: "空中拉弓、完美迴避、消耗守護時的慢動作狀態。", sources: ["/types/botw-19"] },
-  { id: "ragdoll", games: ["botw"], kind: "concept", abbr: "Ragdoll", en: "Ragdoll", ja: "ラグドール", zh: "布偶狀態", aliases: ["布偶狀態", "布偶"], description: "林克失去控制、在空中癱軟的物理狀態。", sources: ["/types/botw-01"] },
+  { id: "ragdoll", games: ["botw"], kind: "concept", abbr: "Ragdoll", en: "Ragdoll", ja: "ラグドール", zh: "布偶狀態", aliases: ["布偶狀態", "布偶"], description: "林克失去控制、在空中癱軟的物理狀態。", sources: ["/types/botw-01", "/types/botw-01-ragdoll"] },
+  // 跟上面那筆只差兩個字，但是完全相反的兩件事：Ragdoll 是擊飛需要的正常狀態，
+  // Ragdoll Glitch 是讓你進不去那個狀態的程錯。description 刻意把這點寫進去。
+  { id: "ragdoll-glitch", games: ["botw"], kind: "term", abbr: "Ragdoll Glitch", en: "Ragdoll Glitch", ja: "ラグドールグリッチ", zh: "布偶程錯", aliases: ["布偶程錯", "Ragdoll Fix", "布偶修復"], description: "踩盾跳中卸下盾牌後，一旦離開原地就無法進入布偶狀態、導致擊飛失敗的程錯；在新位置重做一次同樣動作即可解除（即 Ragdoll Fix）。", sources: ["/types/botw-01-ragdoll"] },
   { id: "soul", games: ["botw"], kind: "concept", abbr: "Soul", en: "Soul", ja: "魂", zh: "靈魂", aliases: ["靈魂", "身體"], description: "實用物理演算林克的座標位置。", sources: ["/types/botw-01"] },
   { id: "body", games: ["botw"], kind: "concept", abbr: "Body", en: "Body", ja: "体", zh: "身體", aliases: ["靈魂", "身體"], description: "實際林克模型的外觀位置。", sources: ["/types/botw-01"] },
   { id: "dead-angle", games: ["botw"], kind: "concept", abbr: "Dead Angle", en: "Dead Angle", zh: "擊停角", aliases: ["擊停角"], description: "容易造成魂體距離太遠的風彈角度，NS1通常為非45度角倍數的方向。", sources: ["/types/botw-01"] },

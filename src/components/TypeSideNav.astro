@@ -36,11 +36,16 @@ const familyNameOf = (id: string) => {
 const topLevel = group.items.filter((i) => !i.hideFromGrid);
 
 const entries = topLevel.map((i) => {
-  const members = i.family ? group.items.filter((m) => m.family === i.family) : [];
+  const all = i.family ? group.items.filter((m) => m.family === i.family) : [];
+  // 家族旁支（familyAside，例：布偶程錯）不是這個家族的另一種技巧，而是跨越
+  // 全家族的共通議題。跟三個並列技巧排在同一串裡會讀成「第四種擊飛」，
+  // 所以拆開來、排在後面並用分隔線隔出來（樣式見 .type-sidenav-aside）。
+  const techniques = all.filter((m) => !m.familyAside);
+  const isFamily = techniques.length > 1; // 只有真的有多個技巧才當成家族處理
   return {
     item: i,
-    // 只有真的有多個成員才當成家族處理，單一成員維持一般連結
-    members: members.length > 1 ? members : [],
+    members: isFamily ? techniques : [],
+    asides: isFamily ? all.filter((m) => m.familyAside) : [],
     label: (i.family && familyNameOf(i.family)) || titleOf(i),
   };
 });
@@ -55,9 +60,9 @@ const isCurrent = (i: TypeItem) => i.no === item.no;
   </a>
 
   <ul class="type-sidenav-list">
-    {entries.map(({ item: i, members, label }) => {
+    {entries.map(({ item: i, members, asides, label }) => {
       // 目前所在的家族才展開，其餘家族只顯示代表項，避免側欄變成一整片長清單
-      const inThisFamily = members.some(isCurrent);
+      const inThisFamily = members.some(isCurrent) || asides.some(isCurrent);
       return (
         <li>
           {members.length > 0 ? (
@@ -74,6 +79,17 @@ const isCurrent = (i: TypeItem) => i.no === item.no;
                 <ul class="type-sidenav-sublist">
                   {members.map((m) => (
                     <li>
+                      <a
+                        href={href(`/types/${group.game}-${m.no}`, lang)}
+                        class="type-sidenav-link type-sidenav-sublink"
+                        aria-current={isCurrent(m) ? "page" : undefined}
+                      >
+                        {memberTitleOf(m)}
+                      </a>
+                    </li>
+                  ))}
+                  {asides.map((m) => (
+                    <li class="type-sidenav-aside">
                       <a
                         href={href(`/types/${group.game}-${m.no}`, lang)}
                         class="type-sidenav-link type-sidenav-sublink"
@@ -190,5 +206,20 @@ const isCurrent = (i: TypeItem) => i.no === item.no;
   .type-sidenav-sublink {
     padding-left: 18px;
     font-size: 12.5px;
+  }
+
+  /* 家族旁支：用一條分隔線跟上面三個並列技巧斷開，避免被讀成「第四種擊飛」。
+     線只從縮排起點畫起（不是整條滿版），讓它看起來仍屬於這個家族底下。 */
+  .type-sidenav-aside {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .type-sidenav-aside .type-sidenav-link {
+    color: var(--muted);
+  }
+  .type-sidenav-aside .type-sidenav-link:hover,
+  .type-sidenav-aside .type-sidenav-link[aria-current="page"] {
+    color: var(--ink);
   }
 </style>
