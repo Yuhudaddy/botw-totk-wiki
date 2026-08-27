@@ -29,6 +29,7 @@
 194208	botw-ist/FDIC.png
 231909	botw-ist/IST.png
 273579	botw-ist/WMC.png
+27881870	botw-launch/布偶程錯.mp4
 15508542	botw-launch/木箱擊飛.MP4
 25646783	botw-launch/靜止擊飛.mp4
 26971304	botw-launch/靜止隨飛.mp4

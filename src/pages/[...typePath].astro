@@ -1133,7 +1133,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     border: 1px solid var(--border-strong);
     border-radius: 5px;
     background: var(--surface);
-    color: var(--accent);
+    /* 跟頁面標題（h1.text-ink）同一顆變數，深色模式是暖蛋白色、淺色模式是
+       深墨色——不用 --accent 的藍是刻意的，這顆按鈕本身已經有外框和底色
+       在標示「這裡可以點」，字色不需要再搶一次視覺重量。 */
+    color: var(--ink);
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
