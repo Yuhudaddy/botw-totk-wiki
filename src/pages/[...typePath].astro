@@ -172,12 +172,26 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
         <h1 class="font-heading text-[27px] sm:text-[36px] font-medium leading-[1.12] text-ink">
           {itemTitle}
         </h1>
-        <a
-          href={href(`/types#${group.game}`, lang)}
-          class="whitespace-nowrap text-sm text-accent no-underline"
-        >
-          {t.backToGameSeries.replace("{game}", gameLabel)}
-        </a>
+        {/* 右側動作區：回到系列的次要連結，以及（家族有旁支議題時）通往旁支頁的
+            外框按鈕。沒有旁支的頁面仍然只有那一條連結，版面與加這層之前相同。 */}
+        <div class="flex flex-col items-end gap-3">
+          <a
+            href={href(`/types#${group.game}`, lang)}
+            class="whitespace-nowrap text-sm text-accent no-underline"
+          >
+            {t.backToGameSeries.replace("{game}", gameLabel)}
+          </a>
+          {familyAsideItem && (
+            <a
+              href={href(`/types/${group.game}-${familyAsideItem.no}`, lang)}
+              class="hero-aside-btn"
+            >
+              <span>{familyAsideTitle}</span>
+              <span class="hero-aside-btn-en">{familyAsideItem.en}</span>
+              <span class="hero-aside-btn-arrow" aria-hidden="true">→</span>
+            </a>
+          )}
+        </div>
       </div>
       <p class="text-[13px] sm:text-[17px] text-muted">{content?.heroEn ?? item.en}</p>
     </div>
@@ -186,24 +200,10 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   {familyTechniques.length > 1 && (
     <section>
       <div class="type-col mx-auto max-w-[1244px] px-8 py-8">
-        {/* 標頭列：左邊家族名，右邊掛家族旁支議題的入口。窄螢幕靠 flex-wrap
-            讓連結掉到下一行，不會把家族名擠掉。 */}
-        <div class="mb-3 flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1.5">
-          <div class="font-mono text-[11px] font-bold uppercase tracking-[2px] text-muted">
-            {family?.en} · {lang === "ja" ? <>{family?.ja}シリーズ</> : <>{family?.zh}系列</>}
-          </div>
-          {familyAsideItem && (
-            <a
-              href={href(`/types/${group.game}-${familyAsideItem.no}`, lang)}
-              class="family-aside-link inline-flex items-baseline gap-2 whitespace-nowrap text-[13px] text-accent no-underline"
-            >
-              <span>{familyAsideTitle}</span>
-              <span class="font-mono text-[10px] uppercase tracking-[1px] text-muted">
-                {familyAsideItem.en}
-              </span>
-              <span aria-hidden="true">→</span>
-            </a>
-          )}
+        {/* 家族旁支議題的入口不放這裡，改掛在 Hero 右側的外框按鈕——
+            這條標頭列只標示家族名。 */}
+        <div class="mb-3 font-mono text-[11px] font-bold uppercase tracking-[2px] text-muted">
+          {family?.en} · {lang === "ja" ? <>{family?.ja}シリーズ</> : <>{family?.zh}系列</>}
         </div>
         <LaunchFamilyNav game={group.game} members={familyTechniques} currentNo={item.no} lang={lang} />
       </div>
@@ -1121,26 +1121,62 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     top: 0;
   }
 
-  /* 家族旁支入口：跟標題右邊的「回到 XX 系列 →」同一套語彙——箭頭在 hover
-     時往右推一點當作可點的回饋，字本身不加底線，維持它「次要資源」的低調。 */
-  .family-aside-link span:last-child {
-    transition: transform 180ms ease;
+  /* 家族旁支入口（例：擊飛家族的布偶程錯）：Hero 右側的外框按鈕。
+     圓角與外框沿用站上卡片／按鈕的既有規格（5px + border-strong），
+     底色用 surface 讓它在頁面底色上浮起來一點，比純文字連結顯著，
+     但字級仍小於 h1，不會跟頁面標題搶。 */
+  .hero-aside-btn {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 5px;
+    background: var(--surface);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color 160ms ease, background-color 160ms ease;
   }
-  .family-aside-link:hover span:last-child,
-  .family-aside-link:focus-visible span:last-child {
-    transform: translateX(3px);
+  .hero-aside-btn:hover {
+    border-color: var(--accent);
+    background: var(--surface-2);
   }
-  .family-aside-link:hover > span:first-child {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .family-aside-link:focus-visible {
-    outline: 2px solid var(--color-accent);
+  .hero-aside-btn:focus-visible {
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
 
+  .hero-aside-btn-en {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .hero-aside-btn-arrow {
+    font-size: 14px;
+    transition: transform 180ms ease;
+  }
+  .hero-aside-btn:hover .hero-aside-btn-arrow,
+  .hero-aside-btn:focus-visible .hero-aside-btn-arrow {
+    transform: translateX(3px);
+  }
+
+  /* 窄螢幕：mono 英文名讓位，只留中文名與箭頭，避免按鈕寬到把標題擠掉 */
+  @media (max-width: 520px) {
+    .hero-aside-btn-en {
+      display: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .family-aside-link span:last-child {
+    .hero-aside-btn,
+    .hero-aside-btn-arrow {
       transition: none;
     }
   }
