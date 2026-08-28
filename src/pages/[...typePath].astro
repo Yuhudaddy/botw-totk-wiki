@@ -1064,6 +1064,16 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       /* 1244 置中欄的左緣（50% - 622px）再加 px-8 的 32px */
       left: max(32px, calc(50% - 590px));
       width: 212px;
+      /* .type-col（麵包屑／標題那個 section）加了 .type-divider-b／t 之後
+         也變成 position:relative（畫分隔線的偽元素需要），而它是 1244px
+         置中欄、左緣落在跟側欄同一帶，兩者的框在螢幕上互相重疊。
+         偏偏它在 DOM 順序上排在側欄後面，兩者 z-index 同樣是 auto 時，
+         後面的元素疊圖優先——.type-col 那片空白（左側 padding，視覺上什麼
+         都沒畫）就贏得那塊區域的點擊判定，側欄連結整個點不到，但因為
+         .type-col 该處沒有任何可見內容，畫面上完全看不出來哪裡被蓋住。
+         給側欄一個明確的 z-index，不管其他區塊之後又多幾個 position:relative
+         都不會再被疊到上面。 */
+      z-index: 1;
     }
 
     /* sticky 掛在內層：外層要撐滿整頁高度才有讓它「黏」的空間 */
