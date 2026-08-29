@@ -3941,6 +3941,17 @@ export const typeContent: Record<string, TypeContent> = {
         principle:
           "為了將兩個物理物件綁定在一起，遊戲會用一個「物理束制（Constraint）」來固定物件之間的互動關係。這包括連接兩個不同 Actor 的約束（如：究極手黏合膠），以及連接同一個 Actor 不同部分的約束（如：__彈簧的兩個部分__）。遊戲會在一個大小為 2560 的全域陣列中追蹤所有這些約束。當你填滿這個陣列時，遊戲會無法建立新的束制而解體。每隻馬在動畫處理上會使用 21 個束制。重複掃入一百餘隻__伊波娜馬__的 Amiibo 可以觸發該過載，即最早的「伊波娜過載（Epona Overload）」。若利用某些左納烏裝置（◯龍頭、◯輪胎）各會使用 4 個束制來成形，殘留 600 餘個就可以觸發束制過載。",
       },
+      {
+        // 內容待補：流程步驟、原理說明先放「待新增」佔位。頁面共用的
+        // 「注意事項」「相關影片」不隨分頁切換，維持既有內容，等這個
+        // 分頁補完後再視情況新增各自的段落。
+        tab: "Collision",
+        name: "碰撞過載（Collision Overload）",
+        tags: ["All Versions"],
+        hideDemo: true,
+        steps: ["待新增"],
+        principle: "待新增",
+      },
     ],
     notes: [
       {
@@ -4078,6 +4089,19 @@ export const typeContent: Record<string, TypeContent> = {
           "上述步驟武器和盾牌可以對調。",
           "步驟 1 糾纏盾可以用「Zuggle + 使用掉火箭盾」「氣球解纏」來解纏掉裝置，武器則無法。",
         ],
+      },
+      {
+        // 內容待補：流程步驟先放「待新增」佔位，其餘沿用頁面共用的
+        // principle／notes／videos，未另外設定 name（跟這頁其他分頁一致，
+        // 這頁目前每個分頁都只用 tab 當標籤，沒有另外掛白色小標題）。
+        tab: "ARAZ",
+        tags: ["All Versions"],
+        steps: ["待新增"],
+      },
+      {
+        tab: "Mineraz",
+        tags: ["All Versions"],
+        steps: ["待新增"],
       },
     ],
     principle:
