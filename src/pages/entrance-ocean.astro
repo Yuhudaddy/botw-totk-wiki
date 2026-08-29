@@ -2330,7 +2330,17 @@ const canonicalUrl = new URL(originEntranceUrl, Astro.site).href;
       }
     </style>
 
-    <script is:inline>
+    {/* 這段沒有 is:inline：讓 Vite 照一般模組處理，正式站會被打包精簡、
+        中文註解與瓶中信狀態機的變數名稱都不會照原樣送到瀏覽器。跟上面
+        決定主題／語言的那段不同，這段不需要在首次繪製前搶先跑，轉成
+        一般 script 不影響任何時機依賴。
+        改成一般 script 後 astro check 會用 TS 型別檢查這段內容——這段
+        程式碼一直是寫成寬鬆的 vanilla JS（var、DOM 查詢不做 null 防呆），
+        直接檢查會炸出上百個型別錯誤，跟 is:inline 時代完全不檢查的狀態
+        不對等；ts-nocheck 讓它維持原本「不檢查」的狀態，只借用 Vite 的
+        打包精簡，不改變檢查範圍。 */}
+    <script>
+      // @ts-nocheck
       (function () {
         var root = document.documentElement;
         var page = document.querySelector(".ocean-page");
