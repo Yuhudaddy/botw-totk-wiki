@@ -4091,17 +4091,37 @@ export const typeContent: Record<string, TypeContent> = {
         ],
       },
       {
-        // 內容待補：流程步驟先放「待新增」佔位，其餘沿用頁面共用的
-        // principle／notes／videos，未另外設定 name（跟這頁其他分頁一致，
-        // 這頁目前每個分頁都只用 tab 當標籤，沒有另外掛白色小標題）。
         tab: "ARAZ",
-        tags: ["All Versions"],
-        steps: ["待新增"],
+        name: "ARAZ（Attached Rangeless Active Zonai）",
+        tags: ["Ver.1.2.1+"],
+        steps: [
+          "準備一個纏桿武器 W",
+          "米涅魯糾纏一個普通盾牌 S",
+          "丟出一個左納烏道具 Z，米涅魯消失的瞬間將 Z 冷餘料在 S 上",
+          "騎上米涅魯，餘料對準 Z",
+          "餘料的瞬間打開快速選單，丟→切 W，將 Z 糾纏到米涅魯上",
+          "將 Z 餘料建造在裝備上，Z 會保持啟動中的狀態",
+        ],
       },
       {
         tab: "Mineraz",
-        tags: ["All Versions"],
-        steps: ["待新增"],
+        name: "米涅魯 ARAZ（Mineru Attached Rangeless Active Zonai）",
+        tags: ["Ver.1.2.1+"],
+        steps: [
+          "準備一個纏桿盾 S，把它丟地上",
+          "將普通武器 W2 放在隱藏區，FS2FE 到虛化武器 W1 上",
+          "Zuggle Drop 虛化武器 W1",
+          "Overload Pickup W2",
+          "將有電池的左納烏裝置 Z1 餘料到武器上",
+          "背對牆壁丟棄武器，將 W2 返回林克身上（太過載請卸掉套裝）",
+          "裝備纏桿盾 S，騎上米涅魯，啟動餘料對準 Z1",
+          "按 Y 餘料的瞬間打開快速選單，丟切纏桿盾 S，閃藏讓 Z1 糾纏在米涅魯上",
+          "將 Z1 正常餘料建造在 W2 上，並且把 W2 丟在地上",
+          "騎上米涅魯離開一段距離，使用米涅魯身上的 Z1，直到看不到左納烏裝置的效果為止",
+          "丟出任意材料，餘料覆蓋米涅魯上的 Z1（可以關閉米涅魯）",
+          "回到 W2 旁邊，在 W2 上的 Z1 會保持啟動中的狀態",
+        ],
+        note: "※ 撿起來不會取消程錯，但按了 Y 使用或切換掉裝備就會。",
       },
     ],
     principle:
@@ -4110,7 +4130,7 @@ export const typeContent: Record<string, TypeContent> = {
       { text: "武器GAS不會消耗電池；盾牌GAS則會消耗電池。" },
       { text: "再次使用GAS的裝置就會解除程錯。" },
       { text: "除了某些過場動畫，身上若裝備著GAS的武器或盾牌，林克的「重生座標（Safe Respawn Coordinates）」不會被更新，也就是下次溺斃、掉入深淵，會重生在觸發GAS的位置，而非上一次正常站立於地圖位件上的位置。" },
-      { text: "可以搭配 [[ARAZ|totk-01#ARAZ]]，把裝置餘料建造到 Zuggled 的同類型裝備上，再將糾纏的本體帶到裝置啟動範圍外揮動／格擋。" },
+      { text: "可以搭配 [[ARAZ|tab:ARAZ]]，把裝置餘料建造到 Zuggled 的同類型裝備上，再將糾纏的本體帶到裝置啟動範圍外揮動／格擋。" },
     ],
     videos: [
       { id: "eXGglGGWwO4", title: "不廢話23 -「恆動餘料左納烏 - GAS（Guard-less Active Shield）」", desc: "全版本適用｜但本片為針對1.2.X的流程", publishedAt: "2025-04-04" },

@@ -2545,14 +2545,29 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       root.scrollIntoView({ block: "start" });
     }
 
-    // 步驟中「跳到同頁其他分頁」的按鈕（[[文字|tab:分頁名]] 語法）
-    root.querySelectorAll<HTMLButtonElement>(".jump-tab-btn").forEach((btn) => {
+    // 跳到同頁其他分頁的按鈕（[[文字|tab:分頁名]] 語法）：查全頁而非只查
+    // root 底下——這顆語法也會出現在頁面層級的「注意事項」（不屬於任何
+    // .method-tabs），原本只綁 root.querySelectorAll(...) 的話，注意事項
+    // 裡的跳轉鈕完全收不到 click 監聽器，按了沒反應也不會報錯，第一次在
+    // 恆動裝置頁的注意事項用這個語法連回 ARAZ 分頁時才發現。改成查全頁後，
+    // 頁面若有多組 .method-tabs，每組都會嘗試比對，只有真正找得到目標分頁
+    // 的那組才會實際切換，其餘靜默略過，彼此不衝突。
+    document.querySelectorAll<HTMLButtonElement>(".jump-tab-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const target = btn.dataset.jumpTab;
         // 比對 data-tab-key（中文版的 tab）而非顯示文字：日文版的標籤已翻譯，
         // 用文字比對會找不到目標而讓跳轉鈕靜默失效
         const targetTab = tabs.find((t) => t.dataset.tabKey === target);
-        if (targetTab) select(Number(targetTab.dataset.tab));
+        if (!targetTab) return;
+        select(Number(targetTab.dataset.tab));
+        // 跳轉鈕若是從注意事項點的，跟分頁切換器實際距離可能有好幾千 px，
+        // 切換分頁卻沒有任何畫面反應等於沒切——補捲動，跟網址 hash 深連結
+        // 進站時的行為一致（見上方 hashTabEl 那段）。已經在可視範圍內
+        // 就不用特地捲動，避免每次點都跳一下。
+        const rootRect = root.getBoundingClientRect();
+        if (rootRect.top < 0 || rootRect.top > window.innerHeight * 0.6) {
+          root.scrollIntoView({ block: "start", behavior: "smooth" });
+        }
       });
     });
   });
