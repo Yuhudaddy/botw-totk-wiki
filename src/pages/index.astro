@@ -1120,18 +1120,30 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
         font-weight: 400;
         letter-spacing: -0.04em;
         padding-bottom: 0.09em;
+        /* 無縫循環：沿用原本四色（白→乳白→淡希卡土→希卡土），頭尾重複第一
+           個顏色當第 5 個 stop，background-size 開 4 倍（N=4）。
+           background-position 的位移量並不是直覺以為的 -100%：percentage
+           實際換算成像素位移是 ΔP×(容器寬 − 背景寬)，要讓畫面剛好平移
+           一整個背景週期（背景寬本身）才會回到像素級全等的畫面，解出來
+           是 ΔP = N/(N−1) = 4/3 ≈ 133.3%，不是 100%。用 calc(-400% / 3)
+           而不是寫死小數，數字跟推導方式對得上。（用 canvas 光柵化兩個
+           位移量實測驗證過：-100% 跟 0% 取樣像素不同、-400%/3 跟 0% 完全
+           一致，才確認這個公式而不是憑印象套用。）
+           刻意不摻藍色（英傑藍）——那是彩蛋解鎖瞬間專用的「甦醒」訊號，
+           標題閒置動畫維持在暖色系，解謎前後的色彩落差才留得住。 */
         background: linear-gradient(
           106deg,
-          var(--entrance-title-gradient-a) 0%,
-          var(--entrance-title-gradient-b) 31%,
-          var(--entrance-title-gradient-c) 65%,
-          var(--entrance-title-gradient-d) 100%
+          var(--entrance-title-gradient-a),
+          var(--entrance-title-gradient-b),
+          var(--entrance-title-gradient-c),
+          var(--entrance-title-gradient-d),
+          var(--entrance-title-gradient-a)
         );
-        background-size: 140% 100%;
+        background-size: 400% 100%;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: shrine-gradient-shift 10s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+        animation: shrine-gradient-shift 8s linear infinite;
       }
 
       :root[data-theme="light"] .hero-title em {
@@ -1140,11 +1152,16 @@ const entranceTitle = `${SITE.shortTitle} · Yuda's Channel Game Wiki`;
       }
 
       @keyframes shrine-gradient-shift {
-        0% {
-          background-position: 0% 50%;
+        to {
+          background-position: calc(-400% / 3) 0;
         }
-        100% {
-          background-position: 34% 50%;
+      }
+
+      /* 原本是無限循環動畫，這裡之前沒有另外接減少動態偏好；改成無縫
+         循環的同時順手補上，跟站內其他持續動畫的慣例一致。 */
+      @media (prefers-reduced-motion: reduce) {
+        .hero-title em {
+          animation: none;
         }
       }
 
