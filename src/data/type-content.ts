@@ -1482,6 +1482,7 @@ export const typeContent: Record<string, TypeContent> = {
     videoFolder: "botw-equipment duplication",
     principleItems: [
       "觸發__選單過載__或是__座標偏移造成裝備來不及加載__的時候切換裝備，會讓選單和實際裝備不同步，此時將脫離同步、實際裝備在身上的武器、弓、盾牌與林克分離（掛牆壁、受電擊、投擲等等）就能增殖道具。",
+      "選單過載的根本原因是暫停選單裡每一項裝備模型（武器、弓、盾牌等圖示）要顯示出來，都得跟系統要一個__處理單元（ProcUnit）__，而這個資源上限（__BaseProcUnitPool__）為 256 格的陣列（sead::SafeArray）。電箭多發弓每次落弓大概會多跑出 30 個獨立物件（Actor）去佔陣列位置，大概 6～7 把弓左右，用量就會逼近甚至超過 256 格的上限。",
     ],
     methods: [
       {
