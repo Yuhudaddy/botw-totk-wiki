@@ -258,6 +258,19 @@ const zh = {
   aboutSectionShoutouts: "特別感謝 SHOUTOUTS",
   aboutSectionLinks: "連結 · Links",
 
+  // 關於神廟 › 開發作品（導師的工坊）。狀態用語對應神廟的休眠／喚醒色：
+  // 有連結＝已喚醒（藍）、沒連結＝休眠中（金）。休眠的作品不掛狀態標籤——
+  // 它們是個人用工具，不是「還沒公開」，別寫成在等上架
+  worksEyebrow: "開發作品 · Works",
+  worksHeading: "導師的工坊",
+  worksTablistLabel: "開發作品",
+  worksLegendLive: "已喚醒（可前往）",
+  worksLegendDormant: "休眠中（個人用）",
+  worksStatusLive: "已上架",
+  worksStatusWip: "開發中",
+  /** 支援語言列的前綴，後面接「繁體中文 / 日文 / 英文」 */
+  worksLanguagesLabel: "支援：",
+
   // 主題解說列表頁（/types）
   typesDescription: "依系列瀏覽 Yuda 頻道的曠野之息與王國之淚攻略內容。",
   typesEyebrow: "Browse by Series · 系列索引",
@@ -490,6 +503,15 @@ const ja: Record<keyof typeof zh, string> = {
   aboutSectionYuhu: "Yuhu について",
   aboutSectionShoutouts: "スペシャルサンクス SHOUTOUTS",
   aboutSectionLinks: "リンク · Links",
+
+  worksEyebrow: "開発したもの · Works",
+  worksHeading: "導師の工房",
+  worksTablistLabel: "開発したもの",
+  worksLegendLive: "起動済み（リンクあり）",
+  worksLegendDormant: "休眠中（個人用）",
+  worksStatusLive: "配信中",
+  worksStatusWip: "開発中",
+  worksLanguagesLabel: "対応：",
 
   typesDescription: "Yuda チャンネルのブレワイ・ティアキン攻略をシリーズ別に閲覧できます。",
   typesEyebrow: "Browse by Series · シリーズ索引",

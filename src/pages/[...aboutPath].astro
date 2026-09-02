@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE } from "../data/site";
 import { uiStrings, type Lang } from "../data/ui-strings";
+import WorksRunes from "../components/WorksRunes.astro";
 
 // 中文 /about、日文 /ja/about
 export function getStaticPaths() {
@@ -148,6 +149,9 @@ const t = uiStrings[lang];
         )}
       </ul>
     </div>
+
+    {/* 開發作品：導師的工坊（符文欄），放在特別感謝之後、連結之前 */}
+    <WorksRunes lang={lang} />
 
     {/* 連結 */}
     <div class="mt-8">

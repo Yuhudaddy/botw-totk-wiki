@@ -1,0 +1,649 @@
+---
+// 「導師的工坊」：關於神廟頁的開發作品區塊。
+//
+// 概念是希卡石板的符文欄：每個作品是一枚符文（App 圖示裁成 iOS 同款的超橢圓），
+// 上面一排符文、下面一塊詳細面板。色彩語意直接沿用站內的神廟設定——
+// 有公開連結的作品是「已喚醒」（英傑藍旋轉亮環，深色模式帶微光），
+// 沒有公開連結的是「休眠中」（希卡金環、圖示降飽和），只顯示說明、不做按鈕，
+// 也不掛狀態標籤——休眠的作品是個人用工具，不是「還沒公開」。
+//
+// 互動走 ARIA tabs（role=tablist/tab/tabpanel、方向鍵切換、roving tabindex）。
+// 每枚符文按鈕的 id 就是 works-<id>，瀏覽器載入 #works-subflow 這種網址時會
+// 自己捲過去，script 只負責把它選起來；點選也會把 hash 換掉，方便分享到特定作品。
+import { works, type WorkLinkKind, type WorkStatus } from "../data/works";
+import { href } from "../lib/url";
+import { uiStrings, type Lang } from "../data/ui-strings";
+
+interface Props {
+  lang?: Lang;
+}
+const { lang = "zh" } = Astro.props;
+const t = uiStrings[lang];
+const pick = (zh: string | undefined, ja: string | undefined) =>
+  (lang === "ja" && ja) || zh || "";
+
+// dormant 沒有標籤（見上方說明）
+const STATUS_LABEL: Partial<Record<WorkStatus, string>> = {
+  live: t.worksStatusLive,
+  wip: t.worksStatusWip,
+};
+
+// 連結按鈕前的品牌／類型圖示（fill currentColor）
+const LINK_ICONS: Record<WorkLinkKind, string> = {
+  appstore:
+    '<path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.8 1.3 10.3.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.4-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.2zM13.9 4.9c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5z"/>',
+  github:
+    '<path d="M12 .5A12 12 0 0 0 8.2 23.9c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/>',
+  site: '<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 9h-3a15.6 15.6 0 0 0-1.3-5.4A8 8 0 0 1 18.9 11zM12 4c.9 1.2 1.8 3.7 2 7h-4c.2-3.3 1.1-5.8 2-7zM5.1 13h3c.1 2 .6 3.8 1.3 5.4A8 8 0 0 1 5.1 13zm3-2h-3a8 8 0 0 1 4.3-5.4c-.7 1.6-1.2 3.4-1.3 5.4zM12 20c-.9-1.2-1.8-3.7-2-7h4c-.2 3.3-1.1 5.8-2 7zm2.6-1.6c.7-1.6 1.2-3.4 1.3-5.4h3a8 8 0 0 1-4.3 5.4z"/>',
+};
+
+const tabId = (id: string) => `works-${id}`;
+const panelId = (id: string) => `works-panel-${id}`;
+---
+
+<section class="works mt-5 scroll-mt-24" id="works" aria-labelledby="works-title" data-works>
+  {/* 超橢圓遮罩：定義一次，符文列與面板的圖示共用 */}
+  <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
+    <clipPath id="works-squircle" clipPathUnits="objectBoundingBox">
+      <path d="M.5 0C.135 0 0 .135 0 .5s.135.5.5.5.5-.135.5-.5S.865 0 .5 0z"></path>
+    </clipPath>
+  </svg>
+
+  <div class="works-head">
+    <div>
+      <div class="text-[11px] font-bold uppercase tracking-[1.4px] text-gold">{t.worksEyebrow}</div>
+      <h2 id="works-title" class="mt-1.5 font-heading text-[22px] font-medium leading-tight text-ink">
+        {t.worksHeading}
+      </h2>
+    </div>
+    <div class="works-legend" aria-hidden="true">
+      <span class="works-legend-live">{t.worksLegendLive}</span>
+      <span class="works-legend-dormant">{t.worksLegendDormant}</span>
+    </div>
+  </div>
+
+  {/* 符文列 */}
+  <div class="rune-bar" role="tablist" aria-label={t.worksTablistLabel}>
+    {
+      works.map((w, i) => (
+        <button
+          type="button"
+          class="rune"
+          role="tab"
+          id={tabId(w.id)}
+          aria-controls={panelId(w.id)}
+          aria-selected={i === 0 ? "true" : "false"}
+          tabindex={i === 0 ? 0 : -1}
+          data-status={w.status}
+          data-hash={tabId(w.id)}
+        >
+          <span class="rune-frame">
+            <picture>
+              <source srcset={href(`${w.icon}.webp`)} type="image/webp" />
+              <img
+                class="rune-icon"
+                src={href(`${w.icon}.png`)}
+                alt=""
+                width="64"
+                height="64"
+                loading="lazy"
+                draggable="false"
+              />
+            </picture>
+          </span>
+          <span class="rune-name">{w.name}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  {/* 詳細面板：每個作品一塊，同一時間只顯示選中的那塊 */}
+  <div class="mt-2">
+    {
+      works.map((w, i) => (
+        <div
+          class="work-panel"
+          id={panelId(w.id)}
+          role="tabpanel"
+          aria-labelledby={tabId(w.id)}
+          tabindex="0"
+          data-status={w.status}
+          hidden={i !== 0}
+        >
+          {/* 版本號釘在整個容器的右上角 */}
+          {w.version && <span class="work-version">{w.version}</span>}
+          <div class="work-panel-grid">
+            <picture class="work-panel-pic">
+              <source srcset={href(`${w.icon}.webp`)} type="image/webp" />
+              <img
+                class="work-panel-icon"
+                src={href(`${w.icon}.png`)}
+                alt=""
+                width="96"
+                height="96"
+                loading="lazy"
+                draggable="false"
+              />
+            </picture>
+            <div class="min-w-0">
+              <div class:list={["flex flex-wrap items-center gap-2.5", { "work-title-row-pad": !!w.version }]}>
+                <h3 class="font-heading text-[24px] font-medium leading-[1.2] text-ink">{w.name}</h3>
+                {STATUS_LABEL[w.status] && (
+                  <span class="work-badge" data-status={w.status}>
+                    <i aria-hidden="true"></i>
+                    {STATUS_LABEL[w.status]}
+                  </span>
+                )}
+              </div>
+              <div class="work-chips mt-2 flex flex-wrap gap-1.5">
+                {w.platforms.map((p) => (
+                  <span class="rounded-[5px] bg-mono-bg px-[7px] py-0.5 font-mono text-[11px] text-muted">{p}</span>
+                ))}
+              </div>
+              <p class="work-desc mt-3 max-w-[56ch] text-[15px] leading-[1.8] text-text">
+                {pick(w.description, w.descriptionJa)}
+              </p>
+              <p class="work-langs">
+                <i aria-hidden="true"></i>
+                {t.worksLanguagesLabel + (lang === "ja" && w.languagesJa ? w.languagesJa : w.languages).join(" / ")}
+              </p>
+              {w.links && w.links.length > 0 && (
+                <div class="work-cta mt-[18px] flex flex-wrap gap-2">
+                  {w.links.map((l, k) => (
+                    <a
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener"
+                      class:list={["work-btn", { "work-btn-primary": k === 0 }]}
+                    >
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true" set:html={LINK_ICONS[l.kind]} />
+                      {l.label}
+                      <span class="work-btn-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  /* ── 標題列 ── */
+  .works-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .works-legend {
+    display: flex;
+    gap: 14px;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .works-legend span::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+  .works-legend-live::before {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--works-glow);
+  }
+  .works-legend-dormant::before {
+    background: var(--gold);
+  }
+
+  /* 光暈只在深色模式出現：淺色底上藍色暈開會髒，留亮環就夠 */
+  .works {
+    --works-glow: transparent;
+  }
+  :global([data-theme="dark"]) .works {
+    --works-glow: color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+
+  /* ── 符文列：可橫向捲動，兩端淡出 ── */
+  .rune-bar {
+    display: flex;
+    gap: 6px;
+    padding: 6px 4px 2px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  }
+  .rune-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rune {
+    --tone: var(--accent);
+    position: relative;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 104px;
+    padding: 10px 6px 12px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    cursor: pointer;
+    scroll-snap-align: center;
+    /* 網址帶 #works-<id> 時瀏覽器會捲到這顆按鈕；浮動導覽列有 64px 高，
+       不留邊距整排符文會被蓋在導覽列底下 */
+    scroll-margin-top: 96px;
+    transition: color 0.2s ease;
+  }
+  .rune[data-status="wip"],
+  .rune[data-status="dormant"] {
+    --tone: var(--gold);
+  }
+  .rune:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .rune-name {
+    font-size: 11.5px;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .rune[aria-selected="true"] .rune-name {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* 圖示外框：::after 是平常的細框，::before 是選中時繞圈的 conic 亮環。
+     兩個都用同一個超橢圓遮罩裁形，圖示本身也裁，看起來就是一圈貼著圖示的邊。
+     --ring-angle 的 @property 在 global.css 已註冊（.ring-hover 也用它）。 */
+  .rune-frame {
+    position: relative;
+    display: block;
+    width: 64px;
+    height: 64px;
+    isolation: isolate;
+  }
+  .rune-frame::before,
+  .rune-frame::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    clip-path: url(#works-squircle);
+  }
+  .rune-frame::after {
+    inset: -1.5px;
+    background: var(--border-strong);
+    transition: background-color 0.2s ease;
+  }
+  .rune-frame::before {
+    inset: -4px;
+    background: conic-gradient(
+      from var(--ring-angle),
+      transparent 0%,
+      var(--tone) 12%,
+      var(--tone) 38%,
+      transparent 58%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    animation: works-ring-spin 2.4s linear infinite;
+    animation-play-state: paused;
+  }
+  .rune-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    clip-path: url(#works-squircle);
+    transition:
+      transform 0.25s cubic-bezier(0.22, 0.8, 0.36, 1),
+      filter 0.25s ease;
+  }
+  .rune[data-status="dormant"] .rune-icon {
+    filter: saturate(0.35) brightness(0.85);
+  }
+  .rune:hover .rune-frame::before,
+  .rune:focus-visible .rune-frame::before {
+    opacity: 0.55;
+    animation-play-state: running;
+  }
+  .rune[aria-selected="true"] .rune-frame::before {
+    opacity: 1;
+    animation-play-state: running;
+  }
+  .rune[aria-selected="true"] .rune-frame::after {
+    background: transparent;
+  }
+  /* 光暈要掛在外框容器上：圖示本身有 clip-path，box-shadow 會一起被裁掉 */
+  .rune[aria-selected="true"] .rune-frame {
+    filter: drop-shadow(0 0 12px var(--works-glow));
+  }
+  .rune[aria-selected="true"] .rune-icon {
+    transform: scale(1.06);
+  }
+  .rune[aria-selected="true"][data-status="dormant"] .rune-icon {
+    filter: saturate(0.55) brightness(0.95);
+  }
+  /* 選中指示：底下一枚小三角，指向下方面板 */
+  .rune::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -9px;
+    width: 10px;
+    height: 10px;
+    background: var(--surface);
+    border-left: 1px solid var(--border-strong);
+    border-top: 1px solid var(--border-strong);
+    transform: translateX(-50%) rotate(45deg) scale(0);
+    transition: transform 0.2s ease;
+  }
+  .rune[aria-selected="true"]::after {
+    transform: translateX(-50%) rotate(45deg) scale(1);
+  }
+  @keyframes works-ring-spin {
+    to {
+      --ring-angle: 360deg;
+    }
+  }
+
+  /* ── 詳細面板 ── */
+  .work-panel {
+    --tone: var(--accent);
+    position: relative;
+    overflow: hidden;
+    padding: 26px 30px 24px;
+    border: 1px solid var(--border-strong);
+    border-radius: 5px;
+    background: var(--surface);
+  }
+  .work-panel[data-status="wip"],
+  .work-panel[data-status="dormant"] {
+    --tone: var(--gold);
+  }
+  .work-panel:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* 頂緣高光：喚醒藍／休眠金 */
+  .work-panel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--tone) 30%, var(--tone) 70%, transparent);
+    opacity: 0.9;
+  }
+  .work-panel.entering {
+    animation: works-rise 0.28s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+  }
+  @keyframes works-rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .work-panel-grid {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .work-panel-icon {
+    display: block;
+    width: 96px;
+    height: 96px;
+    clip-path: url(#works-squircle);
+  }
+  .work-panel[data-status="dormant"] .work-panel-icon {
+    filter: saturate(0.4) brightness(0.9);
+  }
+
+  .work-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background: var(--sand);
+    color: var(--tone);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .work-badge i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .work-badge[data-status="live"] i {
+    box-shadow: 0 0 6px var(--works-glow);
+  }
+
+  .work-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 5px;
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      filter 0.2s ease;
+  }
+  .work-btn:hover,
+  .work-btn:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .work-btn-primary {
+    border-color: transparent;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .work-btn-primary:hover,
+  .work-btn-primary:focus-visible {
+    color: var(--on-accent);
+    filter: brightness(1.08);
+  }
+  .work-btn-arrow {
+    opacity: 0;
+    transform: translate(-3px, 3px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+  .work-btn:hover .work-btn-arrow,
+  .work-btn:focus-visible .work-btn-arrow {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* 支援語言列：小圓點吃作品的色調（喚醒藍／休眠金） */
+  .work-langs {
+    display: flex;
+    /* 對齊第一行而不是整段置中：手機上這行會折成兩行，圓點置中會浮在行間 */
+    align-items: flex-start;
+    gap: 8px;
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .work-langs i {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    margin-top: 7px;
+    border-radius: 50%;
+    background: var(--tone);
+    opacity: 0.8;
+  }
+
+  /* 版本號：容器右上角的 mono 小字。標題列右側留白，長名稱才不會撞上它 */
+  .work-version {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .work-title-row-pad {
+    padding-right: 72px;
+  }
+
+  /* ── 手機版：面板不再重複放大圖示 ──
+     上方符文列已經是圖示本人（選中那枚還帶亮環與指向面板的小三角），
+     面板裡再擺一顆 72px 的等於把左邊一整欄讓給重複資訊，文字只剩約 210px
+     寬、敘述被擠成八九行、整塊面板高得離譜。拿掉之後文字吃滿寬，行數
+     直接少四成；字級與留白再各收一點，不需要把字縮到難讀的程度。 */
+  @media (max-width: 600px) {
+    .works-legend {
+      display: none;
+    }
+    .rune {
+      width: 88px;
+    }
+    .work-panel {
+      padding: 18px 16px 16px;
+    }
+    .work-panel-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .work-panel-pic {
+      display: none;
+    }
+    .work-panel h3 {
+      font-size: 20px;
+    }
+    .work-version {
+      top: 12px;
+      right: 14px;
+    }
+    .work-title-row-pad {
+      padding-right: 76px;
+    }
+    .work-chips {
+      margin-top: 8px;
+    }
+    .work-desc {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .work-langs {
+      margin-top: 10px;
+      font-size: 12.5px;
+    }
+    .work-langs i {
+      margin-top: 6px;
+    }
+    .work-cta {
+      margin-top: 14px;
+    }
+    .work-btn {
+      padding: 7px 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rune-frame::before,
+    .work-panel.entering {
+      animation: none;
+    }
+    .rune-icon,
+    .rune::after,
+    .work-btn-arrow {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-works]");
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>(".rune"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>(".work-panel"));
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function select(i: number, focus = false, animate = true) {
+      tabs.forEach((tab, k) => {
+        tab.setAttribute("aria-selected", String(k === i));
+        tab.tabIndex = k === i ? 0 : -1;
+      });
+      panels.forEach((panel, k) => {
+        const on = k === i;
+        panel.hidden = !on;
+        panel.classList.remove("entering");
+        if (on && animate && !reduceMotion) {
+          void panel.offsetWidth;
+          panel.classList.add("entering");
+        }
+      });
+      // 符文列在窄螢幕可橫向捲動，方向鍵切到畫面外的那枚要把它帶回來
+      tabs[i].scrollIntoView({ block: "nearest", inline: "center", behavior: reduceMotion ? "auto" : "smooth" });
+      if (focus) tabs[i].focus({ preventScroll: true });
+      history.replaceState(null, "", `#${tabs[i].dataset.hash}`);
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(i));
+      tab.addEventListener("keydown", (e) => {
+        const n = tabs.length;
+        let next = -1;
+        if (e.key === "ArrowRight") next = (i + 1) % n;
+        else if (e.key === "ArrowLeft") next = (i - 1 + n) % n;
+        else if (e.key === "Home") next = 0;
+        else if (e.key === "End") next = n - 1;
+        if (next < 0) return;
+        e.preventDefault();
+        select(next, true);
+      });
+    });
+
+    // 網址帶 #works-<id> 時選中該作品；瀏覽器本身會捲到那枚符文（id 相同），
+    // 這裡不再捲一次，也不改 hash（首次載入不該動到瀏覽記錄）
+    const initial = tabs.findIndex((tab) => `#${tab.dataset.hash}` === location.hash);
+    if (initial > 0) {
+      tabs.forEach((tab, k) => {
+        tab.setAttribute("aria-selected", String(k === initial));
+        tab.tabIndex = k === initial ? 0 : -1;
+      });
+      panels.forEach((panel, k) => {
+        panel.hidden = k !== initial;
+      });
+    }
+  }
+</script>
