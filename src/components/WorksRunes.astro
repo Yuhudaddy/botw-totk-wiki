@@ -3,8 +3,8 @@
 //
 // 概念是希卡石板的符文欄：每個作品是一枚符文（App 圖示裁成 iOS 同款的超橢圓），
 // 上面一排符文、下面一塊詳細面板。色彩語意直接沿用站內的神廟設定——
-// 有公開連結的作品是「已喚醒」（英傑藍旋轉亮環，深色模式帶微光），
-// 沒有公開連結的是「休眠中」（希卡金環、圖示降飽和），只顯示說明、不做按鈕，
+// 有公開連結的作品是「已喚醒」（四色漸層旋轉亮環，深色模式帶微光），
+// 沒有公開連結的是「休眠中」（同樣使用四色漸層、圖示降飽和），只顯示說明、不做按鈕，
 // 也不掛狀態標籤——休眠的作品是個人用工具，不是「還沒公開」。
 //
 // 互動走 ARIA tabs（role=tablist/tab/tabpanel、方向鍵切換、roving tabindex）。
@@ -292,13 +292,16 @@ const panelId = (id: string) => `works-panel-${id}`;
     transition: background-color 0.2s ease;
   }
   .rune-frame::before {
-    inset: -4px;
+    inset: -3px;
     background: conic-gradient(
       from var(--ring-angle),
       transparent 0%,
-      var(--tone) 12%,
-      var(--tone) 38%,
-      transparent 58%,
+      var(--ring-blue) 12%,
+      var(--ring-blue) 17%,
+      var(--ring-soft-green) 29%,
+      var(--ring-silver) 40%,
+      var(--ring-white) 49%,
+      transparent 59%,
       transparent 100%
     );
     opacity: 0;
