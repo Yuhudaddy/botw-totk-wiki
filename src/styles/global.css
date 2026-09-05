@@ -54,7 +54,7 @@
   --mono-bg: #eeefec;
   --mono-text: #565b60;
   --ring: #c9cbc6;
-  --ring-blue: #3f8fe8;
+  --ring-blue: var(--accent);
   --ring-soft-green: #bcefd7;
   --ring-silver: #d9e0e8;
   --ring-white: #ffffff;
@@ -84,7 +84,7 @@
   --mono-bg: #2b1d1e;
   --mono-text: #cfc6b3;
   --ring: #4a3839;
-  --ring-blue: #3f8fe8;
+  --ring-blue: var(--accent);
   --ring-soft-green: #bcefd7;
   --ring-silver: #d9e0e8;
   --ring-white: #ffffff;
