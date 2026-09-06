@@ -35,6 +35,10 @@ export interface TypeMethodSection {
 export interface TypeMethod {
   tab: string;        // 分頁名稱，例：前跳
   group?: string;     // 分頁分組標籤（同組的分頁按鈕會排在同一行，並在最前面顯示此標籤），例："無過載（Overload-less）"
+  dropdownGroup?: string; // 分頁分組成下拉選單（同值的分頁不各自顯示按鈕，改合併成一顆
+                          // 「此值 ▼」的下拉分頁按鈕，點開後才顯示各自的分頁選項），
+                          // 用於同一大類底下有多個版本分支、不想在分頁列一次塞太多按鈕的情形，
+                          // 例："非 Ver.1.0.0"
   tags?: string[];    // 標籤陣列（顯示為「適合 + badge」），例：["先圓後方"]
   difficulty?: string; // 難易度星等 badge（顯示在 tags 右側），例："★★★☆☆"
   timeCost?: string;    // 耗時度星等 badge（顯示在 difficulty 右側），例："★★★☆☆"
@@ -4714,7 +4718,19 @@ export const typeContent: Record<string, TypeContent> = {
     },
     methods: [
       {
+        tab: "Ver.1.0.0",
+        name: "換場儲存（Banc Storage）",
+        tags: ["Ver.1.0.0"],
+        steps: [
+          "按 A 點擊任意回憶，游標停在「查看回憶」的選項上",
+          "十字鍵推 ▲ 的狀態下，近乎同時輸入 B → A → - 號，會聽見回憶被讀取的聲音，並且暫停選單跳離開，畫面回到外世界（Overworld）",
+          "進入倒轉乾坤神廟",
+          "選單盲操選擇到要讀取的序章檔案，序章林克就會進入倒轉乾坤神廟內",
+        ],
+      },
+      {
         tab: "有 Zelda Notes",
+        dropdownGroup: "非 Ver.1.0.0",
         name: "序章逃脫（Prologue Escape）",
         video: "prologue escape.mp4",
         sections: [
@@ -4788,7 +4804,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "第三階段：移動柯爾天觸發「轉場儲存（Banc Storage）」",
+            title: "第三階段：移動柯爾天觸發「換場儲存（Banc Storage）」",
             collapsible: true,
             steps: [
               "重新開始遊戲，觸發序章__第 3 個自動存檔 A（大師劍發光）__，讀回舊檔（或無套裝檔）",
@@ -4844,6 +4860,7 @@ export const typeContent: Record<string, TypeContent> = {
       },
       {
         tab: "無 Zelda Notes",
+        dropdownGroup: "非 Ver.1.0.0",
         name: "序章逃脫（Prologue Escape）",
         hideDemo: true,
         sections: [
@@ -4922,7 +4939,7 @@ export const typeContent: Record<string, TypeContent> = {
             ],
           },
           {
-            title: "第三階段：移動柯爾天觸發「轉場儲存（Banc Storage）」",
+            title: "第三階段：移動柯爾天觸發「換場儲存（Banc Storage）」",
             collapsible: true,
             steps: [
               "重新開始遊戲，觸發序章__第 3 個自動存檔 A（大師劍發光）__，讀回舊檔（或無套裝檔）",

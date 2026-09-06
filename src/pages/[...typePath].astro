@@ -126,6 +126,32 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
   bucket.items.push({ m, i });
 });
 
+// 同一行內，共用 dropdownGroup 的分頁不各自顯示按鈕，改合併成一顆「值 ▼」
+// 下拉分頁按鈕（點開後才看得到各自選項），用於同一大類底下版本分支較多、
+// 不想在分頁列一次塞太多按鈕的情形（例：序章林克繼承的「非 Ver.1.0.0」）。
+type TabRenderItem =
+  | { kind: "tab"; m: TypeMethod; i: number }
+  | { kind: "dropdown"; label: string; items: { m: TypeMethod; i: number }[] };
+function toTabRenderItems(items: { m: TypeMethod; i: number }[]): TabRenderItem[] {
+  const out: TabRenderItem[] = [];
+  const dropdowns = new Map<string, TabRenderItem & { kind: "dropdown" }>();
+  for (const entry of items) {
+    const dropdownLabel = entry.m.dropdownGroup;
+    if (!dropdownLabel) {
+      out.push({ kind: "tab", m: entry.m, i: entry.i });
+      continue;
+    }
+    let bucket = dropdowns.get(dropdownLabel);
+    if (!bucket) {
+      bucket = { kind: "dropdown", label: dropdownLabel, items: [] };
+      dropdowns.set(dropdownLabel, bucket);
+      out.push(bucket);
+    }
+    bucket.items.push(entry);
+  }
+  return out;
+}
+
 ---
 
 <BaseLayout
@@ -227,21 +253,49 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
                   {g.label && (
                     <span class="mr-1 shrink-0 text-[12px] font-medium text-muted">{g.label}</span>
                   )}
-                  {g.items.map(({ m, i }) => (
-                    <button
-                      type="button"
-                      role="tab"
-                      id={`method-tab-${i}`}
-                      aria-controls={`method-panel-${i}`}
-                      aria-selected={i === 0 ? "true" : "false"}
-                      tabindex={i === 0 ? 0 : -1}
-                      data-tab={i}
-                      data-tab-key={zhMethods?.[i]?.tab ?? m.tab}
-                      class="method-tab cursor-pointer rounded-[5px] border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
-                    >
-                      {m.tab}
-                    </button>
-                  ))}
+                  {toTabRenderItems(g.items).map((item) =>
+                    item.kind === "tab" ? (
+                      <button
+                        type="button"
+                        role="tab"
+                        id={`method-tab-${item.i}`}
+                        aria-controls={`method-panel-${item.i}`}
+                        aria-selected={item.i === 0 ? "true" : "false"}
+                        tabindex={item.i === 0 ? 0 : -1}
+                        data-tab={item.i}
+                        data-tab-key={zhMethods?.[item.i]?.tab ?? item.m.tab}
+                        class="method-tab cursor-pointer rounded-[5px] border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand"
+                      >
+                        {item.m.tab}
+                      </button>
+                    ) : (
+                      <details class="method-tab-dropdown">
+                        <summary class="method-tab-dropdown-summary cursor-pointer rounded-[5px] border border-border-strong bg-surface px-4 py-1.5 text-sm font-medium transition-colors hover:border-brand">
+                          <span>{item.label}</span>
+                          <svg class="method-tab-dropdown-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </summary>
+                        <div class="method-tab-dropdown-menu" role="menu">
+                          {item.items.map(({ m, i }) => (
+                            <button
+                              type="button"
+                              role="tab"
+                              id={`method-tab-${i}`}
+                              aria-controls={`method-panel-${i}`}
+                              aria-selected="false"
+                              tabindex={-1}
+                              data-tab={i}
+                              data-tab-key={zhMethods?.[i]?.tab ?? m.tab}
+                              class="method-tab method-tab-dropdown-option cursor-pointer rounded-[4px] px-3 py-1.5 text-left text-sm font-medium transition-colors"
+                            >
+                              {m.tab}
+                            </button>
+                          ))}
+                        </div>
+                      </details>
+                    )
+                  )}
                 </div>
               ))}
             </div>
@@ -2072,6 +2126,57 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     color: var(--bg);
   }
 
+  /* 分頁列裡的下拉分頁（例：序章林克繼承的「非 Ver.1.0.0」）：按鈕本體是
+     <summary>，展開後在下方浮出選項清單；目前選中的子選項讓外層按鈕也一起
+     顯示為墨色實心，才看得出「你在這裡」，即使選單本身收合著。 */
+  .method-tab-dropdown {
+    position: relative;
+  }
+  .method-tab-dropdown-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text);
+    list-style: none;
+  }
+  .method-tab-dropdown-summary::-webkit-details-marker {
+    display: none;
+  }
+  .method-tab-dropdown[open] .method-tab-dropdown-summary,
+  .method-tab-dropdown[data-active-child] .method-tab-dropdown-summary {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  .method-tab-dropdown-chevron {
+    transition: transform 0.15s;
+  }
+  .method-tab-dropdown[open] .method-tab-dropdown-chevron {
+    transform: rotate(180deg);
+  }
+  .method-tab-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 168px;
+    padding: 4px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  .method-tab-dropdown-option {
+    border: none;
+    background: none;
+  }
+  .method-tab-dropdown-option:hover {
+    background: var(--surface);
+  }
+
   /* 合併分頁底下的子分頁（例：R0 Cull Zuggle 的 In Bound／Out of Bound），樣式較小一號以區隔層級 */
   .subtab-group {
     border-left: 2px solid var(--border-soft);
@@ -2501,12 +2606,24 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
     const principleSections = document.getElementById("principle-sections");
     const principleExtra = document.getElementById("principle-extra");
 
+    // 下拉分頁（例：序章林克繼承的「非 Ver.1.0.0」）：目前選中的分頁若落在
+    // 某個下拉選單裡，該下拉的外層按鈕要一起顯示為選中狀態（即使選單本身
+    // 收合著），且要自動展開，深連結／方向鍵才能對到看得見的選項。
+    const tabDropdowns = Array.from(root.querySelectorAll<HTMLDetailsElement>(".method-tab-dropdown"));
+
     function select(index: number) {
       tabs.forEach((t) => {
         const on = Number(t.dataset.tab) === index;
         t.setAttribute("aria-selected", String(on));
         // roving tabindex：只有選中的分頁進入 Tab 順序，其餘用方向鍵抵達
         t.tabIndex = on ? 0 : -1;
+      });
+      tabDropdowns.forEach((d) => {
+        const hasActive = Array.from(d.querySelectorAll<HTMLButtonElement>(".method-tab")).some(
+          (opt) => Number(opt.dataset.tab) === index
+        );
+        d.toggleAttribute("data-active-child", hasActive);
+        if (hasActive) d.open = true;
       });
       panels.forEach((p) => (p.hidden = Number(p.dataset.panel) !== index));
       updateMedia(index);
@@ -2531,7 +2648,11 @@ const methodGroups: { label: string | null; items: { m: TypeMethod; i: number }[
       syncFlowMap();
     }
 
-    tabs.forEach((tab) => tab.addEventListener("click", () => select(Number(tab.dataset.tab))));
+    tabs.forEach((tab) => tab.addEventListener("click", () => {
+      select(Number(tab.dataset.tab));
+      // 點的是下拉選單裡的選項：選完收合選單，回到單顆按鈕的外觀
+      tab.closest<HTMLDetailsElement>(".method-tab-dropdown")?.removeAttribute("open");
+    }));
 
     // 方向鍵依 DOM 順序移動（跨分組也能連續移動），
     // 但 select() 吃的是 data-tab（原始 methods 索引），兩者不一定相同，需轉換。
